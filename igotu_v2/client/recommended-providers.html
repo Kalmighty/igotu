@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Recommended Providers - IGotU V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div>
+                <div class="logo-text">🤝 IGotU</div>
+
+                <nav class="side-menu">
+                    <a href="dashboard.html">▦ Dashboard</a>
+                    <a href="create-request.html">＋ Create Request</a>
+                    <a href="my-requests.html">▣ My Requests</a>
+                    <a href="../login.html" id="logoutBtn" class="logout-link">↪ Logout</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <div></div>
+                <div class="user-mini">
+                    <div class="avatar" id="avatar">C</div>
+                    <div>
+                        <strong id="userName">Client</strong>
+                        <small id="userRole">Client</small>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content-area">
+                <div class="page-heading">
+                    <div>
+                        <h1>Recommended Providers</h1>
+                        <p id="requestSummary">Finding matching providers for your request...</p>
+                    </div>
+
+                    <a href="my-requests.html" class="btn btn-outline">Back to My Requests</a>
+                </div>
+
+                <div id="messageBox" class="message-box hidden"></div>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <h2>Matching Providers</h2>
+                        <a href="dashboard.html">Dashboard</a>
+                    </div>
+
+                    <div id="providersList" class="provider-list">
+                        <p class="muted-text">Loading recommended providers...</p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../js/client-recommended-providers.js"></script>
+</body>
+
+</html>

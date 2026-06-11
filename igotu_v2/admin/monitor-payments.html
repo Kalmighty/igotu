@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Monitor Payments - IGotU V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div>
+                <div class="logo-text">🤝 IGotU</div>
+
+                <nav class="side-menu">
+                    <a href="dashboard.html">▦ Dashboard</a>
+                    <a href="manage-users.html">👥 Manage Users</a>
+                    <a href="monitor-requests.html">▣ Monitor Requests</a>
+                    <a href="monitor-payments.html" class="active">💰 Monitor Payments</a>
+                    <a href="monitor-reviews.html">⭐ Monitor Reviews</a>
+                    <a href="../login.html" id="logoutBtn" class="logout-link">↪ Logout</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <div></div>
+                <div class="user-mini">
+                    <div class="avatar" id="avatar">A</div>
+                    <div>
+                        <strong id="userName">Admin</strong>
+                        <small id="userRole">Admin</small>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content-area">
+                <div class="page-heading">
+                    <div>
+                        <h1>Monitor Payments</h1>
+                        <p>View all offline payment records made between clients and providers.</p>
+                    </div>
+
+                    <a href="dashboard.html" class="btn btn-outline">Back to Dashboard</a>
+                </div>
+
+                <div id="messageBox" class="message-box hidden"></div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <span>Total Payments</span>
+                        <strong id="totalPayments">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <span>Total Amount</span>
+                        <strong id="totalAmount">RM 0.00</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💵</div>
+                        <span>Cash</span>
+                        <strong id="cashPayments">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🏦</div>
+                        <span>Transfer / QR</span>
+                        <strong id="transferPayments">0</strong>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-header admin-filter-header">
+                        <h2>Payment Records</h2>
+
+                        <div class="filter-row">
+                            <input type="text" id="searchInput" class="small-search" placeholder="Search request/client/provider">
+
+                            <select id="methodFilter" class="small-filter">
+                                <option value="all">All Methods</option>
+                                <option value="Cash">Cash</option>
+                                <option value="QR Transfer">QR Transfer</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="paymentsList" class="request-list-area">
+                        <p class="muted-text">Loading payments...</p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../js/admin-monitor-payments.js"></script>
+</body>
+
+</html>

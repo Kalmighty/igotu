@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - IGotU V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div>
+                <div class="logo-text">🤝 IGotU</div>
+
+                <nav class="side-menu">
+                    <a href="dashboard.html" class="active">▦ Dashboard</a>
+                    <a href="manage-users.html">👥 Manage Users</a>
+                    <a href="monitor-requests.html">▣ Monitor Requests</a>
+                    <a href="monitor-payments.html">💰 Monitor Payments</a>
+                    <a href="monitor-reviews.html">⭐ Monitor Reviews</a>
+                    <a href="../login.html" id="logoutBtn" class="logout-link">↪ Logout</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <div></div>
+                <div class="user-mini">
+                    <div class="avatar" id="avatar">A</div>
+                    <div>
+                        <strong id="userName">Admin</strong>
+                        <small id="userRole">Admin</small>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content-area">
+                <div class="page-heading">
+                    <div>
+                        <h1>Admin Dashboard</h1>
+                        <p id="welcomeText">Monitor IGotU platform activity.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <span>Total Users</span>
+                        <strong id="totalUsers">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">▣</div>
+                        <span>Total Requests</span>
+                        <strong id="totalRequests">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <span>Payments</span>
+                        <strong id="totalPayments">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <span>Reviews</span>
+                        <strong id="totalReviews">0</strong>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <h2>Recent Service Requests</h2>
+                        <a href="monitor-requests.html">View all</a>
+                    </div>
+
+                    <div id="recentRequests" class="list-box">
+                        <p class="muted-text">Loading platform activity...</p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../js/admin.js"></script>
+</body>
+
+</html>

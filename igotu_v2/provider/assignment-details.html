@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Assignments - IGotU V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div>
+                <div class="logo-text">🤝 IGotU</div>
+
+                <nav class="side-menu">
+                    <a href="dashboard.html">▦ Dashboard</a>
+                    <a href="manage-profile.html">👤 Manage Profile</a>
+                    <a href="incoming-requests.html">📥 Incoming Requests</a>
+                    <a href="assignment-details.html" class="active">▣ Assignments</a>
+                    <a href="../login.html" id="logoutBtn" class="logout-link">↪ Logout</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <div></div>
+                <div class="user-mini">
+                    <div class="avatar" id="avatar">P</div>
+                    <div>
+                        <strong id="userName">Provider</strong>
+                        <small id="userRole">Provider</small>
+                    </div>
+                </div>
+            </header>
+
+            <section class="content-area">
+                <div class="page-heading">
+                    <div>
+                        <h1>Assignments</h1>
+                        <p>View confirmed, ongoing, and completed service assignments.</p>
+                    </div>
+
+                    <a href="incoming-requests.html" class="btn btn-outline">Incoming Requests</a>
+                </div>
+
+                <div id="messageBox" class="message-box hidden"></div>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <h2>My Assignments</h2>
+                        <a href="dashboard.html">Dashboard</a>
+                    </div>
+
+                    <div id="assignmentsList" class="request-list-area">
+                        <p class="muted-text">Loading assignments...</p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="../js/provider-assignment-details.js"></script>
+</body>
+
+</html>
