@@ -1,175 +1,225 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Create Request - IGotU V2</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style.css" />
 
     <!-- Leaflet Map CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="app-layout">
-        <aside class="sidebar">
+      <aside class="sidebar">
+        <div>
+          <div class="logo-text">IGotU</div>
+
+          <nav class="side-menu">
+            <a href="dashboard.html">▦ Dashboard</a>
+            <a href="create-request.html" class="active">＋ Create Request</a>
+            <a href="my-requests.html">▣ My Requests</a>
+                    <a href="messages.html">✉ Messages</a>
+                    <a href="notifications.html" class="notification-link">🔔 Notifications <span class="notification-badge hidden">0</span></a>
+            <a href="../login.html" id="logoutBtn" class="logout-link"
+              >↪ Logout</a
+            >
+          </nav>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div></div>
+          <div class="user-mini">
+            <div class="avatar" id="avatar">C</div>
             <div>
-                <div class="logo-text">🤝 IGotU</div>
-
-                <nav class="side-menu">
-                    <a href="dashboard.html">▦ Dashboard</a>
-                    <a href="create-request.html" class="active">＋ Create Request</a>
-                    <a href="my-requests.html">▣ My Requests</a>
-                    <a href="../login.html" id="logoutBtn" class="logout-link">↪ Logout</a>
-                </nav>
+              <strong id="userName">Client</strong>
+              <small id="userRole">Client</small>
             </div>
-        </aside>
+          </div>
+        </header>
 
-        <main class="main-area">
-            <header class="topbar">
-                <div></div>
-                <div class="user-mini">
-                    <div class="avatar" id="avatar">C</div>
-                    <div>
-                        <strong id="userName">Client</strong>
-                        <small id="userRole">Client</small>
-                    </div>
+        <section class="content-area">
+          <div class="page-heading">
+            <div>
+              <h1 id="pageTitle">Create Service Request</h1>
+              <p id="pageDescription">
+                Describe the help you need and choose your exact service
+                location.
+              </p>
+            </div>
+
+            <a href="my-requests.html" class="btn btn-outline"
+              >View My Requests</a
+            >
+          </div>
+
+          <div id="messageBox" class="message-box hidden"></div>
+
+          <form id="createRequestForm">
+            <div class="form-map-grid">
+              <section class="panel form-panel">
+                <div class="panel-header">
+                  <h2 id="formTitle">Request Details</h2>
                 </div>
-            </header>
 
-            <section class="content-area">
-                <div class="page-heading">
-                    <div>
-                        <h1>Create Service Request</h1>
-                        <p>Describe the help you need and choose your exact service location.</p>
+                <div class="panel-body">
+                  <div class="form-group">
+                    <label for="title">Service Title</label>
+                    <input
+                      type="text"
+                      id="title"
+                      placeholder="Example: Fix leaking kitchen pipe"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="category">Service Category</label>
+                    <select id="category" required>
+                      <option value="">Select category</option>
+                      <option value="Cleaning">Cleaning</option>
+                      <option value="Delivery">Delivery</option>
+                      <option value="Repair">Repair</option>
+                      <option value="Moving Help">Moving Help</option>
+                      <option value="Errands">Errands</option>
+                      <option value="Tutoring">Tutoring</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea
+                      id="description"
+                      placeholder="Describe what help you need..."
+                      required
+                    ></textarea>
+                  </div>
+
+                  <div class="two-column">
+                    <div class="form-group">
+                      <label for="preferredDate">Preferred Date</label>
+                      <input type="date" id="preferredDate" required />
                     </div>
 
-                    <a href="my-requests.html" class="btn btn-outline">View My Requests</a>
+                    <div class="form-group">
+                      <label for="preferredTime">Preferred Time</label>
+                      <input type="time" id="preferredTime" required />
+                    </div>
+                  </div>
+
+                  <div class="two-column">
+                    <div class="form-group">
+                      <label for="budget">Budget (RM)</label>
+                      <input
+                        type="number"
+                        id="budget"
+                        step="0.01"
+                        min="0"
+                        placeholder="Optional"
+                      />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="priority">Priority</label>
+                      <select id="priority" required>
+                        <option value="normal">Normal</option>
+                        <option value="urgent">Urgent</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    id="createRequestBtn"
+                    class="btn full-btn"
+                  >
+                    Post Request & Find Providers
+                  </button>
+                </div>
+              </section>
+
+              <section class="panel map-section">
+                <div class="panel-header">
+                  <h2>Service Location</h2>
                 </div>
 
-                <div id="messageBox" class="message-box hidden"></div>
+                <div class="panel-body">
+                  <div class="form-group">
+                    <label for="location">Selected Address</label>
+                    <input
+                      type="text"
+                      id="location"
+                      placeholder="Search, use GPS, or click the map"
+                      required
+                    />
+                  </div>
 
-                <form id="createRequestForm">
-                    <div class="form-map-grid">
-                        <section class="panel form-panel">
-                            <div class="panel-header">
-                                <h2>Request Details</h2>
-                            </div>
+                  <div class="map-tools">
+                    <input
+                      type="text"
+                      id="mapSearch"
+                      placeholder="Search location e.g. UMS, 1Borneo, Kinarut"
+                    />
 
-                            <div class="panel-body">
-                                <div class="form-group">
-                                    <label for="title">Service Title</label>
-                                    <input type="text" id="title" placeholder="Example: Fix leaking kitchen pipe" required>
-                                </div>
+                    <button
+                      type="button"
+                      class="map-btn"
+                      id="searchLocationBtn"
+                    >
+                      Search
+                    </button>
 
-                                <div class="form-group">
-                                    <label for="category">Service Category</label>
-                                    <select id="category" required>
-                                        <option value="">Select category</option>
-                                        <option value="Cleaning">Cleaning</option>
-                                        <option value="Delivery">Delivery</option>
-                                        <option value="Repair">Repair</option>
-                                        <option value="Moving Help">Moving Help</option>
-                                        <option value="Errands">Errands</option>
-                                        <option value="Tutoring">Tutoring</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
+                    <button
+                      type="button"
+                      class="map-btn primary"
+                      id="useGpsBtn"
+                    >
+                      Use GPS
+                    </button>
+                  </div>
 
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea id="description" placeholder="Describe what help you need..." required></textarea>
-                                </div>
+                  <div id="requestMap"></div>
 
-                                <div class="two-column">
-                                    <div class="form-group">
-                                        <label for="preferredDate">Preferred Date</label>
-                                        <input type="date" id="preferredDate" required>
-                                    </div>
+                  <div class="map-help">
+                    <strong>Tip:</strong> Use GPS first. If the location is not
+                    accurate, drag the marker or click the map to adjust it.
+                  </div>
 
-                                    <div class="form-group">
-                                        <label for="preferredTime">Preferred Time</label>
-                                        <input type="time" id="preferredTime" required>
-                                    </div>
-                                </div>
-
-                                <div class="two-column">
-                                    <div class="form-group">
-                                        <label for="budget">Budget (RM)</label>
-                                        <input type="number" id="budget" step="0.01" min="0" placeholder="Optional">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="priority">Priority</label>
-                                        <select id="priority" required>
-                                            <option value="normal">Normal</option>
-                                            <option value="urgent">Urgent</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <button type="submit" id="createRequestBtn" class="btn full-btn">
-                                    Post Request & Find Providers
-                                </button>
-                            </div>
-                        </section>
-
-                        <section class="panel map-section">
-                            <div class="panel-header">
-                                <h2>Service Location</h2>
-                            </div>
-
-                            <div class="panel-body">
-                                <div class="form-group">
-                                    <label for="location">Selected Address</label>
-                                    <input type="text" id="location" placeholder="Search, use GPS, or click the map" required>
-                                </div>
-
-                                <div class="map-tools">
-                                    <input type="text" id="mapSearch" placeholder="Search location e.g. UMS, 1Borneo, Kinarut">
-
-                                    <button type="button" class="map-btn" id="searchLocationBtn">
-                                        Search
-                                    </button>
-
-                                    <button type="button" class="map-btn primary" id="useGpsBtn">
-                                        Use GPS
-                                    </button>
-                                </div>
-
-                                <div id="requestMap"></div>
-
-                                <div class="map-help">
-                                    <strong>Tip:</strong> Use GPS first. If the location is not accurate, drag the marker or click the map to adjust it.
-                                </div>
-
-                                <div class="coord-grid">
-                                    <div class="form-group">
-                                        <label for="clientLat">Latitude</label>
-                                        <input type="text" id="clientLat" readonly required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="clientLng">Longitude</label>
-                                        <input type="text" id="clientLng" readonly required>
-                                    </div>
-                                </div>
-
-                                <p id="mapStatus" class="map-status">Map is ready. Select your service location.</p>
-                            </div>
-                        </section>
+                  <div class="coord-grid">
+                    <div class="form-group">
+                      <label for="clientLat">Latitude</label>
+                      <input type="text" id="clientLat" readonly required />
                     </div>
-                </form>
-            </section>
-        </main>
+
+                    <div class="form-group">
+                      <label for="clientLng">Longitude</label>
+                      <input type="text" id="clientLng" readonly required />
+                    </div>
+                  </div>
+
+                  <p id="mapStatus" class="map-status">
+                    Map is ready. Select your service location.
+                  </p>
+                </div>
+              </section>
+            </div>
+          </form>
+        </section>
+      </main>
     </div>
 
     <!-- Leaflet Map JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="../js/notification-badge.js"></script>
 
     <script type="module" src="../js/client-create-request.js"></script>
-</body>
-
+  </body>
 </html>

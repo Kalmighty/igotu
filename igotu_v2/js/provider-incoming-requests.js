@@ -1,4 +1,5 @@
 import { supabase } from "./supabaseClient.js";
+import { createNotification } from "./notification-helper.js";
 
 let currentUser = null;
 let currentProfile = null;
@@ -188,6 +189,12 @@ async function confirmRequest(requestId, button) {
     button.disabled = true;
     button.textContent = "Confirming...";
 
+    const { data: requestData } = await supabase
+        .from("service_requests")
+        .select("request_id, title, client_id")
+        .eq("request_id", requestId)
+        .single();
+
     const { error } = await supabase.rpc("provider_confirm_request", {
         p_request_id: requestId
     });
@@ -198,6 +205,15 @@ async function confirmRequest(requestId, button) {
         button.disabled = false;
         button.textContent = "Confirm";
         return;
+    }
+
+    if (requestData) {
+        await createNotification(
+            requestData.client_id,
+            "Request confirmed",
+            `${currentProfile.full_name} confirmed your request "${requestData.title}".`
+        );
+
     }
 
     showMessage("Request confirmed successfully.", "success");
@@ -217,6 +233,12 @@ async function declineRequest(requestId, button) {
     button.disabled = true;
     button.textContent = "Declining...";
 
+    const { data: requestData } = await supabase
+        .from("service_requests")
+        .select("request_id, title, client_id")
+        .eq("request_id", requestId)
+        .single();
+
     const { error } = await supabase.rpc("provider_decline_request", {
         p_request_id: requestId
     });
@@ -227,6 +249,15 @@ async function declineRequest(requestId, button) {
         button.disabled = false;
         button.textContent = "Decline";
         return;
+    }
+
+    if (requestData) {
+        await createNotification(
+            requestData.client_id,
+            "Request declined",
+            `${currentProfile.full_name} declined your request "${requestData.title}". You can select another provider.`
+        );
+
     }
 
     showMessage("Request declined. It has been returned to pending status.", "success");

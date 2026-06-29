@@ -1,7 +1,9 @@
 import { supabase } from "./supabaseClient.js";
+import { createNotification } from "./notification-helper.js";
 
 let currentUser = null;
 let allUsers = [];
+let providerProfileMap = new Map();
 
 function showMessage(message, type = "error") {
     const messageBox = document.getElementById("messageBox");
@@ -90,6 +92,36 @@ async function handleLogout() {
     });
 }
 
+async function loadProviderProfiles() {
+    providerProfileMap = new Map();
+
+    const providerIds = allUsers
+        .filter(function(user) {
+            return user.role === "provider";
+        })
+        .map(function(user) {
+            return user.id;
+        });
+
+    if (providerIds.length === 0) {
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from("provider_profiles")
+        .select("*")
+        .in("provider_id", providerIds);
+
+    if (error) {
+        console.error("Provider profile verification fetch error:", error);
+        return;
+    }
+
+    (data || []).forEach(function(profile) {
+        providerProfileMap.set(profile.provider_id, profile);
+    });
+}
+
 async function loadUsers() {
     const usersList = document.getElementById("usersList");
 
@@ -107,6 +139,7 @@ async function loadUsers() {
     }
 
     allUsers = data || [];
+    await loadProviderProfiles();
     renderUsers();
 }
 
@@ -152,8 +185,14 @@ function renderUsers() {
 
     usersList.innerHTML = filteredUsers.map(function(user) {
         const isCurrentAdmin = user.id === currentUser.id;
+        const providerProfile = providerProfileMap.get(user.id);
+        const isVerifiedProvider = providerProfile && providerProfile.is_verified === true;
+        const verificationHtml = user.role === "provider"
+            ? `<span class="status-pill ${isVerifiedProvider ? "verified-pill" : "warning-pill"}">${isVerifiedProvider ? "Verified Provider" : "Pending Verification"}</span>`
+            : "";
 
         let actionHtml = "";
+        let verificationActionHtml = "";
 
         if (isCurrentAdmin) {
             actionHtml = `<span class="status-note completed-note">Current Admin</span>`;
@@ -171,6 +210,14 @@ function renderUsers() {
             `;
         }
 
+        if (user.role === "provider") {
+            verificationActionHtml = `
+                <button class="btn btn-small verify-provider-btn" data-provider-id="${user.id}" data-verified="${isVerifiedProvider ? "false" : "true"}">
+                    ${isVerifiedProvider ? "Remove Verification" : "Verify Provider"}
+                </button>
+            `;
+        }
+
         return `
             <div class="user-card">
                 <div class="user-card-main">
@@ -180,6 +227,7 @@ function renderUsers() {
                         <div class="card-topline">
                             <span class="status-pill">${formatRole(user.role)}</span>
                             <span class="status-pill ${user.status === "active" ? "" : "danger-pill"}">${formatStatus(user.status)}</span>
+                            ${verificationHtml}
                             <span>${user.user_code || "-"}</span>
                         </div>
 
@@ -190,11 +238,13 @@ function renderUsers() {
                             <span>Role: <strong>${formatRole(user.role)}</strong></span>
                             <span>Status: <strong>${formatStatus(user.status)}</strong></span>
                             <span>Created: <strong>${formatDate(user.created_at)}</strong></span>
+                            ${user.role === "provider" ? `<span>Verification: <strong>${isVerifiedProvider ? "Verified" : "Not verified"}</strong></span>` : ""}
                         </div>
                     </div>
                 </div>
 
                 <div class="incoming-actions">
+                    ${verificationActionHtml}
                     ${actionHtml}
                 </div>
             </div>
@@ -206,6 +256,66 @@ function renderUsers() {
             await updateUserStatus(this.dataset.userId, this.dataset.status, this);
         });
     });
+
+    document.querySelectorAll(".verify-provider-btn").forEach(function(button) {
+        button.addEventListener("click", async function() {
+            await updateProviderVerification(this.dataset.providerId, this.dataset.verified === "true", this);
+        });
+    });
+}
+
+async function updateProviderVerification(providerId, shouldVerify, button) {
+    clearMessage();
+
+    const confirmed = confirm(
+        shouldVerify
+            ? "Mark this provider as verified?"
+            : "Remove verification from this provider?"
+    );
+
+    if (!confirmed) return;
+
+    button.disabled = true;
+    button.textContent = shouldVerify ? "Verifying..." : "Updating...";
+
+    const updateData = shouldVerify
+        ? {
+            is_verified: true,
+            verified_at: new Date().toISOString(),
+            verified_by: currentUser.id
+        }
+        : {
+            is_verified: false,
+            verified_at: null,
+            verified_by: null
+        };
+
+    const { error } = await supabase
+        .from("provider_profiles")
+        .update(updateData)
+        .eq("provider_id", providerId);
+
+    if (error) {
+        console.error("Provider verification error:", error);
+        showMessage(error.message || "Failed to update provider verification. Please run database/priority-features-setup.sql first.");
+        button.disabled = false;
+        button.textContent = shouldVerify ? "Verify Provider" : "Remove Verification";
+        return;
+    }
+
+    await createNotification(
+        providerId,
+        shouldVerify ? "Provider account verified" : "Provider verification updated",
+        shouldVerify
+            ? "Your provider profile has been verified by the administrator."
+            : "Your provider verification status has been updated by the administrator."
+    );
+
+    showMessage("Provider verification updated successfully.", "success");
+
+    setTimeout(function() {
+        loadUsers();
+    }, 700);
 }
 
 async function updateUserStatus(userId, newStatus, button) {
@@ -234,6 +344,14 @@ async function updateUserStatus(userId, newStatus, button) {
         button.textContent = newStatus === "suspended" ? "Suspend" : "Activate";
         return;
     }
+
+    await createNotification(
+        userId,
+        newStatus === "suspended" ? "Account suspended" : "Account activated",
+        newStatus === "suspended"
+            ? "Your IGotU account has been suspended by the administrator."
+            : "Your IGotU account has been activated by the administrator."
+    );
 
     showMessage("User status updated successfully.", "success");
 

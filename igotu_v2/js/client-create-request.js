@@ -2,9 +2,13 @@ import { supabase } from "./supabaseClient.js";
 
 const L = window.L;
 
+const params = new URLSearchParams(window.location.search);
+const requestId = params.get("request_id");
+
 let map = null;
 let marker = null;
 let accuracyCircle = null;
+let editingRequest = null;
 
 const defaultLat = 6.0367;
 const defaultLng = 116.1186;
@@ -305,7 +309,123 @@ function validateRequestForm(formData) {
     return "";
 }
 
-async function handleCreateRequest(userId) {
+function configureEditMode() {
+    document.title = "Edit Request - IGotU V2";
+    document.getElementById("pageTitle").textContent = "Edit Service Request";
+    document.getElementById("pageDescription").textContent =
+        "Update your request details before selecting a provider.";
+    document.getElementById("formTitle").textContent = "Edit Request Details";
+    document.getElementById("createRequestBtn").textContent = "Save Changes";
+}
+
+function populateRequestForm(request) {
+    document.getElementById("title").value = request.title || "";
+    document.getElementById("category").value = request.category || "";
+    document.getElementById("description").value = request.description || "";
+    document.getElementById("preferredDate").value = request.preferred_date || "";
+    document.getElementById("preferredTime").value = request.preferred_time || "";
+    document.getElementById("budget").value = request.budget ?? "";
+    document.getElementById("priority").value = request.priority || "normal";
+    document.getElementById("location").value = request.location || "";
+
+    const lat = Number(request.client_lat);
+    const lng = Number(request.client_lng);
+
+    if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+        setMarkerLocation(lat, lng, false);
+        setMapStatus("Saved service location loaded. You can adjust it if needed.");
+    }
+}
+
+async function loadRequestForEdit(userId) {
+    if (!requestId) return true;
+
+    configureEditMode();
+
+    const { data, error } = await supabase
+        .from("service_requests")
+        .select("*")
+        .eq("request_id", requestId)
+        .eq("client_id", userId)
+        .single();
+
+    if (error || !data) {
+        console.error("Load request for edit error:", error);
+        showMessage("Request not found or access denied.");
+        document.getElementById("createRequestBtn").disabled = true;
+        return false;
+    }
+
+    if (data.status !== "pending") {
+        showMessage("Only pending requests can be edited.");
+        document.getElementById("createRequestBtn").disabled = true;
+        return false;
+    }
+
+    editingRequest = data;
+    populateRequestForm(data);
+    return true;
+}
+
+async function updateRequest(formData, button) {
+    setButtonLoading(button, true, "Saving changes...", "Save Changes");
+
+    const { error } = await supabase.rpc("client_update_request", {
+        p_request_id: editingRequest.request_id,
+        p_title: formData.title,
+        p_category: formData.category,
+        p_description: formData.description,
+        p_preferred_date: formData.preferred_date,
+        p_preferred_time: formData.preferred_time,
+        p_location: formData.location,
+        p_client_lat: formData.client_lat,
+        p_client_lng: formData.client_lng,
+        p_budget: formData.budget,
+        p_priority: formData.priority
+    });
+
+    if (error) {
+        console.error("Update request error:", error);
+        showMessage(error.message || "Failed to update request.");
+        setButtonLoading(button, false, "Saving changes...", "Save Changes");
+        return;
+    }
+
+    showMessage("Service request updated successfully.", "success");
+
+    setTimeout(function() {
+        window.location.href = `request-details.html?request_id=${editingRequest.request_id}`;
+    }, 900);
+}
+
+async function createRequest(formData, userId, button) {
+    setButtonLoading(button, true, "Creating request...", "Post Request & Find Providers");
+
+    const { data, error } = await supabase
+        .from("service_requests")
+        .insert({
+            client_id: userId,
+            ...formData,
+            status: "pending"
+        })
+        .select("request_id")
+        .single();
+
+    if (error) {
+        console.error("Create request error:", error);
+        showMessage(error.message || "Failed to create request.");
+        setButtonLoading(button, false, "Creating request...", "Post Request & Find Providers");
+        return;
+    }
+
+    showMessage("Service request created successfully. Redirecting to recommended providers...", "success");
+
+    setTimeout(function() {
+        window.location.href = `recommended-providers.html?request_id=${data.request_id}`;
+    }, 900);
+}
+
+async function handleRequestForm(userId) {
     const form = document.getElementById("createRequestForm");
     const createBtn = document.getElementById("createRequestBtn");
 
@@ -320,7 +440,6 @@ async function handleCreateRequest(userId) {
         const lngValue = document.getElementById("clientLng").value.trim();
 
         const formData = {
-            client_id: userId,
             title: document.getElementById("title").value.trim(),
             category: document.getElementById("category").value,
             description: document.getElementById("description").value.trim(),
@@ -330,8 +449,7 @@ async function handleCreateRequest(userId) {
             client_lat: latValue === "" ? null : Number(latValue),
             client_lng: lngValue === "" ? null : Number(lngValue),
             budget: budgetValue === "" ? null : Number(budgetValue),
-            priority: document.getElementById("priority").value,
-            status: "pending"
+            priority: document.getElementById("priority").value
         };
 
         const validationError = validateRequestForm(formData);
@@ -341,26 +459,12 @@ async function handleCreateRequest(userId) {
             return;
         }
 
-        setButtonLoading(createBtn, true, "Creating request...", "Post Request & Find Providers");
-
-        const { data, error } = await supabase
-            .from("service_requests")
-            .insert(formData)
-            .select("request_id")
-            .single();
-
-        if (error) {
-            console.error("Create request error:", error);
-            showMessage(error.message || "Failed to create request.");
-            setButtonLoading(createBtn, false, "Creating request...", "Post Request & Find Providers");
+        if (editingRequest) {
+            await updateRequest(formData, createBtn);
             return;
         }
 
-        showMessage("Service request created successfully. Redirecting to recommended providers...", "success");
-
-        setTimeout(function() {
-            window.location.href = `recommended-providers.html?request_id=${data.request_id}`;
-        }, 900);
+        await createRequest(formData, userId, createBtn);
     });
 }
 
@@ -376,5 +480,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     initMap();
     handleMapButtons();
-    handleCreateRequest(user.id);
+    const formReady = await loadRequestForEdit(user.id);
+    if (!formReady) return;
+
+    handleRequestForm(user.id);
 });

@@ -1,4 +1,7 @@
 import { supabase } from "./supabaseClient.js";
+import { createNotification } from "./notification-helper.js";
+
+const L = window.L;
 
 const params = new URLSearchParams(window.location.search);
 const requestId = params.get("request_id");
@@ -8,6 +11,7 @@ let currentRequest = null;
 let selectedProvider = null;
 let existingPayment = null;
 let existingReview = null;
+let requestMap = null;
 
 function showMessage(message, type = "error") {
     const messageBox = document.getElementById("messageBox");
@@ -35,6 +39,180 @@ function formatBudget(budget) {
     }
 
     return `RM ${Number(budget).toFixed(2)}`;
+}
+
+function hasValidCoordinates(request) {
+    return (
+        request.client_lat !== null &&
+        request.client_lng !== null &&
+        request.client_lat !== undefined &&
+        request.client_lng !== undefined &&
+        !Number.isNaN(Number(request.client_lat)) &&
+        !Number.isNaN(Number(request.client_lng))
+    );
+}
+
+function getStarRatingHtml() {
+    return `
+        <div class="star-rating">
+            <button type="button" class="star-btn" data-value="1">★</button>
+            <button type="button" class="star-btn" data-value="2">★</button>
+            <button type="button" class="star-btn" data-value="3">★</button>
+            <button type="button" class="star-btn" data-value="4">★</button>
+            <button type="button" class="star-btn" data-value="5">★</button>
+        </div>
+        <input type="hidden" name="rating" id="rating">
+        <p class="rating-text">No rating selected</p>
+    `;
+}
+
+function setupStarRatings(container = document) {
+    container.querySelectorAll(".star-rating").forEach(function(ratingBox) {
+        if (ratingBox.dataset.ready === "true") return;
+
+        ratingBox.dataset.ready = "true";
+
+        const form = ratingBox.closest("form");
+        const input = form.querySelector('input[name="rating"]');
+        const ratingText = form.querySelector(".rating-text");
+        const stars = ratingBox.querySelectorAll(".star-btn");
+
+        stars.forEach(function(star) {
+            star.addEventListener("click", function() {
+                const rating = Number(this.dataset.value);
+                input.value = rating;
+
+                stars.forEach(function(item) {
+                    const value = Number(item.dataset.value);
+                    item.classList.toggle("active", value <= rating);
+                });
+
+                ratingText.textContent = `${rating} star${rating > 1 ? "s" : ""} selected`;
+            });
+        });
+    });
+}
+
+function getFileExtension(fileName) {
+    return fileName.split(".").pop().toLowerCase();
+}
+
+function isImageProof(url) {
+    return /\.(jpg|jpeg|png|webp)$/i.test(url || "");
+}
+
+function getPaymentProofHtml(payment) {
+    if (!payment || !payment.proof_url) {
+        return `<p><strong>Proof:</strong> No proof uploaded.</p>`;
+    }
+
+    if (isImageProof(payment.proof_url)) {
+        return `
+            <div class="payment-proof-preview">
+                <p><strong>Proof:</strong></p>
+                <a href="${payment.proof_url}" target="_blank" rel="noopener noreferrer">
+                    <img src="${payment.proof_url}" alt="Payment proof" class="payment-proof-image" style="width: 100%; max-width: 420px; border-radius: 12px; border: 1px solid #edf1ee; margin-top: 8px;">
+                </a>
+                <p><a href="${payment.proof_url}" target="_blank" rel="noopener noreferrer">Open proof payment</a></p>
+            </div>
+        `;
+    }
+
+    return `
+        <p>
+            <strong>Proof:</strong>
+            <a href="${payment.proof_url}" target="_blank" rel="noopener noreferrer">Open proof payment</a>
+        </p>
+    `;
+}
+
+function requiresPaymentProof(method) {
+    return method === "QR Transfer" || method === "Bank Transfer";
+}
+
+function updatePaymentProofRequirement() {
+    const method = document.getElementById("paymentMethod");
+    const proofInput = document.getElementById("paymentProof");
+    const proofNote = document.getElementById("paymentProofNote");
+    const proofBadge = document.getElementById("paymentProofBadge");
+
+    if (!method || !proofInput || !proofNote || !proofBadge) return;
+
+    if (requiresPaymentProof(method.value)) {
+        proofInput.required = true;
+        proofBadge.textContent = "Required";
+        proofBadge.style.background = "#fef3c7";
+        proofBadge.style.color = "#92400e";
+        proofNote.textContent = "Upload a receipt or transfer screenshot for this payment method.";
+        return;
+    }
+
+    proofInput.required = false;
+    proofBadge.textContent = "Optional";
+    proofBadge.style.background = "#ecfdf3";
+    proofBadge.style.color = "#087443";
+    proofNote.textContent = "For cash payments, proof is optional because payment is given directly to the provider.";
+}
+
+function updatePaymentProofFileName() {
+    const proofInput = document.getElementById("paymentProof");
+    const proofFileName = document.getElementById("paymentProofFileName");
+
+    if (!proofInput || !proofFileName) return;
+
+    if (proofInput.files.length === 0) {
+        proofFileName.textContent = "No file selected";
+        return;
+    }
+
+    proofFileName.textContent = proofInput.files[0].name;
+}
+
+async function uploadPaymentProof(file) {
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "application/pdf"
+    ];
+
+    const maxFileSize = 5 * 1024 * 1024;
+
+    if (!file) {
+        throw new Error("Please upload proof payment.");
+    }
+
+    if (!allowedTypes.includes(file.type)) {
+        throw new Error("Proof payment must be JPG, PNG, WEBP, or PDF.");
+    }
+
+    if (file.size > maxFileSize) {
+        throw new Error("Proof payment must be 5MB or below.");
+    }
+
+    const extension = getFileExtension(file.name);
+    const filePath = `${currentUser.id}/${currentRequest.request_id}-${Date.now()}.${extension}`;
+
+    const { error: uploadError } = await supabase.storage
+        .from("payment-proofs")
+        .upload(filePath, file, {
+            cacheControl: "3600",
+            upsert: false
+        });
+
+    if (uploadError) {
+        console.error("Payment proof upload error:", uploadError);
+        throw new Error(uploadError.message || "Failed to upload proof payment.");
+    }
+
+    const { data } = supabase.storage
+        .from("payment-proofs")
+        .getPublicUrl(filePath);
+
+    return {
+        proofPath: filePath,
+        proofUrl: data.publicUrl
+    };
 }
 
 async function getSessionUser() {
@@ -167,15 +345,15 @@ function renderRequest(request, provider) {
     document.getElementById("requestTitle").textContent = `${request.request_id} · ${request.title}`;
     document.getElementById("requestStatus").textContent = formatStatus(request.status);
 
-    const providerHtml = provider ?
-        `
+    const providerHtml = provider
+        ? `
             <div class="detail-card">
                 <span>Selected Provider</span>
                 <strong>${provider.full_name}</strong>
                 <p>${provider.user_code} · ${provider.email}</p>
             </div>
-        ` :
         `
+        : `
             <div class="detail-card">
                 <span>Selected Provider</span>
                 <strong>No provider selected yet</strong>
@@ -190,6 +368,20 @@ function renderRequest(request, provider) {
             <a href="recommended-providers.html?request_id=${request.request_id}" class="btn">
                 View Recommended Providers
             </a>
+            <a href="create-request.html?request_id=${request.request_id}" class="btn btn-outline">
+                Edit Request
+            </a>
+            <button class="danger-btn" id="cancelRequestBtn">
+                Cancel Request
+            </button>
+        `;
+    }
+
+    if (request.status === "provider_selected") {
+        actionHtml = `
+            <button class="danger-btn" id="cancelRequestBtn">
+                Cancel Request
+            </button>
         `;
     }
 
@@ -206,6 +398,31 @@ function renderRequest(request, provider) {
     if (request.status === "completed") {
         completedHtml = buildCompletedSection(request, provider);
     }
+
+    const messageActionHtml = provider && request.status !== "cancelled"
+        ? `
+            <a href="messages.html?request_id=${request.request_id}" class="btn btn-outline">
+                Message Provider
+            </a>
+        `
+        : "";
+
+    const mapHtml = hasValidCoordinates(request)
+        ? `
+            <div class="description-box">
+                <h3>Service Location Map</h3>
+                <div id="requestLocationMap"></div>
+                <p class="map-status">
+                    Latitude: ${Number(request.client_lat).toFixed(7)} · Longitude: ${Number(request.client_lng).toFixed(7)}
+                </p>
+            </div>
+        `
+        : `
+            <div class="description-box">
+                <h3>Service Location Map</h3>
+                <p class="muted-text">No GPS coordinate saved for this request.</p>
+            </div>
+        `;
 
     document.getElementById("requestDetailsArea").innerHTML = `
         <div class="details-grid big-details">
@@ -240,6 +457,8 @@ function renderRequest(request, provider) {
             </div>
         </div>
 
+        ${mapHtml}
+
         <div class="description-box">
             <h3>Description</h3>
             <p>${request.description}</p>
@@ -249,6 +468,7 @@ function renderRequest(request, provider) {
 
         <div class="action-row">
             ${actionHtml}
+            ${messageActionHtml}
         </div>
 
         ${completedHtml}
@@ -260,10 +480,30 @@ function renderRequest(request, provider) {
         completeBtn.addEventListener("click", completeRequest);
     }
 
+    const cancelBtn = document.getElementById("cancelRequestBtn");
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", cancelRequest);
+    }
+
     const paymentForm = document.getElementById("paymentForm");
 
     if (paymentForm) {
         paymentForm.addEventListener("submit", savePayment);
+    }
+
+    const paymentMethod = document.getElementById("paymentMethod");
+
+    if (paymentMethod) {
+        paymentMethod.addEventListener("change", updatePaymentProofRequirement);
+        updatePaymentProofRequirement();
+    }
+
+    const paymentProof = document.getElementById("paymentProof");
+
+    if (paymentProof) {
+        paymentProof.addEventListener("change", updatePaymentProofFileName);
+        updatePaymentProofFileName();
     }
 
     const reviewForm = document.getElementById("reviewForm");
@@ -271,6 +511,90 @@ function renderRequest(request, provider) {
     if (reviewForm) {
         reviewForm.addEventListener("submit", saveReview);
     }
+
+    setupStarRatings();
+
+    if (hasValidCoordinates(request)) {
+        setTimeout(function() {
+            initRequestLocationMap(request);
+        }, 150);
+    }
+}
+
+async function cancelRequest() {
+    clearMessage();
+
+    if (!currentRequest || !["pending", "provider_selected"].includes(currentRequest.status)) {
+        showMessage("This request can no longer be cancelled.");
+        return;
+    }
+
+    const confirmCancel = confirm(
+        "Cancel this request? The record will remain in your request history."
+    );
+
+    if (!confirmCancel) return;
+
+    const cancelBtn = document.getElementById("cancelRequestBtn");
+    cancelBtn.disabled = true;
+    cancelBtn.textContent = "Cancelling...";
+
+    const { error } = await supabase.rpc("client_cancel_request", {
+        p_request_id: currentRequest.request_id
+    });
+
+    if (error) {
+        console.error("Cancel request error:", error);
+        showMessage(error.message || "Failed to cancel request.");
+        cancelBtn.disabled = false;
+        cancelBtn.textContent = "Cancel Request";
+        return;
+    }
+
+    if (currentRequest.selected_provider_id) {
+        await createNotification(
+            currentRequest.selected_provider_id,
+            "Request cancelled",
+            `The client cancelled the request "${currentRequest.title}".`
+        );
+    }
+
+    showMessage("Request cancelled. It remains available in your request history.", "success");
+
+    setTimeout(function() {
+        loadRequest();
+    }, 700);
+}
+
+function initRequestLocationMap(request) {
+    if (!L) return;
+
+    const mapElement = document.getElementById("requestLocationMap");
+
+    if (!mapElement) return;
+
+    if (requestMap) {
+        requestMap.remove();
+        requestMap = null;
+    }
+
+    const lat = Number(request.client_lat);
+    const lng = Number(request.client_lng);
+
+    requestMap = L.map("requestLocationMap").setView([lat, lng], 16);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+    }).addTo(requestMap);
+
+    L.marker([lat, lng]).addTo(requestMap)
+        .bindPopup("Service request location")
+        .openPopup();
+
+    setTimeout(function() {
+        requestMap.invalidateSize();
+    }, 300);
 }
 
 function buildCompletedSection(request, provider) {
@@ -283,15 +607,16 @@ function buildCompletedSection(request, provider) {
         `;
     }
 
-    const paymentHtml = existingPayment ?
-        `
+    const paymentHtml = existingPayment
+        ? `
             <div class="success-box">
                 <h3>Payment Recorded</h3>
                 <p><strong>Amount:</strong> RM ${Number(existingPayment.amount).toFixed(2)}</p>
                 <p><strong>Method:</strong> ${existingPayment.payment_method}</p>
+                ${getPaymentProofHtml(existingPayment)}
             </div>
-        ` :
         `
+        : `
             <form id="paymentForm" class="mini-form">
                 <h3>Record Offline Payment</h3>
                 <p class="muted-text">Use this after you have paid the provider outside the system.</p>
@@ -314,33 +639,49 @@ function buildCompletedSection(request, provider) {
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px;">
+                        <label for="paymentProof" style="margin: 0;">Proof Payment</label>
+                        <span id="paymentProofBadge" style="display: inline-flex; align-items: center; border-radius: 999px; padding: 6px 12px; background: #ecfdf3; color: #087443; font-size: 13px; font-weight: 800;">Optional</span>
+                    </div>
+
+                    <input type="file" id="paymentProof" accept="image/jpeg,image/png,image/webp,application/pdf" style="display: none;">
+
+                    <label for="paymentProof" style="display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 70px; padding: 16px 18px; border: 1.5px dashed #cfd8d3; border-radius: 16px; background: #f8fbf9; cursor: pointer;">
+                        <span style="display: flex; align-items: center; gap: 14px; min-width: 0;">
+                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; background: #eaf7ef; color: #0b8f3a; font-size: 22px; flex: 0 0 auto;">↑</span>
+                            <span style="min-width: 0;">
+                                <strong style="display: block; color: #111827; font-size: 16px;">Upload receipt or screenshot</strong>
+                                <span id="paymentProofFileName" style="display: block; color: #64748b; font-size: 14px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">No file selected</span>
+                            </span>
+                        </span>
+                        <span style="display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: #0b8f3a; color: white; padding: 10px 14px; font-size: 14px; font-weight: 800; flex: 0 0 auto;">Choose File</span>
+                    </label>
+
+                    <p class="muted-text" id="paymentProofNote" style="margin-top: 10px; font-size: 14px; line-height: 1.45;">For cash payments, proof is optional because payment is given directly to the provider.</p>
+                    <p class="muted-text" style="margin-top: 4px; font-size: 13px; line-height: 1.4;">Accepted: JPG, PNG, WEBP, or PDF. Maximum 5MB.</p>
+                </div>
+
                 <button type="submit" class="btn" id="savePaymentBtn">Save Payment Record</button>
             </form>
         `;
 
-    const reviewHtml = existingReview ?
-        `
+    const reviewHtml = existingReview
+        ? `
             <div class="success-box">
                 <h3>Your Review Submitted</h3>
                 <p><strong>Rating:</strong> ${existingReview.rating} / 5</p>
                 <p><strong>Feedback:</strong> ${existingReview.feedback || "No feedback provided."}</p>
             </div>
-        ` :
         `
+        : `
             <form id="reviewForm" class="mini-form">
                 <h3>Review Provider</h3>
                 <p class="muted-text">Share your feedback about ${provider.full_name}.</p>
 
                 <div class="form-group">
-                    <label for="rating">Rating</label>
-                    <select id="rating" required>
-                        <option value="">Select rating</option>
-                        <option value="5">5 - Excellent</option>
-                        <option value="4">4 - Good</option>
-                        <option value="3">3 - Average</option>
-                        <option value="2">2 - Poor</option>
-                        <option value="1">1 - Very Poor</option>
-                    </select>
+                    <label>Rating</label>
+                    ${getStarRatingHtml()}
                 </div>
 
                 <div class="form-group">
@@ -386,6 +727,12 @@ async function completeRequest() {
         return;
     }
 
+    await createNotification(
+        currentRequest.selected_provider_id,
+        "Request completed",
+        `The client marked "${currentRequest.title}" as completed.`
+    );
+
     showMessage("Request marked as completed.", "success");
 
     setTimeout(function() {
@@ -399,6 +746,8 @@ async function savePayment(event) {
 
     const amount = Number(document.getElementById("paymentAmount").value);
     const method = document.getElementById("paymentMethod").value;
+    const proofInput = document.getElementById("paymentProof");
+    const proofFile = proofInput && proofInput.files.length > 0 ? proofInput.files[0] : null;
     const saveBtn = document.getElementById("savePaymentBtn");
 
     if (!amount || amount < 0) {
@@ -411,7 +760,30 @@ async function savePayment(event) {
         return;
     }
 
+    if (requiresPaymentProof(method) && !proofFile) {
+        showMessage("Please upload proof payment.");
+        return;
+    }
+
     saveBtn.disabled = true;
+    saveBtn.textContent = proofFile ? "Uploading proof..." : "Saving payment...";
+
+    let proofData = {
+        proofUrl: null,
+        proofPath: null
+    };
+
+    if (proofFile) {
+        try {
+            proofData = await uploadPaymentProof(proofFile);
+        } catch (error) {
+            showMessage(error.message || "Failed to upload proof payment.");
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Save Payment Record";
+            return;
+        }
+    }
+
     saveBtn.textContent = "Saving payment...";
 
     const { error } = await supabase
@@ -421,7 +793,10 @@ async function savePayment(event) {
             client_id: currentUser.id,
             provider_id: currentRequest.selected_provider_id,
             amount: amount,
-            payment_method: method
+            payment_method: method,
+            proof_url: proofData.proofUrl,
+            proof_path: proofData.proofPath,
+            proof_uploaded_at: new Date().toISOString()
         });
 
     if (error) {
@@ -431,6 +806,12 @@ async function savePayment(event) {
         saveBtn.textContent = "Save Payment Record";
         return;
     }
+
+    await createNotification(
+        currentRequest.selected_provider_id,
+        "Payment recorded",
+        `Payment for "${currentRequest.title}" has been recorded by the client.`
+    );
 
     showMessage("Payment record saved successfully.", "success");
 
@@ -443,12 +824,12 @@ async function saveReview(event) {
     event.preventDefault();
     clearMessage();
 
-    const rating = Number(document.getElementById("rating").value);
+    const rating = Number(document.querySelector('#reviewForm input[name="rating"]').value);
     const feedback = document.getElementById("feedback").value.trim();
     const saveBtn = document.getElementById("saveReviewBtn");
 
     if (!rating || rating < 1 || rating > 5) {
-        showMessage("Please select a valid rating.");
+        showMessage("Please select a star rating.");
         return;
     }
 
@@ -477,6 +858,12 @@ async function saveReview(event) {
         saveBtn.textContent = "Submit Review";
         return;
     }
+
+    await createNotification(
+        currentRequest.selected_provider_id,
+        "New review received",
+        `The client submitted a review for "${currentRequest.title}".`
+    );
 
     showMessage("Review submitted successfully.", "success");
 

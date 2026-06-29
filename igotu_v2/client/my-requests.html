@@ -1,75 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>My Requests - IGotU V2</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/style.css">
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
 
-<body>
+  <body>
     <div class="app-layout">
-        <aside class="sidebar">
+      <aside class="sidebar">
+        <div>
+          <div class="logo-text">IGotU</div>
+
+          <nav class="side-menu">
+            <a href="dashboard.html">▦ Dashboard</a>
+            <a href="create-request.html">＋ Create Request</a>
+            <a href="my-requests.html" class="active">▣ My Requests</a>
+                    <a href="messages.html">✉ Messages</a>
+                    <a href="notifications.html" class="notification-link">🔔 Notifications <span class="notification-badge hidden">0</span></a>
+            <a href="../login.html" id="logoutBtn" class="logout-link"
+              >↪ Logout</a
+            >
+          </nav>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div></div>
+          <div class="user-mini">
+            <div class="avatar" id="avatar">C</div>
             <div>
-                <div class="logo-text">🤝 IGotU</div>
-
-                <nav class="side-menu">
-                    <a href="dashboard.html">▦ Dashboard</a>
-                    <a href="create-request.html">＋ Create Request</a>
-                    <a href="my-requests.html" class="active">▣ My Requests</a>
-                    <a href="../login.html" id="logoutBtn" class="logout-link">↪ Logout</a>
-                </nav>
+              <strong id="userName">Client</strong>
+              <small id="userRole">Client</small>
             </div>
-        </aside>
+          </div>
+        </header>
 
-        <main class="main-area">
-            <header class="topbar">
-                <div></div>
-                <div class="user-mini">
-                    <div class="avatar" id="avatar">C</div>
-                    <div>
-                        <strong id="userName">Client</strong>
-                        <small id="userRole">Client</small>
-                    </div>
-                </div>
-            </header>
+        <section class="content-area">
+          <div class="page-heading">
+            <div>
+              <h1>My Requests</h1>
+              <p>View and manage your service requests.</p>
+            </div>
 
-            <section class="content-area">
-                <div class="page-heading">
-                    <div>
-                        <h1>My Requests</h1>
-                        <p>View and manage your service requests.</p>
-                    </div>
+            <a href="create-request.html" class="btn">+ Create Request</a>
+          </div>
 
-                    <a href="create-request.html" class="btn">+ Create Request</a>
-                </div>
+          <div id="messageBox" class="message-box hidden"></div>
 
-                <div id="messageBox" class="message-box hidden"></div>
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Request List</h2>
 
-                <section class="panel">
-                    <div class="panel-header">
-                        <h2>Request List</h2>
+              <select id="statusFilter" class="small-filter">
+                <option value="all">All Requests</option>
+                <option value="pending">Pending</option>
+                <option value="provider_selected">Provider Selected</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
 
-                        <select id="statusFilter" class="small-filter">
-                            <option value="all">All Active</option>
-                            <option value="pending">Pending</option>
-                            <option value="provider_selected">Provider Selected</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="in_progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                        </select>
-                    </div>
-
-                    <div id="requestsList" class="request-list-area">
-                        <p class="muted-text">Loading requests...</p>
-                    </div>
-                </section>
-            </section>
-        </main>
+            <div id="requestsList" class="request-list-area">
+              <p class="muted-text">Loading requests...</p>
+            </div>
+          </section>
+        </section>
+      </main>
     </div>
+    <script type="module" src="../js/notification-badge.js"></script>
 
     <script type="module" src="../js/client-my-requests.js"></script>
-</body>
-
+  </body>
 </html>

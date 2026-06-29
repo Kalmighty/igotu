@@ -44,7 +44,6 @@ async function loadStats(userId) {
         .from("service_requests")
         .select("*")
         .eq("client_id", userId)
-        .neq("status", "cancelled")
         .order("created_at", { ascending: false });
 
     if (error) {
@@ -62,7 +61,7 @@ async function loadStats(userId) {
     const recentBox = document.getElementById("recentRequests");
 
     if (requests.length === 0) {
-        recentBox.innerHTML = `<p class="muted-text">No active requests yet. Create your first service request.</p>`;
+        recentBox.innerHTML = `<p class="muted-text">No requests yet. Create your first service request.</p>`;
         return;
     }
 

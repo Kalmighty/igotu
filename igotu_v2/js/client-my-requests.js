@@ -1,6 +1,8 @@
 import { supabase } from "./supabaseClient.js";
+import { createNotification } from "./notification-helper.js";
 
 let currentUser = null;
+let currentProfile = null;
 let allRequests = [];
 
 function showMessage(message, type = "error") {
@@ -93,7 +95,6 @@ async function loadRequests() {
         .from("service_requests")
         .select("*")
         .eq("client_id", currentUser.id)
-        .neq("status", "cancelled")
         .order("created_at", { ascending: false });
 
     if (error) {
@@ -135,10 +136,18 @@ function renderRequests() {
             </a>
         `;
 
-        if (request.status === "pending") {
+        if (["pending", "provider_selected"].includes(request.status)) {
+            if (request.status === "pending") {
+                actionHtml += `
+                    <a href="create-request.html?request_id=${request.request_id}" class="btn btn-outline btn-small">
+                        Edit Request
+                    </a>
+                `;
+            }
+
             actionHtml += `
                 <button class="danger-btn btn-small cancel-btn" data-request-id="${request.request_id}">
-                    Cancel
+                    Cancel Request
                 </button>
             `;
         }
@@ -181,7 +190,18 @@ function renderRequests() {
 async function cancelRequest(requestId, button) {
     clearMessage();
 
-    const confirmCancel = confirm("Are you sure you want to cancel this request?");
+    const request = allRequests.find(function(item) {
+        return item.request_id === requestId;
+    });
+
+    if (!request || !["pending", "provider_selected"].includes(request.status)) {
+        showMessage("This request can no longer be cancelled.");
+        return;
+    }
+
+    const confirmCancel = confirm(
+        "Cancel this request? The record will remain in your request history."
+    );
 
     if (!confirmCancel) return;
 
@@ -196,11 +216,19 @@ async function cancelRequest(requestId, button) {
         console.error("Cancel request error:", error);
         showMessage(error.message || "Failed to cancel request.");
         button.disabled = false;
-        button.textContent = "Cancel";
+        button.textContent = "Cancel Request";
         return;
     }
 
-    showMessage("Request cancelled successfully.", "success");
+    if (request.selected_provider_id) {
+        await createNotification(
+            request.selected_provider_id,
+            "Request cancelled",
+            `${currentProfile.full_name} cancelled the request \"${request.title}\".`
+        );
+    }
+
+    showMessage("Request cancelled. It remains available in your request history.", "success");
 
     setTimeout(function() {
         loadRequests();
@@ -219,10 +247,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     currentUser = await getSessionUser();
     if (!currentUser) return;
 
-    const profile = await getProfile(currentUser.id);
-    if (!profile) return;
+    currentProfile = await getProfile(currentUser.id);
+    if (!currentProfile) return;
 
-    displayUser(profile);
+    displayUser(currentProfile);
     handleLogout();
     handleFilter();
     loadRequests();

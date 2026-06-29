@@ -28,6 +28,49 @@ function formatDate(dateValue) {
     });
 }
 
+
+function getPaymentProofUrl(payment) {
+    if (!payment) return null;
+    return payment.proof_url || payment.proof_payment_url || null;
+}
+
+function isImageProof(url) {
+    if (!url) return false;
+    return /\.(jpg|jpeg|png|webp)(\?|#|$)/i.test(url);
+}
+
+function buildAdminPaymentProofHtml(payment) {
+    const proofUrl = getPaymentProofUrl(payment);
+
+    if (!proofUrl) {
+        return `
+            <div class="admin-proof-box no-proof-box">
+                <strong>Proof Payment</strong>
+                <p class="muted-text">No proof uploaded for this payment.</p>
+            </div>
+        `;
+    }
+
+    if (isImageProof(proofUrl)) {
+        return `
+            <div class="admin-proof-box">
+                <strong>Proof Payment</strong>
+                <a href="${proofUrl}" target="_blank" rel="noopener noreferrer">
+                    <img src="${proofUrl}" alt="Payment proof" class="payment-proof-image admin-proof-image">
+                </a>
+                <a href="${proofUrl}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open proof payment</a>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="admin-proof-box">
+            <strong>Proof Payment</strong>
+            <p><a href="${proofUrl}" target="_blank" rel="noopener noreferrer">Open uploaded file</a></p>
+        </div>
+    `;
+}
+
 async function getSessionUser() {
     const { data } = await supabase.auth.getSession();
 
@@ -191,6 +234,7 @@ function renderPayments() {
                 payment.payment_id,
                 payment.request_id,
                 payment.payment_method,
+                getPaymentProofUrl(payment) || "",
                 client ? client.full_name : "",
                 client ? client.email : "",
                 client ? client.user_code : "",
@@ -242,7 +286,10 @@ function renderPayments() {
                         <span>Method: <strong>${payment.payment_method}</strong></span>
                         <span>Client: <strong>${client ? client.full_name : "Unknown"}</strong></span>
                         <span>Provider: <strong>${provider ? provider.full_name : "Unknown"}</strong></span>
+                        <span>Proof: <strong>${getPaymentProofUrl(payment) ? "Uploaded" : "Not uploaded"}</strong></span>
                     </div>
+
+                    ${buildAdminPaymentProofHtml(payment)}
                 </div>
 
                 <div class="admin-side-info">

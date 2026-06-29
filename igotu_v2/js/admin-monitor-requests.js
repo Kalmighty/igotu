@@ -1,8 +1,12 @@
 import { supabase } from "./supabaseClient.js";
 
+const L = window.L;
+
 let currentUser = null;
 let allRequests = [];
 let userMap = new Map();
+let requestMaps = [];
+let mapRenderVersion = 0;
 
 function showMessage(message, type = "error") {
     const messageBox = document.getElementById("messageBox");
@@ -33,6 +37,25 @@ function formatDate(dateValue) {
         month: "short",
         day: "numeric"
     });
+}
+
+function hasValidCoordinates(request) {
+    return (
+        request.client_lat !== null &&
+        request.client_lng !== null &&
+        request.client_lat !== undefined &&
+        request.client_lng !== undefined &&
+        !Number.isNaN(Number(request.client_lat)) &&
+        !Number.isNaN(Number(request.client_lng))
+    );
+}
+
+function cleanupRequestMaps() {
+    requestMaps.forEach(function(map) {
+        map.remove();
+    });
+
+    requestMaps = [];
 }
 
 async function getSessionUser() {
@@ -142,7 +165,11 @@ async function loadRequests() {
 }
 
 function renderRequests() {
+    cleanupRequestMaps();
+    mapRenderVersion += 1;
+
     const requestsList = document.getElementById("requestsList");
+    const currentRenderVersion = mapRenderVersion;
     const searchValue = document.getElementById("searchInput").value.trim().toLowerCase();
     const statusFilter = document.getElementById("statusFilter").value;
     const categoryFilter = document.getElementById("categoryFilter").value;
@@ -194,10 +221,27 @@ function renderRequests() {
     }
 
     requestsList.innerHTML = filteredRequests.map(function(request) {
-                const client = userMap.get(request.client_id);
-                const provider = userMap.get(request.selected_provider_id);
+        const client = userMap.get(request.client_id);
+        const provider = userMap.get(request.selected_provider_id);
 
-                return `
+        const mapHtml = hasValidCoordinates(request)
+            ? `
+                <div class="admin-request-map-box">
+                    <h4>Request Service Location</h4>
+                    <div id="adminRequestMap-${request.request_id}" class="admin-request-map"></div>
+                    <p class="map-status">
+                        Latitude: ${Number(request.client_lat).toFixed(7)} · Longitude: ${Number(request.client_lng).toFixed(7)}
+                    </p>
+                </div>
+            `
+            : `
+                <div class="admin-request-map-box">
+                    <h4>Request Service Location</h4>
+                    <p class="muted-text">No GPS coordinate saved for this request.</p>
+                </div>
+            `;
+
+        return `
             <div class="incoming-card admin-request-card">
                 <div>
                     <div class="card-topline">
@@ -217,6 +261,8 @@ function renderRequests() {
                         <span>Budget: <strong>${formatBudget(request.budget)}</strong></span>
                         <span>Location: <strong>${request.location}</strong></span>
                     </div>
+
+                    ${mapHtml}
                 </div>
 
                 <div class="admin-side-info">
@@ -235,6 +281,43 @@ function renderRequests() {
             </div>
         `;
     }).join("");
+
+    setTimeout(function() {
+        if (currentRenderVersion !== mapRenderVersion) return;
+        renderRequestMaps(filteredRequests);
+    }, 200);
+}
+
+function renderRequestMaps(requests) {
+    if (!L) return;
+
+    requests.forEach(function(request) {
+        if (!hasValidCoordinates(request)) return;
+
+        const mapId = `adminRequestMap-${request.request_id}`;
+        const mapElement = document.getElementById(mapId);
+
+        if (!mapElement) return;
+
+        const lat = Number(request.client_lat);
+        const lng = Number(request.client_lng);
+        const requestMap = L.map(mapId).setView([lat, lng], 16);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(requestMap);
+
+        L.marker([lat, lng]).addTo(requestMap)
+            .bindPopup("Request service location")
+            .openPopup();
+
+        requestMaps.push(requestMap);
+
+        setTimeout(function() {
+            requestMap.invalidateSize();
+        }, 250);
+    });
 }
 
 function handleFilters() {
