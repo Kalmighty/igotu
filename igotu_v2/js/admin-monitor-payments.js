@@ -1,3 +1,4 @@
+import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 let currentUser = null;
@@ -55,10 +56,10 @@ function buildAdminPaymentProofHtml(payment) {
         return `
             <div class="admin-proof-box">
                 <strong>Proof Payment</strong>
-                <a href="${proofUrl}" target="_blank" rel="noopener noreferrer">
-                    <img src="${proofUrl}" alt="Payment proof" class="payment-proof-image admin-proof-image">
+                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">
+                    <img src="${escapeHtml(safeUrl(proofUrl))}" alt="Payment proof" class="payment-proof-image admin-proof-image">
                 </a>
-                <a href="${proofUrl}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open proof payment</a>
+                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open proof payment</a>
             </div>
         `;
     }
@@ -66,7 +67,7 @@ function buildAdminPaymentProofHtml(payment) {
     return `
         <div class="admin-proof-box">
             <strong>Proof Payment</strong>
-            <p><a href="${proofUrl}" target="_blank" rel="noopener noreferrer">Open uploaded file</a></p>
+            <p><a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">Open uploaded file</a></p>
         </div>
     `;
 }
@@ -268,24 +269,24 @@ function renderPayments() {
             <div class="payment-card">
                 <div>
                     <div class="card-topline">
-                        <span class="status-pill">${payment.payment_method}</span>
-                        <span>${payment.payment_id || "-"}</span>
-                        <span>${formatDate(payment.created_at)}</span>
+                        <span class="status-pill">${escapeHtml(payment.payment_method)}</span>
+                        <span>${escapeHtml(payment.payment_id || "-")}</span>
+                        <span>${escapeHtml(formatDate(payment.created_at))}</span>
                     </div>
 
-                    <h3>${formatMoney(payment.amount)}</h3>
+                    <h3>${escapeHtml(formatMoney(payment.amount))}</h3>
 
                     <p class="muted-text">
                         Request:
-                        <strong>${request ? request.title : payment.request_id}</strong>
-                        ${request ? `· ${request.category}` : ""}
+                        <strong>${escapeHtml(request ? request.title : payment.request_id)}</strong>
+                        ${escapeHtml(request ? `· ${request.category}` : "")}
                     </p>
 
                     <div class="details-grid">
-                        <span>Request ID: <strong>${payment.request_id}</strong></span>
-                        <span>Method: <strong>${payment.payment_method}</strong></span>
-                        <span>Client: <strong>${client ? client.full_name : "Unknown"}</strong></span>
-                        <span>Provider: <strong>${provider ? provider.full_name : "Unknown"}</strong></span>
+                        <span>Request ID: <strong>${escapeHtml(payment.request_id)}</strong></span>
+                        <span>Method: <strong>${escapeHtml(payment.payment_method)}</strong></span>
+                        <span>Client: <strong>${escapeHtml(client ? client.full_name : "Unknown")}</strong></span>
+                        <span>Provider: <strong>${escapeHtml(provider ? provider.full_name : "Unknown")}</strong></span>
                         <span>Proof: <strong>${getPaymentProofUrl(payment) ? "Uploaded" : "Not uploaded"}</strong></span>
                     </div>
 
@@ -295,14 +296,14 @@ function renderPayments() {
                 <div class="admin-side-info">
                     <div class="mini-info-box">
                         <span>Client</span>
-                        <strong>${client ? client.full_name : "Unknown"}</strong>
-                        <p>${client ? `${client.user_code} · ${client.email}` : "-"}</p>
+                        <strong>${escapeHtml(client ? client.full_name : "Unknown")}</strong>
+                        <p>${escapeHtml(client ? `${client.user_code} · ${client.email}` : "-")}</p>
                     </div>
 
                     <div class="mini-info-box">
                         <span>Provider</span>
-                        <strong>${provider ? provider.full_name : "Unknown"}</strong>
-                        <p>${provider ? `${provider.user_code} · ${provider.email}` : "-"}</p>
+                        <strong>${escapeHtml(provider ? provider.full_name : "Unknown")}</strong>
+                        <p>${escapeHtml(provider ? `${provider.user_code} · ${provider.email}` : "-")}</p>
                     </div>
                 </div>
             </div>

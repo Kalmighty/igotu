@@ -1,3 +1,4 @@
+import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 
@@ -52,10 +53,10 @@ function buildRequestImagePreview(request) {
     return `
         <div class="request-image-box">
             <h4>Submitted Image</h4>
-            <a href="${imageUrl}" target="_blank" rel="noopener noreferrer">
-                <img src="${imageUrl}" alt="Submitted request image" class="request-submitted-image">
+            <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer">
+                <img src="${escapeHtml(safeUrl(imageUrl))}" alt="Submitted request image" class="request-submitted-image">
             </a>
-            <a href="${imageUrl}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
+            <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
         </div>
     `;
 }
@@ -97,10 +98,10 @@ function buildPaymentProofPreview(payment) {
     if (isImageProof(proofUrl)) {
         return `
             <div class="payment-proof-preview compact-proof-preview">
-                <a href="${proofUrl}" target="_blank" rel="noopener noreferrer">
-                    <img src="${proofUrl}" alt="Payment proof" class="payment-proof-image">
+                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">
+                    <img src="${escapeHtml(safeUrl(proofUrl))}" alt="Payment proof" class="payment-proof-image">
                 </a>
-                <a href="${proofUrl}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open proof payment</a>
+                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open proof payment</a>
             </div>
         `;
     }
@@ -108,7 +109,7 @@ function buildPaymentProofPreview(payment) {
     return `
         <p>
             <strong>Proof payment:</strong>
-            <a href="${proofUrl}" target="_blank" rel="noopener noreferrer">Open uploaded file</a>
+            <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">Open uploaded file</a>
         </p>
     `;
 }
@@ -133,9 +134,9 @@ function buildProviderPaymentBox(request) {
             </div>
 
             <div class="details-grid">
-                <span>Amount: <strong>${formatMoney(payment.amount)}</strong></span>
-                <span>Method: <strong>${payment.payment_method || "-"}</strong></span>
-                <span>Recorded: <strong>${formatDateTime(payment.created_at)}</strong></span>
+                <span>Amount: <strong>${escapeHtml(formatMoney(payment.amount))}</strong></span>
+                <span>Method: <strong>${escapeHtml(payment.payment_method || "-")}</strong></span>
+                <span>Recorded: <strong>${escapeHtml(formatDateTime(payment.created_at))}</strong></span>
             </div>
 
             ${buildPaymentProofPreview(payment)}
@@ -351,7 +352,7 @@ async function loadAssignments() {
 
         if (request.status === "confirmed") {
             actionHtml = `
-                <button class="btn start-btn" data-request-id="${request.request_id}">
+                <button class="btn start-btn" data-request-id="${escapeHtml(request.request_id)}">
                     Start Service
                 </button>
             `;
@@ -369,10 +370,10 @@ async function loadAssignments() {
 
         const messageActionHtml = client
             ? `
-                <a href="messages.html?request_id=${request.request_id}" class="btn btn-outline">
+                <a href="messages.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn btn-outline">
                     Message Client
                 </a>
-                <a href="report.html?request_id=${request.request_id}" class="danger-btn btn-outline-danger">
+                <a href="report.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="danger-btn btn-outline-danger">
                     Report Issue
                 </a>
             `
@@ -384,9 +385,9 @@ async function loadAssignments() {
             ? `
                 <div class="assignment-map-box">
                     <h4>Client Service Location</h4>
-                    <div id="assignmentMap-${request.request_id}" class="assignment-map"></div>
+                    <div id="assignmentMap-${escapeHtml(request.request_id)}" class="assignment-map"></div>
                     <p class="map-status">
-                        Latitude: ${Number(request.client_lat).toFixed(7)} · Longitude: ${Number(request.client_lng).toFixed(7)}
+                        Latitude: ${escapeHtml(Number(request.client_lat).toFixed(7))} · Longitude: ${escapeHtml(Number(request.client_lng).toFixed(7))}
                     </p>
                 </div>
             `
@@ -401,31 +402,31 @@ async function loadAssignments() {
             <div class="incoming-card assignment-card">
                 <div>
                     <div class="card-topline">
-                        <span class="status-pill">${formatStatus(request.status)}</span>
-                        <span>${request.request_id}</span>
+                        <span class="status-pill">${escapeHtml(formatStatus(request.status))}</span>
+                        <span>${escapeHtml(request.request_id)}</span>
                     </div>
 
-                    <h3>${request.title}</h3>
+                    <h3>${escapeHtml(request.title)}</h3>
 
                     <p class="muted-text">
                         Client:
-                        <strong>${client ? client.full_name : "Unknown Client"}</strong>
-                        ${client ? `· ${client.user_code}` : ""}
+                        <strong>${escapeHtml(client ? client.full_name : "Unknown Client")}</strong>
+                        ${escapeHtml(client ? `· ${client.user_code}` : "")}
                         ${client?.identity_verified ? '<span class="status-pill verified-pill client-verified-inline">✓ Identity Verified</span>' : '<span class="status-pill warning-pill client-verified-inline">Not Verified</span>'}
                     </p>
 
-                    <p>${request.description}</p>
+                    <p>${escapeHtml(request.description)}</p>
 
                     ${buildRequestImagePreview(request)}
 
                     <div class="details-grid">
-                        <span>Category: <strong>${request.category}</strong></span>
-                        <span>Service Type: <strong>${request.service_type || "Not specified"}</strong></span>
-                        <span>Priority: <strong>${request.priority}</strong></span>
-                        <span>Date: <strong>${request.preferred_date}</strong></span>
-                        <span>Time: <strong>${request.preferred_time}</strong></span>
-                        <span>Budget: <strong>${formatBudget(request.budget)}</strong></span>
-                        <span>Location: <strong>${request.location}</strong></span>
+                        <span>Category: <strong>${escapeHtml(request.category)}</strong></span>
+                        <span>Service Type: <strong>${escapeHtml(request.service_type || "Not specified")}</strong></span>
+                        <span>Priority: <strong>${escapeHtml(request.priority)}</strong></span>
+                        <span>Date: <strong>${escapeHtml(request.preferred_date)}</strong></span>
+                        <span>Time: <strong>${escapeHtml(request.preferred_time)}</strong></span>
+                        <span>Budget: <strong>${escapeHtml(formatBudget(request.budget))}</strong></span>
+                        <span>Location: <strong>${escapeHtml(request.location)}</strong></span>
                     </div>
 
                     ${paymentHtml}
@@ -498,8 +499,8 @@ function buildProviderReviewSection(request, client) {
         return `
             <div class="success-box compact-success">
                 <h3>Review Submitted</h3>
-                <p><strong>Rating:</strong> ${existingReview.rating} / 5</p>
-                <p><strong>Feedback:</strong> ${existingReview.feedback || "No feedback provided."}</p>
+                <p><strong>Rating:</strong> ${escapeHtml(existingReview.rating)} / 5</p>
+                <p><strong>Feedback:</strong> ${escapeHtml(existingReview.feedback || "No feedback provided.")}</p>
             </div>
         `;
     }
@@ -514,9 +515,9 @@ function buildProviderReviewSection(request, client) {
     }
 
     return `
-        <form class="provider-review-form mini-form" data-request-id="${request.request_id}" data-client-id="${client.id}">
+        <form class="provider-review-form mini-form" data-request-id="${escapeHtml(request.request_id)}" data-client-id="${escapeHtml(client.id)}">
             <h3>Review Client</h3>
-            <p class="muted-text">Share your feedback about ${client.full_name}.</p>
+            <p class="muted-text">Share your feedback about ${escapeHtml(client.full_name)}.</p>
 
             <div class="form-group">
                 <label>Rating</label>

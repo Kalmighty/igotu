@@ -1,3 +1,4 @@
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 const L = window.L;
@@ -228,9 +229,9 @@ function renderRequests() {
             ? `
                 <div class="admin-request-map-box">
                     <h4>Request Service Location</h4>
-                    <div id="adminRequestMap-${request.request_id}" class="admin-request-map"></div>
+                    <div id="adminRequestMap-${escapeHtml(request.request_id)}" class="admin-request-map"></div>
                     <p class="map-status">
-                        Latitude: ${Number(request.client_lat).toFixed(7)} · Longitude: ${Number(request.client_lng).toFixed(7)}
+                        Latitude: ${escapeHtml(Number(request.client_lat).toFixed(7))} · Longitude: ${escapeHtml(Number(request.client_lng).toFixed(7))}
                     </p>
                 </div>
             `
@@ -245,28 +246,28 @@ function renderRequests() {
             <div class="incoming-card admin-request-card">
                 <div>
                     <div class="card-topline">
-                        <span class="status-pill">${formatStatus(request.status)}</span>
-                        <span>${request.request_id}</span>
-                        <span>Created: ${formatDate(request.created_at)}</span>
+                        <span class="status-pill">${escapeHtml(formatStatus(request.status))}</span>
+                        <span>${escapeHtml(request.request_id)}</span>
+                        <span>Created: ${escapeHtml(formatDate(request.created_at))}</span>
                     </div>
 
-                    <h3>${request.title}</h3>
-                    <p>${request.description}</p>
+                    <h3>${escapeHtml(request.title)}</h3>
+                    <p>${escapeHtml(request.description)}</p>
 
                     <div class="details-grid">
-                        <span>Category: <strong>${request.category}</strong></span>
-                        <span>Service Type: <strong>${request.service_type || "Not specified"}</strong></span>
-                        <span>Priority: <strong>${request.priority}</strong></span>
-                        <span>Date: <strong>${request.preferred_date}</strong></span>
-                        <span>Time: <strong>${request.preferred_time}</strong></span>
-                        <span>Budget: <strong>${formatBudget(request.budget)}</strong></span>
-                        <span>Location: <strong>${request.location}</strong></span>
+                        <span>Category: <strong>${escapeHtml(request.category)}</strong></span>
+                        <span>Service Type: <strong>${escapeHtml(request.service_type || "Not specified")}</strong></span>
+                        <span>Priority: <strong>${escapeHtml(request.priority)}</strong></span>
+                        <span>Date: <strong>${escapeHtml(request.preferred_date)}</strong></span>
+                        <span>Time: <strong>${escapeHtml(request.preferred_time)}</strong></span>
+                        <span>Budget: <strong>${escapeHtml(formatBudget(request.budget))}</strong></span>
+                        <span>Location: <strong>${escapeHtml(request.location)}</strong></span>
                     </div>
 
                     ${request.status === "cancelled" && request.cancellation_reason ? `
                         <div class="cancellation-note">
                             <strong>Cancellation reason</strong>
-                            <span>${request.cancellation_reason}</span>
+                            <span>${escapeHtml(request.cancellation_reason)}</span>
                         </div>
                     ` : ""}
 
@@ -276,14 +277,14 @@ function renderRequests() {
                 <div class="admin-side-info">
                     <div class="mini-info-box">
                         <span>Client</span>
-                        <strong>${client ? client.full_name : "Unknown"}</strong>
-                        <p>${client ? `${client.user_code} · ${client.email}` : "-"}</p>
+                        <strong>${escapeHtml(client ? client.full_name : "Unknown")}</strong>
+                        <p>${escapeHtml(client ? `${client.user_code} · ${client.email}` : "-")}</p>
                     </div>
 
                     <div class="mini-info-box">
                         <span>Selected Provider</span>
-                        <strong>${provider ? provider.full_name : "Not selected"}</strong>
-                        <p>${provider ? `${provider.user_code} · ${provider.email}` : "Pending provider selection"}</p>
+                        <strong>${escapeHtml(provider ? provider.full_name : "Not selected")}</strong>
+                        <p>${escapeHtml(provider ? `${provider.user_code} · ${provider.email}` : "Pending provider selection")}</p>
                     </div>
                 </div>
             </div>

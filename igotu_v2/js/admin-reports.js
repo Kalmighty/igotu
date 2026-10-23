@@ -1,3 +1,4 @@
+import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 let currentUser = null;
@@ -166,7 +167,7 @@ function renderReports() {
     const requestStatus = request?.status?.replaceAll("_", " ") || "-";
 
     const evidenceAction = report.evidence_path
-      ? `<button type="button" class="report-evidence-button evidence-btn" data-path="${report.evidence_path}">
+      ? `<button type="button" class="report-evidence-button evidence-btn" data-path="${escapeHtml(report.evidence_path)}">
            <span class="report-action-icon">↗</span>
            <span>View evidence</span>
          </button>`
@@ -175,9 +176,9 @@ function renderReports() {
     const reviewActions = ["pending", "under_review"].includes(report.status)
       ? `
         <div class="report-review-actions">
-          ${report.status === "pending" ? `<button type="button" class="report-review-button report-review-button-secondary review-report-btn" data-id="${report.id}" data-status="under_review">Mark under review</button>` : ""}
-          <button type="button" class="report-review-button report-review-button-resolve review-report-btn" data-id="${report.id}" data-status="resolved">Resolve report</button>
-          <button type="button" class="report-review-button report-review-button-dismiss review-report-btn" data-id="${report.id}" data-status="dismissed">Dismiss</button>
+          ${report.status === "pending" ? `<button type="button" class="report-review-button report-review-button-secondary review-report-btn" data-id="${escapeHtml(report.id)}" data-status="under_review">Mark under review</button>` : ""}
+          <button type="button" class="report-review-button report-review-button-resolve review-report-btn" data-id="${escapeHtml(report.id)}" data-status="resolved">Resolve report</button>
+          <button type="button" class="report-review-button report-review-button-dismiss review-report-btn" data-id="${escapeHtml(report.id)}" data-status="dismissed">Dismiss</button>
         </div>
       `
       : `<div class="report-review-complete">Review complete</div>`;
@@ -187,49 +188,49 @@ function renderReports() {
         <div class="report-card-heading">
           <div class="report-heading-main">
             <div class="report-heading-meta">
-              <span class="verification-status-badge ${statusClass(report.status)}">${statusLabel}</span>
-              <span class="report-request-id">${report.request_id}</span>
-              <span class="report-created-at">${formatDate(report.created_at)}</span>
+              <span class="verification-status-badge ${escapeHtml(statusClass(report.status))}">${escapeHtml(statusLabel)}</span>
+              <span class="report-request-id">${escapeHtml(report.request_id)}</span>
+              <span class="report-created-at">${escapeHtml(formatDate(report.created_at))}</span>
             </div>
-            <h3>${report.reason}</h3>
-            <p class="report-request-name">${request?.title || "Service request"} <span>•</span> ${request?.category || "-"}</p>
+            <h3>${escapeHtml(report.reason)}</h3>
+            <p class="report-request-name">${escapeHtml(request?.title || "Service request")} <span>•</span> ${escapeHtml(request?.category || "-")}</p>
           </div>
         </div>
 
         <div class="report-card-layout">
           <section class="report-case-details">
             <div class="report-section-label">Report details</div>
-            <p class="report-description">${report.description}</p>
+            <p class="report-description">${escapeHtml(report.description)}</p>
 
             <div class="report-participants-grid">
               <div class="report-person-card">
                 <span class="report-person-label">Reporter</span>
-                <strong>${reporter?.full_name || "Unknown user"}</strong>
-                <span class="report-person-meta">${reporter?.user_code || "-"}${reporter?.role ? ` · ${reporter.role}` : ""}</span>
+                <strong>${escapeHtml(reporter?.full_name || "Unknown user")}</strong>
+                <span class="report-person-meta">${escapeHtml(reporter?.user_code || "-")}${escapeHtml(reporter?.role ? ` · ${reporter.role}` : "")}</span>
               </div>
 
               <div class="report-person-card">
                 <span class="report-person-label">Reported user</span>
-                <strong>${reported?.full_name || "Unknown user"}</strong>
-                <span class="report-person-meta">${reported?.user_code || "-"}${reported?.role ? ` · ${reported.role}` : ""}</span>
+                <strong>${escapeHtml(reported?.full_name || "Unknown user")}</strong>
+                <span class="report-person-meta">${escapeHtml(reported?.user_code || "-")}${escapeHtml(reported?.role ? ` · ${reported.role}` : "")}</span>
               </div>
             </div>
 
             <div class="report-case-meta-row">
               <div>
                 <span>Request status</span>
-                <strong>${requestStatus}</strong>
+                <strong>${escapeHtml(requestStatus)}</strong>
               </div>
               <div>
                 <span>Reviewed</span>
-                <strong>${report.reviewed_at ? formatDate(report.reviewed_at) : "Not reviewed yet"}</strong>
+                <strong>${escapeHtml(report.reviewed_at ? formatDate(report.reviewed_at) : "Not reviewed yet")}</strong>
               </div>
             </div>
 
             ${report.admin_note ? `
               <div class="report-admin-note-clean">
                 <span>Admin note</span>
-                <p>${report.admin_note}</p>
+                <p>${escapeHtml(report.admin_note)}</p>
               </div>` : ""}
           </section>
 
@@ -237,9 +238,9 @@ function renderReports() {
             <div class="report-review-panel-top">
               <div>
                 <span class="report-review-eyebrow">Review report</span>
-                <strong class="report-review-status-title">${statusLabel}</strong>
+                <strong class="report-review-status-title">${escapeHtml(statusLabel)}</strong>
               </div>
-              <span class="verification-status-badge ${statusClass(report.status)}">${statusLabel}</span>
+              <span class="verification-status-badge ${escapeHtml(statusClass(report.status))}">${escapeHtml(statusLabel)}</span>
             </div>
 
             <div class="report-review-block">
@@ -282,7 +283,12 @@ async function openEvidence(path, button) {
     return;
   }
 
-  window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  const documentUrl = safeUrl(data.signedUrl);
+  if (!documentUrl) {
+    showMessage("Unable to open the document: invalid URL.");
+    return;
+  }
+  window.open(documentUrl, "_blank", "noopener,noreferrer");
 }
 
 async function reviewReport(reportId, status, button) {

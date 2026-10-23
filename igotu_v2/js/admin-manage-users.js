@@ -1,3 +1,4 @@
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 
@@ -166,13 +167,13 @@ function renderUsers() {
             actionHtml = `<span class="status-note completed-note">Current Admin</span>`;
         } else if (user.status === "active") {
             actionHtml = `
-                <button class="danger-btn btn-small status-btn" data-user-id="${user.id}" data-status="suspended">
+                <button class="danger-btn btn-small status-btn" data-user-id="${escapeHtml(user.id)}" data-status="suspended">
                     Suspend
                 </button>
             `;
         } else {
             actionHtml = `
-                <button class="btn btn-small status-btn" data-user-id="${user.id}" data-status="active">
+                <button class="btn btn-small status-btn" data-user-id="${escapeHtml(user.id)}" data-status="active">
                     Activate
                 </button>
             `;
@@ -180,7 +181,7 @@ function renderUsers() {
 
         if (canVerifyIdentity) {
             verificationActionHtml = `
-                <a class="btn btn-small" href="verifications.html?user_id=${user.id}">
+                <a class="btn btn-small" href="verifications.html?user_id=${escapeHtml(encodeURIComponent(user.id))}">
                     Review Verification
                 </a>
             `;
@@ -189,23 +190,23 @@ function renderUsers() {
         return `
             <div class="user-card">
                 <div class="user-card-main">
-                    <div class="user-avatar">${(user.full_name || "U").charAt(0).toUpperCase()}</div>
+                    <div class="user-avatar">${escapeHtml((user.full_name || "U").charAt(0).toUpperCase())}</div>
 
                     <div>
                         <div class="card-topline">
-                            <span class="status-pill">${formatRole(user.role)}</span>
-                            <span class="status-pill ${user.status === "active" ? "" : "danger-pill"}">${formatStatus(user.status)}</span>
+                            <span class="status-pill">${escapeHtml(formatRole(user.role))}</span>
+                            <span class="status-pill ${user.status === "active" ? "" : "danger-pill"}">${escapeHtml(formatStatus(user.status))}</span>
                             ${verificationHtml}
-                            <span>${user.user_code || "-"}</span>
+                            <span>${escapeHtml(user.user_code || "-")}</span>
                         </div>
 
-                        <h3>${user.full_name || "Unnamed User"}</h3>
-                        <p class="muted-text">${user.email || "-"}</p>
+                        <h3>${escapeHtml(user.full_name || "Unnamed User")}</h3>
+                        <p class="muted-text">${escapeHtml(user.email || "-")}</p>
 
                         <div class="details-grid user-details-grid">
-                            <span>Role: <strong>${formatRole(user.role)}</strong></span>
-                            <span>Status: <strong>${formatStatus(user.status)}</strong></span>
-                            <span>Created: <strong>${formatDate(user.created_at)}</strong></span>
+                            <span>Role: <strong>${escapeHtml(formatRole(user.role))}</strong></span>
+                            <span>Status: <strong>${escapeHtml(formatStatus(user.status))}</strong></span>
+                            <span>Created: <strong>${escapeHtml(formatDate(user.created_at))}</strong></span>
                             ${canVerifyIdentity ? `<span>Verification: <strong>${isIdentityVerified ? "Verified" : "Not verified"}</strong></span>` : ""}
                         </div>
                     </div>
@@ -223,7 +224,6 @@ function renderUsers() {
         button.addEventListener("click", async function() {
             await updateUserStatus(this.dataset.userId, this.dataset.status, this);
         });
-    });
     });
 }
 

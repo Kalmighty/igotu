@@ -1,3 +1,4 @@
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 async function getSessionUser() {
@@ -71,25 +72,14 @@ async function loadStats(userId) {
     }
 
     recentBox.innerHTML = requests.slice(0, 5).map(request => `
-        <a class="list-item" href="request-details.html?request_id=${request.request_id}">
+        <a class="list-item" href="request-details.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}">
             <div>
-                <strong>${request.title}</strong>
-                <span>${request.category} · ${request.location}</span>
+                <strong>${escapeHtml(request.title)}</strong>
+                <span>${escapeHtml(request.category)} · ${escapeHtml(request.location)}</span>
             </div>
-            <em class="status-pill">${request.status.replace("_", " ")}</em>
+            <em class="status-pill">${escapeHtml(request.status.replace("_", " "))}</em>
         </a>
     `).join("");
-}
-
-async function handleLogout() {
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    logoutBtn.addEventListener("click", async function(event) {
-        event.preventDefault();
-        localStorage.removeItem("igotu_user");
-        await supabase.auth.signOut();
-        window.location.href = "../login.html";
-    });
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
@@ -101,5 +91,4 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     displayUser(profile);
     await loadStats(user.id);
-    handleLogout();
 });

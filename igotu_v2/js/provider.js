@@ -1,3 +1,4 @@
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 async function getSessionUser() {
@@ -44,6 +45,14 @@ function displayUser(profile) {
     document.getElementById("welcomeText").textContent = `Hello, ${profile.full_name.split(" ")[0]}. Review your assigned service requests.`;
 }
 
+function getApproximateArea(location) {
+    const parts = String(location || "").split(",").map(part => part.trim()).filter(Boolean);
+    if (!parts.length) return "Area not provided";
+    // Avoid repeating the full address when there are too few area components.
+    if (parts.length <= 3) return "Area available after confirmation";
+    return parts.slice(-3).join(", ");
+}
+
 async function loadStats(userId) {
     const { data: requests, error } = await supabase
         .from("service_requests")
@@ -83,12 +92,12 @@ async function loadStats(userId) {
     }
 
     incomingBox.innerHTML = incoming.slice(0, 5).map(request => `
-        <a class="list-item" href="assignment-details.html?request_id=${request.request_id}">
+        <a class="list-item" href="incoming-requests.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}">
             <div>
-                <strong>${request.title}</strong>
-                <span>${request.category} · ${request.location}</span>
+                <strong>${escapeHtml(request.title)}</strong>
+                <span>${escapeHtml(request.category)} · Approximate Area: ${escapeHtml(getApproximateArea(request.location))}</span>
             </div>
-            <em class="status-pill">${request.status.replace("_", " ")}</em>
+            <em class="status-pill">${escapeHtml(request.status.replace("_", " "))}</em>
         </a>
     `).join("");
 }

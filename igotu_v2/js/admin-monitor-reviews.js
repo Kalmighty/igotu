@@ -1,3 +1,4 @@
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 let currentUser = null;
@@ -240,36 +241,36 @@ function renderReviews() {
             <div class="review-card">
                 <div>
                     <div class="card-topline">
-                        <span class="status-pill">${review.rating} / 5</span>
-                        <span>${review.request_id}</span>
-                        <span>${formatDate(review.created_at)}</span>
+                        <span class="status-pill">${escapeHtml(review.rating)} / 5</span>
+                        <span>${escapeHtml(review.request_id)}</span>
+                        <span>${escapeHtml(formatDate(review.created_at))}</span>
                     </div>
 
-                    <h3 class="star-rating">${renderStars(review.rating)}</h3>
+                    <h3 class="star-rating">${escapeHtml(renderStars(review.rating))}</h3>
 
                     <p class="review-feedback">
-                        ${review.feedback || "No feedback provided."}
+                        ${escapeHtml(review.feedback || "No feedback provided.")}
                     </p>
 
                     <div class="details-grid">
-                        <span>Request: <strong>${request ? request.title : review.request_id}</strong></span>
-                        <span>Category: <strong>${request ? request.category : "-"}</strong></span>
-                        <span>Reviewer Role: <strong>${reviewer ? reviewer.role : "Unknown"}</strong></span>
-                        <span>Reviewee Role: <strong>${reviewee ? reviewee.role : "Unknown"}</strong></span>
+                        <span>Request: <strong>${escapeHtml(request ? request.title : review.request_id)}</strong></span>
+                        <span>Category: <strong>${escapeHtml(request ? request.category : "-")}</strong></span>
+                        <span>Reviewer Role: <strong>${escapeHtml(reviewer ? reviewer.role : "Unknown")}</strong></span>
+                        <span>Reviewee Role: <strong>${escapeHtml(reviewee ? reviewee.role : "Unknown")}</strong></span>
                     </div>
                 </div>
 
                 <div class="admin-side-info">
                     <div class="mini-info-box">
                         <span>Reviewer</span>
-                        <strong>${reviewer ? reviewer.full_name : "Unknown"}</strong>
-                        <p>${reviewer ? `${reviewer.user_code} · ${reviewer.email}` : "-"}</p>
+                        <strong>${escapeHtml(reviewer ? reviewer.full_name : "Unknown")}</strong>
+                        <p>${escapeHtml(reviewer ? `${reviewer.user_code} · ${reviewer.email}` : "-")}</p>
                     </div>
 
                     <div class="mini-info-box">
                         <span>Reviewee</span>
-                        <strong>${reviewee ? reviewee.full_name : "Unknown"}</strong>
-                        <p>${reviewee ? `${reviewee.user_code} · ${reviewee.email}` : "-"}</p>
+                        <strong>${escapeHtml(reviewee ? reviewee.full_name : "Unknown")}</strong>
+                        <p>${escapeHtml(reviewee ? `${reviewee.user_code} · ${reviewee.email}` : "-")}</p>
                     </div>
                 </div>
             </div>

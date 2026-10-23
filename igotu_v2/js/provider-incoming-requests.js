@@ -1,3 +1,4 @@
+import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 import { askDeclineReason } from "./service-action-dialogs.js";
@@ -106,10 +107,10 @@ function buildRequestImagePreview(request) {
     return `
         <div class="request-image-box">
             <h4>Submitted Image</h4>
-            <a href="${imageUrl}" target="_blank" rel="noopener noreferrer">
-                <img src="${imageUrl}" alt="Submitted request image" class="request-submitted-image">
+            <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer">
+                <img src="${escapeHtml(safeUrl(imageUrl))}" alt="Submitted request image" class="request-submitted-image">
             </a>
-            <a href="${imageUrl}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
+            <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
         </div>
     `;
 }
@@ -162,45 +163,45 @@ async function loadIncomingRequests() {
             <div class="incoming-card">
                 <div>
                     <div class="card-topline">
-                        <span class="status-pill">${formatStatus(request.status)}</span>
-                        <span>${request.request_id}</span>
+                        <span class="status-pill">${escapeHtml(formatStatus(request.status))}</span>
+                        <span>${escapeHtml(request.request_id)}</span>
                     </div>
 
-                    <h3>${request.title}</h3>
+                    <h3>${escapeHtml(request.title)}</h3>
 
                     <p class="muted-text">
                         Client:
-                        <strong>${client ? client.full_name : "Unknown Client"}</strong>
-                        ${client ? `· ${client.user_code}` : ""}
+                        <strong>${escapeHtml(client ? client.full_name : "Unknown Client")}</strong>
+                        ${escapeHtml(client ? `· ${client.user_code}` : "")}
                         ${client?.identity_verified ? '<span class="status-pill verified-pill client-verified-inline">✓ Identity Verified</span>' : '<span class="status-pill warning-pill client-verified-inline">Not Verified</span>'}
                     </p>
 
-                    <p>${request.description}</p>
+                    <p>${escapeHtml(request.description)}</p>
 
                     ${buildRequestImagePreview(request)}
 
                     <div class="details-grid">
-                        <span>Category: <strong>${request.category}</strong></span>
-                        <span>Service Type: <strong>${request.service_type || "Not specified"}</strong></span>
-                        <span>Priority: <strong>${request.priority}</strong></span>
-                        <span>Date: <strong>${request.preferred_date}</strong></span>
-                        <span>Time: <strong>${request.preferred_time}</strong></span>
-                        <span>Budget: <strong>${formatBudget(request.budget)}</strong></span>
-                        <span>Approximate Area: <strong>${getApproximateArea(request.location)}</strong></span>
+                        <span>Category: <strong>${escapeHtml(request.category)}</strong></span>
+                        <span>Service Type: <strong>${escapeHtml(request.service_type || "Not specified")}</strong></span>
+                        <span>Priority: <strong>${escapeHtml(request.priority)}</strong></span>
+                        <span>Date: <strong>${escapeHtml(request.preferred_date)}</strong></span>
+                        <span>Time: <strong>${escapeHtml(request.preferred_time)}</strong></span>
+                        <span>Budget: <strong>${escapeHtml(formatBudget(request.budget))}</strong></span>
+                        <span>Approximate Area: <strong>${escapeHtml(getApproximateArea(request.location))}</strong></span>
                         <span class="location-privacy-inline">🔒 Exact location unlocks after confirmation</span>
                     </div>
                 </div>
 
                 <div class="incoming-actions">
-                    <button class="btn confirm-btn" data-request-id="${request.request_id}">
+                    <button class="btn confirm-btn" data-request-id="${escapeHtml(request.request_id)}">
                         Confirm
                     </button>
 
-                    <button class="danger-btn decline-btn" data-request-id="${request.request_id}">
+                    <button class="danger-btn decline-btn" data-request-id="${escapeHtml(request.request_id)}">
                         Decline
                     </button>
 
-                    <a class="btn btn-outline report-issue-btn" href="report.html?request_id=${request.request_id}">
+                    <a class="btn btn-outline report-issue-btn" href="report.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}">
                         Report Issue
                     </a>
                 </div>

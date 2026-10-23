@@ -1,3 +1,4 @@
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 async function getSessionUser() {
@@ -81,10 +82,10 @@ async function loadStats() {
     recentBox.innerHTML = data.map(request => `
         <a class="list-item" href="monitor-requests.html">
             <div>
-                <strong>${request.title}</strong>
-                <span>${request.category} · ${request.location}</span>
+                <strong>${escapeHtml(request.title)}</strong>
+                <span>${escapeHtml(request.category)} · ${escapeHtml(request.location)}</span>
             </div>
-            <em class="status-pill">${request.status.replace("_", " ")}</em>
+            <em class="status-pill">${escapeHtml(request.status.replace("_", " "))}</em>
         </a>
     `).join("");
 }

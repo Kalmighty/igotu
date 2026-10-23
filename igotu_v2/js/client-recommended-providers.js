@@ -51,8 +51,8 @@ function getRatingDisplayHtml(stats) {
 
   return `
     <div class="smart-rating-clean">
-      <span class="smart-rating-stars">${getStarText(stats)}</span>
-      <strong>${getRatingLabel(stats)}</strong>
+      <span class="smart-rating-stars">${escapeHtml(getStarText(stats))}</span>
+      <strong>${escapeHtml(getRatingLabel(stats))}</strong>
     </div>
   `;
 }
@@ -180,7 +180,7 @@ function getProviderBadges(provider) {
   }
 
   if (stats.totalCompleted > 0) {
-    badges.push(`<span class="smart-badge completed">${stats.totalCompleted} completed</span>`);
+    badges.push(`<span class="smart-badge completed">${escapeHtml(stats.totalCompleted)} completed</span>`);
   }
 
   return badges.join("");
@@ -701,8 +701,8 @@ function renderProviders(providers) {
         <article class="smart-provider-card smart-provider-card-clean">
           <div class="smart-card-main-row">
             <div class="smart-card-identity">
-              <div class="match-rank">${index + 1}</div>
-              <div class="smart-provider-avatar">${getInitials(provider.full_name)}</div>
+              <div class="match-rank">${escapeHtml(index + 1)}</div>
+              <div class="smart-provider-avatar">${escapeHtml(getInitials(provider.full_name))}</div>
               <div class="smart-card-title-block">
                 <h3>${escapeHtml(provider.full_name)}</h3>
                 <p>${escapeHtml(provider.user_code)} · ${escapeHtml(currentRequest.category)} · ${escapeHtml(provider.exactSkillMatch ? currentRequest.service_type : (provider.matchedSpecializations?.[0] || currentRequest.service_type))}</p>
@@ -711,7 +711,7 @@ function renderProviders(providers) {
             </div>
 
             <div class="smart-card-action-clean">
-              <button class="btn select-provider-btn" data-provider-id="${provider.id}">
+              <button class="btn select-provider-btn" data-provider-id="${escapeHtml(provider.id)}">
                 Select Provider <span>›</span>
               </button>
             </div>
@@ -732,7 +732,7 @@ function renderProviders(providers) {
             <div class="smart-info-item">
               <span class="smart-info-icon">🧭</span>
               <div>
-                <strong>${formatDistance(provider.distanceKm)}</strong>
+                <strong>${escapeHtml(formatDistance(provider.distanceKm))}</strong>
                 <small>Distance</small>
               </div>
             </div>

@@ -1,3 +1,4 @@
+import { safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 const L = window.L;
@@ -147,7 +148,9 @@ function showExistingRequestImage(imageUrl) {
 
     if (!previewBox || !previewImg || !fileName || !imageUrl) return;
 
-    previewImg.src = imageUrl;
+    const previewUrl = safeUrl(imageUrl);
+    if (!previewUrl) return;
+    previewImg.src = previewUrl;
     previewImg.classList.remove("hidden");
     fileName.textContent = "Request image uploaded";
     if (fileStatus) fileStatus.textContent = "Current image for this service request";

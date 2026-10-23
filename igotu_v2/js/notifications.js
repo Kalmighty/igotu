@@ -141,11 +141,11 @@ function renderNotifications() {
                             ${item.is_read ? `<span class="status-pill">Read</span>` : `<span class="status-pill">Unread</span>`}
                         </div>
                         <p>${escapeHtml(item.message)}</p>
-                        <small>${formatDateTime(item.created_at)}</small>
+                        <small>${escapeHtml(formatDateTime(item.created_at))}</small>
                     </div>
                 </div>
                 <div class="notification-actions">
-                    ${item.is_read ? "" : `<button class="btn btn-small mark-read-btn" data-id="${item.id}">Mark as Read</button>`}
+                    ${item.is_read ? "" : `<button class="btn btn-small mark-read-btn" data-id="${escapeHtml(item.id)}">Mark as Read</button>`}
                 </div>
             </div>
         `;
