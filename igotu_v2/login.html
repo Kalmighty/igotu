@@ -1,49 +1,409 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Login - IGotU V2</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body data-page="login">
-    <main class="auth-page">
-        <section class="auth-card">
-            <a href="index.html" class="brand-link">IGotU</a>
-
-            <h1>Login</h1>
-            <p class="auth-subtitle">Access your IGotU dashboard.</p>
-
-            <div id="messageBox" class="message-box hidden"></div>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="example@email.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" required>
-                </div>
-
-                <div class="auth-password-row">
-                    <a href="forgot-password.html" class="forgot-password-link">Forgot password?</a>
-                </div>
-
-                <button type="submit" class="btn full-btn" id="loginBtn">Login</button>
-            </form>
-
-            <p class="auth-footer">
-                Do not have an account?
-                <a href="register.html">Register here</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#124c3b" />
+    <title>Login - IGotU</title>
+    <link rel="icon" href="assets/igotu-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/auth-roles.css" />
+    <script src="js/auth-roles.js" defer></script>
+  </head>
+  <body data-page="login" class="auth-experience">
+    <a class="auth-skip-link" href="#authContent">Skip to sign in</a>
+    <svg
+      class="auth-icon-library"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="auth-brand" viewBox="0 0 24 24">
+          <path d="M5 5v8a7 7 0 0 0 14 0V5M10 5v8a2 2 0 0 0 4 0V5" />
+        </symbol>
+        <symbol id="auth-request" viewBox="0 0 24 24">
+          <rect x="5" y="4" width="14" height="18" rx="2" />
+          <path d="M9 4V2h6v2M9 9h6m-6 4h6m-6 4h3" />
+        </symbol>
+        <symbol id="auth-provider" viewBox="0 0 24 24">
+          <path
+            d="M14 4a5 5 0 0 0-6 6L3 15a3 3 0 0 0 4 4l5-5a5 5 0 0 0 6-6l-3 3-4-4 3-3Z"
+          />
+        </symbol>
+        <symbol id="auth-shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+          <path d="m8 12 3 3 5-6" />
+        </symbol>
+        <symbol id="auth-arrow" viewBox="0 0 24 24">
+          <path d="M5 12h14m-6-6 6 6-6 6" />
+        </symbol>
+        <symbol id="auth-check" viewBox="0 0 24 24">
+          <path d="m5 12 4 4L19 6" />
+        </symbol>
+        <symbol id="auth-lock" viewBox="0 0 24 24">
+          <rect x="5" y="10" width="14" height="11" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" />
+        </symbol>
+        <symbol id="auth-profile" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21v-2a8 8 0 0 1 16 0v2" />
+        </symbol>
+      </defs>
+    </svg>
+    <header class="auth-header">
+      <div class="auth-container auth-header-inner">
+        <a class="auth-brand" href="index.html" aria-label="IGotU home"
+          ><span
+            ><svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-brand" /></svg></span
+          >IGotU<span class="wordmark-dot">.</span></a
+        >
+        <div class="auth-header-link">
+          <span>New to IGotU?</span>
+          <a href="register.html"
+            >Create an account
+            <svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-arrow" /></svg
+          ></a>
+        </div>
+      </div>
+    </header>
+    <main class="auth-container auth-workspace" id="authContent" tabindex="-1">
+      <div class="auth-page-heading">
+        <p class="auth-eyebrow">One platform. Your place in it.</p>
+        <h1>Good to have <em>you back.</em></h1>
+        <p>Choose your workspace and pick up where you left off.</p>
+      </div>
+      <div
+        class="role-options login-roles"
+        role="group"
+        aria-label="Choose your login workspace"
+      >
+        <button
+          type="button"
+          class="role-card role-client"
+          data-login-role="client"
+          aria-pressed="false"
+          aria-label="Continue as Client"
+          aria-describedby="clientDescription"
+        >
+          <span class="role-card-top"
+            ><span class="role-icon"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-request" /></svg></span
+            ><span class="role-name">Client</span
+            ><span class="role-selected-mark" aria-hidden="true"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-check" /></svg></span></span
+          ><strong class="role-card-title">I Need a Service</strong
+          ><span class="role-description" id="clientDescription"
+            ><span class="role-description-wide"
+              >Create service requests, receive smart Provider recommendations,
+              and manage your services.</span
+            ><span class="role-description-compact"
+              >Request, compare and choose.</span
+            ></span
+          ><span class="role-card-action"
+            >Continue as Client<svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-arrow" /></svg
+          ></span></button
+        ><button
+          type="button"
+          class="role-card role-provider"
+          data-login-role="provider"
+          aria-pressed="false"
+          aria-label="Continue as Provider"
+          aria-describedby="providerDescription"
+        >
+          <span class="role-card-top"
+            ><span class="role-icon"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-provider" /></svg></span
+            ><span class="role-name">Provider</span
+            ><span class="role-selected-mark" aria-hidden="true"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-check" /></svg></span></span
+          ><strong class="role-card-title">I Offer Services</strong
+          ><span class="role-description" id="providerDescription"
+            ><span class="role-description-wide"
+              >Manage your skills and availability, receive assignments, and
+              connect with Clients.</span
+            ><span class="role-description-compact"
+              >Share your skills and availability.</span
+            ></span
+          ><span class="role-card-action"
+            >Continue as Provider<svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-arrow" /></svg
+          ></span></button
+        ><button
+          type="button"
+          class="role-card role-admin"
+          data-login-role="admin"
+          aria-pressed="false"
+          aria-label="Admin Login"
+          aria-describedby="adminDescription"
+        >
+          <span class="role-card-top"
+            ><span class="role-icon"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-shield" /></svg></span
+            ><span class="role-name">Admin</span
+            ><span class="role-selected-mark" aria-hidden="true"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-check" /></svg></span></span
+          ><strong class="role-card-title">Platform Administration</strong
+          ><span class="role-description" id="adminDescription"
+            ><span class="role-description-wide"
+              >Access IGotU’s management dashboard to monitor users, service
+              requests, payments, and platform activity.</span
+            ><span class="role-description-compact"
+              >Authorized accounts only.</span
+            ></span
+          ><span class="role-card-action"
+            >Admin Login<svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-arrow" /></svg
+          ></span>
+        </button>
+      </div>
+      <div class="auth-login-layout">
+        <aside class="auth-welcome-note" aria-labelledby="connectionTitle">
+          <span class="auth-note-icon"
+            ><svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-brand" /></svg
+          ></span>
+          <p class="auth-eyebrow">A helpful connection starts here</p>
+          <h2 id="connectionTitle">
+            Your next step.<br />A little more connected.
+          </h2>
+          <p>
+            Whether you’re finding help, offering a skill or supporting the
+            platform, IGotU brings your service journey together.
+          </p>
+          <div class="auth-note-points">
+            <span
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-request" />
+              </svg>
+              Request-first matching</span
+            ><span
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-profile" />
+              </svg>
+              A workspace for your role</span
+            >
+          </div>
+          <p class="auth-account-note">
+            You’ll be taken to the workspace linked to your account.
+          </p>
+        </aside>
+        <section class="auth-form-panel" aria-labelledby="authFormTitle">
+          <div class="auth-form-heading">
+            <span class="auth-form-kicker">Welcome back</span>
+            <h2 id="authFormTitle">Login to IGotU</h2>
+            <p id="authFormHint" aria-live="polite">
+              Sign in to access your account’s workspace.
             </p>
+          </div>
+          <div
+            id="messageBox"
+            class="message-box hidden"
+            role="status"
+            aria-live="polite"
+          ></div>
+          <form id="loginForm">
+            <div class="form-group">
+              <label for="email">Email Address</label
+              ><input
+                type="email"
+                id="email"
+                placeholder="example@email.com"
+                autocomplete="username"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label
+              ><input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+            <div class="auth-password-row">
+              <a href="forgot-password.html" class="forgot-password-link"
+                >Forgot password?</a
+              >
+            </div>
+            <button type="submit" class="btn full-btn" id="loginBtn">
+              Login
+            </button>
+          </form>
+          <p class="auth-form-footer">
+            New to IGotU? <a href="register.html">Create an account</a>
+          </p>
+          <p class="auth-form-note">
+            <svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-lock" />
+            </svg>
+            Your account determines your access.
+          </p>
         </section>
+      </div>
     </main>
-
+    <footer class="auth-page-footer">
+      <span>IGotU · Smart Service Matching Platform</span
+      ><a href="index.html"
+        >Back to homepage
+        <svg
+          class="auth-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <use href="#auth-arrow" /></svg
+      ></a>
+    </footer>
     <script type="module" src="js/auth.js"></script>
-</body>
-
+  </body>
 </html>
