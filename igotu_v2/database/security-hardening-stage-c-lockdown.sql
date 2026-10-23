@@ -6,6 +6,8 @@
 --   SET igotu.rollout.stage_b_tested = 'true';
 --   SET igotu.rollout.writes_paused = 'true';
 --   SET igotu.rollout.api_surface_audited = 'true';
+--   SET igotu.rollout.private_schema_verified = 'true';
+--   SET igotu.rollout.profile_projections_tested = 'true';
 --   SET igotu.rollout.role_helper_anon_required = 'true' OR 'false';
 -- These are NOT set by this script or Stage A. Missing values abort the transaction.
 -- See security-hardening-rollout.md for tests, exact frontend files and gate evidence.
@@ -21,13 +23,16 @@ BEGIN
     IF current_setting('igotu.rollout.stage_b_tested',true) IS DISTINCT FROM 'true'
        OR current_setting('igotu.rollout.writes_paused',true) IS DISTINCT FROM 'true'
        OR current_setting('igotu.rollout.api_surface_audited',true) IS DISTINCT FROM 'true'
+       OR current_setting('igotu.rollout.private_schema_verified',true) IS DISTINCT FROM 'true'
+       OR current_setting('igotu.rollout.profile_projections_tested',true) IS DISTINCT FROM 'true'
        OR COALESCE(current_setting('igotu.rollout.role_helper_anon_required',true),'') NOT IN ('true','false') THEN
-        RAISE EXCEPTION 'Stage B/tested write-pause/helper-dependency attestations are required; see rollout document.';
+        RAISE EXCEPTION 'Stage B, profile projections, private-schema, write-pause and helper-dependency attestations required; see rollout document.';
     END IF;
     IF to_regprocedure('igotu_private.provider_service_requests(text,text[])') IS NULL
        OR to_regprocedure('public.provider_service_requests(text,text[])') IS NULL
        OR to_regprocedure('public.provider_match_metadata(text)') IS NULL
        OR to_regprocedure('public.payment_proof_reference(text)') IS NULL
+       OR to_regprocedure('igotu_private.valid_payment(text,uuid,uuid,numeric,text,text,text)') IS NULL
        OR to_regprocedure('public.current_user_role()') IS NULL THEN
         RAISE EXCEPTION 'Missing Stage A APIs or the confirmed live role helper.';
     END IF;
@@ -76,21 +81,28 @@ BEGIN
     ) THEN
         RAISE EXCEPTION 'Legacy payment proofs need path/ownership/participant remediation before privacy lockdown.';
     END IF;
-    -- Known API views must not bypass service_requests RLS. This checks catalog
+    -- Known API views must not bypass request/users RLS. This checks catalog
     -- dependencies, not dynamic SQL; the rollout requires a full API-surface audit.
     IF EXISTS (
         SELECT 1 FROM pg_depend d JOIN pg_rewrite rw ON rw.oid=d.objid
         JOIN pg_class v ON v.oid=rw.ev_class JOIN pg_namespace n ON n.oid=v.relnamespace
-        WHERE d.classid='pg_rewrite'::regclass AND d.refobjid='public.service_requests'::regclass
+        WHERE d.classid='pg_rewrite'::regclass AND d.refobjid IN (
+            'public.service_requests'::regclass, 'public.users'::regclass)
           AND n.nspname='public' AND v.relkind IN ('v','m')
           AND (v.relkind='m' OR NOT COALESCE(v.reloptions @> ARRAY['security_invoker=true'],false))
     ) THEN
-        RAISE EXCEPTION 'A public view/materialized view may bypass request privacy; audit before Stage C.';
+        RAISE EXCEPTION 'A public view/materialized view may bypass request/profile privacy; audit before Stage C.';
     END IF;
     IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
-        WHERE n.nspname='public' AND p.prosecdef AND p.prorettype='public.service_requests'::regtype
+        WHERE n.nspname='public' AND p.prosecdef
+          AND (p.prorettype = 'public.service_requests'::regtype
+            OR (p.prorettype = 'public.users'::regtype
+                -- Existing onboarding returns ONLY the caller's updated row.
+                -- Audit its live auth.uid() checks under the profile gate; do
+                -- not block this known owner-only composite return by type alone.
+                AND p.oid IS DISTINCT FROM to_regprocedure('public.complete_basic_profile(text,text)')))
           AND has_function_privilege('authenticated',p.oid,'EXECUTE')) THEN
-        RAISE EXCEPTION 'A callable definer returns raw request rows; review its authorization before Stage C.';
+        RAISE EXCEPTION 'A callable definer returns raw request/profile rows; review its authorization before Stage C.';
     END IF;
     -- Do not add duplicate database notifiers. Existing report review is the
     -- only retained notifier; confirm its body still supplies report outcomes.
@@ -120,6 +132,7 @@ $stage_c_preflight$;
 -- 3. Privileges are independent of RLS. Revoke BOTH table-wide and all existing
 -- column-level write grants, then give back a narrow application allowlist.
 -- SELECT grants are retained: frontend select('*') must continue to work.
+-- users SELECT is narrowed by RLS below only AFTER Stage B projections exist.
 DO $write_grants$
 DECLARE v_table text; v_columns text;
 BEGIN
@@ -152,7 +165,7 @@ GRANT UPDATE (is_read) ON public.notifications TO authenticated;
 GRANT INSERT (id, message_id, request_id, sender_id, receiver_id, message_text, is_read, created_at),
       UPDATE (is_read) ON public.internal_messages TO authenticated;
 GRANT INSERT (request_id, client_id, provider_id, amount, payment_method,
-              proof_url, proof_path, proof_uploaded_at)
+              proof_path, proof_uploaded_at)
     ON public.payment_records TO authenticated;
 GRANT SELECT ON public.service_requests, public.provider_profiles,
     public.notifications, public.internal_messages, public.payment_records TO authenticated;
@@ -179,7 +192,7 @@ BEGIN
         FROM pg_policy p JOIN pg_class c ON c.oid = p.polrelid
         JOIN pg_namespace n ON n.oid = c.relnamespace
         WHERE n.nspname = 'public' AND c.relname = ANY (ARRAY[
-            'service_requests','provider_profiles','notifications','internal_messages','payment_records'])
+            'users','service_requests','provider_profiles','notifications','internal_messages','payment_records'])
           AND p.polcmd = 'r' AND p.polpermissive
           AND p.polroles <@ ARRAY[0::oid,
               (SELECT oid FROM pg_roles WHERE rolname = 'anon'),
@@ -193,6 +206,18 @@ END;
 $read_policies$;
 -- Explicitly document removal of the confirmed unrestricted legacy policy.
 DROP POLICY IF EXISTS "Authenticated users can read service request summaries" ON public.service_requests;
+DROP POLICY IF EXISTS users_select_authenticated ON public.users;
+
+-- Do NOT deploy until guarded profile projections and their Stage B consumers
+-- are implemented/tested. RLS hides whole rows; it cannot mask email/phone while
+-- exposing full_name. Keep own-account reads (even suspended status checks)
+-- and active Admin management; cross-user display uses narrow guarded APIs.
+CREATE POLICY "IGotU user profile read" ON public.users FOR SELECT TO authenticated
+USING (id = auth.uid() OR igotu_private.is_active_user('admin'));
+DROP POLICY IF EXISTS "IGotU user profile read boundary" ON public.users;
+CREATE POLICY "IGotU user profile read boundary" ON public.users
+AS RESTRICTIVE FOR SELECT TO PUBLIC
+USING (id = auth.uid() OR igotu_private.is_active_user('admin'));
 
 CREATE POLICY "IGotU service request read" ON public.service_requests FOR SELECT TO authenticated
 USING (igotu_private.can_read_raw_service(client_id, selected_provider_id, status::text));
@@ -306,12 +331,16 @@ DROP POLICY IF EXISTS "Clients can insert own payment records" ON public.payment
 DROP POLICY IF EXISTS "IGotU completed-service payment insert" ON public.payment_records;
 CREATE POLICY "IGotU completed-service payment insert" ON public.payment_records FOR INSERT TO authenticated
 WITH CHECK (igotu_private.valid_payment(request_id, client_id, provider_id, amount,
-    payment_method::text, proof_path));
+    payment_method::text, proof_path, proof_url));
 DROP POLICY IF EXISTS "IGotU payment insert boundary" ON public.payment_records;
 CREATE POLICY "IGotU payment insert boundary" ON public.payment_records
 AS RESTRICTIVE FOR INSERT TO PUBLIC
 WITH CHECK (igotu_private.valid_payment(request_id, client_id, provider_id, amount,
-    payment_method::text, proof_path));
+    payment_method::text, proof_path, proof_url));
+-- proof_url must default to NULL (verify live column/default in staging).
+-- Stage B omits it from INSERT entirely; even an explicit NULL has no grant.
+-- RLS additionally rejects non-NULL URLs if another inherited grant exists.
+-- Existing URL-only/both-column receipts are not rewritten or revalidated here.
 -- Payment amounts/participants and message/notification bodies cannot be edited
 -- through the API because their UPDATE columns were not granted in section 3.
 
@@ -463,6 +492,18 @@ BEGIN
     IF has_any_column_privilege('authenticated', 'public.users', 'INSERT') THEN
         RAISE EXCEPTION 'Inherited users INSERT remains; signup must use the auth trigger.';
     END IF;
+    IF has_column_privilege('authenticated', 'public.payment_records', 'proof_url', 'INSERT') THEN
+        RAISE EXCEPTION 'Inherited proof_url INSERT remains; new receipts must use verified proof_path only.';
+    END IF;
+    IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+        WHERE n.nspname = 'igotu_private'
+          AND p.proname IN ('emit_notification','notify_service_change','notify_insert_event',
+              'notify_verification_change','notify_account_status')
+          AND (has_function_privilege('anon',p.oid,'EXECUTE')
+            OR has_function_privilege('authenticated',p.oid,'EXECUTE')
+            OR has_function_privilege('service_role',p.oid,'EXECUTE'))) THEN
+        RAISE EXCEPTION 'Direct notification-writer EXECUTE must remain revoked.';
+    END IF;
     FOREACH v_table IN ARRAY ARRAY[
         'users','provider_profiles','notifications','internal_messages','payment_records'
     ] LOOP
@@ -604,11 +645,16 @@ WHERE member_role.rolname IN ('anon','authenticated');
 --   Provider and anon calls are rejected; successful result has only three columns.
 -- * Own full_name/phone edit and Provider upsert work; protected user/verification
 --   fields fail even when mixed into an otherwise-valid PATCH or INSERT/upsert.
+-- * users raw SELECT/embedding exposes only self or active Admin rows; Stage B
+--   guarded projections preserve recommendations, participant labels and reports
+--   without returning other users' email/phone or private verification metadata.
 -- * Signup trigger still creates users and Admin RPCs still update status/verification.
 -- * Notification INSERT fails for both browser roles; service/message/payment/
 --   review/verification/account events notify the correct Client/Provider once.
 -- * Payment insert rejects wrong Client/Provider/request/status and foreign proof;
 --   a completed own service with the selected Provider succeeds.
+--   Omit proof_url; explicit arbitrary/project/signed URLs (even paired with an
+--   owned path) fail. QR/Bank require an owned path; Cash/Other may omit a proof.
 -- * Path-only, URL-only and consistent both-column legacy receipts remain viewable.
 -- * Own uploader, linked Provider and Admin can sign/read a receipt; unrelated
 --   users/anon cannot. Old public URLs fail after cache considerations are reviewed.

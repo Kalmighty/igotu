@@ -9,6 +9,10 @@
 -- caller-validated projection. Public wrappers are SECURITY INVOKER. No raw
 -- service request composite/JSON is ever returned by the Provider API.
 -- igotu_private must remain outside Supabase's exposed API schemas.
+-- MANDATORY: verify the effective Data API configuration and negative schema
+-- probes as documented, then set igotu.rollout.private_schema_verified='true'
+-- in the approved deployment session. SQL Editor settings alone cannot prove it.
+-- This draft deliberately does not set that operator attestation for you.
 BEGIN;
 SET LOCAL lock_timeout = '5s';
 SET LOCAL statement_timeout = '60s';
@@ -24,8 +28,14 @@ BEGIN
        OR to_regprocedure('public.payment_proof_reference(text)') IS NOT NULL THEN
         RAISE EXCEPTION 'Stage A objects already exist; inspect installation/collisions instead of replacing them.';
     END IF;
-    IF COALESCE(current_setting('pgrst.db_schemas', true), '')
-        ~ '(^|,)\s*igotu_private\s*(,|$)' THEN
+    IF current_setting('igotu.rollout.private_schema_verified', true) IS DISTINCT FROM 'true' THEN
+        RAISE EXCEPTION 'Verify effective Data API exposed schemas externally first; see mandatory Stage A gate in rollout document.';
+    END IF;
+    -- Defense in depth only: this SQL session may have NULL/stale settings
+    -- unlike the running PostgREST process. NULL is NOT evidence of privacy.
+    IF EXISTS (SELECT 1 FROM regexp_split_to_table(
+        COALESCE(current_setting('pgrst.db_schemas', true), ''), ',') AS s(schema_name)
+        WHERE trim(both '"' FROM btrim(s.schema_name)) = 'igotu_private') THEN
         RAISE EXCEPTION 'igotu_private must not be an exposed API schema.';
     END IF;
     FOREACH v_table IN ARRAY ARRAY['users','provider_profiles','service_requests',
@@ -58,6 +68,9 @@ BEGIN
 END;
 $stage_a_preflight$;
 CREATE SCHEMA igotu_private AUTHORIZATION postgres;
+-- Existing production default privileges remain unchanged. Every new helper
+-- must revoke inherited creation defaults explicitly before this transaction
+-- commits, then grant only its documented callers and verify effective ACLs.
 REVOKE ALL ON SCHEMA igotu_private FROM PUBLIC, anon, authenticated;
 -- Safe boolean policy predicates need anon USAGE/EXECUTE in Stage C so policy
 -- evaluation does not break other buckets. They return false without auth.uid().
@@ -159,8 +172,11 @@ $fn$;
 -- Allowlist excludes every future service_requests column by default. For
 -- provider_selected, location/client_lat/client_lng are SQL NULL. Cancelled and
 -- unknown states remain redacted because no reliable prior-confirmation marker
--- was supplied. Free text/images/messages intentionally shared by a Client are
--- not automatically content-redacted by this structured-location API.
+-- was supplied. Descriptions/titles/cancellation reasons, image URLs/contents
+-- (including address-bearing filenames/EXIF), and separate messages can reveal
+-- addresses. This API protects structured location ONLY; it does not guarantee
+-- content privacy. Keep service information for compatibility; Stage B requires
+-- explicit content/asset privacy review before claiming full location privacy.
 
 CREATE FUNCTION igotu_private.provider_match_metadata(p_request_id text)
 RETURNS TABLE (provider_id uuid, is_booked boolean, completed_count bigint)
@@ -307,10 +323,13 @@ $fn$;
 
 CREATE FUNCTION igotu_private.valid_payment(
     p_request_id text, p_client_id uuid, p_provider_id uuid,
-    p_amount numeric, p_method text, p_proof_path text
+    p_amount numeric, p_method text, p_proof_path text, p_proof_url text
 ) RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER SET search_path = ''
 AS $fn$
-    SELECT igotu_private.is_active_user('client') AND p_client_id = auth.uid()
+    -- Applies only to NEW INSERTs after C. Legacy URL resolution is separate
+    -- and unchanged. New receipts identify an owned Storage object, never a URL.
+    SELECT p_proof_url IS NULL
+      AND igotu_private.is_active_user('client') AND p_client_id = auth.uid()
       AND p_amount > 0 AND p_amount <> 'NaN'::numeric
       AND p_amount NOT IN ('Infinity'::numeric, '-Infinity'::numeric)
       AND p_method IN ('Cash','QR Transfer','Bank Transfer','Other')
@@ -320,12 +339,12 @@ AS $fn$
           AND sr.selected_provider_id = p_provider_id AND sr.status::text = 'completed'
       )
       AND (p_method NOT IN ('QR Transfer','Bank Transfer') OR p_proof_path IS NOT NULL)
-      AND (p_proof_path IS NULL OR EXISTS (
+      AND (p_proof_path IS NULL OR (p_proof_path = igotu_private.payment_proof_path(p_proof_path, NULL) AND EXISTS (
         SELECT 1 FROM storage.objects o
         WHERE o.bucket_id = 'payment-proofs' AND o.name = p_proof_path
           AND (storage.foldername(o.name))[1] = auth.uid()::text
           AND COALESCE(to_jsonb(o)->>'owner_id', to_jsonb(o)->>'owner') = auth.uid()::text
-      ));
+      )));
 $fn$;
 
 -- Needed because Providers cannot read raw provider_selected rows after C.
@@ -462,7 +481,7 @@ GRANT EXECUTE ON FUNCTION igotu_private.is_active_user(text),
     igotu_private.can_read_service(uuid,uuid),
     igotu_private.can_read_raw_service(uuid,uuid,text),
     igotu_private.can_read_payment_proof(text),
-    igotu_private.valid_payment(text,uuid,uuid,numeric,text,text),
+    igotu_private.valid_payment(text,uuid,uuid,numeric,text,text,text),
     igotu_private.valid_message(text,uuid,uuid) TO anon, authenticated;
 -- Public wrappers call guarded private readers with the caller's JWT context.
 GRANT EXECUTE ON FUNCTION igotu_private.provider_service_requests(text,text[]),
@@ -477,6 +496,33 @@ REVOKE ALL ON FUNCTION public.provider_service_requests(text,text[]),
     FROM PUBLIC, anon, authenticated, service_role;
 GRANT EXECUTE ON FUNCTION public.provider_service_requests(text,text[]),
     public.provider_match_metadata(text), public.payment_proof_reference(text) TO authenticated;
+-- Detect inherited/default privileges too, not just the direct grants above.
+-- Includes every new function, especially all dormant notification writers.
+DO $stage_a_acl_checks$
+DECLARE v_function record; v_role text; v_expected boolean;
+BEGIN
+    FOR v_function IN
+        SELECT p.oid, n.nspname, p.proname FROM pg_proc p
+        JOIN pg_namespace n ON n.oid = p.pronamespace
+        WHERE n.nspname = 'igotu_private' OR (n.nspname = 'public' AND p.proname IN (
+            'provider_service_requests','provider_match_metadata','payment_proof_reference'))
+    LOOP
+        FOREACH v_role IN ARRAY ARRAY['anon','authenticated','service_role'] LOOP
+            v_expected := (v_role IN ('anon','authenticated') AND v_function.nspname = 'igotu_private'
+                AND v_function.proname IN ('is_active_user','can_read_service','can_read_raw_service',
+                    'can_read_payment_proof','valid_payment','valid_message'))
+                OR (v_role = 'authenticated' AND v_function.proname IN (
+                    'provider_service_requests','provider_match_metadata','payment_proof_reference'))
+                OR (v_role = 'authenticated' AND v_function.nspname = 'igotu_private'
+                    AND v_function.proname IN ('decode_url_path','payment_proof_path'));
+            IF has_function_privilege(v_role, v_function.oid, 'EXECUTE') IS DISTINCT FROM v_expected THEN
+                RAISE EXCEPTION 'Unexpected effective EXECUTE for % on %.%; review grants/memberships.',
+                    v_role, v_function.nspname, v_function.proname;
+            END IF;
+        END LOOP;
+    END LOOP;
+END;
+$stage_a_acl_checks$;
 NOTIFY pgrst, 'reload schema';
 COMMIT;
 
