@@ -711,7 +711,7 @@ function renderProviders(providers) {
             </div>
 
             <div class="smart-card-action-clean">
-              <button class="btn select-provider-btn" data-provider-id="${escapeHtml(provider.id)}">
+              <button class="btn select-provider-btn" aria-label="Select ${escapeHtml(provider.full_name)} as provider" data-provider-id="${escapeHtml(provider.id)}">
                 Select Provider <span>›</span>
               </button>
             </div>

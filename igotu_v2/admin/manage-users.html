@@ -5,17 +5,25 @@
     <title>Manage Users - IGotU V2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
   </head>
 
   <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
         <div>
-          <div class="logo-text">IGotU</div>
+          <div class="sidebar-brand">
+            <a class="logo-text" href="dashboard.html" aria-label="IGotU Admin dashboard">IGotU<span>Admin workspace</span></a>
+            <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+              Menu <span aria-hidden="true">☰</span>
+            </button>
+          </div>
 
-          <nav class="side-menu">
+          <nav class="side-menu" id="workspaceNavigation" aria-label="Admin navigation">
             <a href="dashboard.html">▦ Dashboard</a>
-            <a href="manage-users.html" class="active">👥 Manage Users</a>
+            <a href="manage-users.html" class="active" aria-current="page">👥 Manage Users</a>
             <a href="verifications.html">🛡 Verification Requests</a>
             <a href="reports.html">⚠ Service Reports</a>
             <a href="monitor-requests.html">▣ Monitor Requests</a>
@@ -28,7 +36,7 @@
         </div>
       </aside>
 
-      <main class="main-area">
+      <main class="main-area" id="mainContent" tabindex="-1">
         <header class="topbar">
           <div></div>
           <div class="user-mini">
@@ -52,7 +60,7 @@
             >
           </div>
 
-          <div id="messageBox" class="message-box hidden"></div>
+          <div id="messageBox" role="status" class="message-box hidden"></div>
 
           <section class="panel">
             <div class="panel-header admin-filter-header">
@@ -61,19 +69,19 @@
               <div class="filter-row">
                 <input
                   type="text"
-                  id="searchInput"
+                  id="searchInput" aria-label="Search records"
                   class="small-search"
                   placeholder="Search name or email"
                 />
 
-                <select id="roleFilter" class="small-filter">
+                <select id="roleFilter" aria-label="Filter by role" class="small-filter">
                   <option value="all">All Roles</option>
                   <option value="client">Client</option>
                   <option value="provider">Provider</option>
                   <option value="admin">Admin</option>
                 </select>
 
-                <select id="statusFilter" class="small-filter">
+                <select id="statusFilter" aria-label="Filter by status" class="small-filter">
                   <option value="all">All Status</option>
                   <option value="active">Active</option>
                   <option value="suspended">Suspended</option>

@@ -42,20 +42,28 @@
         }
       }
     </style>
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
   </head>
 
   <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
         <div>
-          <div class="logo-text">IGotU</div>
+          <div class="sidebar-brand">
+            <a class="logo-text" href="dashboard.html" aria-label="IGotU Admin dashboard">IGotU<span>Admin workspace</span></a>
+            <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+              Menu <span aria-hidden="true">☰</span>
+            </button>
+          </div>
 
-          <nav class="side-menu">
+          <nav class="side-menu" id="workspaceNavigation" aria-label="Admin navigation">
             <a href="dashboard.html">▦ Dashboard</a>
             <a href="manage-users.html">👥 Manage Users</a>
             <a href="verifications.html">🛡 Verification Requests</a>
             <a href="reports.html">⚠ Service Reports</a>
-            <a href="monitor-requests.html" class="active"
+            <a href="monitor-requests.html" class="active" aria-current="page"
               >▣ Monitor Requests</a
             >
             <a href="monitor-payments.html">💰 Monitor Payments</a>
@@ -67,7 +75,7 @@
         </div>
       </aside>
 
-      <main class="main-area">
+      <main class="main-area" id="mainContent" tabindex="-1">
         <header class="topbar">
           <div></div>
           <div class="user-mini">
@@ -91,7 +99,7 @@
             >
           </div>
 
-          <div id="messageBox" class="message-box hidden"></div>
+          <div id="messageBox" role="status" class="message-box hidden"></div>
 
           <section class="panel">
             <div class="panel-header admin-filter-header">
@@ -100,12 +108,12 @@
               <div class="filter-row">
                 <input
                   type="text"
-                  id="searchInput"
+                  id="searchInput" aria-label="Search records"
                   class="small-search"
                   placeholder="Search request/client/provider"
                 />
 
-                <select id="statusFilter" class="small-filter">
+                <select id="statusFilter" aria-label="Filter by status" class="small-filter">
                   <option value="all">All Status</option>
                   <option value="pending">Pending</option>
                   <option value="provider_selected">Provider Selected</option>
@@ -115,7 +123,7 @@
                   <option value="cancelled">Cancelled</option>
                 </select>
 
-                <select id="categoryFilter" class="small-filter">
+                <select id="categoryFilter" aria-label="Filter by category" class="small-filter">
                   <option value="all">All Categories</option>
                   <option value="Cleaning">Cleaning</option>
                   <option value="Delivery">Delivery</option>

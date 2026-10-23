@@ -62,6 +62,7 @@ async function loadStats(userId) {
 
     if (error) {
         console.error(error);
+        document.getElementById("incomingRequests").innerHTML = `<div class="ui-state" role="alert"><h3>Requests could not be loaded</h3><p>Refresh the page to try again.</p><a class="btn btn-outline" href="dashboard.html">Try again</a></div>`;
         return;
     }
 
@@ -71,7 +72,7 @@ async function loadStats(userId) {
     document.getElementById("activeCount").textContent = list.filter(r => ["confirmed", "in_progress"].includes(r.status)).length;
     document.getElementById("completedCount").textContent = list.filter(r => r.status === "completed").length;
 
-    const { data: reviews } = await supabase
+    const { data: reviews, error: reviewsError } = await supabase
         .from("service_reviews")
         .select("rating")
         .eq("reviewee_id", userId);
@@ -81,13 +82,13 @@ async function loadStats(userId) {
         ratingList.reduce((sum, item) => sum + Number(item.rating), 0) / ratingList.length :
         0;
 
-    document.getElementById("averageRating").textContent = avg.toFixed(1);
+    document.getElementById("averageRating").textContent = reviewsError ? "—" : (ratingList.length ? avg.toFixed(1) : "No reviews");
 
     const incomingBox = document.getElementById("incomingRequests");
     const incoming = list.filter(r => r.status === "provider_selected");
 
     if (incoming.length === 0) {
-        incomingBox.innerHTML = `<p class="muted-text">No incoming assigned requests yet.</p>`;
+        incomingBox.innerHTML = `<div class="ui-state"><h3>You’re all caught up</h3><p>When a client selects you, their request will appear here. Keep your services and working hours up to date.</p><a class="btn btn-outline" href="edit-profile.html">Manage services &amp; availability</a></div>`;
         return;
     }
 

@@ -5,6 +5,8 @@
   <title>Complete Profile - IGotU</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
 </head>
 <body data-page="client-complete-profile">
   <main class="onboarding-page">
@@ -18,7 +20,7 @@
       <h1>Complete Your Client Profile</h1>
       <p class="onboarding-subtitle">Tell us a little about yourself before entering your dashboard.</p>
 
-      <div id="messageBox" class="message-box hidden"></div>
+      <div id="messageBox" role="status" class="message-box hidden"></div>
 
       <form id="clientCompleteProfileForm">
         <div class="form-group">

@@ -47,7 +47,7 @@ async function countTable(tableName) {
 
     if (error) {
         console.error(error);
-        return 0;
+        return "—";
     }
 
     return count || 0;
@@ -64,7 +64,7 @@ async function loadStats() {
         .select("*", { count: "exact", head: true })
         .in("status", ["pending", "under_review"]);
 
-    document.getElementById("openReports").textContent = reportCountError ? "0" : (openReportCount || 0);
+    document.getElementById("openReports").textContent = reportCountError ? "—" : (openReportCount || 0);
 
     const { data, error } = await supabase
         .from("service_requests")
@@ -74,8 +74,13 @@ async function loadStats() {
 
     const recentBox = document.getElementById("recentRequests");
 
-    if (error || !data || data.length === 0) {
-        recentBox.innerHTML = `<p class="muted-text">No service requests recorded yet.</p>`;
+    if (error) {
+        recentBox.innerHTML = `<div class="ui-state" role="alert"><h3>Activity could not be loaded</h3><p>Refresh the page to try again.</p><a class="btn btn-outline" href="dashboard.html">Try again</a></div>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        recentBox.innerHTML = `<div class="ui-state"><h3>No service activity yet</h3><p>New service requests will appear here as clients create them.</p><a class="btn btn-outline" href="monitor-requests.html">Monitor requests</a></div>`;
         return;
     }
 

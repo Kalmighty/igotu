@@ -6,16 +6,24 @@
     <title>Provider Dashboard - IGotU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
 </head>
 
 <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
         <aside class="sidebar">
             <div>
-                <div class="logo-text">IGotU</div>
+                <div class="sidebar-brand">
+                  <a class="logo-text" href="dashboard.html" aria-label="IGotU Provider dashboard">IGotU<span>Provider workspace</span></a>
+                  <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+                    Menu <span aria-hidden="true">☰</span>
+                  </button>
+                </div>
 
-                <nav class="side-menu">
-                    <a href="dashboard.html" class="active">▦ Dashboard</a>
+                <nav class="side-menu" id="workspaceNavigation" aria-label="Provider navigation">
+                    <a href="dashboard.html" class="active" aria-current="page">▦ Dashboard</a>
 <a href="incoming-requests.html">📥 Incoming Requests</a>
                     <a href="assignment-details.html">▣ Assignments</a>
                     <a href="messages.html">✉ Messages</a>
@@ -23,7 +31,7 @@
             </div>
         </aside>
 
-        <main class="main-area">
+        <main class="main-area" id="mainContent" tabindex="-1">
             <header class="topbar">
         <div></div>
         <div class="topbar-actions">
@@ -104,34 +112,36 @@
             <section class="content-area">
                 <div class="page-heading">
                     <div>
+                        <span class="page-eyebrow">Your workspace</span>
                         <h1>Provider Dashboard</h1>
                         <p id="welcomeText">Manage your incoming assigned requests.</p>
                     </div>
 </div>
 
+                <div class="workspace-tip"><div><strong>Ready for your next service?</strong><p>Keep your services, location and weekly working hours up to date.</p></div><a class="btn btn-outline" href="edit-profile.html">Manage services</a></div>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">📥</div>
                         <span>Incoming</span>
-                        <strong id="incomingCount">0</strong>
+                        <strong id="incomingCount">—</strong>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">🛠️</div>
                         <span>Active</span>
-                        <strong id="activeCount">0</strong>
+                        <strong id="activeCount">—</strong>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">✅</div>
                         <span>Completed</span>
-                        <strong id="completedCount">0</strong>
+                        <strong id="completedCount">—</strong>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">⭐</div>
                         <span>Average Rating</span>
-                        <strong id="averageRating">0.0</strong>
+                        <strong id="averageRating">—</strong>
                     </div>
                 </div>
 
@@ -141,7 +151,7 @@
                         <a href="incoming-requests.html">View all</a>
                     </div>
 
-                    <div id="incomingRequests" class="list-box">
+                    <div id="incomingRequests" aria-live="polite" class="list-box">
                         <p class="muted-text">Loading incoming requests...</p>
                     </div>
                 </section>

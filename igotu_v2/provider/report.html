@@ -5,13 +5,20 @@
   <title>Report Service Issue - IGotU</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
 </head>
 <body data-role="provider">
   <div class="app-layout">
     <aside class="sidebar">
       <div>
-        <div class="logo-text">IGotU</div>
-        <nav class="side-menu">
+        <div class="sidebar-brand">
+          <a class="logo-text" href="dashboard.html" aria-label="IGotU Provider dashboard">IGotU<span>Provider workspace</span></a>
+          <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+            Menu <span aria-hidden="true">☰</span>
+          </button>
+        </div>
+        <nav class="side-menu" id="workspaceNavigation" aria-label="Provider navigation">
             <a href="dashboard.html">▦ Dashboard</a>
             <a href="incoming-requests.html">📥 Incoming Requests</a>
             <a href="assignment-details.html">▣ Assignments</a>
@@ -20,7 +27,7 @@
       </div>
     </aside>
 
-    <main class="main-area">
+    <main class="main-area" id="mainContent" tabindex="-1">
       <header class="topbar">
         <div></div>
         <div class="topbar-actions">
@@ -47,7 +54,7 @@
           <a id="backLink" href="dashboard.html" class="btn btn-outline">Back</a>
         </div>
 
-        <div id="messageBox" class="message-box hidden"></div>
+        <div id="messageBox" role="status" class="message-box hidden"></div>
 
         <div class="report-page-grid">
           <aside class="panel report-context-card">

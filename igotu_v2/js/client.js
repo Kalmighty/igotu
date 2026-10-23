@@ -54,6 +54,7 @@ async function loadStats(userId) {
 
     if (error) {
         console.error(error);
+        document.getElementById("recentRequests").innerHTML = `<div class="ui-state" role="alert"><h3>Requests could not be loaded</h3><p>Your requests are still saved. Refresh the page to try again.</p><a class="btn btn-outline" href="dashboard.html">Try again</a></div>`;
         return;
     }
 
@@ -67,7 +68,7 @@ async function loadStats(userId) {
     const recentBox = document.getElementById("recentRequests");
 
     if (requests.length === 0) {
-        recentBox.innerHTML = `<p class="muted-text">No requests yet. Create your first service request.</p>`;
+        recentBox.innerHTML = `<div class="ui-state"><h3>What can we help you with?</h3><p>Create a request to find providers for the service you need. Track each request here from start to finish.</p><a class="btn" href="create-request.html">Create your first request</a></div>`;
         return;
     }
 
