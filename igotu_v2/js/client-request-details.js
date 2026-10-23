@@ -1,3 +1,4 @@
+import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 import { askCancellationReason } from "./service-action-dialogs.js";
@@ -57,10 +58,10 @@ function buildRequestImagePreview(request) {
         <div class="description-box">
             <h3>Submitted Image</h3>
             <div class="request-image-box flat-request-image-box">
-                <a href="${imageUrl}" target="_blank" rel="noopener noreferrer">
-                    <img src="${imageUrl}" alt="Submitted request image" class="request-submitted-image">
+                <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer">
+                    <img src="${escapeHtml(safeUrl(imageUrl))}" alt="Submitted request image" class="request-submitted-image">
                 </a>
-                <a href="${imageUrl}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
+                <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
             </div>
         </div>
     `;
@@ -135,10 +136,10 @@ function getPaymentProofHtml(payment) {
         return `
             <div class="payment-proof-preview">
                 <p><strong>Proof:</strong></p>
-                <a href="${payment.proof_url}" target="_blank" rel="noopener noreferrer">
-                    <img src="${payment.proof_url}" alt="Payment proof" class="payment-proof-image" style="width: 100%; max-width: 420px; border-radius: 12px; border: 1px solid #edf1ee; margin-top: 8px;">
+                <a href="${escapeHtml(safeUrl(payment.proof_url))}" target="_blank" rel="noopener noreferrer">
+                    <img src="${escapeHtml(safeUrl(payment.proof_url))}" alt="Payment proof" class="payment-proof-image" style="width: 100%; max-width: 420px; border-radius: 12px; border: 1px solid #edf1ee; margin-top: 8px;">
                 </a>
-                <p><a href="${payment.proof_url}" target="_blank" rel="noopener noreferrer">Open proof payment</a></p>
+                <p><a href="${escapeHtml(safeUrl(payment.proof_url))}" target="_blank" rel="noopener noreferrer">Open proof payment</a></p>
             </div>
         `;
     }
@@ -146,7 +147,7 @@ function getPaymentProofHtml(payment) {
     return `
         <p>
             <strong>Proof:</strong>
-            <a href="${payment.proof_url}" target="_blank" rel="noopener noreferrer">Open proof payment</a>
+            <a href="${escapeHtml(safeUrl(payment.proof_url))}" target="_blank" rel="noopener noreferrer">Open proof payment</a>
         </p>
     `;
 }
@@ -374,8 +375,8 @@ function renderRequest(request, provider) {
         ? `
             <div class="detail-card">
                 <span>Selected Provider</span>
-                <strong>${provider.full_name}</strong>
-                <p>${provider.user_code} · ${provider.email}</p>
+                <strong>${escapeHtml(provider.full_name)}</strong>
+                <p>${escapeHtml(provider.user_code)} · ${escapeHtml(provider.email)}</p>
             </div>
         `
         : `
@@ -390,10 +391,10 @@ function renderRequest(request, provider) {
 
     if (request.status === "pending") {
         actionHtml = `
-            <a href="recommended-providers.html?request_id=${request.request_id}" class="btn">
+            <a href="recommended-providers.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn">
                 View Recommended Providers
             </a>
-            <a href="create-request.html?request_id=${request.request_id}" class="btn btn-outline">
+            <a href="create-request.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn btn-outline">
                 Edit Request
             </a>
             <button class="danger-btn" id="cancelRequestBtn">
@@ -426,7 +427,7 @@ function renderRequest(request, provider) {
 
     const messageActionHtml = provider && request.status !== "cancelled"
         ? `
-            <a href="messages.html?request_id=${request.request_id}" class="btn btn-outline">
+            <a href="messages.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn btn-outline">
                 Message Provider
             </a>
         `
@@ -434,7 +435,7 @@ function renderRequest(request, provider) {
 
     const reportActionHtml = provider && request.status !== "pending"
         ? `
-            <a href="report.html?request_id=${request.request_id}" class="danger-btn btn-outline-danger">
+            <a href="report.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="danger-btn btn-outline-danger">
                 Report Issue
             </a>
         `
@@ -446,7 +447,7 @@ function renderRequest(request, provider) {
                 <h3>Service Location Map</h3>
                 <div id="requestLocationMap"></div>
                 <p class="map-status">
-                    Latitude: ${Number(request.client_lat).toFixed(7)} · Longitude: ${Number(request.client_lng).toFixed(7)}
+                    Latitude: ${escapeHtml(Number(request.client_lat).toFixed(7))} · Longitude: ${escapeHtml(Number(request.client_lng).toFixed(7))}
                 </p>
             </div>
         `
@@ -461,44 +462,44 @@ function renderRequest(request, provider) {
         <div class="details-grid big-details">
             <div class="detail-card">
                 <span>Category</span>
-                <strong>${request.category}</strong>
+                <strong>${escapeHtml(request.category)}</strong>
             </div>
 
             <div class="detail-card">
                 <span>Service Type</span>
-                <strong>${request.service_type || "Not specified"}</strong>
+                <strong>${escapeHtml(request.service_type || "Not specified")}</strong>
             </div>
 
             <div class="detail-card">
                 <span>Priority</span>
-                <strong>${request.priority}</strong>
+                <strong>${escapeHtml(request.priority)}</strong>
             </div>
 
             <div class="detail-card">
                 <span>Preferred Date</span>
-                <strong>${request.preferred_date}</strong>
+                <strong>${escapeHtml(request.preferred_date)}</strong>
             </div>
 
             <div class="detail-card">
                 <span>Preferred Time</span>
-                <strong>${request.preferred_time}</strong>
+                <strong>${escapeHtml(request.preferred_time)}</strong>
             </div>
 
             <div class="detail-card">
                 <span>Budget</span>
-                <strong>${formatBudget(request.budget)}</strong>
+                <strong>${escapeHtml(formatBudget(request.budget))}</strong>
             </div>
 
             <div class="detail-card">
                 <span>Location</span>
-                <strong>${request.location}</strong>
+                <strong>${escapeHtml(request.location)}</strong>
             </div>
         </div>
 
         ${request.status === "cancelled" && request.cancellation_reason ? `
             <div class="cancellation-note">
                 <strong>Cancellation reason</strong>
-                <span>${request.cancellation_reason}</span>
+                <span>${escapeHtml(request.cancellation_reason)}</span>
             </div>
         ` : ""}
 
@@ -506,7 +507,7 @@ function renderRequest(request, provider) {
 
         <div class="description-box">
             <h3>Description</h3>
-            <p>${request.description}</p>
+            <p>${escapeHtml(request.description)}</p>
         </div>
 
         ${buildRequestImagePreview(request)}
@@ -657,8 +658,8 @@ function buildCompletedSection(request, provider) {
         ? `
             <div class="success-box">
                 <h3>Payment Recorded</h3>
-                <p><strong>Amount:</strong> RM ${Number(existingPayment.amount).toFixed(2)}</p>
-                <p><strong>Method:</strong> ${existingPayment.payment_method}</p>
+                <p><strong>Amount:</strong> RM ${escapeHtml(Number(existingPayment.amount).toFixed(2))}</p>
+                <p><strong>Method:</strong> ${escapeHtml(existingPayment.payment_method)}</p>
                 ${getPaymentProofHtml(existingPayment)}
             </div>
         `
@@ -670,7 +671,7 @@ function buildCompletedSection(request, provider) {
                 <div class="two-column">
                     <div class="form-group">
                         <label for="paymentAmount">Amount Paid (RM)</label>
-                        <input type="number" id="paymentAmount" min="0" step="0.01" value="${request.budget || ""}" required>
+                        <input type="number" id="paymentAmount" min="0" step="0.01" value="${escapeHtml(request.budget || "")}" required>
                     </div>
 
                     <div class="form-group">
@@ -716,14 +717,14 @@ function buildCompletedSection(request, provider) {
         ? `
             <div class="success-box">
                 <h3>Your Review Submitted</h3>
-                <p><strong>Rating:</strong> ${existingReview.rating} / 5</p>
-                <p><strong>Feedback:</strong> ${existingReview.feedback || "No feedback provided."}</p>
+                <p><strong>Rating:</strong> ${escapeHtml(existingReview.rating)} / 5</p>
+                <p><strong>Feedback:</strong> ${escapeHtml(existingReview.feedback || "No feedback provided.")}</p>
             </div>
         `
         : `
             <form id="reviewForm" class="mini-form">
                 <h3>Review Provider</h3>
-                <p class="muted-text">Share your feedback about ${provider.full_name}.</p>
+                <p class="muted-text">Share your feedback about ${escapeHtml(provider.full_name)}.</p>
 
                 <div class="form-group">
                     <label>Rating</label>

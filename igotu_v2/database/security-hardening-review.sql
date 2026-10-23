@@ -1,0 +1,50 @@
+-- IGotU SECURITY HARDENING -- SUPERSEDED REVIEW / REFERENCE ONLY.
+-- This file intentionally contains NO executable SQL. Do not use the previous
+-- monolithic proposal for deployment; it mixed additive APIs and lockdown.
+--
+-- Deployment artifacts (independent files; never concatenate/execute together):
+-- 1. security-hardening-stage-a-additive.sql
+--    New guarded Provider request projection, matching metadata and receipt-path
+--    APIs; private policy/notification helpers. NO existing access removed,
+--    bucket/policy/RPC bodies changed, or notification triggers activated.
+-- 2. Stage B is frontend work, described in security-hardening-rollout.md.
+--    It is NOT implemented by any SQL in this change.
+-- 3. security-hardening-stage-c-lockdown.sql
+--    Gated on tested frontend + paused writes + role-helper dependency review.
+--    Installs privacy/ownership policies, narrow grants, private proof access
+--    and transactional notifications only after historical receipt checks pass.
+--
+-- Corrected Provider privacy model:
+-- * provider_selected: secure API returns approximate_area; location, client_lat
+--   and client_lng are SQL NULL. Raw service_requests access is denied in Stage C.
+-- * confirmed / in_progress / completed: assigned Provider may obtain exact
+--   structured location. Cancelled/unknown states are redacted conservatively.
+-- * Client sees own requests; Admin retains authorized full-row access.
+--
+-- Confirmed live signup wiring and behavior are accepted:
+-- auth.users -> on_auth_user_created -> public.handle_new_auth_user().
+-- Metadata role is normalized to Client/Provider, otherwise Client. No signup
+-- redesign or function-body replacement is proposed. Only direct EXECUTE is
+-- removed in Stage C; the auth trigger remains intact.
+--
+-- public.current_user_role() remains available to authenticated RLS callers.
+-- Stage C conditionally removes anon/PUBLIC execution ONLY after dependency
+-- review. If anon is needed, the exception is preserved and documented.
+--
+-- Historical receipts: Stage A inventories path-only / URL-only / both / neither.
+-- payment_proof_reference() resolves only valid same-project Storage paths,
+-- including URL-only rows, without rewriting data. Stage C aborts on unresolved,
+-- missing, foreign-owned or mismatched legacy proofs. No bucket switch until the
+-- signed/authenticated frontend and legacy receipt acceptance tests pass.
+--
+-- Notifications: Stage A creates DORMANT functions only. Stage B retires browser
+-- writes during a controlled paused-write cutover; Stage C activates six triggers
+-- and denies browser INSERT in one transaction. No Admin recipients are added.
+--
+-- Protected user/provider columns remain protected by Stage C column grants.
+-- Existing authorized profile RPCs/upserts and Admin RPC bodies are retained.
+-- No booking concurrency, duration, CSS, badge UI, unused-index or tuning work.
+--
+-- Full policy/privilege/API/frontend manifests and deployment order are in
+-- security-hardening-rollout.md; exact executable statements are in A and C.
+-- All validation is static parsing. NO SQL has been executed by this assistant.

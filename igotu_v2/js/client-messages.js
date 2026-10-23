@@ -211,9 +211,9 @@ function renderConversationList() {
         const isActive = selectedRequest && selectedRequest.request_id === request.request_id;
 
         return `
-            <button type="button" class="conversation-card ${isActive ? "active" : ""}" data-request-id="${request.request_id}">
+            <button type="button" class="conversation-card ${isActive ? "active" : ""}" data-request-id="${escapeHtml(request.request_id)}">
                 <div class="conversation-topline">
-                    <span class="status-pill">${formatStatus(request.status)}</span>
+                    <span class="status-pill">${escapeHtml(formatStatus(request.status))}</span>
                     <span>${escapeHtml(request.request_id)}</span>
                 </div>
                 <h3>${escapeHtml(request.title)}</h3>
@@ -276,16 +276,23 @@ function renderMessages(messages) {
         return;
     }
 
-    messagesList.innerHTML = messages.map(function(message) {
-        const isMine = message.sender_id === currentUser.id;
+    const bubbles = messages.map(function(message) {
+        const bubble = document.createElement("div");
+        bubble.className = message.sender_id === currentUser.id
+            ? "message-bubble mine"
+            : "message-bubble other";
 
-        return `
-            <div class="message-bubble ${isMine ? "mine" : "other"}">
-                <p>${escapeHtml(message.message_text)}</p>
-                <span class="message-time">${formatDateTime(message.created_at)}</span>
-            </div>
-        `;
-    }).join("");
+        const text = document.createElement("p");
+        text.textContent = message.message_text ?? "";
+
+        const time = document.createElement("span");
+        time.className = "message-time";
+        time.textContent = formatDateTime(message.created_at);
+
+        bubble.append(text, time);
+        return bubble;
+    });
+    messagesList.replaceChildren(...bubbles);
 }
 
 async function markMessagesAsRead() {

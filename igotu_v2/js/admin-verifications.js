@@ -1,3 +1,4 @@
+import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 
@@ -154,43 +155,43 @@ function renderRequests() {
 
     const providerDetails = request.role === "provider"
       ? `<div class="verification-admin-extra">
-          <span>Business: <strong>${request.business_name || "Not provided"}</strong></span>
-          <span>SSM: <strong>${request.ssm_number || "Not provided"}</strong></span>
-          <span>Professional licence: <strong>${request.professional_license || "Not provided"}</strong></span>
+          <span>Business: <strong>${escapeHtml(request.business_name || "Not provided")}</strong></span>
+          <span>SSM: <strong>${escapeHtml(request.ssm_number || "Not provided")}</strong></span>
+          <span>Professional licence: <strong>${escapeHtml(request.professional_license || "Not provided")}</strong></span>
         </div>`
       : "";
 
     const actions = request.status === "pending"
-      ? `<button type="button" class="btn btn-small approve-verification-btn" data-request-id="${request.id}" data-user-id="${request.user_id}">✓ Approve</button>
-         <button type="button" class="danger-btn btn-small reject-verification-btn" data-request-id="${request.id}" data-user-id="${request.user_id}">Reject</button>`
+      ? `<button type="button" class="btn btn-small approve-verification-btn" data-request-id="${escapeHtml(request.id)}" data-user-id="${escapeHtml(request.user_id)}">✓ Approve</button>
+         <button type="button" class="danger-btn btn-small reject-verification-btn" data-request-id="${escapeHtml(request.id)}" data-user-id="${escapeHtml(request.user_id)}">Reject</button>`
       : `<span class="status-note">${request.status === "approved" ? "Reviewed and approved" : "Reviewed and rejected"}</span>`;
 
     return `
       <article class="user-card verification-admin-card">
         <div class="user-card-main">
-          <div class="user-avatar">${(request.legal_name || "U").charAt(0).toUpperCase()}</div>
+          <div class="user-avatar">${escapeHtml((request.legal_name || "U").charAt(0).toUpperCase())}</div>
           <div class="verification-admin-content">
             <div class="card-topline">
               <span class="status-pill">${request.role === "provider" ? "Provider" : "Client"}</span>
-              <span class="verification-status-badge ${statusClass}">${request.status}</span>
-              <span>${user?.user_code || "-"}</span>
+              <span class="verification-status-badge ${escapeHtml(statusClass)}">${escapeHtml(request.status)}</span>
+              <span>${escapeHtml(user?.user_code || "-")}</span>
             </div>
-            <h3>${request.legal_name}</h3>
-            <p class="muted-text">${user?.email || "-"}</p>
+            <h3>${escapeHtml(request.legal_name)}</h3>
+            <p class="muted-text">${escapeHtml(user?.email || "-")}</p>
             <div class="details-grid">
-              <span>ID Type: <strong>${formatIdType(request.id_type)}</strong></span>
-              <span>ID ending: <strong>•••• ${request.id_number_last4}</strong></span>
-              <span>Submitted: <strong>${formatDate(request.submitted_at)}</strong></span>
+              <span>ID Type: <strong>${escapeHtml(formatIdType(request.id_type))}</strong></span>
+              <span>ID ending: <strong>•••• ${escapeHtml(request.id_number_last4)}</strong></span>
+              <span>Submitted: <strong>${escapeHtml(formatDate(request.submitted_at))}</strong></span>
               <span>Account verified: <strong>${user?.identity_verified ? "Yes" : "No"}</strong></span>
             </div>
             ${providerDetails}
-            ${request.admin_note ? `<div class="verification-admin-note"><strong>Admin note:</strong><span>${request.admin_note}</span></div>` : ""}
+            ${request.admin_note ? `<div class="verification-admin-note"><strong>Admin note:</strong><span>${escapeHtml(request.admin_note)}</span></div>` : ""}
           </div>
         </div>
 
         <div class="incoming-actions verification-admin-actions">
-          <button type="button" class="btn btn-outline btn-small view-verification-doc-btn" data-path="${request.identity_document_path}">View Identity</button>
-          ${request.supporting_document_path ? `<button type="button" class="btn btn-outline btn-small view-verification-doc-btn" data-path="${request.supporting_document_path}">View Supporting</button>` : ""}
+          <button type="button" class="btn btn-outline btn-small view-verification-doc-btn" data-path="${escapeHtml(request.identity_document_path)}">View Identity</button>
+          ${request.supporting_document_path ? `<button type="button" class="btn btn-outline btn-small view-verification-doc-btn" data-path="${escapeHtml(request.supporting_document_path)}">View Supporting</button>` : ""}
           ${actions}
         </div>
       </article>`;
@@ -228,7 +229,12 @@ async function openPrivateDocument(path, button) {
     return;
   }
 
-  window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+  const documentUrl = safeUrl(data.signedUrl);
+  if (!documentUrl) {
+    showMessage("Unable to open the document: invalid URL.");
+    return;
+  }
+  window.open(documentUrl, "_blank", "noopener,noreferrer");
 }
 
 async function reviewRequest(requestId, userId, status, button) {

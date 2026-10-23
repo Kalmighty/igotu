@@ -1,3 +1,4 @@
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 import { askCancellationReason } from "./service-action-dialogs.js";
@@ -132,7 +133,7 @@ function renderRequests() {
 
     requestsList.innerHTML = filteredRequests.map(function(request) {
         let actionHtml = `
-            <a href="request-details.html?request_id=${request.request_id}" class="btn btn-small">
+            <a href="request-details.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn btn-small">
                 View Details
             </a>
         `;
@@ -140,14 +141,14 @@ function renderRequests() {
         if (["pending", "provider_selected", "confirmed"].includes(request.status)) {
             if (request.status === "pending") {
                 actionHtml += `
-                    <a href="create-request.html?request_id=${request.request_id}" class="btn btn-outline btn-small">
+                    <a href="create-request.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn btn-outline btn-small">
                         Edit Request
                     </a>
                 `;
             }
 
             actionHtml += `
-                <button class="danger-btn btn-small cancel-btn" data-request-id="${request.request_id}">
+                <button class="danger-btn btn-small cancel-btn" data-request-id="${escapeHtml(request.request_id)}">
                     Cancel Request
                 </button>
             `;
@@ -157,27 +158,27 @@ function renderRequests() {
             <div class="incoming-card">
                 <div>
                     <div class="card-topline">
-                        <span class="status-pill">${formatStatus(request.status)}</span>
-                        <span>${request.request_id}</span>
+                        <span class="status-pill">${escapeHtml(formatStatus(request.status))}</span>
+                        <span>${escapeHtml(request.request_id)}</span>
                     </div>
 
-                    <h3>${request.title}</h3>
-                    <p>${request.description}</p>
+                    <h3>${escapeHtml(request.title)}</h3>
+                    <p>${escapeHtml(request.description)}</p>
 
                     <div class="details-grid">
-                        <span>Category: <strong>${request.category}</strong></span>
-                        <span>Service Type: <strong>${request.service_type || "Not specified"}</strong></span>
-                        <span>Priority: <strong>${request.priority}</strong></span>
-                        <span>Date: <strong>${request.preferred_date}</strong></span>
-                        <span>Time: <strong>${request.preferred_time}</strong></span>
-                        <span>Budget: <strong>${formatBudget(request.budget)}</strong></span>
-                        <span>Location: <strong>${request.location}</strong></span>
+                        <span>Category: <strong>${escapeHtml(request.category)}</strong></span>
+                        <span>Service Type: <strong>${escapeHtml(request.service_type || "Not specified")}</strong></span>
+                        <span>Priority: <strong>${escapeHtml(request.priority)}</strong></span>
+                        <span>Date: <strong>${escapeHtml(request.preferred_date)}</strong></span>
+                        <span>Time: <strong>${escapeHtml(request.preferred_time)}</strong></span>
+                        <span>Budget: <strong>${escapeHtml(formatBudget(request.budget))}</strong></span>
+                        <span>Location: <strong>${escapeHtml(request.location)}</strong></span>
                     </div>
 
                     ${request.status === "cancelled" && request.cancellation_reason ? `
                         <div class="cancellation-note">
                             <strong>Cancellation reason</strong>
-                            <span>${request.cancellation_reason}</span>
+                            <span>${escapeHtml(request.cancellation_reason)}</span>
                         </div>
                     ` : ""}
                 </div>
