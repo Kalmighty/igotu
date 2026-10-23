@@ -57,6 +57,41 @@ const screenshots = process.env.UI_SCREENSHOTS;
             .map((e) => e.className || e.tagName),
         );
       assert.deepEqual(clipped, [], `Clipped content at ${width}`);
+      // The supporting Provider card must not cover meaningful parts of the primary card.
+      const overlap = await page.evaluate(() => {
+        const a = document
+          .querySelector(".preview-provider")
+          .getBoundingClientRect();
+        const b = document
+          .querySelector(".preview-alternative")
+          .getBoundingClientRect();
+        return (
+          Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
+          Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top))
+        );
+      });
+      assert.ok(
+        overlap < 250,
+        `Provider illustration cards overlap at ${width}`,
+      );
+      if (width <= 850) {
+        const clear = await page.evaluate(() => {
+          const request = document
+            .querySelector(".preview-request")
+            .getBoundingClientRect();
+          const provider = document
+            .querySelector(".preview-provider")
+            .getBoundingClientRect();
+          return (
+            request.right <= provider.left || request.bottom <= provider.top
+          );
+        });
+        assert.equal(
+          clear,
+          true,
+          `Illustrative request text is obscured at ${width}`,
+        );
+      }
       if (screenshots && [1440, 390].includes(width)) {
         const name = width === 1440 ? "desktop" : "mobile";
         await page.screenshot({

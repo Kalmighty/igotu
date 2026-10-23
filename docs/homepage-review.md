@@ -2,6 +2,19 @@
 
 The homepage replaces the four-link introduction with an original IGotU design: warm white, forest and emerald green, a serif accent, restrained borders, original SVG icons, and a request-to-recommendation illustration. All artwork is authored in this change; no stock imagery, copied branding, external fonts, libraries or live data are used by the page.
 
+## Premium refinement
+
+The refinement builds on the homepage in `374164c`; its sections, headline, categories, links and request-first workflow are retained. It adds:
+
+- A stronger hero headline, subtle accent underline, clearer body text and button treatments with inset highlights and circular arrow details.
+- A softly lit illustration canvas, layered card shadows, numbered request/recommendation/choice cues and restrained hover motion. The illustration remains explicitly labelled sample data.
+- An enclosed benefit strip and larger service tiles with framed icons, supporting descriptions and a differentiated Other tile. These remain the exact seven supported categories.
+- White numbered workflow cards, desktop connectors and a vertical mobile sequence, retaining the same four steps and offline-payment wording.
+- A richer forest-green signature section with bounded contour accents and a contrasting light interactive explainer panel.
+- Framed benefit cards, richer mint/sand Client and Provider cards, dimensional icon sequences and a more distinctive closing CTA.
+
+Phone illustrations separate the request and Provider cards; the tablet hero stacks to preserve legibility. The browser check now asserts that the supporting Provider card does not obscure the primary card and that narrow-layout request text remains uncovered. All five viewport and axe checks pass after refinement. Homepage JavaScript, authentication and service-matching behavior are unchanged. The screenshots below show the refined design.
+
 ## Sections and behavior
 
 - Sticky navigation with Home, How It Works, Services, Why IGotU, Login and Get Started. The mobile disclosure supports keyboard activation, Escape, focus recovery on resize and section navigation. Without JavaScript the navigation links remain visible.
