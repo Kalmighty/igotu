@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Provider Dashboard - IGotU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <div>
+                <div class="logo-text">IGotU</div>
+
+                <nav class="side-menu">
+                    <a href="dashboard.html" class="active">▦ Dashboard</a>
+<a href="incoming-requests.html">📥 Incoming Requests</a>
+                    <a href="assignment-details.html">▣ Assignments</a>
+                    <a href="messages.html">✉ Messages</a>
+</nav>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+        <div></div>
+        <div class="topbar-actions">
+          <div class="notification-menu-wrap">
+            <button
+              type="button"
+              class="topbar-notification-btn"
+              id="notificationMenuTrigger"
+              aria-label="Notifications"
+              aria-expanded="false"
+              aria-controls="notificationDropdown"
+              title="Notifications"
+            >
+              <span class="topbar-notification-icon" aria-hidden="true">🔔</span>
+              <span class="notification-badge hidden">0</span>
+            </button>
+
+            <div id="notificationDropdown" class="notification-dropdown hidden">
+              <div class="notification-dropdown-header">
+                <div>
+                  <strong>Notifications</strong>
+                  <span id="notificationDropdownCount">0 unread</span>
+                </div>
+
+                <button
+                  type="button"
+                  id="notificationMarkAllBtn"
+                  class="notification-mark-all-btn"
+                >
+                  Mark all as read
+                </button>
+              </div>
+
+              <div id="notificationDropdownList" class="notification-dropdown-list">
+                <div class="notification-dropdown-empty">
+                  <span>🔔</span>
+                  <strong>No notifications yet</strong>
+                  <small>New updates will appear here.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-menu-wrap">
+            <button
+              type="button"
+              class="user-mini profile-menu-trigger"
+              id="profileMenuTrigger"
+              aria-expanded="false"
+              aria-controls="profileDropdown"
+            >
+              <div class="avatar" id="avatar">P</div>
+              <div class="profile-menu-user-text">
+                <strong id="userName">Provider</strong>
+                <small id="userRole">Provider</small>
+              </div>
+              <span class="profile-menu-chevron" aria-hidden="true">⌄</span>
+            </button>
+
+            <div id="profileDropdown" class="profile-dropdown hidden">
+              <a href="edit-profile.html" class="profile-dropdown-item">
+                <span class="profile-dropdown-icon">✎</span>
+                <span>Edit Profile</span>
+              </a>
+              <button
+                type="button"
+                id="profileLogoutBtn"
+                class="profile-dropdown-item profile-dropdown-logout"
+              >
+                <span class="profile-dropdown-icon">↪</span>
+                <span>Log out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+            <section class="content-area">
+                <div class="page-heading">
+                    <div>
+                        <h1>Provider Dashboard</h1>
+                        <p id="welcomeText">Manage your incoming assigned requests.</p>
+                    </div>
+</div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📥</div>
+                        <span>Incoming</span>
+                        <strong id="incomingCount">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🛠️</div>
+                        <span>Active</span>
+                        <strong id="activeCount">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <span>Completed</span>
+                        <strong id="completedCount">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <span>Average Rating</span>
+                        <strong id="averageRating">0.0</strong>
+                    </div>
+                </div>
+
+                <section class="panel">
+                    <div class="panel-header">
+                        <h2>Incoming Requests</h2>
+                        <a href="incoming-requests.html">View all</a>
+                    </div>
+
+                    <div id="incomingRequests" class="list-box">
+                        <p class="muted-text">Loading incoming requests...</p>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+    <script type="module" src="../js/profile-guard.js"></script>
+    <script type="module" src="../js/notification-badge.js"></script>
+    <script type="module" src="../js/notification-menu.js"></script>
+    <script type="module" src="../js/profile-menu.js"></script>
+
+    <script type="module" src="../js/provider.js"></script>
+</body>
+
+</html>

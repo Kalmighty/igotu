@@ -1,0 +1,3 @@
+-- IGotU Setup Shortcut
+-- For the latest version, run database/priority-features-setup.sql in Supabase SQL Editor.
+-- This file is only a note because Supabase SQL Editor cannot include another local SQL file.

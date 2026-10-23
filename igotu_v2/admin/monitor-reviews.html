@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Monitor Reviews - IGotU V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div>
+          <div class="logo-text">IGotU</div>
+
+          <nav class="side-menu">
+            <a href="dashboard.html">▦ Dashboard</a>
+            <a href="manage-users.html">👥 Manage Users</a>
+            <a href="verifications.html">🛡 Verification Requests</a>
+            <a href="reports.html">⚠ Service Reports</a>
+            <a href="monitor-requests.html">▣ Monitor Requests</a>
+            <a href="monitor-payments.html">💰 Monitor Payments</a>
+            <a href="monitor-reviews.html" class="active">⭐ Monitor Reviews</a>
+            <a href="../login.html" id="logoutBtn" class="logout-link"
+              >↪ Logout</a
+            >
+          </nav>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div></div>
+          <div class="user-mini">
+            <div class="avatar" id="avatar">A</div>
+            <div>
+              <strong id="userName">Admin</strong>
+              <small id="userRole">Admin</small>
+            </div>
+          </div>
+        </header>
+
+        <section class="content-area">
+          <div class="page-heading">
+            <div>
+              <h1>Monitor Reviews</h1>
+              <p>View mutual feedback between clients and providers.</p>
+            </div>
+
+            <a href="dashboard.html" class="btn btn-outline"
+              >Back to Dashboard</a
+            >
+          </div>
+
+          <div id="messageBox" class="message-box hidden"></div>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">⭐</div>
+              <span>Total Reviews</span>
+              <strong id="totalReviews">0</strong>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">📊</div>
+              <span>Average Rating</span>
+              <strong id="averageRating">0.0</strong>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">👤</div>
+              <span>Client Reviews</span>
+              <strong id="clientReviews">0</strong>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">🛠️</div>
+              <span>Provider Reviews</span>
+              <strong id="providerReviews">0</strong>
+            </div>
+          </div>
+
+          <section class="panel">
+            <div class="panel-header admin-filter-header">
+              <h2>Review Records</h2>
+
+              <div class="filter-row">
+                <input
+                  type="text"
+                  id="searchInput"
+                  class="small-search"
+                  placeholder="Search reviewer/reviewee/request"
+                />
+
+                <select id="ratingFilter" class="small-filter">
+                  <option value="all">All Ratings</option>
+                  <option value="5">5 Stars</option>
+                  <option value="4">4 Stars</option>
+                  <option value="3">3 Stars</option>
+                  <option value="2">2 Stars</option>
+                  <option value="1">1 Star</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="reviewsList" class="request-list-area">
+              <p class="muted-text">Loading reviews...</p>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="../js/admin-monitor-reviews.js"></script>
+  </body>
+</html>

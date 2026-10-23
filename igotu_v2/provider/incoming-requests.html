@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Incoming Requests - IGotU V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div>
+          <div class="logo-text">IGotU</div>
+
+          <nav class="side-menu">
+            <a href="dashboard.html">▦ Dashboard</a>
+<a href="incoming-requests.html" class="active"
+              >📥 Incoming Requests</a
+            >
+            <a href="assignment-details.html">▣ Assignments</a>
+                    <a href="messages.html">✉ Messages</a>
+</nav>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+        <div></div>
+        <div class="topbar-actions">
+          <div class="notification-menu-wrap">
+            <button
+              type="button"
+              class="topbar-notification-btn"
+              id="notificationMenuTrigger"
+              aria-label="Notifications"
+              aria-expanded="false"
+              aria-controls="notificationDropdown"
+              title="Notifications"
+            >
+              <span class="topbar-notification-icon" aria-hidden="true">🔔</span>
+              <span class="notification-badge hidden">0</span>
+            </button>
+
+            <div id="notificationDropdown" class="notification-dropdown hidden">
+              <div class="notification-dropdown-header">
+                <div>
+                  <strong>Notifications</strong>
+                  <span id="notificationDropdownCount">0 unread</span>
+                </div>
+
+                <button
+                  type="button"
+                  id="notificationMarkAllBtn"
+                  class="notification-mark-all-btn"
+                >
+                  Mark all as read
+                </button>
+              </div>
+
+              <div id="notificationDropdownList" class="notification-dropdown-list">
+                <div class="notification-dropdown-empty">
+                  <span>🔔</span>
+                  <strong>No notifications yet</strong>
+                  <small>New updates will appear here.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="profile-menu-wrap">
+            <button
+              type="button"
+              class="user-mini profile-menu-trigger"
+              id="profileMenuTrigger"
+              aria-expanded="false"
+              aria-controls="profileDropdown"
+            >
+              <div class="avatar" id="avatar">P</div>
+              <div class="profile-menu-user-text">
+                <strong id="userName">Provider</strong>
+                <small id="userRole">Provider</small>
+              </div>
+              <span class="profile-menu-chevron" aria-hidden="true">⌄</span>
+            </button>
+
+            <div id="profileDropdown" class="profile-dropdown hidden">
+              <a href="edit-profile.html" class="profile-dropdown-item">
+                <span class="profile-dropdown-icon">✎</span>
+                <span>Edit Profile</span>
+              </a>
+              <button
+                type="button"
+                id="profileLogoutBtn"
+                class="profile-dropdown-item profile-dropdown-logout"
+              >
+                <span class="profile-dropdown-icon">↪</span>
+                <span>Log out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+        <section class="content-area">
+          <div class="page-heading">
+            <div>
+              <h1>Incoming Requests</h1>
+              <p>These are service requests assigned to you by clients.</p>
+            </div>
+
+            <a href="dashboard.html" class="btn btn-outline"
+              >Back to Dashboard</a
+            >
+          </div>
+
+          <div id="messageBox" class="message-box hidden"></div>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Assigned Requests</h2>
+</div>
+
+            <div id="incomingList" class="request-list-area">
+              <p class="muted-text">Loading incoming requests...</p>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="../js/profile-guard.js"></script>
+    <script type="module" src="../js/notification-badge.js"></script>
+    <script type="module" src="../js/notification-menu.js"></script>
+    <script type="module" src="../js/profile-menu.js"></script>
+
+    <script type="module" src="../js/provider-incoming-requests.js"></script>
+</body>
+</html>

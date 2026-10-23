@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Profile - IGotU</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body>
+    <div class="app-layout">
+      <aside class="sidebar">
+        <div>
+          <div class="logo-text">IGotU</div>
+
+          <nav class="side-menu">
+            <a href="dashboard.html">▦ Dashboard</a>
+            <a href="create-request.html">＋ Create Request</a>
+            <a href="my-requests.html">▣ My Requests</a>
+            <a href="messages.html">✉ Messages</a>
+</nav>
+        </div>
+      </aside>
+
+      <main class="main-area">
+        <header class="topbar">
+          <div></div>
+
+          <div class="topbar-actions">
+          <div class="notification-menu-wrap">
+            <button
+              type="button"
+              class="topbar-notification-btn"
+              id="notificationMenuTrigger"
+              aria-label="Notifications"
+              aria-expanded="false"
+              aria-controls="notificationDropdown"
+              title="Notifications"
+            >
+              <span class="topbar-notification-icon" aria-hidden="true">🔔</span>
+              <span class="notification-badge hidden">0</span>
+            </button>
+
+            <div id="notificationDropdown" class="notification-dropdown hidden">
+              <div class="notification-dropdown-header">
+                <div>
+                  <strong>Notifications</strong>
+                  <span id="notificationDropdownCount">0 unread</span>
+                </div>
+
+                <button
+                  type="button"
+                  id="notificationMarkAllBtn"
+                  class="notification-mark-all-btn"
+                >
+                  Mark all as read
+                </button>
+              </div>
+
+              <div id="notificationDropdownList" class="notification-dropdown-list">
+                <div class="notification-dropdown-empty">
+                  <span>🔔</span>
+                  <strong>No notifications yet</strong>
+                  <small>New updates will appear here.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+                    <div class="profile-menu-wrap">
+            <button
+              type="button"
+              class="user-mini profile-menu-trigger"
+              id="profileMenuTrigger"
+              aria-expanded="false"
+              aria-controls="profileDropdown"
+            >
+              <div class="avatar" id="avatar">C</div>
+              <div class="profile-menu-user-text">
+                <strong id="userName">Client</strong>
+                <small id="userRole">Client</small>
+              </div>
+              <span class="profile-menu-chevron" aria-hidden="true">⌄</span>
+            </button>
+
+            <div id="profileDropdown" class="profile-dropdown hidden">
+              <a href="edit-profile.html" class="profile-dropdown-item">
+                <span class="profile-dropdown-icon">✎</span>
+                <span>Edit Profile</span>
+              </a>
+              <button
+                type="button"
+                id="profileLogoutBtn"
+                class="profile-dropdown-item profile-dropdown-logout"
+              >
+                <span class="profile-dropdown-icon">↪</span>
+                <span>Log out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+        <section class="content-area">
+          <div class="page-heading">
+            <div>
+              <h1>Edit Profile</h1>
+              <p>Update your personal information for your IGotU account.</p>
+            </div>
+
+            <a href="dashboard.html" class="btn btn-outline">Back to Dashboard</a>
+          </div>
+
+          <div id="messageBox" class="message-box hidden"></div>
+
+          <div class="edit-profile-layout">
+            <section class="panel edit-profile-main-panel">
+              <div class="panel-header">
+                <h2>Personal Information</h2>
+              </div>
+
+              <div class="panel-body">
+                <form id="editProfileForm" class="edit-profile-form">
+                  <div class="edit-profile-avatar-row">
+                    <div class="edit-profile-avatar" id="editProfileAvatar">C</div>
+                    <div>
+                      <strong id="editProfileDisplayName">Client</strong>
+                      <span>Client account</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      placeholder="Enter your full name"
+                      autocomplete="name"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      placeholder="Example: 0123456789"
+                      autocomplete="tel"
+                      required
+                    />
+                    <small class="form-hint">
+                      This number is used as your profile contact information.
+                    </small>
+                  </div>
+
+                  <div class="edit-profile-actions">
+                    <a href="dashboard.html" class="btn btn-outline">Cancel</a>
+                    <button type="submit" id="saveProfileBtn" class="btn">
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </section>
+
+            <aside class="panel edit-profile-account-panel">
+              <div class="panel-header">
+                <h2>Account Information</h2>
+              </div>
+
+              <div class="panel-body">
+                <div class="account-info-list">
+                  <div class="account-info-item">
+                    <span>Email Address</span>
+                    <strong id="accountEmail">-</strong>
+                  </div>
+
+                  <div class="account-info-item">
+                    <span>User Code</span>
+                    <strong id="accountUserCode">-</strong>
+                  </div>
+
+                  <div class="account-info-item">
+                    <span>Account Role</span>
+                    <strong>Client</strong>
+                  </div>
+
+                  <div class="account-info-item">
+                    <span>Account Status</span>
+                    <strong id="accountStatus">-</strong>
+                  </div>
+                </div>
+
+                <div class="edit-profile-note">
+                  <strong>Account details</strong>
+                  <p>
+                    Email address, user code and account role cannot be changed
+                    from this page.
+                  </p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="../js/profile-guard.js"></script>
+    <script type="module" src="../js/notification-badge.js"></script>
+    <script type="module" src="../js/notification-menu.js"></script>
+    <script type="module" src="../js/profile-menu.js"></script>
+    <script type="module" src="../js/client-edit-profile.js"></script>
+  </body>
+</html>

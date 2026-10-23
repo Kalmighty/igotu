@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Complete Provider Profile - IGotU</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body data-page="provider-complete-profile">
+  <main class="onboarding-page onboarding-wide">
+    <header class="onboarding-topbar">
+      <a href="#" class="onboarding-brand">IGotU</a>
+      <div class="onboarding-user-actions">
+        <div class="user-mini">
+          <div class="avatar" id="avatar">P</div>
+          <div>
+            <strong id="userName">Provider</strong>
+            <small id="userRole">Provider</small>
+          </div>
+        </div>
+        <button type="button" id="logoutBtn" class="btn btn-outline onboarding-logout">Logout</button>
+      </div>
+    </header>
+
+    <section class="onboarding-intro">
+      <div class="onboarding-step">PROVIDER SETUP</div>
+      <h1>Complete Your Provider Profile</h1>
+      <p>Complete your information, services, specializations, availability, and location before entering the provider dashboard.</p>
+    </section>
+
+    <div id="messageBox" class="message-box hidden onboarding-message"></div>
+
+    <form id="providerProfileForm">
+      <div class="form-map-grid onboarding-form-grid">
+        <section class="panel form-panel">
+          <div class="panel-header"><h2>Profile & Services</h2></div>
+          <div class="panel-body">
+            <div class="two-column">
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required />
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Example: 0123456789" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="bio">Bio / Service Description</label>
+              <textarea id="bio" placeholder="Describe the services you can provide." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="isAvailable">Availability</label>
+              <select id="isAvailable" required>
+                <option value="true">Available</option>
+                <option value="false">Unavailable</option>
+              </select>
+            </div>
+
+                  <div class="form-group weekly-availability-section">
+                    <label>Weekly Working Hours</label>
+                    <p class="weekly-availability-hint">Select the days you accept services and set the start and end time for each day. Leave a day unchecked if you are closed.</p>
+                    <div id="weeklyAvailabilityContainer" class="weekly-availability-list" aria-label="Weekly working hours"></div>
+                    <p class="weekly-availability-note">Times are in Malaysia time (MYT). For now, each day supports one time range (end time must be later than start time).</p>
+                  </div>
+
+
+            <div class="form-group">
+              <label>Service Skills</label>
+              <div class="checkbox-grid">
+                <label><input type="checkbox" name="skills" value="Cleaning" /> Cleaning</label>
+                <label><input type="checkbox" name="skills" value="Delivery" /> Delivery</label>
+                <label><input type="checkbox" name="skills" value="Repair" /> Repair</label>
+                <label><input type="checkbox" name="skills" value="Moving Help" /> Moving Help</label>
+                <label><input type="checkbox" name="skills" value="Errands" /> Errands</label>
+                <label><input type="checkbox" name="skills" value="Tutoring" /> Tutoring</label>
+                <label><input type="checkbox" name="skills" value="Other" /> Other</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Service Specializations</label>
+              <p class="form-hint specialization-help">Choose the specific services you actually provide. These are used for relevant provider matching.</p>
+              <div id="specializationContainer" class="specialization-container">
+                <div class="specialization-empty">Select at least one Service Skill above to choose your specializations.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel map-section">
+          <div class="panel-header"><h2>Provider Location</h2></div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="location">Service Area / Address</label>
+              <input type="text" id="location" placeholder="Search, use GPS, or click the map" required />
+            </div>
+
+            <div class="map-tools">
+              <input type="text" id="mapSearch" placeholder="Search location e.g. UMS, 1Borneo, Kinarut" />
+              <button type="button" class="map-btn" id="searchLocationBtn">Search</button>
+              <button type="button" class="map-btn primary" id="useGpsBtn">Use GPS</button>
+            </div>
+
+            <div id="providerMap"></div>
+            <div class="map-help"><strong>Tip:</strong> Use GPS first. If it is not accurate, drag the marker or click the map to set your service area.</div>
+
+            <input type="hidden" id="providerLat" required />
+            <input type="hidden" id="providerLng" required />
+            <p id="mapStatus" class="map-status">Map is ready. Select your provider location.</p>
+
+            <button type="submit" id="saveProfileBtn" class="btn full-btn onboarding-complete-btn">Complete Profile & Continue</button>
+          </div>
+        </section>
+      </div>
+    </form>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="../js/profile-guard.js"></script>
+  <script type="module" src="../js/provider-profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Complete Profile - IGotU</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-page="client-complete-profile">
+  <main class="onboarding-page">
+    <header class="onboarding-topbar">
+      <a href="#" class="onboarding-brand">IGotU</a>
+      <button type="button" id="logoutBtn" class="btn btn-outline onboarding-logout">Logout</button>
+    </header>
+
+    <section class="onboarding-card onboarding-card-small">
+      <div class="onboarding-step">ACCOUNT SETUP</div>
+      <h1>Complete Your Client Profile</h1>
+      <p class="onboarding-subtitle">Tell us a little about yourself before entering your dashboard.</p>
+
+      <div id="messageBox" class="message-box hidden"></div>
+
+      <form id="clientCompleteProfileForm">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="Enter your full name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="Example: 0123456789" required />
+          <small class="form-hint">Used as your basic contact information. Your exact service location is selected when you create a request.</small>
+        </div>
+
+        <button type="submit" id="completeProfileBtn" class="btn full-btn">Complete Profile & Continue</button>
+      </form>
+    </section>
+  </main>
+
+    <script type="module" src="../js/profile-guard.js"></script>
+  <script type="module" src="../js/client-complete-profile.js"></script>
+</body>
+</html>

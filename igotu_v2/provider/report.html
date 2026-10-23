@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Report Service Issue - IGotU</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-role="provider">
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div>
+        <div class="logo-text">IGotU</div>
+        <nav class="side-menu">
+            <a href="dashboard.html">▦ Dashboard</a>
+            <a href="incoming-requests.html">📥 Incoming Requests</a>
+            <a href="assignment-details.html">▣ Assignments</a>
+            <a href="messages.html">✉ Messages</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div></div>
+        <div class="topbar-actions">
+          <div class="profile-menu-wrap">
+            <button type="button" class="user-mini profile-menu-trigger" id="profileMenuTrigger" aria-expanded="false" aria-controls="profileDropdown">
+              <div class="avatar" id="avatar">P</div>
+              <div class="profile-menu-user-text"><strong id="userName">Provider</strong><small id="userRole">Provider</small></div>
+              <span class="profile-menu-chevron">⌄</span>
+            </button>
+            <div id="profileDropdown" class="profile-dropdown hidden">
+              <a href="edit-profile.html" class="profile-dropdown-item"><span class="profile-dropdown-icon">✎</span><span>Edit Profile</span></a>
+              <button type="button" id="profileLogoutBtn" class="profile-dropdown-item profile-dropdown-logout"><span class="profile-dropdown-icon">↪</span><span>Log out</span></button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="content-area">
+        <div class="page-heading">
+          <div>
+            <h1>Report Service Issue</h1>
+            <p>Send a safety or service concern to an IGotU administrator.</p>
+          </div>
+          <a id="backLink" href="dashboard.html" class="btn btn-outline">Back</a>
+        </div>
+
+        <div id="messageBox" class="message-box hidden"></div>
+
+        <div class="report-page-grid">
+          <aside class="panel report-context-card">
+            <div class="panel-header"><h2>Report Context</h2></div>
+            <div class="panel-body">
+              <span class="muted-text">Service Request</span>
+              <strong id="requestReference">Loading...</strong>
+              <hr />
+              <span class="muted-text">Reported User</span>
+              <strong id="reportedUserName">Loading...</strong>
+              <p id="reportedUserMeta" class="muted-text">-</p>
+
+              <div class="verification-privacy-box report-safety-note">
+                <strong>Safety note</strong>
+                <p>Use this form for service, payment, behaviour, trust, or safety concerns. For immediate danger, contact the appropriate emergency service.</p>
+              </div>
+            </div>
+          </aside>
+
+          <section class="panel">
+            <div class="panel-header"><h2>Report Details</h2></div>
+            <div class="panel-body">
+              <form id="reportForm" class="verification-form">
+                <div class="form-group">
+                  <label for="reportReason">Reason</label>
+                  <select id="reportReason" required>
+                    <option value="">Select a reason</option>
+                    <option value="inappropriate_behavior">Inappropriate behaviour</option>
+                    <option value="no_show">Did not show up</option>
+                    <option value="service_not_completed">Service not completed</option>
+                    <option value="payment_issue">Payment issue</option>
+                    <option value="misleading_information">Misleading information</option>
+                    <option value="safety_concern">Safety concern</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="reportDescription">What happened?</label>
+                  <textarea id="reportDescription" rows="7" placeholder="Explain the issue clearly so the administrator can review it." required></textarea>
+                </div>
+
+                <div class="form-group report-evidence-group">
+                  <label>Evidence <span class="optional-label">Optional</span></label>
+
+                  <input
+                    type="file"
+                    id="reportEvidence"
+                    class="verification-file-input"
+                    accept="image/jpeg,image/png,image/webp,application/pdf"
+                  />
+
+                  <div id="reportEvidenceUploadShell" class="report-evidence-upload-shell">
+                    <label for="reportEvidence" class="report-evidence-upload-area">
+                      <div id="reportEvidenceEmpty" class="report-evidence-empty">
+                        <span class="report-evidence-upload-icon">+</span>
+                        <strong>Upload evidence</strong>
+                        <span>JPG, PNG, WEBP or PDF · Max 5 MB</span>
+                      </div>
+
+                      <div id="reportEvidencePreview" class="report-evidence-preview hidden">
+                        <img
+                          id="reportEvidencePreviewImage"
+                          class="report-evidence-preview-image hidden"
+                          alt="Evidence preview"
+                        />
+
+                        <div id="reportEvidencePreviewPdf" class="report-evidence-preview-pdf hidden">
+                          <iframe
+                            id="reportEvidencePreviewPdfFrame"
+                            class="report-evidence-preview-pdf-frame"
+                            title="Evidence PDF preview"
+                          ></iframe>
+                        </div>
+                      </div>
+                    </label>
+
+                    <div id="reportEvidenceSelectedActions" class="report-evidence-selected-actions hidden">
+                      <div class="report-evidence-file-info">
+                        <strong id="reportEvidenceName"></strong>
+                        <span id="reportEvidenceSize"></span>
+                      </div>
+
+                      <div class="report-evidence-file-buttons">
+                        <button type="button" id="changeReportEvidence" class="verification-change-file-btn">Change</button>
+                        <button type="button" id="removeReportEvidence" class="verification-remove-file-btn">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <small class="form-hint">Evidence is optional and stored privately. Only you and an IGotU administrator can access it.</small>
+                </div>
+
+                <button type="submit" id="submitReportBtn" class="danger-btn">Submit Report</button>
+              </form>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="../js/profile-menu.js"></script>
+  <script type="module" src="../js/report-service.js"></script>
+</body>
+</html>

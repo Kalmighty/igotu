@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Service Reports - IGotU</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div>
+        <div class="logo-text">IGotU</div>
+        <nav class="side-menu">
+          <a href="dashboard.html">▦ Dashboard</a>
+          <a href="manage-users.html">👥 Manage Users</a>
+          <a href="verifications.html">🛡 Verification Requests</a>
+          <a href="reports.html" class="active">⚠ Service Reports</a>
+          <a href="monitor-requests.html">▣ Monitor Requests</a>
+          <a href="monitor-payments.html">💰 Monitor Payments</a>
+          <a href="monitor-reviews.html">⭐ Monitor Reviews</a>
+          <a href="../login.html" id="logoutBtn" class="logout-link">↪ Logout</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div></div>
+        <div class="user-mini">
+          <div class="avatar" id="avatar">A</div>
+          <div><strong id="userName">Admin</strong><small id="userRole">Admin</small></div>
+        </div>
+      </header>
+
+      <section class="content-area">
+        <div class="page-heading">
+          <div>
+            <h1>Service Reports</h1>
+            <p>Review disputes, safety concerns, service issues, and uploaded evidence.</p>
+          </div>
+          <a href="dashboard.html" class="btn btn-outline">Back to Dashboard</a>
+        </div>
+
+        <div id="messageBox" class="message-box hidden"></div>
+
+        <section class="panel">
+          <div class="panel-header admin-filter-header">
+            <div>
+              <h2>Reports</h2>
+              <span id="reportCount" class="muted-text">0 reports</span>
+            </div>
+            <div class="filter-row">
+              <input id="searchInput" class="small-search" type="search" placeholder="Search request or user" />
+              <select id="statusFilter" class="small-filter">
+                <option value="pending">Pending</option>
+                <option value="under_review">Under Review</option>
+                <option value="all">All Status</option>
+                <option value="resolved">Resolved</option>
+                <option value="dismissed">Dismissed</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="reportsList" class="request-list-area">
+            <p class="muted-text">Loading reports...</p>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="../js/admin-reports.js"></script>
+</body>
+</html>
