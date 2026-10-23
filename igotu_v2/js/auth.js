@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient.js";
+import { supabase, clearStoredAuthSession } from "./supabaseClient.js";
 
 const page = document.body.dataset.page;
 
@@ -153,71 +153,145 @@ async function handleRegister() {
     });
 }
 
+// The UI role is only a login-consistency check. Only the fetched users row
+// determines role, status and the existing redirect/onboarding destination.
+const loginRoleLabels = { client: "Client", provider: "Provider", admin: "Admin" };
+
+async function discardRejectedLogin() {
+    let signOutFailed = false;
+    try {
+        // A blocked cache must not prevent an SDK sign-out attempt.
+        try { localStorage.removeItem("igotu_user"); } catch { /* verify again below */ }
+        try {
+            const { error } = await supabase.auth.signOut({ scope: "local" });
+            signOutFailed = !!error;
+        } catch {
+            signOutFailed = true;
+        }
+
+        let result;
+        try { result = await supabase.auth.getSession(); } catch { /* fall back below */ }
+        if (!result || result.error || result.data?.session) {
+            await clearStoredAuthSession();
+            // Let the SDK clear its own state and notify other tabs. A transport
+            // failure here cannot skip the final local-session verification.
+            try {
+                const { error } = await supabase.auth.signOut({ scope: "local" });
+                signOutFailed = signOutFailed || !!error;
+            } catch { signOutFailed = true; }
+        }
+
+        localStorage.removeItem("igotu_user");
+        const { data, error } = await supabase.auth.getSession();
+        const cleared = !error && data?.session === null && localStorage.getItem("igotu_user") === null;
+        return { cleared, signOutFailed };
+    } catch {
+        // No redirect or further authentication is allowed until cleanup can
+        // be verified. A subsequent submit retries cleanup before signing in.
+        return { cleared: false, signOutFailed: true };
+    }
+}
+
 async function handleLogin() {
     const loginForm = document.getElementById("loginForm");
     const loginBtn = document.getElementById("loginBtn");
-
     if (!loginForm) return;
+
+    let inProgress = false;
+    let cleanupPending = false;
+    const roleButtons = document.querySelectorAll("[data-login-role]");
+    function setLoading(loading) {
+        setButtonLoading(loginBtn, loading, "Logging in...", "Login");
+        loginForm.setAttribute("aria-busy", String(loading));
+        roleButtons.forEach(button => { button.disabled = loading; });
+    }
+    async function rejectLogin(message) {
+        cleanupPending = true;
+        const { cleared, signOutFailed } = await discardRejectedLogin();
+        cleanupPending = !cleared;
+        if (!cleared) {
+            message += " Unable to clear this browser’s session. Please try again before signing in.";
+        } else if (signOutFailed) {
+            message += " This browser is signed out, but server sign-out could not be confirmed.";
+        }
+        showMessage(message);
+    }
 
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
+        if (inProgress) return;
         clearMessage();
 
+        const selected = document.querySelectorAll('[data-login-role][aria-pressed="true"]');
+        const selectedRole = selected.length === 1 ? selected[0].dataset.loginRole : null;
+        if (!Object.hasOwn(loginRoleLabels, selectedRole)) {
+            showMessage("Please select Client, Provider or Admin Login to continue.");
+            return;
+        }
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
-
         if (!email || !password) {
             showMessage("Please enter email and password.");
             return;
         }
 
-        setButtonLoading(loginBtn, true, "Logging in...", "Login");
+        // Capture and freeze the selection for this attempt; prevent concurrent
+        // submissions or UI role changes while the account is being checked.
+        inProgress = true;
+        setLoading(true);
+        let redirectPending = false;
+        try {
+            if (cleanupPending) {
+                const { cleared } = await discardRejectedLogin();
+                cleanupPending = !cleared;
+                if (!cleared) {
+                    showMessage("Unable to clear this browser’s session. Please try again before signing in.");
+                    return;
+                }
+            }
+            localStorage.removeItem("igotu_user");
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                showMessage(error.message || "Login failed. Please check your email and password.");
+                return;
+            }
+            const user = data.user;
+            if (!user) {
+                await rejectLogin("Login failed. User session was not created.");
+                return;
+            }
+            const profile = await getUserProfile(user.id);
+            if (!profile) {
+                await rejectLogin("Account profile not found. Please contact admin.");
+                return;
+            }
+            if (profile.status !== "active") {
+                await rejectLogin("Your account is not active. Please contact admin.");
+                return;
+            }
+            const actualRole = String(profile.role || "").trim().toLowerCase();
+            if (!Object.hasOwn(loginRoleLabels, actualRole)) {
+                await rejectLogin("Your account role is not supported. Please contact admin.");
+                return;
+            }
+            if (actualRole !== selectedRole) {
+                const label = loginRoleLabels[actualRole];
+                await rejectLogin(`This account is registered as ${actualRole === "admin" ? "an" : "a"} ${label}. Please select ${label} Login to continue.`);
+                return;
+            }
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-
-        if (error) {
-            console.error("Login error:", error);
-            showMessage(error.message || "Login failed. Please check your email and password.");
-            setButtonLoading(loginBtn, false, "Logging in...", "Login");
-            return;
+            localStorage.setItem("igotu_user", JSON.stringify(profile));
+            showMessage("Login successful. Redirecting...", "success");
+            redirectPending = true;
+            setTimeout(function() { redirectByProfile(profile); }, 800);
+        } catch {
+            await rejectLogin("Login could not be completed. Please try again.");
+        } finally {
+            if (!redirectPending) {
+                inProgress = false;
+                setLoading(false);
+            }
         }
-
-        const user = data.user;
-
-        if (!user) {
-            showMessage("Login failed. User session was not created.");
-            setButtonLoading(loginBtn, false, "Logging in...", "Login");
-            return;
-        }
-
-        const profile = await getUserProfile(user.id);
-
-        if (!profile) {
-            showMessage("Account profile not found. Please contact admin.");
-            await supabase.auth.signOut();
-            setButtonLoading(loginBtn, false, "Logging in...", "Login");
-            return;
-        }
-
-        if (profile.status !== "active") {
-            showMessage("Your account is not active. Please contact admin.");
-            await supabase.auth.signOut();
-            setButtonLoading(loginBtn, false, "Logging in...", "Login");
-            return;
-        }
-
-        localStorage.setItem("igotu_user", JSON.stringify(profile));
-        console.log("Logged in profile:", profile);
-
-        showMessage("Login successful. Redirecting...", "success");
-
-
-        setTimeout(function() {
-            redirectByProfile(profile);
-        }, 800);
     });
 }
 

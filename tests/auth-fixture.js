@@ -13,15 +13,33 @@ const profile = {
   status: fixture.status || "active",
   profile_completed: fixture.completed !== false,
 };
+let session = null;
+function setSession(value) {
+  session = value;
+  window.__authSession = value;
+  if (value) localStorage.setItem("fixture-auth-token", JSON.stringify(value));
+  else localStorage.removeItem("fixture-auth-token");
+}
+setSession(null);
+export async function clearStoredAuthSession() {
+  record("clearStoredAuthSession", {});
+  if (fixture.clearFails) throw new Error("Fixture: local cleanup unavailable");
+  setSession(null);
+}
 export const supabase = {
   auth: {
     async signInWithPassword(args) {
       record("signInWithPassword", args);
+      if (fixture.signInDelay)
+        await new Promise((resolve) =>
+          setTimeout(resolve, fixture.signInDelay),
+        );
       if (fixture.authError)
         return {
           data: { user: null },
           error: { message: "Fixture: invalid credentials" },
         };
+      setSession({ user: { id: profile.id } });
       return {
         data: {
           user: fixture.noUser
@@ -46,12 +64,22 @@ export const supabase = {
         error: null,
       };
     },
-    async signOut() {
-      record("signOut", {});
+    async signOut(args) {
+      record("signOut", args);
+      if (fixture.signOutThrows)
+        throw new Error("Fixture: sign-out transport failed");
+      if (fixture.signOutError)
+        return { error: { message: "Fixture: sign-out unavailable" } };
+      setSession(null);
       return { error: null };
     },
     async getSession() {
-      return { data: { session: null } };
+      if (fixture.getSessionFails)
+        return {
+          data: { session: null },
+          error: { message: "Fixture: session verification unavailable" },
+        };
+      return { data: { session }, error: null };
     },
   },
   from(table) {

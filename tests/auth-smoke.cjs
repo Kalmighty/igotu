@@ -201,7 +201,7 @@ const screenshots = process.env.UI_SCREENSHOTS;
       );
       await context.close();
     }
-    // Every UI-role/account-role combination routes only by the database profile.
+    // Only matching selected/database-role pairs may continue; all six mismatches are signed out.
     for (const selected of ["client", "provider", "admin"])
       for (const actual of ["client", "provider", "admin"]) {
         const { page, context } = await open(`login.html?role=${selected}`, {
@@ -224,11 +224,53 @@ const screenshots = process.env.UI_SCREENSHOTS;
           (await operation(page, "eq"))[0].args.value,
           "fixture-user",
         );
-        await page.waitForURL(`**/${actual}/dashboard.html`);
+        if (selected === actual) {
+          assert.equal((await operation(page, "signOut")).length, 0);
+          await page.waitForURL(`**/${actual}/dashboard.html`);
+        } else {
+          await page
+            .getByRole("status")
+            .filter({
+              hasText: `Please select ${actual[0].toUpperCase() + actual.slice(1)} Login`,
+            })
+            .waitFor();
+          await page.waitForFunction(
+            () => !document.getElementById("loginBtn").disabled,
+          );
+          assert.equal(await page.evaluate(() => window.__authSession), null);
+          assert.equal(
+            await page.evaluate(() => localStorage.getItem("igotu_user")),
+            null,
+          );
+          assert.equal(
+            await page.evaluate(() =>
+              localStorage.getItem("fixture-auth-token"),
+            ),
+            null,
+          );
+          assert.equal(await page.locator("#loginBtn").textContent(), "Login");
+          assert.equal(
+            await page.locator("[data-login-role]:disabled").count(),
+            0,
+          );
+          assert.deepEqual((await operation(page, "signOut"))[0].args, {
+            scope: "local",
+          });
+          // Wait beyond the success redirect delay to catch accidental queued redirects.
+          await page.waitForTimeout(950);
+          assert.equal(new URL(page.url()).pathname, "/login.html");
+          if (screenshots && selected === "admin" && actual === "provider") {
+            await page.locator("h1").click();
+            await page.screenshot({
+              path: path.join(screenshots, "auth-login-mismatch-1440.png"),
+              fullPage: true,
+            });
+          }
+        }
         await context.close();
       }
     for (const role of ["client", "provider"]) {
-      const { page, context } = await open("login.html?role=admin", {
+      const { page, context } = await open(`login.html?role=${role}`, {
         actualRole: role,
         completed: false,
       });
@@ -267,6 +309,110 @@ const screenshots = process.env.UI_SCREENSHOTS;
       assert.equal(new URL(page.url()).pathname, "/login.html");
       if (fixture.noProfile)
         assert.equal((await operation(page, "signOut")).length, 1);
+      await context.close();
+    }
+    // Re-selecting the correct section after rejection works without a reload.
+    {
+      const { page, context } = await open(
+        "login.html",
+        {
+          actualRole: "provider",
+        },
+        { width: 390 },
+      );
+      await fillLogin(page);
+      await page.locator("#loginBtn").click();
+      await page
+        .getByRole("status")
+        .filter({ hasText: "Please select Provider Login" })
+        .waitFor();
+      await page.waitForFunction(
+        () => !document.getElementById("loginBtn").disabled,
+      );
+      assert.equal(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > innerWidth,
+        ),
+        false,
+      );
+      if (screenshots) {
+        await page.locator("h1").click();
+        await page.screenshot({
+          path: path.join(screenshots, "auth-login-mismatch-390.png"),
+          fullPage: true,
+        });
+      }
+      await page.locator('[data-login-role="provider"]').click();
+      await page.locator("#loginBtn").click();
+      await page.waitForURL("**/provider/dashboard.html");
+      await context.close();
+    }
+    // Returned and thrown sign-out failures must still remove browser credentials.
+    for (const failure of [{ signOutError: true }, { signOutThrows: true }]) {
+      const { page, context } = await open("login.html?role=admin", {
+        actualRole: "client",
+        ...failure,
+      });
+      await fillLogin(page);
+      await page.locator("#loginBtn").click();
+      await page
+        .getByRole("status")
+        .filter({ hasText: "server sign-out could not be confirmed" })
+        .waitFor();
+      assert.equal(await page.evaluate(() => window.__authSession), null);
+      assert.equal(
+        await page.evaluate(() => localStorage.getItem("igotu_user")),
+        null,
+      );
+      assert.equal(
+        await page.evaluate(() => localStorage.getItem("fixture-auth-token")),
+        null,
+      );
+      assert.equal((await operation(page, "clearStoredAuthSession")).length, 1);
+      assert.equal(await page.locator("#loginBtn").isEnabled(), true);
+      await page.waitForTimeout(950);
+      assert.equal(new URL(page.url()).pathname, "/login.html");
+      await context.close();
+    }
+    // If local cleanup or verification fails, retry cleanup, never another sign-in.
+    for (const failure of [{ clearFails: true }, { getSessionFails: true }]) {
+      const { page, context } = await open("login.html?role=admin", {
+        actualRole: "client",
+        signOutError: true,
+        ...failure,
+      });
+      await fillLogin(page);
+      await page.locator("#loginBtn").click();
+      await page
+        .getByRole("status")
+        .filter({ hasText: "Unable to clear this browser" })
+        .waitFor();
+      await page.waitForFunction(
+        () => !document.getElementById("loginBtn").disabled,
+      );
+      await page.locator("#loginBtn").click();
+      await page
+        .getByRole("status")
+        .filter({ hasText: "Unable to clear this browser" })
+        .waitFor();
+      assert.equal((await operation(page, "signInWithPassword")).length, 1);
+      assert.equal(
+        await page.evaluate(() => localStorage.getItem("igotu_user")),
+        null,
+      );
+      await page.waitForTimeout(950);
+      assert.equal(new URL(page.url()).pathname, "/login.html");
+      await context.close();
+    }
+    // Role controls and duplicate submits cannot race a pending authentication attempt.
+    {
+      const { page, context } = await open("login.html", { signInDelay: 200 });
+      await fillLogin(page);
+      await page.locator("#loginBtn").click();
+      assert.equal(await page.locator("[data-login-role]:disabled").count(), 3);
+      await page.locator("#loginForm").evaluate((form) => form.requestSubmit());
+      assert.equal((await operation(page, "signInWithPassword")).length, 1);
+      await page.waitForURL("**/client/dashboard.html");
       await context.close();
     }
     for (const role of ["client", "provider"]) {
@@ -355,7 +501,7 @@ const screenshots = process.env.UI_SCREENSHOTS;
     assert.deepEqual(errors, [], "Unexpected browser errors");
     assert.deepEqual(external, [], "No live requests may escape the fixture");
     console.log(
-      "PASS: Login/Register at 1440/768/390/320px, axe, keyboard selection, dropdown sync, form validation, 9 UI/account role combinations, onboarding, suspended/missing/error cases, signup roles, Admin rejection, Admin link and no-JS fallback. No live Supabase traffic.",
+      "PASS: Login/Register at 1440/768/390/320px, axe, keyboard selection, dropdown sync, form validation, 9 role-match outcomes (3 accepted, 6 rejected), local session/cache cleanup, sign-out failures and fail-closed retries, onboarding, suspended/missing/error cases, signup roles, Admin rejection, Admin link and no-JS fallback. No live Supabase traffic.",
     );
   } finally {
     await browser.close();

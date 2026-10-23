@@ -1,4 +1,5 @@
-/* Role cards are presentation. Existing auth.js owns validation and account access. */
+/* Cards select a login section. auth.js checks it against the database role;
+   this selection never grants access or changes the account role. */
 (() => {
   const isLogin = document.body.dataset.page === "login";
   const title = document.getElementById("authFormTitle");
@@ -20,7 +21,8 @@
     };
     const buttons = document.querySelectorAll("[data-login-role]");
     function select(role) {
-      // An allowlisted URL preference changes wording only. It is never sent to auth.
+      // Allowlisted URL input preselects the section only. auth.js separately
+      // checks the authenticated database role; this value grants no access.
       const chosen = Object.hasOwn(copy, role) ? role : "client";
       buttons.forEach((button) =>
         button.setAttribute(
