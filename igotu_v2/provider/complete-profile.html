@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
 </head>
 <body data-page="provider-complete-profile">
   <main class="onboarding-page onboarding-wide">
@@ -29,7 +31,7 @@
       <p>Complete your information, services, specializations, availability, and location before entering the provider dashboard.</p>
     </section>
 
-    <div id="messageBox" class="message-box hidden onboarding-message"></div>
+    <div id="messageBox" role="status" class="message-box hidden onboarding-message"></div>
 
     <form id="providerProfileForm">
       <div class="form-map-grid onboarding-form-grid">
@@ -100,7 +102,7 @@
             </div>
 
             <div class="map-tools">
-              <input type="text" id="mapSearch" placeholder="Search location e.g. UMS, 1Borneo, Kinarut" />
+              <input type="text" id="mapSearch" aria-label="Search for a location" placeholder="Search location e.g. UMS, 1Borneo, Kinarut" />
               <button type="button" class="map-btn" id="searchLocationBtn">Search</button>
               <button type="button" class="map-btn primary" id="useGpsBtn">Use GPS</button>
             </div>

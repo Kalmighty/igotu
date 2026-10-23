@@ -1,64 +1,350 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Register - IGotU V2</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body data-page="register">
-    <main class="auth-page">
-        <section class="auth-card">
-            <a href="index.html" class="brand-link">IGotU</a>
-
-            <h1>Create Account</h1>
-            <p class="auth-subtitle">Register as a client or provider to start using IGotU.</p>
-
-            <div id="messageBox" class="message-box hidden"></div>
-
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="fullName">Full Name</label>
-                    <input type="text" id="fullName" placeholder="Enter your full name" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="example@email.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="role">Register As</label>
-                    <select id="role" required>
-                        <option value="">Select role</option>
-                        <option value="client">Client</option>
-                        <option value="provider">Provider</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Minimum 6 characters" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" placeholder="Re-enter password" required>
-                </div>
-
-                <button type="submit" class="btn full-btn" id="registerBtn">Register</button>
-            </form>
-
-            <p class="auth-footer">
-                Already have an account?
-                <a href="login.html">Login here</a>
-            </p>
-        </section>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#124c3b" />
+    <title>Register - IGotU</title>
+    <link rel="icon" href="assets/igotu-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/auth-roles.css" />
+    <script src="js/auth-roles.js" defer></script>
+  </head>
+  <body data-page="register" class="auth-experience">
+    <a class="auth-skip-link" href="#authContent">Skip to registration</a>
+    <svg
+      class="auth-icon-library"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="auth-brand" viewBox="0 0 24 24">
+          <path d="M5 5v8a7 7 0 0 0 14 0V5M10 5v8a2 2 0 0 0 4 0V5" />
+        </symbol>
+        <symbol id="auth-request" viewBox="0 0 24 24">
+          <rect x="5" y="4" width="14" height="18" rx="2" />
+          <path d="M9 4V2h6v2M9 9h6m-6 4h6m-6 4h3" />
+        </symbol>
+        <symbol id="auth-provider" viewBox="0 0 24 24">
+          <path
+            d="M14 4a5 5 0 0 0-6 6L3 15a3 3 0 0 0 4 4l5-5a5 5 0 0 0 6-6l-3 3-4-4 3-3Z"
+          />
+        </symbol>
+        <symbol id="auth-shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+          <path d="m8 12 3 3 5-6" />
+        </symbol>
+        <symbol id="auth-arrow" viewBox="0 0 24 24">
+          <path d="M5 12h14m-6-6 6 6-6 6" />
+        </symbol>
+        <symbol id="auth-check" viewBox="0 0 24 24">
+          <path d="m5 12 4 4L19 6" />
+        </symbol>
+        <symbol id="auth-lock" viewBox="0 0 24 24">
+          <rect x="5" y="10" width="14" height="11" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" />
+        </symbol>
+        <symbol id="auth-profile" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21v-2a8 8 0 0 1 16 0v2" />
+        </symbol>
+      </defs>
+    </svg>
+    <header class="auth-header">
+      <div class="auth-container auth-header-inner">
+        <a class="auth-brand" href="index.html" aria-label="IGotU home"
+          ><span
+            ><svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-brand" /></svg></span
+          >IGotU<span class="wordmark-dot">.</span></a
+        >
+        <div class="auth-header-link">
+          <span>Already a member?</span>
+          <a href="login.html"
+            >Login
+            <svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-arrow" /></svg
+          ></a>
+        </div>
+      </div>
+    </header>
+    <main
+      class="auth-container auth-workspace auth-register-workspace"
+      id="authContent"
+      tabindex="-1"
+    >
+      <div class="auth-page-heading">
+        <p class="auth-eyebrow">A little help. New possibilities.</p>
+        <h1>Find your place <em>with IGotU.</em></h1>
+        <p>Start as a Client or Provider. Your next connection begins here.</p>
+      </div>
+      <div
+        class="role-options register-roles"
+        role="group"
+        aria-label="Choose your registration role"
+      >
+        <button
+          type="button"
+          class="role-card role-client"
+          data-register-role="client"
+          aria-pressed="false"
+          aria-label="I Need a Service"
+          aria-describedby="clientDescription"
+        >
+          <span class="role-card-top"
+            ><span class="role-icon"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-request" /></svg></span
+            ><span class="role-name">Client</span
+            ><span class="role-selected-mark" aria-hidden="true"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-check" /></svg></span></span
+          ><strong class="role-card-title">Join as a Client</strong
+          ><span class="role-description" id="clientDescription"
+            ><span class="role-description-wide"
+              >Need help? Create service requests and discover suitable
+              Providers through IGotU’s smart matching system.</span
+            ><span class="role-description-compact"
+              >Request, compare and choose.</span
+            ></span
+          ><span class="role-card-action"
+            >I Need a Service<svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-arrow" /></svg
+          ></span></button
+        ><button
+          type="button"
+          class="role-card role-provider"
+          data-register-role="provider"
+          aria-pressed="false"
+          aria-label="I Offer Services"
+          aria-describedby="providerDescription"
+        >
+          <span class="role-card-top"
+            ><span class="role-icon"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-provider" /></svg></span
+            ><span class="role-name">Provider</span
+            ><span class="role-selected-mark" aria-hidden="true"
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-check" /></svg></span></span
+          ><strong class="role-card-title">Join as a Provider</strong
+          ><span class="role-description" id="providerDescription"
+            ><span class="role-description-wide"
+              >Offer your skills, manage your availability, and receive service
+              assignments when Clients select you.</span
+            ><span class="role-description-compact"
+              >Share your skills and availability.</span
+            ></span
+          ><span class="role-card-action"
+            >I Offer Services<svg
+              class="auth-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#auth-arrow" /></svg
+          ></span>
+        </button>
+      </div>
+      <aside class="admin-access-note" aria-labelledby="adminAccessTitle">
+        <span class="admin-access-icon"
+          ><svg
+            class="auth-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <use href="#auth-shield" /></svg
+        ></span>
+        <div>
+          <h2 id="adminAccessTitle">Are You an Administrator?</h2>
+          <p>
+            Administrative access is reserved for authorized IGotU accounts.
+          </p>
+        </div>
+        <a href="login.html?role=admin"
+          >Go to Admin Login
+          <svg
+            class="auth-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <use href="#auth-arrow" /></svg
+        ></a>
+      </aside>
+      <section
+        class="auth-form-panel registration-panel"
+        aria-labelledby="authFormTitle"
+      >
+        <div class="auth-form-heading">
+          <span class="auth-form-kicker">Let’s get you started</span>
+          <h2 id="authFormTitle">Create Account</h2>
+          <p id="authFormHint" aria-live="polite">
+            Choose Client or Provider and enter your details below.
+          </p>
+        </div>
+        <div
+          id="messageBox"
+          class="message-box hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
+        <form id="registerForm">
+          <div class="register-form-grid">
+            <div class="form-group">
+              <label for="fullName">Full Name</label
+              ><input
+                type="text"
+                id="fullName"
+                placeholder="Enter your full name"
+                autocomplete="name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label
+              ><input
+                type="email"
+                id="email"
+                placeholder="example@email.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <div class="form-group register-role-field">
+              <label for="role">Register As</label
+              ><select id="role" required>
+                <option value="">Select role</option>
+                <option value="client">Client</option>
+                <option value="provider">Provider</option></select
+              ><small
+                >Choose the account type that fits how you’ll use IGotU.</small
+              >
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label
+              ><input
+                type="password"
+                id="password"
+                placeholder="Minimum 6 characters"
+                autocomplete="new-password"
+                aria-describedby="passwordHint"
+                required
+              /><small id="passwordHint">Use at least 6 characters.</small>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label
+              ><input
+                type="password"
+                id="confirmPassword"
+                placeholder="Re-enter password"
+                autocomplete="new-password"
+                required
+              />
+            </div>
+          </div>
+          <button type="submit" class="btn full-btn" id="registerBtn">
+            Register
+          </button>
+        </form>
+        <p class="auth-form-footer">
+          Already have an account? <a href="login.html">Login here</a>
+        </p>
+      </section>
     </main>
-
+    <footer class="auth-page-footer">
+      <span>IGotU · Smart Service Matching Platform</span
+      ><a href="index.html"
+        >Back to homepage
+        <svg
+          class="auth-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <use href="#auth-arrow" /></svg
+      ></a>
+    </footer>
     <script type="module" src="js/auth.js"></script>
-</body>
-
+  </body>
 </html>

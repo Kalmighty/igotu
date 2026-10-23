@@ -5,17 +5,25 @@
   <title>Service Reports - IGotU</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
 </head>
 <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
   <div class="app-layout">
     <aside class="sidebar">
       <div>
-        <div class="logo-text">IGotU</div>
-        <nav class="side-menu">
+        <div class="sidebar-brand">
+          <a class="logo-text" href="dashboard.html" aria-label="IGotU Admin dashboard">IGotU<span>Admin workspace</span></a>
+          <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+            Menu <span aria-hidden="true">☰</span>
+          </button>
+        </div>
+        <nav class="side-menu" id="workspaceNavigation" aria-label="Admin navigation">
           <a href="dashboard.html">▦ Dashboard</a>
           <a href="manage-users.html">👥 Manage Users</a>
           <a href="verifications.html">🛡 Verification Requests</a>
-          <a href="reports.html" class="active">⚠ Service Reports</a>
+          <a href="reports.html" class="active" aria-current="page">⚠ Service Reports</a>
           <a href="monitor-requests.html">▣ Monitor Requests</a>
           <a href="monitor-payments.html">💰 Monitor Payments</a>
           <a href="monitor-reviews.html">⭐ Monitor Reviews</a>
@@ -24,7 +32,7 @@
       </div>
     </aside>
 
-    <main class="main-area">
+    <main class="main-area" id="mainContent" tabindex="-1">
       <header class="topbar">
         <div></div>
         <div class="user-mini">
@@ -42,7 +50,7 @@
           <a href="dashboard.html" class="btn btn-outline">Back to Dashboard</a>
         </div>
 
-        <div id="messageBox" class="message-box hidden"></div>
+        <div id="messageBox" role="status" class="message-box hidden"></div>
 
         <section class="panel">
           <div class="panel-header admin-filter-header">
@@ -51,8 +59,8 @@
               <span id="reportCount" class="muted-text">0 reports</span>
             </div>
             <div class="filter-row">
-              <input id="searchInput" class="small-search" type="search" placeholder="Search request or user" />
-              <select id="statusFilter" class="small-filter">
+              <input id="searchInput" aria-label="Search records" class="small-search" type="search" placeholder="Search request or user" />
+              <select id="statusFilter" aria-label="Filter by status" class="small-filter">
                 <option value="pending">Pending</option>
                 <option value="under_review">Under Review</option>
                 <option value="all">All Status</option>

@@ -5,15 +5,23 @@
     <title>Smart Provider Feed - IGotU V2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
   </head>
 
   <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
         <div>
-          <div class="logo-text">IGotU</div>
+          <div class="sidebar-brand">
+            <a class="logo-text" href="dashboard.html" aria-label="IGotU Client dashboard">IGotU<span>Client workspace</span></a>
+            <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+              Menu <span aria-hidden="true">☰</span>
+            </button>
+          </div>
 
-          <nav class="side-menu">
+          <nav class="side-menu" id="workspaceNavigation" aria-label="Client navigation">
             <a href="dashboard.html">▦ Dashboard</a>
             <a href="create-request.html">＋ Create Request</a>
             <a href="my-requests.html">▣ My Requests</a>
@@ -22,11 +30,11 @@
         </div>
       </aside>
 
-      <main class="main-area">
+      <main class="main-area" id="mainContent" tabindex="-1">
         <header class="topbar smart-feed-topbar">
           <div class="smart-feed-searchbar">
             <span>⌕</span>
-            <input id="providerSearchInput" type="search" placeholder="Search provider name, location or skill" />
+            <input id="providerSearchInput" aria-label="Search providers by name, location or skill" type="search" placeholder="Search provider name, location or skill" />
           </div>
 
           <div class="topbar-actions">
@@ -115,7 +123,7 @@
             <a href="my-requests.html" class="btn btn-outline">Back to My Requests</a>
           </div>
 
-          <div id="messageBox" class="message-box hidden"></div>
+          <div id="messageBox" role="status" class="message-box hidden"></div>
 
           <section class="smart-feed-hero">
             <div>
@@ -192,7 +200,7 @@
                   <h2 id="resultTitle">Matching Providers</h2>
                   <p id="resultSubtitle">Providers are sorted based on the best available match.</p>
                 </div>
-                <span id="resultCountBadge" class="status-pill">0 results</span>
+                <span id="resultCountBadge" role="status" class="status-pill">0 results</span>
               </div>
 
               <div id="topMatchesList" class="top-matches-grid"></div>

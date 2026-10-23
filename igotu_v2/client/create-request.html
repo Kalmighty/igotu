@@ -12,24 +12,32 @@
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
   </head>
 
   <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
         <div>
-          <div class="logo-text">IGotU</div>
+          <div class="sidebar-brand">
+            <a class="logo-text" href="dashboard.html" aria-label="IGotU Client dashboard">IGotU<span>Client workspace</span></a>
+            <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+              Menu <span aria-hidden="true">☰</span>
+            </button>
+          </div>
 
-          <nav class="side-menu">
+          <nav class="side-menu" id="workspaceNavigation" aria-label="Client navigation">
             <a href="dashboard.html">▦ Dashboard</a>
-            <a href="create-request.html" class="active">＋ Create Request</a>
+            <a href="create-request.html" class="active" aria-current="page">＋ Create Request</a>
             <a href="my-requests.html">▣ My Requests</a>
                     <a href="messages.html">✉ Messages</a>
 </nav>
         </div>
       </aside>
 
-      <main class="main-area">
+      <main class="main-area" id="mainContent" tabindex="-1">
         <header class="topbar">
           <div></div>
           <div class="topbar-actions">
@@ -122,7 +130,7 @@
             >
           </div>
 
-          <div id="messageBox" class="message-box hidden"></div>
+          <div id="messageBox" role="status" class="message-box hidden"></div>
 
           <form id="createRequestForm">
             <div class="form-map-grid">
@@ -262,7 +270,7 @@
                   <div class="map-tools">
                     <input
                       type="text"
-                      id="mapSearch"
+                      id="mapSearch" aria-label="Search for a location"
                       placeholder="Search location e.g. UMS, 1Borneo, Kinarut"
                     />
 

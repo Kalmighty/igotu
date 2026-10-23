@@ -6,24 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/messages.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
   </head>
 
   <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
         <div>
-          <div class="logo-text">IGotU</div>
+          <div class="sidebar-brand">
+            <a class="logo-text" href="dashboard.html" aria-label="IGotU Client dashboard">IGotU<span>Client workspace</span></a>
+            <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+              Menu <span aria-hidden="true">☰</span>
+            </button>
+          </div>
 
-          <nav class="side-menu">
+          <nav class="side-menu" id="workspaceNavigation" aria-label="Client navigation">
             <a href="dashboard.html">▦ Dashboard</a>
             <a href="create-request.html">＋ Create Request</a>
             <a href="my-requests.html">▣ My Requests</a>
-            <a href="messages.html" class="active">✉ Messages</a>
+            <a href="messages.html" class="active" aria-current="page">✉ Messages</a>
 </nav>
         </div>
       </aside>
 
-      <main class="main-area">
+      <main class="main-area" id="mainContent" tabindex="-1">
         <header class="topbar">
           <div></div>
           <div class="topbar-actions">
@@ -115,7 +123,7 @@
             >
           </div>
 
-          <div id="messageBox" class="message-box hidden"></div>
+          <div id="messageBox" role="status" class="message-box hidden"></div>
 
           <section class="messages-shell">
             <aside class="conversation-panel">
@@ -124,7 +132,7 @@
                 <span id="conversationCount">0</span>
               </div>
 
-              <div id="conversationList" class="conversation-list">
+              <div id="conversationList" aria-live="polite" class="conversation-list">
                 <p class="muted-text">Loading conversations...</p>
               </div>
             </aside>
@@ -152,7 +160,7 @@
 
                 <form id="messageForm" class="message-form">
                   <textarea
-                    id="messageInput"
+                    id="messageInput" aria-label="Your message"
                     placeholder="Type your message..."
                     maxlength="1000"
                     required

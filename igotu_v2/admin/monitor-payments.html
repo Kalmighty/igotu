@@ -5,21 +5,29 @@
     <title>Monitor Payments - IGotU V2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css">
+    <script src="../js/app-shell.js" defer></script>
   </head>
 
   <body>
+    <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
         <div>
-          <div class="logo-text">IGotU</div>
+          <div class="sidebar-brand">
+            <a class="logo-text" href="dashboard.html" aria-label="IGotU Admin dashboard">IGotU<span>Admin workspace</span></a>
+            <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
+              Menu <span aria-hidden="true">☰</span>
+            </button>
+          </div>
 
-          <nav class="side-menu">
+          <nav class="side-menu" id="workspaceNavigation" aria-label="Admin navigation">
             <a href="dashboard.html">▦ Dashboard</a>
             <a href="manage-users.html">👥 Manage Users</a>
             <a href="verifications.html">🛡 Verification Requests</a>
             <a href="reports.html">⚠ Service Reports</a>
             <a href="monitor-requests.html">▣ Monitor Requests</a>
-            <a href="monitor-payments.html" class="active"
+            <a href="monitor-payments.html" class="active" aria-current="page"
               >💰 Monitor Payments</a
             >
             <a href="monitor-reviews.html">⭐ Monitor Reviews</a>
@@ -30,7 +38,7 @@
         </div>
       </aside>
 
-      <main class="main-area">
+      <main class="main-area" id="mainContent" tabindex="-1">
         <header class="topbar">
           <div></div>
           <div class="user-mini">
@@ -57,7 +65,7 @@
             >
           </div>
 
-          <div id="messageBox" class="message-box hidden"></div>
+          <div id="messageBox" role="status" class="message-box hidden"></div>
 
           <div class="stats-grid">
             <div class="stat-card">
@@ -92,12 +100,12 @@
               <div class="filter-row">
                 <input
                   type="text"
-                  id="searchInput"
+                  id="searchInput" aria-label="Search records"
                   class="small-search"
                   placeholder="Search request/client/provider"
                 />
 
-                <select id="methodFilter" class="small-filter">
+                <select id="methodFilter" aria-label="Filter by payment method" class="small-filter">
                   <option value="all">All Methods</option>
                   <option value="Cash">Cash</option>
                   <option value="QR Transfer">QR Transfer</option>
