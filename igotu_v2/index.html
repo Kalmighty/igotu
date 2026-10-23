@@ -1,22 +1,1389 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>IGotU</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
-    <main class="center-page">
-        <h1>IGotU</h1>
-        <p>Smart Service Matching Platform</p>
-
-        <div class="button-row">
-            <a href="login.html" class="btn">Login</a>
-            <a href="register.html" class="btn btn-outline">Register</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Tell IGotU what service you need. Discover suitable Providers through recommendations based on skills, availability and location, then make your choice."
+    />
+    <meta name="theme-color" content="#124c3b" />
+    <title>IGotU — Need a service? We got you.</title>
+    <link rel="icon" href="assets/igotu-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/home.css" />
+    <script src="js/home.js" defer></script>
+  </head>
+  <body>
+    <svg
+      class="icon-library"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="i-arrow" viewBox="0 0 24 24">
+          <path d="M5 12h14m-6-6 6 6-6 6" />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24">
+          <path d="m5 12 4 4L19 6" />
+        </symbol>
+        <symbol id="i-clean" viewBox="0 0 24 24">
+          <path d="m14 4 6 6M16 6 8 14m-2-2 6 6-4 3-5-5 3-4Z" />
+          <path d="m16 16 1 1m3-3 1 1M6 5v4M4 7h4" />
+        </symbol>
+        <symbol id="i-delivery" viewBox="0 0 24 24">
+          <path d="M3 6h11v12H3zm11 4h4l3 4v4h-7M3 12h5" />
+          <circle cx="6" cy="18" r="2" />
+          <circle cx="18" cy="18" r="2" />
+        </symbol>
+        <symbol id="i-repair" viewBox="0 0 24 24">
+          <path
+            d="M14 4a5 5 0 0 0-6 6L3 15a3 3 0 0 0 4 4l5-5a5 5 0 0 0 6-6l-3 3-4-4 3-3Z"
+          />
+        </symbol>
+        <symbol id="i-moving" viewBox="0 0 24 24">
+          <path d="m3 7 9-4 9 4v11l-9 4-9-4V7Zm0 0 9 4 9-4m-9 4v11M7 5l9 4" />
+        </symbol>
+        <symbol id="i-errands" viewBox="0 0 24 24">
+          <path d="M5 8h14l1 13H4L5 8Z" />
+          <path d="M9 9V6a3 3 0 0 1 6 0v3m-7 5 3 3 5-5" />
+        </symbol>
+        <symbol id="i-tutoring" viewBox="0 0 24 24">
+          <path
+            d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v14"
+          />
+        </symbol>
+        <symbol id="i-other" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="7" height="7" rx="2" />
+          <rect x="14" y="14" width="7" height="7" rx="2" />
+          <path d="M17.5 3v7M14 6.5h7M6.5 14v7M3 17.5h7" />
+        </symbol>
+        <symbol id="i-request" viewBox="0 0 24 24">
+          <rect x="5" y="4" width="14" height="18" rx="2" />
+          <path d="M9 4V2h6v2M9 9h6m-6 4h6m-6 4h3" />
+        </symbol>
+        <symbol id="i-match" viewBox="0 0 24 24">
+          <circle cx="6" cy="5" r="2" />
+          <circle cx="18" cy="5" r="2" />
+          <circle cx="12" cy="19" r="2" />
+          <path d="M6 7v4a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V7m-6 7v3" />
+        </symbol>
+        <symbol id="i-choice" viewBox="0 0 24 24">
+          <path
+            d="m9 11 3 3L22 4M20 12v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12"
+          />
+        </symbol>
+        <symbol id="i-review" viewBox="0 0 24 24">
+          <path
+            d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"
+          />
+        </symbol>
+        <symbol id="i-location" viewBox="0 0 24 24">
+          <path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 0 1 14 0Z" />
+          <circle cx="12" cy="10" r="2" />
+        </symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </symbol>
+        <symbol id="i-message" viewBox="0 0 24 24">
+          <path d="M21 11a9 9 0 0 1-9 9H3l2-5a9 9 0 1 1 16-4Z" />
+          <path d="M8 10h8m-8 4h5" />
+        </symbol>
+        <symbol id="i-profile" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21v-2a8 8 0 0 1 16 0v2" />
+        </symbol>
+        <symbol id="i-progress" viewBox="0 0 24 24">
+          <path d="M4 20h16M6 16v-4m6 4V8m6 8V4" />
+        </symbol>
+        <symbol id="i-brand" viewBox="0 0 24 24">
+          <path d="M5 5v8a7 7 0 0 0 14 0V5M10 5v8a2 2 0 0 0 4 0V5" />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#home" aria-label="IGotU home"
+          ><span class="brand-symbol"
+            ><svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#i-brand" /></svg></span
+          ><span>IGotU<span class="brand-dot">.</span></span></a
+        >
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-navigation"
+        >
+          <span>Menu</span
+          ><svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            aria-hidden="true"
+          >
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+        <nav
+          class="site-navigation"
+          id="site-navigation"
+          aria-label="Main navigation"
+        >
+          <div class="nav-links">
+            <a href="#home" aria-current="location">Home</a
+            ><a href="#how-it-works">How It Works</a
+            ><a href="#services">Services</a><a href="#why-igotu">Why IGotU</a>
+          </div>
+          <div class="nav-actions">
+            <a class="login-link" href="login.html">Login</a
+            ><a class="button button-small" href="register.html"
+              >Get Started
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg
+            ></a>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section
+        class="hero section-anchor"
+        id="home"
+        aria-labelledby="hero-title"
+      >
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span class="eyebrow-line"></span> A little help. A better match.
+            </p>
+            <h1 id="hero-title">
+              Need a service?<br /><span>We got you.</span>
+            </h1>
+            <p class="hero-description">
+              Life comes with a to-do list. Find the right help for yours with
+              smart service recommendations built around what you need.
+            </p>
+            <div class="hero-actions">
+              <a class="button" href="register.html"
+                >Get Started
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-arrow" /></svg></a
+              ><a class="button button-light" href="#how-it-works"
+                >How It Works
+                <svg
+                  class="icon diagonal-arrow"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  aria-hidden="true"
+                >
+                  <use href="#i-arrow" /></svg
+              ></a>
+            </div>
+            <div class="hero-note">
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-check" />
+              </svg>
+              Your request. Relevant Providers. Your choice.
+            </div>
+          </div>
+          <figure class="match-preview" aria-labelledby="preview-caption">
+            <div class="preview-canvas">
+              <span class="preview-kicker">A smarter way to connect</span>
+              <svg
+                class="connection-lines"
+                viewBox="0 0 540 500"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M180 125v75q0 30 40 30h110q35 0 35 35v30"
+                  stroke="#a3c2ad"
+                  stroke-width="2"
+                  stroke-dasharray="5 7"
+                />
+                <path
+                  d="M165 380h85q30 0 30-35v-65"
+                  stroke="#a3c2ad"
+                  stroke-width="2"
+                  stroke-dasharray="5 7"
+                />
+                <circle cx="180" cy="126" r="5" fill="#1d7850" />
+                <circle cx="165" cy="380" r="5" fill="#1d7850" />
+              </svg>
+              <div class="preview-request">
+                <div class="preview-card-label">
+                  <svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#i-request" />
+                  </svg>
+                  Your service request <span class="small-dot"></span>
+                </div>
+                <h2>A fresh start for your space.</h2>
+                <div class="preview-tags">
+                  <span>Home cleaning</span
+                  ><span
+                    ><svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#i-clock" />
+                    </svg>
+                    Your preferred time</span
+                  >
+                </div>
+                <div class="request-bottom">
+                  <span>Let’s find your match</span
+                  ><svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#i-arrow" />
+                  </svg>
+                </div>
+              </div>
+              <div class="match-node">
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-brand" /></svg
+                ><span>IGotU matching</span>
+              </div>
+              <div class="preview-provider">
+                <div class="provider-top">
+                  <span class="illustrated-avatar"
+                    ><svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#i-profile" /></svg
+                  ></span>
+                  <div>
+                    <span class="micro-label">Recommended for you</span>
+                    <h3>Provider A</h3>
+                    <span class="provider-subtitle"
+                      >Home cleaning specialist</span
+                    >
+                  </div>
+                </div>
+                <div class="provider-signals">
+                  <span
+                    ><svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#i-check" />
+                    </svg>
+                    Matching skills</span
+                  ><span
+                    ><svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#i-clock" />
+                    </svg>
+                    Available</span
+                  >
+                </div>
+                <div class="provider-footer">
+                  <span
+                    ><svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#i-location" />
+                    </svg>
+                    Compare distance</span
+                  ><span class="profile-label"
+                    >View profile
+                    <svg
+                      class="icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.6"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#i-arrow" /></svg
+                  ></span>
+                </div>
+              </div>
+              <div class="preview-alternative">
+                <span class="illustrated-avatar avatar-alt"
+                  ><svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#i-profile" /></svg
+                ></span>
+                <div>
+                  <h3>Provider B</h3>
+                  <p>Another option to consider</p>
+                </div>
+              </div>
+              <div class="choice-stamp">
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-choice" />
+                </svg>
+                The choice stays yours.
+              </div>
+              <svg
+                class="preview-spark"
+                viewBox="0 0 64 64"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M32 4v56M4 32h56M12 12l40 40M12 52l40-40"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <figcaption id="preview-caption">
+              An illustration of the matching process. Sample Providers, not
+              live data.
+            </figcaption>
+          </figure>
         </div>
-    </main>
-</body>
+        <div class="container">
+          <div class="promise-strip">
+            <div>
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-request" /></svg
+              ><span
+                ><strong>Start with your needs</strong
+                ><small>A service request, in your words.</small></span
+              >
+            </div>
+            <div>
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-match" /></svg
+              ><span
+                ><strong>Discover a suitable match</strong
+                ><small>Skills, availability and location.</small></span
+              >
+            </div>
+            <div>
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-choice" /></svg
+              ><span
+                ><strong>Stay in control</strong
+                ><small>You choose. Your Provider confirms.</small></span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
 
+      <section
+        class="section services-section section-anchor"
+        id="services"
+        aria-labelledby="services-title"
+      >
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Everyday needs, thoughtfully connected</p>
+              <h2 id="services-title">What’s on your list?</h2>
+            </div>
+            <p>
+              From a helping hand at home to a little extra learning. Start with
+              the service you need.
+            </p>
+          </div>
+          <div class="category-grid">
+            <a
+              class="category-card"
+              href="register.html"
+              aria-label="Cleaning: register as a Client to create a service request"
+              ><span class="category-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-clean" /></svg></span
+              ><span>Cleaning</span
+              ><svg
+                class="icon category-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg></a
+            ><a
+              class="category-card"
+              href="register.html"
+              aria-label="Delivery: register as a Client to create a service request"
+              ><span class="category-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-delivery" /></svg></span
+              ><span>Delivery</span
+              ><svg
+                class="icon category-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg></a
+            ><a
+              class="category-card"
+              href="register.html"
+              aria-label="Repair: register as a Client to create a service request"
+              ><span class="category-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-repair" /></svg></span
+              ><span>Repair</span
+              ><svg
+                class="icon category-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg></a
+            ><a
+              class="category-card"
+              href="register.html"
+              aria-label="Moving Help: register as a Client to create a service request"
+              ><span class="category-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-moving" /></svg></span
+              ><span>Moving Help</span
+              ><svg
+                class="icon category-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg></a
+            ><a
+              class="category-card"
+              href="register.html"
+              aria-label="Errands: register as a Client to create a service request"
+              ><span class="category-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-errands" /></svg></span
+              ><span>Errands</span
+              ><svg
+                class="icon category-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg></a
+            ><a
+              class="category-card"
+              href="register.html"
+              aria-label="Tutoring: register as a Client to create a service request"
+              ><span class="category-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-tutoring" /></svg></span
+              ><span>Tutoring</span
+              ><svg
+                class="icon category-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg></a
+            ><a
+              class="category-card"
+              href="register.html"
+              aria-label="Other: register as a Client to create a service request"
+              ><span class="category-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-other" /></svg></span
+              ><span>Other</span
+              ><svg
+                class="icon category-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg
+            ></a>
+          </div>
+          <p class="section-footnote">
+            Choose a category to get started. Register as a Client, then create
+            your service request.
+          </p>
+        </div>
+      </section>
+
+      <section
+        class="section how-section section-anchor"
+        id="how-it-works"
+        aria-labelledby="how-title"
+      >
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">A clear path from need to done</p>
+              <h2 id="how-title">
+                Good help starts<br />with a simple request.
+              </h2>
+            </div>
+            <p>
+              No endless browsing. Tell us what you need, explore your
+              recommendations and take the next step.
+            </p>
+          </div>
+          <ol class="steps-grid">
+            <li class="step-card">
+              <div class="step-top">
+                <span class="step-icon"
+                  ><svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#i-request" /></svg></span
+                ><span class="step-number">01</span>
+              </div>
+              <h3>Create your request</h3>
+              <p>
+                Tell us what you need, along with your preferred time, budget
+                and location.
+              </p>
+            </li>
+            <li class="step-card">
+              <div class="step-top">
+                <span class="step-icon"
+                  ><svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#i-match" /></svg></span
+                ><span class="step-number">02</span>
+              </div>
+              <h3>Meet your recommendations</h3>
+              <p>
+                Discover suitable Providers based on skills, specialization,
+                availability and distance.
+              </p>
+            </li>
+            <li class="step-card">
+              <div class="step-top">
+                <span class="step-icon"
+                  ><svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#i-choice" /></svg></span
+                ><span class="step-number">03</span>
+              </div>
+              <h3>Make your choice</h3>
+              <p>
+                Compare recommended Providers and select one. They can then
+                confirm or decline the assignment.
+              </p>
+            </li>
+            <li class="step-card">
+              <div class="step-top">
+                <span class="step-icon"
+                  ><svg
+                    class="icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#i-review" /></svg></span
+                ><span class="step-number">04</span>
+              </div>
+              <h3>Complete. Record. Review.</h3>
+              <p>
+                Message your assigned Provider. Once the Client marks the
+                service complete, record offline payment and exchange reviews.
+              </p>
+            </li>
+          </ol>
+          <div class="process-note">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#i-check" />
+            </svg>
+            <p>
+              <strong>Real people. A considered choice.</strong> A selection
+              becomes an assignment for the Provider to confirm or decline.
+              Payments happen offline and are recorded in IGotU.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="section signature-section"
+        aria-labelledby="signature-title"
+      >
+        <div class="container signature-grid">
+          <div class="signature-copy">
+            <p class="eyebrow">The IGotU difference</p>
+            <h2 id="signature-title">
+              Your request.<br />Your match.<br /><em>Your choice.</em>
+            </h2>
+            <p>
+              A recommendation should bring you closer to the right help. The
+              final decision should always feel like yours.
+            </p>
+            <a class="text-link" href="register.html"
+              >Find your starting point
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg
+            ></a>
+          </div>
+          <div class="matching-explainer">
+            <p class="explainer-heading">
+              <span class="small-dot"></span> What goes into a recommendation?
+            </p>
+            <div
+              class="criteria-buttons"
+              role="group"
+              aria-label="Explore matching criteria"
+            >
+              <button type="button" data-criterion="skills" aria-pressed="true">
+                Skills &amp; service</button
+              ><button
+                type="button"
+                data-criterion="availability"
+                aria-pressed="false"
+              >
+                Availability</button
+              ><button
+                type="button"
+                data-criterion="distance"
+                aria-pressed="false"
+              >
+                Distance
+              </button>
+            </div>
+            <div class="criterion-panel" aria-live="polite" aria-atomic="true">
+              <span class="criterion-icon" id="criterion-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-repair" /></svg
+              ></span>
+              <h3 id="criterion-title">The right skills for your request.</h3>
+              <p id="criterion-description">
+                Your service category and specialization help identify Providers
+                who offer the kind of help you need.
+              </p>
+            </div>
+            <div
+              class="matching-flow"
+              aria-label="Your request leads to IGotU recommendations, then your selection"
+            >
+              <div>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-request" /></svg
+                ><span>Your<br />request</span>
+              </div>
+              <svg
+                class="icon flow-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" />
+              </svg>
+              <div class="flow-center">
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-match" /></svg
+                ><span>IGotU<br />recommendations</span>
+              </div>
+              <svg
+                class="icon flow-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" />
+              </svg>
+              <div>
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-choice" /></svg
+                ><span>Your<br />selection</span>
+              </div>
+            </div>
+            <p class="explainer-note">
+              An explanation of the process, not a live matching tool.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="section why-section section-anchor"
+        id="why-igotu"
+        aria-labelledby="why-title"
+      >
+        <div class="container">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">More clarity. Less guesswork.</p>
+              <h2 id="why-title">
+                Thoughtful connections.<br />From start to finish.
+              </h2>
+            </div>
+            <p>
+              Useful details, direct conversations and a clear view of your
+              service. All in one place.
+            </p>
+          </div>
+          <div class="features-grid">
+            <article class="feature-card">
+              <span class="feature-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-match" /></svg
+              ></span>
+              <h3>Recommendations with relevance</h3>
+              <p>
+                Your request shapes the shortlist, so you can focus on Providers
+                suited to your service.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-location" /></svg
+              ></span>
+              <h3>A little closer to what you need</h3>
+              <p>
+                Location-aware suggestions help you compare the distance to
+                suitable Providers.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-request" /></svg
+              ></span>
+              <h3>Room for the details</h3>
+              <p>
+                Describe your service in your own words. Add your preferred
+                time, budget and location.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-message" /></svg
+              ></span>
+              <h3>Keep the conversation together</h3>
+              <p>
+                Built-in messaging connects Clients and Providers assigned to
+                the same service.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-profile" /></svg
+              ></span>
+              <h3>Get to know your options</h3>
+              <p>
+                Provider profiles, ratings and reviews give you more context
+                before making a choice.
+              </p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-icon"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-progress" /></svg
+              ></span>
+              <h3>See where things stand</h3>
+              <p>
+                Follow your service from Provider selection and confirmation
+                through to completion.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section paths-section" aria-labelledby="paths-title">
+        <div class="container">
+          <div class="center-heading">
+            <p class="eyebrow">Two sides. One helpful connection.</p>
+            <h2 id="paths-title">There’s a place for you here.</h2>
+          </div>
+          <div class="paths-grid">
+            <article class="path-card client-path">
+              <div class="path-label">For Clients <span>01</span></div>
+              <div class="path-illustration" aria-hidden="true">
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-request" /></svg
+                ><span class="path-dash"></span
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-match" /></svg
+                ><span class="path-dash"></span
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-choice" />
+                </svg>
+              </div>
+              <h3>A little help.<br />A lot off your mind.</h3>
+              <p>
+                Create a service request, discover suitable Providers and choose
+                the person you’d like to work with.
+              </p>
+              <a class="button" href="register.html"
+                >Find a Service Provider
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-arrow" /></svg></a
+              ><small>Choose Client when you register.</small>
+            </article>
+            <article class="path-card provider-path">
+              <div class="path-label">For Providers <span>02</span></div>
+              <div class="path-illustration" aria-hidden="true">
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-profile" /></svg
+                ><span class="path-dash"></span
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-clock" /></svg
+                ><span class="path-dash"></span
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-check" />
+                </svg>
+              </div>
+              <h3>Your skills.<br />New possibilities.</h3>
+              <p>
+                Set up your profile, service specializations and availability.
+                Receive assignments when a Client selects you.
+              </p>
+              <a class="button button-light" href="register.html"
+                >Become a Provider
+                <svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-arrow" /></svg></a
+              ><small>Choose Provider when you register.</small>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing-section" aria-labelledby="closing-title">
+        <div class="container closing-inner">
+          <span class="closing-mark" aria-hidden="true"
+            ><svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#i-brand" /></svg
+          ></span>
+          <p class="eyebrow">Let’s take the next step</p>
+          <h2 id="closing-title">Whatever you need,<br /><em>IGotU.</em></h2>
+          <p>
+            Start with a service request.<br />Discover the right help for your
+            next everyday need.
+          </p>
+          <div class="closing-actions">
+            <a class="button button-mint" href="register.html"
+              >Get Started
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg></a
+            ><a class="button button-on-dark" href="register.html"
+              >Become a Provider
+              <svg
+                class="icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#i-arrow" /></svg
+            ></a>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-main">
+          <div class="footer-about">
+            <a class="brand" href="#home" aria-label="IGotU home"
+              ><span class="brand-symbol"
+                ><svg
+                  class="icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#i-brand" /></svg></span
+              ><span>IGotU<span class="brand-dot">.</span></span></a
+            >
+            <p>
+              A smarter way to connect everyday service needs with people who
+              can help.
+            </p>
+          </div>
+          <div class="footer-column">
+            <h2>Explore IGotU</h2>
+            <a href="#how-it-works">How It Works</a
+            ><a href="#services">Services</a><a href="#why-igotu">Why IGotU</a>
+          </div>
+          <div class="footer-column">
+            <h2>Your next step</h2>
+            <a href="login.html">Login</a
+            ><a href="register.html">Register as a Client</a
+            ><a href="register.html">Register as a Provider</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>IGotU · Smart Service Matching Platform</p>
+          <p>A university Final Year Project.</p>
+          <a href="#home">Back to top ↑</a>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>
