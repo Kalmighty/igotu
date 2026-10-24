@@ -1,3 +1,4 @@
+import { accountDestination } from "./identity-access.js";
 import { supabase, clearStoredAuthSession } from "./supabaseClient.js";
 
 const page = document.body.dataset.page;
@@ -27,36 +28,11 @@ function setButtonLoading(button, isLoading, loadingText, normalText) {
     button.textContent = isLoading ? loadingText : normalText;
 }
 
-function redirectByProfile(profile) {
-    const cleanRole = String(profile?.role || "").trim().toLowerCase();
-    const completed = profile?.profile_completed === true;
-
-    if (cleanRole === "client") {
-        window.location.href = completed
-            ? "client/dashboard.html"
-            : "client/complete-profile.html";
-        return;
-    }
-
-    if (cleanRole === "provider") {
-        window.location.href = completed
-            ? "provider/dashboard.html"
-            : "provider/complete-profile.html";
-        return;
-    }
-
-    if (cleanRole === "admin") {
-        window.location.href = "admin/dashboard.html";
-        return;
-    }
-
-    window.location.href = "login.html";
-}
 
 async function getUserProfile(userId) {
     const { data, error } = await supabase
         .from("users")
-        .select("id, user_code, full_name, email, phone, role, status, profile_completed")
+        .select("id, user_code, full_name, email, phone, role, status, profile_completed, identity_verified,identity_verified_at,identity_verified_by")
         .eq("id", userId)
         .single();
 
@@ -137,19 +113,25 @@ async function handleRegister() {
             const profile = await waitForUserProfile(data.user.id);
 
             if (profile) {
+                let destination;
+                try { destination = await accountDestination(profile); }
+                catch { showMessage("Unable to check verification. Please log in again."); setButtonLoading(registerBtn, false, "Creating account...", "Register"); return; }
                 localStorage.setItem("igotu_user", JSON.stringify(profile));
-                showMessage("Account created. Continue by completing your profile...", "success");
+                showMessage("Account created. Continue to identity verification...", "success");
                 setTimeout(function() {
-                    redirectByProfile(profile);
+                    window.location.href = destination;
                 }, 700);
                 return;
             }
         }
 
-        showMessage("Registration successful. Please login to complete your profile.", "success");
-        setTimeout(function() {
-            window.location.href = "login.html";
-        }, 1200);
+        showMessage("Registration successful. Check your email to confirm your account if required, then log in to submit identity verification.", "success");
+        // Keep email-confirmation instructions visible instead of flashing them
+        // briefly before a redirect. The existing Login link is the next step.
+        registerBtn.disabled = true;
+        registerBtn.textContent = "Check your email, then log in";
+        const loginLink = document.querySelector('.auth-form-footer a[href="login.html"]');
+        if (loginLink) loginLink.href = `login.html?role=${role}`;
     });
 }
 
@@ -280,10 +262,11 @@ async function handleLogin() {
                 return;
             }
 
+            const destination = await accountDestination(profile);
             localStorage.setItem("igotu_user", JSON.stringify(profile));
             showMessage("Login successful. Redirecting...", "success");
             redirectPending = true;
-            setTimeout(function() { redirectByProfile(profile); }, 800);
+            setTimeout(function() { window.location.href = destination; }, 800);
         } catch {
             await rejectLogin("Login could not be completed. Please try again.");
         } finally {
@@ -293,19 +276,6 @@ async function handleLogin() {
             }
         }
     });
-}
-
-async function redirectIfAlreadyLoggedIn() {
-    const { data } = await supabase.auth.getSession();
-
-    if (!data.session) return;
-
-    const profile = await getUserProfile(data.session.user.id);
-
-    if (!profile || profile.status !== "active") return;
-
-    localStorage.setItem("igotu_user", JSON.stringify(profile));
-    redirectByProfile(profile);
 }
 
 document.addEventListener("DOMContentLoaded", async function() {

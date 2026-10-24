@@ -1,203 +1,304 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Identity Verification - IGotU</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/ui.css">
-    <script src="../js/app-shell.js" defer></script>
-</head>
-<body>
-    <a class="skip-link" href="#mainContent">Skip to main content</a>
-  <div class="app-layout">
-    <aside class="sidebar">
-      <div>
-        <div class="sidebar-brand">
-          <a class="logo-text" href="dashboard.html" aria-label="IGotU Client dashboard">IGotU<span>Client workspace</span></a>
-          <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
-            Menu <span aria-hidden="true">☰</span>
-          </button>
-        </div>
-        <nav class="side-menu" id="workspaceNavigation" aria-label="Client navigation">
-          <a href="dashboard.html">▦ Dashboard</a>
-<a href="create-request.html">＋ Create Request</a>
-<a href="my-requests.html">▣ My Requests</a>
-<a href="messages.html">✉ Messages</a>
-        </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Identity Verification - IGotU</title>
+    <link rel="icon" href="../assets/igotu-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css" />
+    <link rel="stylesheet" href="../css/workspace-gate.css" />
+    <link rel="stylesheet" href="../css/verification-access.css" />
+  </head>
+  <body data-access-state="checking" class="verification-access">
+    <div id="workspaceAccessMessage" role="status">
+      Checking account access…
+    </div>
+    <a class="skip-link" href="#mainContent">Skip to verification</a>
+    <header class="verification-header">
+      <a class="verification-brand" href="../index.html">IGotU<span>.</span></a
+      ><span>Account verification</span
+      ><button type="button" id="verificationLogoutBtn" class="btn btn-outline">
+        Log out
+      </button>
+    </header>
+    <main class="verification-access-main" id="mainContent" tabindex="-1">
+      <div class="verification-intro">
+        <span class="verification-eyebrow"
+          >A trusted start to your service journey</span
+        >
+        <h1>Let’s verify <em>it’s you.</em></h1>
+        <p>
+          Identity approval comes first. Once approved, complete your profile
+          and enter your Client workspace.
+        </p>
       </div>
-    </aside>
-    <main class="main-area" id="mainContent" tabindex="-1">
-      <header class="topbar">
-        <div></div>
-        <div class="topbar-actions">
-          <div class="notification-menu-wrap">
-            <button type="button" class="topbar-notification-btn" id="notificationMenuTrigger" aria-label="Notifications" aria-expanded="false" aria-controls="notificationDropdown" title="Notifications">
-              <span class="topbar-notification-icon" aria-hidden="true">🔔</span>
-              <span class="notification-badge hidden">0</span>
-            </button>
-            <div id="notificationDropdown" class="notification-dropdown hidden">
-              <div class="notification-dropdown-header">
-                <div><strong>Notifications</strong><span id="notificationDropdownCount">0 unread</span></div>
-                <button type="button" id="notificationMarkAllBtn" class="notification-mark-all-btn">Mark all as read</button>
+      <ol class="verification-progress" aria-label="Account setup progress">
+        <li id="progressIdentity">01 <span>Submit identity</span></li>
+        <li id="progressReview">02 <span>Admin review</span></li>
+        <li id="progressProfile">03 <span>Complete profile</span></li>
+      </ol>
+      <div class="verification-refresh-row">
+        <span id="verificationAccountLabel">Client account</span
+        ><button
+          type="button"
+          id="refreshVerificationBtn"
+          class="btn btn-outline"
+        >
+          Refresh status
+        </button>
+      </div>
+      <div id="messageBox" role="status" class="message-box hidden"></div>
+      <div class="verification-layout">
+        <aside class="verification-status-panel">
+          <section class="panel verification-status-card">
+            <div class="verification-shield" aria-hidden="true">
+              <svg
+                viewBox="0 0 24 24"
+                width="30"
+                height="30"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+              >
+                <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+              </svg>
+            </div>
+            <span
+              id="verificationStatusBadge"
+              class="verification-status-badge verification-not-submitted"
+              >Not Verified</span
+            >
+            <h2 id="verificationStatusTitle">Verify Your Identity</h2>
+            <p id="verificationStatusText">
+              Submit an identity document so other IGotU users can trust your
+              account.
+            </p>
+            <div class="verification-timeline">
+              <div>
+                <span>Submitted</span
+                ><strong id="verificationSubmittedAt">-</strong>
               </div>
-              <div id="notificationDropdownList" class="notification-dropdown-list">
-                <div class="notification-dropdown-empty"><span>🔔</span><strong>No notifications yet</strong><small>New updates will appear here.</small></div>
+              <div>
+                <span>Reviewed</span
+                ><strong id="verificationReviewedAt">-</strong>
               </div>
             </div>
-          </div>
-          <div class="profile-menu-wrap">
-            <button type="button" class="user-mini profile-menu-trigger" id="profileMenuTrigger" aria-expanded="false" aria-controls="profileDropdown">
-              <div class="avatar" id="avatar">C</div>
-              <div class="profile-menu-user-text"><strong id="userName">Client</strong><small id="userRole">Client</small></div>
-              <span class="profile-menu-chevron" aria-hidden="true">⌄</span>
-            </button>
-            <div id="profileDropdown" class="profile-dropdown hidden">
-              <a href="edit-profile.html" class="profile-dropdown-item"><span class="profile-dropdown-icon">✎</span><span>Edit Profile</span></a>
-              <button type="button" id="profileLogoutBtn" class="profile-dropdown-item profile-dropdown-logout"><span class="profile-dropdown-icon">↪</span><span>Log out</span></button>
+            <div
+              id="verificationAdminNoteWrap"
+              class="verification-admin-note hidden"
+            >
+              <strong>Administrator note</strong>
+              <p id="verificationAdminNote"></p>
             </div>
-          </div>
-        </div>
-      </header>
+            <a
+              id="continueVerificationBtn"
+              class="btn verification-continue hidden"
+              href="complete-profile.html"
+              >Continue to profile setup</a
+            >
+          </section>
 
-      <section class="content-area">
-        <div class="page-heading">
-          <div><h1>Identity Verification</h1><p>Verify your identity to increase trust and safety when using IGotU.</p></div>
-          <a href="dashboard.html" class="btn btn-outline">Back to Dashboard</a>
-        </div>
-
-        <div id="messageBox" role="status" class="message-box hidden"></div>
-
-        <div class="verification-layout">
-          <aside class="verification-status-panel">
-            <section class="panel verification-status-card">
-              <div class="verification-shield">🛡️</div>
-              <span id="verificationStatusBadge" class="verification-status-badge verification-not-submitted">Not Verified</span>
-              <h2 id="verificationStatusTitle">Verify Your Identity</h2>
-              <p id="verificationStatusText">Submit an identity document so other IGotU users can trust your account.</p>
-              <div class="verification-timeline">
-                <div><span>Submitted</span><strong id="verificationSubmittedAt">-</strong></div>
-                <div><span>Reviewed</span><strong id="verificationReviewedAt">-</strong></div>
+          <section class="panel verification-account-card">
+            <div class="panel-header"><h2>Account</h2></div>
+            <div class="panel-body account-info-list">
+              <div class="account-info-item">
+                <span>Email</span><strong id="verificationEmail">-</strong>
               </div>
-              <div id="verificationAdminNoteWrap" class="verification-admin-note hidden">
-                <strong>Administrator note</strong><p id="verificationAdminNote"></p>
+              <div class="account-info-item">
+                <span>Phone</span><strong id="verificationPhone">-</strong>
               </div>
-            </section>
-
-            <section class="panel verification-account-card">
-              <div class="panel-header"><h2>Account</h2></div>
-              <div class="panel-body account-info-list">
-                <div class="account-info-item"><span>Email</span><strong id="verificationEmail">-</strong></div>
-                <div class="account-info-item"><span>Phone</span><strong id="verificationPhone">-</strong></div>
-                <div class="account-info-item"><span>Role</span><strong id="verificationRole">Client</strong></div>
+              <div class="account-info-item">
+                <span>Role</span><strong id="verificationRole">Client</strong>
               </div>
-            </section>
-          </aside>
-
-          <section class="panel verification-form-panel">
-            <div class="panel-header">
-              <div><h2>Submit Verification</h2><p class="muted-text">Your identity document is stored privately and is not shown on your public profile.</p></div>
-            </div>
-            <div class="panel-body">
-              <form id="verificationForm" class="verification-form">
-                <div class="form-group">
-                  <label for="legalName">Full Legal Name</label>
-                  <input type="text" id="legalName" autocomplete="name" required />
-                  <small class="form-hint">Enter your name exactly as shown on your identification document.</small>
-                </div>
-
-                <div class="verification-two-column">
-                  <div class="form-group">
-                    <label for="idType">Identification Type</label>
-                    <select id="idType" required>
-                      <option value="">Select identification type</option>
-                      <option value="mykad">MyKad</option>
-                      <option value="passport">Passport</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="idNumber">Identification Number</label>
-                    <input type="text" id="idNumber" autocomplete="off" required placeholder="Enter MyKad or passport number" />
-                    <small class="form-hint">For privacy, IGotU stores only the last 4 characters after submission.</small>
-                  </div>
-                </div>
-
-                <div class="form-group verification-upload-group">
-                  <label>Identity Document</label>
-
-                  <div id="identityDocumentUploadShell" class="verification-upload-shell">
-                    <input
-                      type="file"
-                      id="identityDocument"
-                      class="verification-file-input"
-                      accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
-                      required
-                    />
-
-                    <label for="identityDocument" id="identityDocumentUploadBox" class="verification-upload-box">
-                      <div id="identityDocumentEmpty" class="verification-upload-empty">
-                        <span class="verification-upload-plus">+</span>
-                        <strong>Upload MyKad / Passport</strong>
-                        <span>JPG, PNG, or PDF · Max 5 MB</span>
-                      </div>
-
-                      <div id="identityDocumentPreview" class="verification-file-preview hidden">
-                        <img
-                          id="identityDocumentPreviewImage"
-                          class="verification-preview-image hidden"
-                          alt="Identity document preview"
-                        />
-
-                        <div id="identityDocumentPreviewFile" class="verification-preview-pdf hidden">
-                          <iframe
-                            id="identityDocumentPreviewPdf"
-                            class="verification-preview-pdf-frame"
-                            title="Identity document PDF preview"
-                          ></iframe>
-                        </div>
-                      </div>
-                    </label>
-
-                    <div id="identityDocumentSelectedActions" class="verification-selected-actions hidden">
-                      <div class="verification-selected-file-info">
-                        <strong id="identityDocumentSelectedName"></strong>
-                        <span id="identityDocumentSelectedSize"></span>
-                      </div>
-
-                      <div class="verification-selected-buttons">
-                        <button type="button" id="identityDocumentChangeBtn" class="verification-change-file-btn">Change</button>
-                        <button type="button" id="identityDocumentRemoveBtn" class="verification-remove-file-btn">Remove</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <small class="form-hint">Upload a clear MyKad or passport image/PDF.</small>
-                </div>
-
-                <div id="providerVerificationSection" class="hidden"></div>
-
-                <div class="verification-privacy-box">
-                  <strong>Privacy & Safety / Privasi & Keselamatan</strong>
-                  <p>Your document is used only for IGotU identity verification. It is kept in private storage and can only be accessed by you and authorised administrators.</p>
-                  <p>Dokumen anda digunakan hanya untuk pengesahan identiti IGotU. Ia disimpan secara peribadi dan hanya boleh diakses oleh anda dan pentadbir yang diberi kuasa.</p>
-                </div>
-
-                <label class="verification-check-row"><input type="checkbox" id="ageConfirm" /><span>I confirm that I am at least 18 years old and the information provided is accurate.</span></label>
-                <label class="verification-check-row"><input type="checkbox" id="privacyConsent" /><span>I consent to IGotU using this information and document solely for identity verification and platform safety.</span></label>
-
-                <button type="submit" id="submitVerificationBtn" class="btn full-btn">Submit for Verification</button>
-              </form>
             </div>
           </section>
-        </div>
-      </section>
-    </main>
-  </div>
+        </aside>
 
-  <script type="module" src="../js/profile-guard.js"></script>
-  <script type="module" src="../js/notification-badge.js"></script>
-  <script type="module" src="../js/notification-menu.js"></script>
-  <script type="module" src="../js/profile-menu.js"></script>
-  <script type="module" src="../js/verification.js"></script>
-</body>
+        <section
+          class="panel verification-form-panel"
+          id="verificationFormPanel"
+        >
+          <div class="panel-header">
+            <div>
+              <h2>Submit your identity</h2>
+              <p class="muted-text">
+                Your identity document is stored privately and is not shown on
+                your public profile.
+              </p>
+            </div>
+          </div>
+          <div class="panel-body">
+            <form id="verificationForm" class="verification-form">
+              <div class="form-group">
+                <label for="legalName">Full Legal Name</label>
+                <input
+                  type="text"
+                  id="legalName"
+                  autocomplete="name"
+                  required
+                />
+                <small class="form-hint"
+                  >Enter your name exactly as shown on your identification
+                  document.</small
+                >
+              </div>
+
+              <div class="verification-two-column">
+                <div class="form-group">
+                  <label for="idType">Identification Type</label>
+                  <select id="idType" required>
+                    <option value="">Select identification type</option>
+                    <option value="mykad">MyKad</option>
+                    <option value="passport">Passport</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="idNumber">Identification Number</label>
+                  <input
+                    type="text"
+                    id="idNumber"
+                    autocomplete="off"
+                    required
+                    placeholder="Enter MyKad or passport number"
+                  />
+                  <small class="form-hint"
+                    >For privacy, IGotU stores only the last 4 characters after
+                    submission.</small
+                  >
+                </div>
+              </div>
+
+              <div class="form-group verification-upload-group">
+                <label for="identityDocument">Identity Document</label>
+
+                <div
+                  id="identityDocumentUploadShell"
+                  class="verification-upload-shell"
+                >
+                  <input
+                    type="file"
+                    id="identityDocument"
+                    class="verification-file-input"
+                    accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
+                    required
+                  />
+
+                  <label
+                    for="identityDocument"
+                    id="identityDocumentUploadBox"
+                    class="verification-upload-box"
+                  >
+                    <div
+                      id="identityDocumentEmpty"
+                      class="verification-upload-empty"
+                    >
+                      <span class="verification-upload-plus">+</span>
+                      <strong>Upload MyKad / Passport</strong>
+                      <span>JPG, PNG, or PDF · Max 5 MB</span>
+                    </div>
+
+                    <div
+                      id="identityDocumentPreview"
+                      class="verification-file-preview hidden"
+                    >
+                      <img
+                        id="identityDocumentPreviewImage"
+                        class="verification-preview-image hidden"
+                        alt="Identity document preview"
+                      />
+
+                      <div
+                        id="identityDocumentPreviewFile"
+                        class="verification-preview-pdf hidden"
+                      >
+                        <iframe
+                          id="identityDocumentPreviewPdf"
+                          class="verification-preview-pdf-frame"
+                          title="Identity document PDF preview"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </label>
+
+                  <div
+                    id="identityDocumentSelectedActions"
+                    class="verification-selected-actions hidden"
+                  >
+                    <div class="verification-selected-file-info">
+                      <strong id="identityDocumentSelectedName"></strong>
+                      <span id="identityDocumentSelectedSize"></span>
+                    </div>
+
+                    <div class="verification-selected-buttons">
+                      <button
+                        type="button"
+                        id="identityDocumentChangeBtn"
+                        class="verification-change-file-btn"
+                      >
+                        Change
+                      </button>
+                      <button
+                        type="button"
+                        id="identityDocumentRemoveBtn"
+                        class="verification-remove-file-btn"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <small class="form-hint"
+                  >Upload a clear MyKad or passport image/PDF.</small
+                >
+              </div>
+
+              <div id="providerVerificationSection" class="hidden"></div>
+
+              <div class="verification-privacy-box">
+                <strong>Privacy & Safety / Privasi & Keselamatan</strong>
+                <p>
+                  Your document is used only for IGotU identity verification. It
+                  is kept in private storage and can only be accessed by you and
+                  authorised administrators.
+                </p>
+                <p>
+                  Dokumen anda digunakan hanya untuk pengesahan identiti IGotU.
+                  Ia disimpan secara peribadi dan hanya boleh diakses oleh anda
+                  dan pentadbir yang diberi kuasa.
+                </p>
+              </div>
+
+              <label class="verification-check-row"
+                ><input type="checkbox" id="ageConfirm" required /><span
+                  >I confirm that I am at least 18 years old and the information
+                  provided is accurate.</span
+                ></label
+              >
+              <label class="verification-check-row"
+                ><input type="checkbox" id="privacyConsent" required /><span
+                  >I consent to IGotU using this information and document solely
+                  for identity verification and platform safety.</span
+                ></label
+              >
+
+              <button
+                type="submit"
+                id="submitVerificationBtn"
+                class="btn full-btn"
+              >
+                Submit for Verification
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="verification-access-footer">
+      IGotU · Your identity documents stay private.
+    </footer>
+    <script type="module" src="../js/profile-guard.js"></script>
+    <script type="module" src="../js/verification.js"></script>
+  </body>
 </html>

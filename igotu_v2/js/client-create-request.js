@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
@@ -728,6 +729,7 @@ async function handleRequestForm(userId) {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    if (!(await authorizeWorkspace()).allowed) return;
     const user = await getSessionUser();
     if (!user) return;
 

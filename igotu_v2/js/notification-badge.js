@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
 async function updateNotificationBadge() {
@@ -31,7 +32,8 @@ async function updateNotificationBadge() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
+    if (!(await authorizeWorkspace()).allowed) return;
     updateNotificationBadge();
     setInterval(updateNotificationBadge, 30000);
 });

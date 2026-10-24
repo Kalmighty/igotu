@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 
@@ -440,7 +441,8 @@ async function loadMatchingProviders(category) {
     .select("id, user_code, full_name, email, role, status")
     .in("id", providerIds)
     .eq("role", "provider")
-    .eq("status", "active");
+    .eq("status", "active")
+    .eq("identity_verified", true);
 
   if (providerError) {
     console.error("Providers fetch error:", providerError);
@@ -846,6 +848,7 @@ async function selectProvider(providerId, button) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+    if (!(await authorizeWorkspace()).allowed) return;
   currentUser = await getSessionUser();
   if (!currentUser) return;
 

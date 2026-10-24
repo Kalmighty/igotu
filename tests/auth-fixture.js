@@ -12,6 +12,9 @@ const profile = {
   role: fixture.actualRole || "client",
   status: fixture.status || "active",
   profile_completed: fixture.completed !== false,
+  identity_verified: fixture.verified !== false,
+  identity_verified_at: "2026-01-01T00:00:00Z",
+  identity_verified_by: "fixture-admin",
 };
 let session = null;
 function setSession(value) {
@@ -92,6 +95,29 @@ export const supabase = {
       eq(column, value) {
         record("eq", { column, value });
         return query;
+      },
+      order() {
+        return query;
+      },
+      limit() {
+        return query;
+      },
+      then(resolve, reject) {
+        return Promise.resolve({
+          data:
+            fixture.verified === false
+              ? []
+              : [
+                  {
+                    id: "approved",
+                    role: profile.role,
+                    status: "approved",
+                    reviewed_at: "2026-01-01T00:00:00Z",
+                    reviewed_by: "fixture-admin",
+                  },
+                ],
+          error: null,
+        }).then(resolve, reject);
       },
       async single() {
         return {

@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
 const L = window.L;
@@ -901,6 +902,7 @@ async function handleSaveProfile(userId) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+    if (!(await authorizeWorkspace()).allowed) return;
   const user = await getSessionUser();
   if (!user) return;
 

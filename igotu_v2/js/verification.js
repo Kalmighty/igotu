@@ -1,3 +1,5 @@
+import { authorizeWorkspace, logoutAccount } from "./profile-guard.js";
+import { isIdentityApproved } from "./identity-access.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 
@@ -7,6 +9,8 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"];
 let currentUser = null;
 let currentProfile = null;
 let latestRequest = null;
+let submissionInProgress = false;
+let statusKnown = false;
 
 function showMessage(message, type = "error") {
   const box = document.getElementById("messageBox");
@@ -47,23 +51,27 @@ function setStatusCard(status, request = null) {
   if (status === "approved") {
     badge.classList.add("verification-approved");
     badge.textContent = "✓ Verified";
-    title.textContent = "Identity Verified";
-    text.textContent = "Your identity has been approved by an IGotU administrator.";
+    title.textContent = "Identity Approved";
+    text.textContent =
+      "Your identity has been approved by an IGotU administrator.";
   } else if (status === "pending") {
     badge.classList.add("verification-pending");
     badge.textContent = "Pending";
-    title.textContent = "Verification Under Review";
-    text.textContent = "Your documents were submitted and are waiting for administrator review.";
+    title.textContent = "Your Verification Is Under Review";
+    text.textContent =
+      "We’ve received your identification documents. An IGotU administrator will review your submission before you can use the platform. Use Refresh status to check for a decision.";
   } else if (status === "rejected") {
     badge.classList.add("verification-rejected");
     badge.textContent = "Rejected";
-    title.textContent = "Verification Needs Attention";
-    text.textContent = "Your previous verification request was rejected. Review the note below and submit again.";
+    title.textContent = "Verification Rejected";
+    text.textContent =
+      "Your previous verification request was rejected. Review the note below and submit again.";
   } else {
     badge.classList.add("verification-not-submitted");
     badge.textContent = "Not Verified";
     title.textContent = "Verify Your Identity";
-    text.textContent = "Submit an identity document so other IGotU users can trust your account.";
+    text.textContent =
+      "Submit your identity for administrator approval before you can access your workspace. No review time is guaranteed.";
   }
 
   if (request?.admin_note) {
@@ -74,10 +82,39 @@ function setStatusCard(status, request = null) {
     adminNote.textContent = "";
   }
 
+  document.body.dataset.verificationState = status;
+  document
+    .getElementById("verificationFormPanel")
+    .classList.toggle("hidden", ["approved", "pending"].includes(status));
+  const next = document.getElementById("continueVerificationBtn");
+  next.classList.toggle("hidden", status !== "approved");
+  next.href =
+    currentProfile?.profile_completed === true
+      ? "dashboard.html"
+      : "complete-profile.html";
+  next.textContent =
+    currentProfile?.profile_completed === true
+      ? "Continue to your dashboard"
+      : "Continue to profile setup";
+  for (const [id, current] of [
+    ["progressIdentity", !["approved", "pending"].includes(status)],
+    ["progressReview", status === "pending"],
+    ["progressProfile", status === "approved"],
+  ]) {
+    const item = document.getElementById(id);
+    if (current) item.setAttribute("aria-current", "step");
+    else item.removeAttribute("aria-current");
+  }
   const submitted = document.getElementById("verificationSubmittedAt");
   const reviewed = document.getElementById("verificationReviewedAt");
-  if (submitted) submitted.textContent = request?.submitted_at ? formatDate(request.submitted_at) : "-";
-  if (reviewed) reviewed.textContent = request?.reviewed_at ? formatDate(request.reviewed_at) : "-";
+  if (submitted)
+    submitted.textContent = request?.submitted_at
+      ? formatDate(request.submitted_at)
+      : "-";
+  if (reviewed)
+    reviewed.textContent = request?.reviewed_at
+      ? formatDate(request.reviewed_at)
+      : "-";
 }
 
 function setFormAvailability(canSubmit) {
@@ -93,104 +130,90 @@ function setFormAvailability(canSubmit) {
 
   if (!canSubmit && latestRequest?.status === "pending") {
     button.textContent = "Verification Pending";
-  } else if (!canSubmit && currentProfile?.identity_verified === true) {
+  } else if (!canSubmit && isIdentityApproved(currentProfile, latestRequest)) {
     button.textContent = "Already Verified";
   } else {
-    button.textContent = latestRequest?.status === "rejected"
-      ? "Resubmit Verification"
-      : "Submit for Verification";
+    button.textContent =
+      latestRequest?.status === "rejected"
+        ? "Resubmit Verification"
+        : "Submit for Verification";
   }
 }
 
 function displayProfile(profile) {
-  const fullName = profile.full_name || (profile.role === "provider" ? "Provider" : "Client");
-  const firstLetter = fullName.charAt(0).toUpperCase();
-
-  document.getElementById("userName").textContent = fullName;
-  document.getElementById("userRole").textContent =
-    `${profile.role === "provider" ? "Provider" : "Client"} · ${profile.user_code}`;
-  document.getElementById("avatar").textContent = firstLetter;
-
+  const fullName =
+    profile.full_name || (profile.role === "provider" ? "Provider" : "Client");
   const legalName = document.getElementById("legalName");
   if (legalName) legalName.value = fullName;
 
-  document.getElementById("verificationEmail").textContent = profile.email || "-";
-  document.getElementById("verificationPhone").textContent = profile.phone || "-";
+  document.getElementById("verificationEmail").textContent =
+    profile.email || "-";
+  document.getElementById("verificationPhone").textContent =
+    profile.phone || "-";
   document.getElementById("verificationRole").textContent =
     profile.role === "provider" ? "Provider" : "Client";
 
-  const providerSection = document.getElementById("providerVerificationSection");
-  if (providerSection) providerSection.classList.toggle("hidden", profile.role !== "provider");
+  const providerSection = document.getElementById(
+    "providerVerificationSection",
+  );
+  if (providerSection)
+    providerSection.classList.toggle("hidden", profile.role !== "provider");
 }
 
-async function getCurrentProfile() {
-  const { data: sessionData } = await supabase.auth.getSession();
-
-  if (!sessionData.session) {
-    window.location.href = "../login.html";
-    return null;
-  }
-
-  currentUser = sessionData.session.user;
-
-  const { data, error } = await supabase
-    .from("users")
-    .select("id, user_code, full_name, email, phone, role, status, profile_completed, identity_verified")
-    .eq("id", currentUser.id)
-    .single();
-
-  if (error || !data) {
-    console.error("Verification profile load error:", error);
-    showMessage("Unable to load your account.");
-    return null;
-  }
-
-  if (!["client", "provider"].includes(data.role) || data.status !== "active") {
-    await supabase.auth.signOut();
-    window.location.href = "../login.html";
-    return null;
-  }
-
-  if (data.profile_completed !== true) {
-    window.location.href = "complete-profile.html";
-    return null;
-  }
-
-  currentProfile = data;
-  return data;
-}
-
-async function loadLatestRequest() {
-  const { data, error } = await supabase
-    .from("verification_requests")
-    .select("*")
-    .eq("user_id", currentUser.id)
-    .order("submitted_at", { ascending: false })
-    .limit(1);
-
-  if (error) {
-    console.error("Load verification request error:", error);
-    showMessage("Unable to load verification status. Make sure identity-verification-setup.sql has been run.");
-    return;
-  }
-
-  latestRequest = data?.[0] || null;
-
-  if (currentProfile.identity_verified === true) {
-    setStatusCard("approved", latestRequest);
+async function refreshVerification() {
+  statusKnown = false;
+  setFormAvailability(false);
+  const button = document.getElementById("refreshVerificationBtn");
+  button.disabled = true;
+  try {
+    const { data: profile, error: profileError } = await supabase
+      .from("users")
+      .select(
+        "id,user_code,full_name,email,phone,role,status,profile_completed,identity_verified,identity_verified_at,identity_verified_by",
+      )
+      .eq("id", currentUser.id)
+      .single();
+    if (profileError || !profile) throw new Error();
+    if (profile.status !== "active" || profile.role !== currentProfile.role) {
+      await logoutAccount();
+      return;
+    }
+    currentProfile = profile;
+    const { data, error } = await supabase
+      .from("verification_requests")
+      .select("id,role,status,admin_note,submitted_at,reviewed_at,reviewed_by")
+      .eq("user_id", currentUser.id)
+      .order("submitted_at", { ascending: false })
+      .order("id", { ascending: false })
+      .limit(1);
+    if (error) throw new Error();
+    latestRequest = data?.[0] || null;
+    const approved = isIdentityApproved(currentProfile, latestRequest);
+    const status = approved
+      ? "approved"
+      : latestRequest?.status === "approved"
+        ? "not_submitted"
+        : latestRequest?.status || "not_submitted";
+    statusKnown = true;
+    setStatusCard(status, latestRequest);
+    setFormAvailability(!approved && status !== "pending");
+  } catch {
+    showMessage(
+      "Verification status could not be checked. Refresh status before submitting or continuing.",
+    );
+    document.getElementById("continueVerificationBtn").classList.add("hidden");
     setFormAvailability(false);
-    return;
+  } finally {
+    button.disabled = false;
   }
-
-  const status = latestRequest?.status || "not_submitted";
-  setStatusCard(status, latestRequest);
-  setFormAvailability(status !== "pending");
 }
 
 function validateFile(file, label) {
   if (!file) throw new Error(`${label} is required.`);
-  if (!ALLOWED_TYPES.includes(file.type)) throw new Error(`${label} must be a JPG, PNG, or PDF file.`);
-  if (file.size > MAX_FILE_SIZE) throw new Error(`${label} must be 5 MB or smaller.`);
+  if (!ALLOWED_TYPES.includes(file.type))
+    throw new Error(`${label} must be a JPG, PNG, or PDF file.`);
+  if (file.size > MAX_FILE_SIZE)
+    throw new Error(`${label} must be 5 MB or smaller.`);
 }
 
 function extensionFor(file) {
@@ -198,7 +221,6 @@ function extensionFor(file) {
   if (file.type === "image/png") return "png";
   return "jpg";
 }
-
 
 const verificationPreviewUrls = new Map();
 
@@ -254,7 +276,9 @@ function renderFilePreview(inputId) {
   try {
     validateFile(
       file,
-      inputId === "identityDocument" ? "Identity document" : "Supporting document"
+      inputId === "identityDocument"
+        ? "Identity document"
+        : "Supporting document",
     );
   } catch (error) {
     showMessage(error.message);
@@ -315,17 +339,21 @@ function setupFilePreview(inputId) {
 
   input.addEventListener("change", () => renderFilePreview(inputId));
 
-  document.getElementById(`${inputId}ChangeBtn`)?.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    input.click();
-  });
+  document
+    .getElementById(`${inputId}ChangeBtn`)
+    ?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      input.click();
+    });
 
-  document.getElementById(`${inputId}RemoveBtn`)?.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    resetFilePreview(inputId);
-  });
+  document
+    .getElementById(`${inputId}RemoveBtn`)
+    ?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      resetFilePreview(inputId);
+    });
 }
 
 async function uploadPrivateFile(file, kind) {
@@ -346,8 +374,15 @@ async function submitVerification(event) {
   event.preventDefault();
   clearMessage();
 
-  if (currentProfile.identity_verified === true || latestRequest?.status === "pending") {
-    showMessage("Your account cannot submit another verification request right now.");
+  if (
+    submissionInProgress ||
+    !statusKnown ||
+    isIdentityApproved(currentProfile, latestRequest) ||
+    latestRequest?.status === "pending"
+  ) {
+    showMessage(
+      "Your account cannot submit another verification request right now.",
+    );
     return;
   }
 
@@ -359,7 +394,9 @@ async function submitVerification(event) {
   const privacyConsent = document.getElementById("privacyConsent").checked;
 
   if (!legalName || !idType || !idNumberRaw) {
-    showMessage("Please complete your legal name, identification type, and identification number.");
+    showMessage(
+      "Please complete your legal name, identification type, and identification number.",
+    );
     return;
   }
 
@@ -381,7 +418,9 @@ async function submitVerification(event) {
   }
 
   if (!privacyConsent) {
-    showMessage("Please consent to the use of your information for identity verification.");
+    showMessage(
+      "Please consent to the use of your information for identity verification.",
+    );
     return;
   }
 
@@ -392,7 +431,8 @@ async function submitVerification(event) {
     return;
   }
 
-  const supportingFile = document.getElementById("supportingDocument")?.files?.[0] || null;
+  const supportingFile =
+    document.getElementById("supportingDocument")?.files?.[0] || null;
 
   if (supportingFile) {
     try {
@@ -404,15 +444,18 @@ async function submitVerification(event) {
   }
 
   const button = document.getElementById("submitVerificationBtn");
+  submissionInProgress = true;
   button.disabled = true;
   button.textContent = "Uploading...";
 
   let identityPath = null;
   let supportingPath = null;
+  let committed = false;
 
   try {
     identityPath = await uploadPrivateFile(identityFile, "identity");
-    if (supportingFile) supportingPath = await uploadPrivateFile(supportingFile, "supporting");
+    if (supportingFile)
+      supportingPath = await uploadPrivateFile(supportingFile, "supporting");
 
     const payload = {
       user_id: currentUser.id,
@@ -423,46 +466,86 @@ async function submitVerification(event) {
       identity_document_path: identityPath,
       supporting_document_path: supportingPath,
       status: "pending",
+      age_confirmed: ageConfirmed,
+      privacy_consent: privacyConsent,
     };
 
     if (currentProfile.role === "provider") {
-      payload.business_name = document.getElementById("businessName")?.value.trim() || null;
-      payload.ssm_number = document.getElementById("ssmNumber")?.value.trim() || null;
-      payload.professional_license = document.getElementById("professionalLicense")?.value.trim() || null;
+      payload.business_name =
+        document.getElementById("businessName")?.value.trim() || null;
+      payload.ssm_number =
+        document.getElementById("ssmNumber")?.value.trim() || null;
+      payload.professional_license =
+        document.getElementById("professionalLicense")?.value.trim() || null;
     }
 
-    const { error } = await supabase.from("verification_requests").insert(payload);
+    const { error } = await supabase
+      .from("verification_requests")
+      .insert(payload);
     if (error) throw error;
 
+    committed = true;
+    document.getElementById("idNumber").value = "";
     await createNotification(
       currentUser.id,
       "Verification submitted",
-      "Your identity verification request has been submitted for administrator review."
+      "Your identity verification request has been submitted for administrator review.",
     );
 
     document.getElementById("verificationForm").reset();
     resetFilePreview("identityDocument");
     resetFilePreview("supportingDocument");
     document.getElementById("legalName").value = currentProfile.full_name || "";
-    showMessage("Verification submitted successfully. An administrator will review your documents.", "success");
-    await loadLatestRequest();
+    showMessage(
+      "Verification submitted successfully. An administrator will review your documents.",
+      "success",
+    );
+    await refreshVerification();
   } catch (error) {
-    console.error("Verification submit error:", error);
+    // Do not log identity values, document paths or raw Storage errors.
     const pathsToRemove = [identityPath, supportingPath].filter(Boolean);
-    if (pathsToRemove.length) {
-      await supabase.storage.from("verification-documents").remove(pathsToRemove);
+    if (!committed && pathsToRemove.length) {
+      await supabase.storage
+        .from("verification-documents")
+        .remove(pathsToRemove);
     }
-    showMessage(error.message || "Unable to submit verification.");
-    setFormAvailability(true);
+    showMessage(
+      error?.code === "23505"
+        ? "A pending request already exists. Refresh your status."
+        : committed
+          ? "Your submission was received. Refresh status to continue."
+          : "Unable to submit verification. Check the required information and try again.",
+    );
+    if (committed || error?.code === "23505") await refreshVerification();
+    else
+      setFormAvailability(statusKnown && latestRequest?.status !== "pending");
+  } finally {
+    submissionInProgress = false;
   }
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-  const profile = await getCurrentProfile();
-  if (!profile) return;
-  displayProfile(profile);
+  const access = await authorizeWorkspace();
+  if (!access.allowed) return;
+  currentProfile = access.profile;
+  currentUser = access.user;
+  displayProfile(currentProfile);
+  document.getElementById("verificationAccountLabel").textContent =
+    `${currentProfile.role === "provider" ? "Provider" : "Client"} · ${currentProfile.user_code || "Account verification"}`;
+  document
+    .getElementById("refreshVerificationBtn")
+    .addEventListener("click", refreshVerification);
+  document
+    .getElementById("verificationLogoutBtn")
+    .addEventListener("click", () =>
+      logoutAccount().catch(() =>
+        showMessage("Sign-out could not be completed. Please try again."),
+      ),
+    );
   setupFilePreview("identityDocument");
   setupFilePreview("supportingDocument");
-  await loadLatestRequest();
-  document.getElementById("verificationForm")?.addEventListener("submit", submitVerification);
+  await refreshVerification();
+  document
+    .getElementById("verificationForm")
+    ?.addEventListener("submit", submitVerification);
 });

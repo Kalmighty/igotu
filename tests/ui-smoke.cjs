@@ -13,7 +13,7 @@ const assert = require('node:assert/strict');
   if(url.origin!==new URL(process.env.UI_BASE_URL||'http://127.0.0.1:4173').origin) {external.push(url.hostname);return route.abort();}
   if(url.pathname==='/js/supabaseClient.js')return route.fulfill({contentType:'text/javascript',body:fs.readFileSync(path.join(__dirname,'ui-fixture.js'),'utf8')});
   // Test the real dashboard, recommendations and shared shell; other pages are layout checks.
-  if(url.pathname.startsWith('/js/')&&!['app-shell.js','client.js','provider.js','admin.js','client-recommended-providers.js','html-safety.js','notification-helper.js','supabaseClient.js'].includes(path.basename(url.pathname)))return route.fulfill({contentType:'text/javascript',body:''});
+  if(url.pathname.startsWith('/js/')&&!['profile-guard.js','identity-access.js','app-shell.js','client.js','provider.js','admin.js','client-recommended-providers.js','html-safety.js','notification-helper.js','supabaseClient.js'].includes(path.basename(url.pathname)))return route.fulfill({contentType:'text/javascript',body:''});
   return route.continue();
  });
  const page=await context.newPage();
@@ -25,10 +25,14 @@ const assert = require('node:assert/strict');
  for(const width of [1440,768,390,320]) {
   await page.setViewportSize({width,height:1000});
   for(const role of ['client','provider','admin']) {
-   const pages=fs.readdirSync(path.join(__dirname,'../igotu_v2',role)).filter(f=>f.endsWith('.html')&&f!=='complete-profile.html');
+   const pages=fs.readdirSync(path.join(__dirname,'../igotu_v2',role)).filter(f=>f.endsWith('.html')&&f!=='complete-profile.html'&&f!=='verification.html');
    for(const file of pages) {
     await page.goto(`${base}/${role}/${file}?request_id=REQ-101`);
     await page.waitForTimeout(80);
+    if (await page.locator('body[data-access-state]').count()) {
+      await page.waitForFunction(()=>document.body.dataset.accessState!=='checking');
+      assert.equal(await page.locator('body').getAttribute('data-access-state'),'allowed',`${role}/${file}: ${await page.locator('#workspaceAccessMessage').textContent()}`);
+    }
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Overflow: ${role}/${file} at ${width}`);
     const toggle=page.locator('.navigation-toggle');
     if(width<=1000){
