@@ -438,9 +438,10 @@ const screenshots = process.env.UI_SCREENSHOTS;
       await page.locator("#registerBtn").click();
       await page
         .getByRole("status")
-        .filter({ hasText: "Registration successful. Please login" })
+        .filter({ hasText: "Registration successful. Check your email" })
         .waitFor();
-      await page.waitForURL("**/login.html");
+      await page.getByRole("link", { name: "Login here" }).click();
+      await page.waitForURL("**/login.html?role=client");
       await context.close();
     }
     // Existing JS validation rejects short passwords, mismatches, and a tampered Admin option.

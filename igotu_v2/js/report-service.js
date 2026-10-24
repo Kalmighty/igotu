@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
 const params = new URLSearchParams(window.location.search);
@@ -322,6 +323,7 @@ async function submitReport(event) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    if (!(await authorizeWorkspace()).allowed) return;
   const profile = await getSessionProfile();
   if (!profile) return;
 

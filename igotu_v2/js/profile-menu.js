@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
 function ensureVerificationLink() {
@@ -53,7 +54,8 @@ async function logoutFromProfileMenu() {
   window.location.href = "../login.html";
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+    if (!(await authorizeWorkspace()).allowed) return;
   ensureVerificationLink();
   const trigger = document.getElementById("profileMenuTrigger");
   const dropdown = document.getElementById("profileDropdown");

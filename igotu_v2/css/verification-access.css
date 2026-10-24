@@ -1,0 +1,331 @@
+.verification-access {
+  background: #fafbf6;
+  color: #20362b;
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+.verification-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  max-width: 1160px;
+  padding: 20px 24px;
+  margin: auto;
+  border-bottom: 1px solid #dce4d5;
+}
+.verification-brand {
+  color: #124c3b;
+  font-weight: 750;
+  font-size: 29px;
+  letter-spacing: -1.4px;
+  text-decoration: none;
+}
+.verification-brand span {
+  color: #628b51;
+}
+.verification-header > span {
+  color: #5a6e60;
+  font-size: 12px;
+}
+.verification-header button {
+  margin-left: auto;
+}
+.verification-access-main {
+  max-width: 1120px;
+  margin: 40px auto;
+  padding-inline: 24px;
+}
+.verification-intro {
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+.verification-eyebrow {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  font-weight: 650;
+  color: #22734e;
+}
+.verification-intro h1 {
+  font-size: clamp(30px, 4vw, 44px);
+  line-height: 1.2;
+  color: #20362b;
+  letter-spacing: -1.4px;
+  margin: 14px 0;
+}
+.verification-intro h1 em {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: #22734e;
+}
+.verification-intro p {
+  font-size: 14px;
+  color: #5a6e60;
+  line-height: 1.9;
+}
+.verification-progress {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 18px 24px;
+  list-style: none;
+  gap: 16px;
+  border: 1px solid #dce4d5;
+  border-radius: 15px;
+  background: #f0f4e8;
+  margin: 0 0 24px;
+}
+.verification-progress li {
+  font-size: 11px;
+  color: #5a6e60;
+}
+.verification-progress li span {
+  margin-left: 9px;
+}
+.verification-progress [aria-current] {
+  color: #124c3b;
+  font-weight: 700;
+}
+.verification-refresh-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #5a6e60;
+}
+.verification-access .btn,
+.verification-review-dialog .btn {
+  min-height: 44px;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  background: #124c3b;
+  color: white;
+  border: 1px solid #124c3b;
+  cursor: pointer;
+}
+.verification-access .btn-outline,
+.verification-review-dialog .btn-outline {
+  background: white;
+  color: #124c3b;
+  border-color: #b9cbb0;
+}
+.verification-access .panel {
+  border-color: #dce4d5;
+  box-shadow: 0 8px 28px #124c3b06;
+}
+.verification-access .panel-header h2 {
+  font-size: 19px;
+}
+.verification-access .verification-status-card h2 {
+  font-size: 25px;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+.verification-access .verification-status-card > p {
+  font-size: 14px;
+  color: #5a6e60;
+  margin-top: 14px;
+}
+.verification-access .verification-shield {
+  background: #e7efdb;
+  color: #124c3b;
+  font-size: 25px;
+}
+.verification-continue {
+  margin-top: 24px;
+  display: inline-flex;
+}
+.verification-access .form-group label {
+  font-weight: 600;
+}
+.verification-access .verification-check-row {
+  font-size: 13px;
+}
+.verification-access .verification-check-row input {
+  accent-color: #124c3b;
+}
+.verification-access .form-group :is(input, select) {
+  font: inherit;
+  font-size: 14px;
+}
+.verification-access .verification-privacy-box p {
+  font-size: 12px;
+}
+.verification-access .account-info-item strong {
+  overflow-wrap: anywhere;
+}
+.verification-access .hidden {
+  display: none !important;
+}
+.verification-access[data-verification-state="pending"] .verification-layout,
+.verification-access[data-verification-state="approved"] .verification-layout {
+  display: block;
+  max-width: 760px;
+  margin-inline: auto;
+}
+.verification-access[data-verification-state="pending"]
+  .verification-status-card,
+.verification-access[data-verification-state="approved"]
+  .verification-status-card {
+  padding: 36px;
+}
+.verification-access-footer {
+  padding: 24px;
+  text-align: center;
+  font-size: 11px;
+  color: #5a6e60;
+}
+.verification-attempt {
+  font-size: 11px;
+  padding: 4px 8px;
+  background: #f1f4e8;
+  color: #425d3d;
+  border-radius: 8px;
+}
+.verification-review-dialog {
+  width: min(520px, calc(100% - 32px));
+  padding: 30px;
+  border: 1px solid #dce4d5;
+  border-radius: 20px;
+  color: #20362b;
+  background: #fafbf6;
+  box-shadow: 0 20px 70px #124c3b40;
+}
+.verification-review-dialog::backdrop {
+  background: #102d26a0;
+}
+.verification-review-dialog h2 {
+  font-size: 25px;
+  line-height: 1.3;
+  margin: 12px 0;
+}
+.verification-review-dialog p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #5a6e60;
+}
+.verification-review-dialog label {
+  display: block;
+  margin: 20px 0 8px;
+  font-size: 13px;
+}
+.verification-review-dialog textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #b9cbb0;
+  border-radius: 10px;
+  font: inherit;
+  resize: vertical;
+}
+.verification-review-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.verification-access :is(a, button, input, select):focus-visible,
+.verification-review-dialog :focus-visible {
+  outline: 3px solid #996313;
+  outline-offset: 3px;
+}
+@media (max-width: 650px) {
+  .verification-header {
+    padding: 16px;
+    gap: 12px;
+  }
+  .verification-header > span {
+    display: none;
+  }
+  .verification-access-main {
+    padding-inline: 16px;
+    margin-block: 28px;
+  }
+  .verification-progress {
+    padding: 16px;
+    gap: 10px;
+  }
+  .verification-progress li span {
+    display: block;
+    margin: 5px 0 0;
+  }
+  .verification-access .form-group :is(input, select) {
+    font-size: 16px;
+  }
+  .verification-access[data-verification-state] .verification-status-card {
+    padding: 24px;
+  }
+  .verification-review-dialog {
+    padding: 24px;
+  }
+}
+.verification-access .verification-privacy-box p {
+  color: #40573d;
+}
+.verification-access .verification-pending,
+.verification-review-dialog .verification-pending {
+  color: #735014;
+  background: #fff3d7;
+}
+.verification-access .verification-approved {
+  color: #145b36;
+  background: #e6f3df;
+}
+.verification-access .verification-rejected {
+  color: #8a2c25;
+  background: #fff0eb;
+}
+.verification-access .verification-not-submitted {
+  color: #445741;
+  background: #edf2e6;
+}
+.verification-admin-page .verification-pending {
+  color: #735014;
+  background: #fff3d7;
+}
+.verification-review-dialog[data-decision="rejected"] button[type="submit"] {
+  background: #8a2c25;
+  border-color: #8a2c25;
+}
+.verification-admin-page .verification-admin-content {
+  flex: 1;
+}
+.verification-admin-page .user-card-main {
+  min-width: 0;
+}
+.verification-admin-page .card-topline {
+  flex-wrap: wrap;
+  font-weight: 600;
+}
+.verification-admin-page .details-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.verification-admin-page .details-grid > span,
+.verification-admin-page .verification-admin-extra > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 650px) {
+  .verification-admin-page .user-card-main {
+    display: block;
+  }
+  .verification-admin-page .user-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+  .verification-admin-page .details-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .verification-admin-page .verification-admin-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+  }
+  .verification-admin-page .verification-admin-actions button {
+    min-height: 44px;
+  }
+}

@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
 function showMessage(message, type = "error") {
@@ -128,6 +129,7 @@ async function saveProfile(event) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+    if (!(await authorizeWorkspace()).allowed) return;
   const profile = await getCurrentClientProfile();
   if (!profile) return;
 

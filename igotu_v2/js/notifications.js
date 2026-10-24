@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
 let currentUser = null;
@@ -224,6 +225,7 @@ function handleActions() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    if (!(await authorizeWorkspace()).allowed) return;
     currentUser = await getSessionUser();
     if (!currentUser) return;
 

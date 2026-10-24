@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
 let currentUserId = null;
@@ -262,6 +263,7 @@ async function toggleNotificationMenu(event) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+    if (!(await authorizeWorkspace()).allowed) return;
   const trigger = document.getElementById("notificationMenuTrigger");
   const dropdown = document.getElementById("notificationDropdown");
   const markAllBtn = document.getElementById("notificationMarkAllBtn");

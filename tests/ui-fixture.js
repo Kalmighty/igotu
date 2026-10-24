@@ -1,7 +1,7 @@
 // Browser-only fixture served in place of supabaseClient.js. Never connects to a project.
 const role = location.pathname.split('/')[1];
 const mode = new URLSearchParams(location.search).get('fixture');
-const own = {id:'own', full_name:'Alex Tan', user_code:'IG-1024', role, status:'active', profile_completed:true};
+const own = {id:'own', full_name:'Alex Tan', user_code:'IG-1024', role, status:'active', profile_completed:true,identity_verified:true,identity_verified_by:'fixture-admin',identity_verified_at:'2026-01-01T00:00:00Z'};
 const providers = [
   {id:'p1', full_name:'Sarah Lim', user_code:'PR-201', role:'provider', status:'active'},
   {id:'p2', full_name:'Daniel Wong', user_code:'PR-202', role:'provider', status:'active'}
@@ -15,6 +15,7 @@ function query(table) {
   const q=new Proxy({}, {get(_,key) {
     if(key==='then') return (resolve) => {
       let data=[]; let error=null;
+      if(table==='verification_requests') data=[{role,status:'approved',reviewed_by:'fixture-admin',reviewed_at:'2026-01-01T00:00:00Z'}];
       const single=calls.some(c=>c[0]==='single');
       if(table==='users') data=single?own:providers;
       if(table==='service_requests') {
@@ -26,7 +27,7 @@ function query(table) {
       if(table==='provider_profiles') data=providers.map((p,i)=>({provider_id:p.id,is_available:true,is_verified:i===0,bio:i===0?'Careful, reliable home cleaning with attention to the little details. Happy to help keep your space fresh.':'Friendly service for busy households. Flexible cleaning support for your home.',location:i===0?'Kota Kinabalu, Sabah':'Likas, Sabah',provider_lat:6.04+i*.02,provider_lng:116.12}));
       if(table==='provider_weekly_availability') data=providers.map(p=>({provider_id:p.id,day_of_week:1,start_time:'08:00',end_time:'18:00'}));
       if(table==='service_reviews') data=[{reviewee_id:'p1',rating:5,feedback:'On time, thorough and easy to communicate with.'}];
-      if(mode==='error' && !(table==='users' && single)) {data=null;error={message:'Fixture load error'};}
+      if(mode==='error' && table!=='verification_requests' && !(table==='users' && single)) {data=null;error={message:'Fixture load error'};}
       return Promise.resolve({data,error,count:mode==='error'?null:12}).then(resolve);
     };
     return (...args)=>{calls.push([key,...args]);return q;};
@@ -39,3 +40,5 @@ export const supabase={
   rpc:async(name,args)=>{window.fixtureRpc={name,args};return {data:null,error:{message:'Fixture: selection stopped before any write.'}};},
   channel:()=>({on(){return this;},subscribe(){return this;}}), removeChannel(){}
 };
+
+export async function clearStoredAuthSession() {}

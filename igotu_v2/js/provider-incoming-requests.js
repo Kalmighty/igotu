@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
@@ -307,6 +308,7 @@ async function declineRequest(requestId, button) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+    if (!(await authorizeWorkspace()).allowed) return;
     currentUser = await getSessionUser();
     if (!currentUser) return;
 

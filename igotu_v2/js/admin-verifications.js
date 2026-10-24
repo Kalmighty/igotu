@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
@@ -59,17 +60,21 @@ async function getAdmin() {
 
   document.getElementById("userName").textContent = data.full_name;
   document.getElementById("userRole").textContent = `Admin · ${data.user_code}`;
-  document.getElementById("avatar").textContent = data.full_name.charAt(0).toUpperCase();
+  document.getElementById("avatar").textContent = data.full_name
+    .charAt(0)
+    .toUpperCase();
   return data;
 }
 
 function setupLogout() {
-  document.getElementById("logoutBtn")?.addEventListener("click", async (event) => {
-    event.preventDefault();
-    localStorage.removeItem("igotu_user");
-    await supabase.auth.signOut();
-    window.location.href = "../login.html";
-  });
+  document
+    .getElementById("logoutBtn")
+    ?.addEventListener("click", async (event) => {
+      event.preventDefault();
+      localStorage.removeItem("igotu_user");
+      await supabase.auth.signOut();
+      window.location.href = "../login.html";
+    });
 }
 
 async function loadData() {
@@ -83,8 +88,11 @@ async function loadData() {
 
   if (error) {
     console.error("Verification request load error:", error);
-    list.innerHTML = '<p class="muted-text">Unable to load verification requests.</p>';
-    showMessage("Unable to load verification requests. Run database/identity-verification-setup.sql first.");
+    list.innerHTML =
+      '<p class="muted-text">Unable to load verification requests.</p>';
+    showMessage(
+      "Unable to load verification requests. Refresh or contact your deployment administrator.",
+    );
     return;
   }
 
@@ -95,7 +103,9 @@ async function loadData() {
   if (ids.length) {
     const { data: users, error: usersError } = await supabase
       .from("users")
-      .select("id, user_code, full_name, email, role, status, identity_verified")
+      .select(
+        "id, user_code, full_name, email, role, status, identity_verified",
+      )
       .in("id", ids);
 
     if (usersError) console.error("Verification user load error:", usersError);
@@ -106,7 +116,10 @@ async function loadData() {
 }
 
 function getFilteredRequests() {
-  const search = document.getElementById("searchInput").value.trim().toLowerCase();
+  const search = document
+    .getElementById("searchInput")
+    .value.trim()
+    .toLowerCase();
   const status = document.getElementById("statusFilter").value;
   const role = document.getElementById("roleFilter").value;
   const targetUser = new URLSearchParams(window.location.search).get("user_id");
@@ -125,7 +138,10 @@ function getFilteredRequests() {
         user?.full_name,
         user?.email,
         user?.user_code,
-      ].filter(Boolean).join(" ").toLowerCase();
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
       if (!haystack.includes(search)) return false;
     }
 
@@ -146,27 +162,40 @@ function renderRequests() {
     return;
   }
 
-  list.innerHTML = items.map((request) => {
-    const user = userMap.get(request.user_id);
-    const statusClass =
-      request.status === "approved" ? "verification-approved" :
-      request.status === "rejected" ? "verification-rejected" :
-      "verification-pending";
+  list.innerHTML = items
+    .map((request) => {
+      const user = userMap.get(request.user_id);
+      const history = allRequests
+        .filter((item) => item.user_id === request.user_id)
+        .sort(
+          (a, b) =>
+            new Date(a.submitted_at) - new Date(b.submitted_at) ||
+            String(a.id).localeCompare(String(b.id)),
+        );
+      const attempt = history.findIndex((item) => item.id === request.id) + 1;
+      const statusClass =
+        request.status === "approved"
+          ? "verification-approved"
+          : request.status === "rejected"
+            ? "verification-rejected"
+            : "verification-pending";
 
-    const providerDetails = request.role === "provider"
-      ? `<div class="verification-admin-extra">
+      const providerDetails =
+        request.role === "provider"
+          ? `<div class="verification-admin-extra">
           <span>Business: <strong>${escapeHtml(request.business_name || "Not provided")}</strong></span>
           <span>SSM: <strong>${escapeHtml(request.ssm_number || "Not provided")}</strong></span>
           <span>Professional licence: <strong>${escapeHtml(request.professional_license || "Not provided")}</strong></span>
         </div>`
-      : "";
+          : "";
 
-    const actions = request.status === "pending"
-      ? `<button type="button" class="btn btn-small approve-verification-btn" data-request-id="${escapeHtml(request.id)}" data-user-id="${escapeHtml(request.user_id)}">✓ Approve</button>
+      const actions =
+        request.status === "pending"
+          ? `<button type="button" class="btn btn-small approve-verification-btn" data-request-id="${escapeHtml(request.id)}" data-user-id="${escapeHtml(request.user_id)}">✓ Approve</button>
          <button type="button" class="danger-btn btn-small reject-verification-btn" data-request-id="${escapeHtml(request.id)}" data-user-id="${escapeHtml(request.user_id)}">Reject</button>`
-      : `<span class="status-note">${request.status === "approved" ? "Reviewed and approved" : "Reviewed and rejected"}</span>`;
+          : `<span class="status-note">${request.status === "approved" ? "Reviewed and approved" : "Reviewed and rejected"}</span>`;
 
-    return `
+      return `
       <article class="user-card verification-admin-card">
         <div class="user-card-main">
           <div class="user-avatar">${escapeHtml((request.legal_name || "U").charAt(0).toUpperCase())}</div>
@@ -174,7 +203,7 @@ function renderRequests() {
             <div class="card-topline">
               <span class="status-pill">${request.role === "provider" ? "Provider" : "Client"}</span>
               <span class="verification-status-badge ${escapeHtml(statusClass)}">${escapeHtml(request.status)}</span>
-              <span>${escapeHtml(user?.user_code || "-")}</span>
+              <span>${escapeHtml(user?.user_code || "-")}</span><span class="verification-attempt">${attempt > 1 ? `Resubmission · Attempt ${attempt}` : "First submission"}</span>
             </div>
             <h3>${escapeHtml(request.legal_name)}</h3>
             <p class="muted-text">${escapeHtml(user?.email || "-")}</p>
@@ -195,18 +224,35 @@ function renderRequests() {
           ${actions}
         </div>
       </article>`;
-  }).join("");
+    })
+    .join("");
 
   document.querySelectorAll(".view-verification-doc-btn").forEach((button) => {
-    button.addEventListener("click", () => openPrivateDocument(button.dataset.path, button));
+    button.addEventListener("click", () =>
+      openPrivateDocument(button.dataset.path, button),
+    );
   });
 
   document.querySelectorAll(".approve-verification-btn").forEach((button) => {
-    button.addEventListener("click", () => reviewRequest(button.dataset.requestId, button.dataset.userId, "approved", button));
+    button.addEventListener("click", () =>
+      reviewRequest(
+        button.dataset.requestId,
+        button.dataset.userId,
+        "approved",
+        button,
+      ),
+    );
   });
 
   document.querySelectorAll(".reject-verification-btn").forEach((button) => {
-    button.addEventListener("click", () => reviewRequest(button.dataset.requestId, button.dataset.userId, "rejected", button));
+    button.addEventListener("click", () =>
+      reviewRequest(
+        button.dataset.requestId,
+        button.dataset.userId,
+        "rejected",
+        button,
+      ),
+    );
   });
 }
 
@@ -224,7 +270,7 @@ async function openPrivateDocument(path, button) {
   button.textContent = oldText;
 
   if (error || !data?.signedUrl) {
-    console.error("Signed verification URL error:", error);
+    // Keep document paths and signed URLs out of logs.
     showMessage("Unable to open the verification document.");
     return;
   }
@@ -237,19 +283,53 @@ async function openPrivateDocument(path, button) {
   window.open(documentUrl, "_blank", "noopener,noreferrer");
 }
 
+function requestReviewDecision(status) {
+  const dialog = document.getElementById("verificationReviewDialog");
+  dialog.dataset.decision = status;
+  const form = document.getElementById("verificationReviewForm");
+  const note = document.getElementById("verificationReviewNote");
+  document.getElementById("verificationReviewTitle").textContent =
+    status === "approved"
+      ? "Approve identity verification?"
+      : "Reject and request corrections";
+  document.getElementById("verificationReviewHelp").textContent =
+    status === "approved"
+      ? "Confirm that the identity document supports this applicant’s submission. Approval unlocks profile setup and platform access."
+      : "Explain what the applicant should correct. Do not include full identification numbers or document links.";
+  note.required = status === "rejected";
+  note.value = "";
+  dialog.returnValue = "";
+  dialog.showModal();
+  return new Promise((resolve) => {
+    const submit = (event) => {
+      event.preventDefault();
+      if (status === "rejected" && !note.value.trim()) {
+        note.setCustomValidity("A rejection reason is required.");
+        note.reportValidity();
+        return;
+      }
+      dialog.close("confirm");
+    };
+    const clearValidity = () => note.setCustomValidity("");
+    const close = () => {
+      form.removeEventListener("submit", submit);
+      note.removeEventListener("input", clearValidity);
+      resolve(dialog.returnValue === "confirm" ? note.value.trim() : null);
+    };
+    form.addEventListener("submit", submit);
+    note.addEventListener("input", clearValidity);
+    note.setCustomValidity("");
+    dialog.addEventListener("close", close, { once: true });
+    document.getElementById("verificationReviewCancel").onclick = () =>
+      dialog.close("cancel");
+  });
+}
+
 async function reviewRequest(requestId, userId, status, button) {
   clearMessage();
 
-  let note = "";
-  if (status === "approved") {
-    if (!confirm("Approve this identity verification request?")) return;
-  } else {
-    note = prompt("Enter a short rejection reason for the user:")?.trim() || "";
-    if (!note) {
-      showMessage("A rejection reason is required.");
-      return;
-    }
-  }
+  const note = await requestReviewDecision(status);
+  if (note === null) return;
 
   button.disabled = true;
   button.textContent = status === "approved" ? "Approving..." : "Rejecting...";
@@ -261,8 +341,10 @@ async function reviewRequest(requestId, userId, status, button) {
   });
 
   if (error) {
-    console.error("Review verification error:", error);
-    showMessage(error.message || "Unable to review verification.");
+    // Do not log applicant or review payloads.
+    showMessage(
+      "Unable to review this request. Refresh the list and try again.",
+    );
     button.disabled = false;
     button.textContent = status === "approved" ? "✓ Approve" : "Reject";
     return;
@@ -272,13 +354,16 @@ async function reviewRequest(requestId, userId, status, button) {
     userId,
     status === "approved" ? "Identity verified" : "Verification rejected",
     status === "approved"
-      ? "Your IGotU identity verification has been approved. Your account is now verified."
-      : `Your IGotU identity verification was rejected. Reason: ${note}`
+      ? "Your identity verification is approved. Continue to profile setup or your workspace."
+      : "Your identity verification needs correction. Open Identity Verification to read the administrator’s note and resubmit.",
   );
 
-  showMessage(status === "approved"
-    ? "Verification approved successfully."
-    : "Verification rejected and the user has been notified.", "success");
+  showMessage(
+    status === "approved"
+      ? "Verification approved successfully."
+      : "Verification rejected and the user has been notified.",
+    "success",
+  );
 
   await loadData();
 }
@@ -287,11 +372,15 @@ function setupFilters() {
   ["searchInput", "statusFilter", "roleFilter"].forEach((id) => {
     const element = document.getElementById(id);
     if (!element) return;
-    element.addEventListener(id === "searchInput" ? "input" : "change", renderRequests);
+    element.addEventListener(
+      id === "searchInput" ? "input" : "change",
+      renderRequests,
+    );
   });
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  if (!(await authorizeWorkspace()).allowed) return;
   const profile = await getAdmin();
   if (!profile) return;
 

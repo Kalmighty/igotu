@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 import { createNotification } from "./notification-helper.js";
 
@@ -403,6 +404,7 @@ async function sendMessage(event) {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    if (!(await authorizeWorkspace()).allowed) return;
     currentUser = await getSessionUser();
     if (!currentUser) return;
 

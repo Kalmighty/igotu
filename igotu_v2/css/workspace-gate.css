@@ -1,0 +1,39 @@
+body[data-access-state]:not([data-access-state="allowed"])
+  > :not(#workspaceAccessMessage):not(script) {
+  display: none !important;
+}
+#workspaceAccessMessage {
+  max-width: 540px;
+  margin: 15vh auto;
+  padding: 32px;
+  border: 1px solid #dce4d5;
+  border-radius: 20px;
+  background: #fff;
+  text-align: center;
+  color: #20362b;
+  font:
+    15px/1.7 system-ui,
+    sans-serif;
+}
+#workspaceAccessMessage button {
+  padding: 12px 20px;
+  margin: 12px 6px 0;
+  background: #124c3b;
+  color: #fff;
+  border: 0;
+  border-radius: 9px;
+  font: inherit;
+  cursor: pointer;
+}
+#workspaceAccessMessage button:focus-visible {
+  outline: 3px solid #996313;
+  outline-offset: 3px;
+}
+body[data-access-state="allowed"] #workspaceAccessMessage {
+  display: none;
+}
+@media (max-width: 600px) {
+  #workspaceAccessMessage {
+    margin: 12vh 16px;
+  }
+}
