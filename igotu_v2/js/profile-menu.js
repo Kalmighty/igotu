@@ -1,5 +1,4 @@
-import { authorizeWorkspace } from "./profile-guard.js";
-import { supabase } from "./supabaseClient.js";
+import { authorizeWorkspace, logoutAccount } from "./profile-guard.js";
 
 function ensureVerificationLink() {
   const dropdown = document.getElementById("profileDropdown");
@@ -35,6 +34,12 @@ function toggleProfileMenu(event) {
   if (!trigger || !dropdown) return;
 
   const willOpen = dropdown.classList.contains("hidden");
+  if (willOpen) {
+    document.getElementById("notificationDropdown")?.classList.add("hidden");
+    const notificationTrigger = document.getElementById("notificationMenuTrigger");
+    notificationTrigger?.classList.remove("open");
+    notificationTrigger?.setAttribute("aria-expanded", "false");
+  }
 
   dropdown.classList.toggle("hidden", !willOpen);
   trigger.classList.toggle("open", willOpen);
@@ -49,9 +54,10 @@ async function logoutFromProfileMenu() {
     button.innerHTML = '<span class="profile-dropdown-icon">↪</span><span>Logging out...</span>';
   }
 
-  localStorage.removeItem("igotu_user");
-  await supabase.auth.signOut();
-  window.location.href = "../login.html";
+  try { await logoutAccount(); }
+  catch {
+    if (button) { button.disabled = false; button.textContent = "Retry log out"; }
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -76,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.addEventListener("click", closeProfileMenu);
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
+    if (event.key === "Escape" && !dropdown.classList.contains("hidden")) {
       closeProfileMenu();
       trigger.focus();
     }

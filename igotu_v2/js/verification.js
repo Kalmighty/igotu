@@ -505,9 +505,12 @@ async function submitVerification(event) {
     // Do not log identity values, document paths or raw Storage errors.
     const pathsToRemove = [identityPath, supportingPath].filter(Boolean);
     if (!committed && pathsToRemove.length) {
-      await supabase.storage
-        .from("verification-documents")
-        .remove(pathsToRemove);
+      try {
+        await supabase.storage.from("verification-documents").remove(pathsToRemove);
+      } catch {
+        // Orphan cleanup is best effort; a second network error must not strand
+        // the form or disclose document paths. Retention cleanup needs staging.
+      }
     }
     showMessage(
       error?.code === "23505"

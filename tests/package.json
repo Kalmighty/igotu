@@ -1,0 +1,16 @@
+{
+  "name": "igotu-browser-audit-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local browser fixtures only; never connects to live Supabase",
+  "scripts": {
+    "test": "node run-audit.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "axe-core": "4.14.0",
+    "leaflet": "1.9.4",
+    "@supabase/supabase-js": "2.118.0",
+    "esbuild": "0.28.2"
+  }
+}

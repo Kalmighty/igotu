@@ -1,6 +1,9 @@
+let closeActiveDialog;
+
 function openReasonDialog({ title, message, reasons, confirmLabel, danger = false }) {
   return new Promise((resolve) => {
-    document.querySelector(".service-reason-modal-overlay")?.remove();
+    closeActiveDialog?.(null);
+    const opener = document.activeElement;
 
     const overlay = document.createElement("div");
     overlay.className = "service-reason-modal-overlay";
@@ -44,11 +47,20 @@ function openReasonDialog({ title, message, reasons, confirmLabel, danger = fals
     function close(value = null) {
       document.removeEventListener("keydown", onKeydown);
       overlay.remove();
+      closeActiveDialog = null;
+      if (opener?.isConnected) opener.focus();
       resolve(value);
     }
+    closeActiveDialog = close;
 
     function onKeydown(event) {
-      if (event.key === "Escape") close(null);
+      if (event.key === "Escape") { event.preventDefault(); close(null); }
+      if (event.key === "Tab") {
+        const controls = [...overlay.querySelectorAll("button,select,textarea")].filter(e => !e.disabled);
+        const first = controls[0], last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {event.preventDefault(); last.focus();}
+        else if (!event.shiftKey && document.activeElement === last) {event.preventDefault(); first.focus();}
+      }
     }
 
     overlay.querySelector(".service-reason-close").addEventListener("click", () => close(null));

@@ -96,3 +96,17 @@ export function authorizeWorkspace() {
 }
 // All page initializers await this same promise. Redirects are not the data boundary.
 void authorizeWorkspace();
+
+// SDK sign-out events include cross-tab sign-out and invalidated refresh tokens.
+// Keep this callback synchronous: no Auth calls while the SDK holds its lock.
+if (["client", "provider", "admin"].includes(window.location.pathname.split("/").slice(-2, -1)[0])) {
+  supabase.auth.onAuthStateChange?.((event) => {
+    if (event !== "SIGNED_OUT") return;
+    try { localStorage.removeItem("igotu_user"); } catch { /* still lock the page */ }
+    displayBlocked("You have been signed out. Please log in again.");
+    window.location.replace("../login.html");
+  });
+  window.addEventListener("pageshow", event => {
+    if (event.persisted) window.location.reload();
+  });
+}

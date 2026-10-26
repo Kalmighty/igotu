@@ -91,6 +91,7 @@ function formatBudget(budget) {
 function getApproximateArea(location) {
     const parts = String(location || "").split(",").map(part => part.trim()).filter(Boolean);
     if (!parts.length) return "Area not provided";
+    if (parts.length <= 3) return "Area available after confirmation";
     return parts.slice(-3).join(", ");
 }
 

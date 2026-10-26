@@ -39,7 +39,10 @@ function loadMapTiles(sourceIndex = 0) {
     baseLayerRetryTimer = null;
   }
   if (currentBaseLayer) {
-    currentBaseLayer.off();
+    // Keep Leaflet's internal remove listener: it detaches the layer's map
+    // events. Clearing every listener leaves a removed layer receiving zooms.
+    currentBaseLayer.off("tileload");
+    currentBaseLayer.off("tileerror");
     map.removeLayer(currentBaseLayer);
   }
 
@@ -110,6 +113,7 @@ const WEEK_DAYS = [
   { day: 0, name: "Sunday", short: "Sun" },
 ];
 let weeklyScheduleLoadFailed = false;
+let profileLoadFailed = false;
 
 const SERVICE_SPECIALIZATIONS = {
   Cleaning: ["Home Cleaning", "Deep Cleaning", "Move-in / Move-out Cleaning", "Office Cleaning", "Post-event Cleaning", "General Cleaning"],
@@ -586,7 +590,7 @@ async function loadWeeklyAvailability(userId) {
   if (error) {
     weeklyScheduleLoadFailed = true;
     console.error("Load weekly availability error:", error);
-    showMessage("Could not load working hours. Run database/provider-weekly-availability-setup.sql in Supabase before saving.");
+    showMessage("Your saved working hours could not be loaded. Refresh before making changes.");
     return;
   }
 
@@ -628,7 +632,8 @@ async function loadExistingProfile(userId) {
     .maybeSingle();
 
   if (profileError) {
-    console.error("Load provider profile error:", profileError);
+    profileLoadFailed = true;
+    showMessage("Your saved profile could not be loaded. Refresh before making changes.");
   }
 
   if (profile) {
@@ -656,7 +661,8 @@ async function loadExistingProfile(userId) {
     .eq("provider_id", userId);
 
   if (skillsError) {
-    console.error("Load skills error:", skillsError);
+    profileLoadFailed = true;
+    showMessage("Your saved skills could not be loaded. Refresh before making changes.");
     return;
   }
 
@@ -672,7 +678,8 @@ async function loadExistingProfile(userId) {
     .eq("provider_id", userId);
 
   if (specializationError) {
-    console.error("Load specializations error:", specializationError);
+    profileLoadFailed = true;
+    showMessage("Your saved specializations could not be loaded. Refresh before making changes.");
   }
 
   renderSpecializationOptions(specializationRows || []);
@@ -806,8 +813,8 @@ async function handleSaveProfile(userId) {
       is_available: document.getElementById("isAvailable").value === "true",
     };
 
-    if (weeklyScheduleLoadFailed) {
-      showMessage("Weekly hours are unavailable. Please run the weekly availability SQL setup first.");
+    if (weeklyScheduleLoadFailed || profileLoadFailed) {
+      showMessage("Your saved services or hours could not be loaded. Refresh before saving to protect your existing information.");
       return;
     }
 
