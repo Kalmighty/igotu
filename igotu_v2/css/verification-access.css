@@ -329,3 +329,7 @@
     min-height: 44px;
   }
 }
+
+/* Keep the read-only legacy review queue within the existing Admin UI. */
+.verification-admin-page .legacy-reconciliation-panel { margin-bottom: 24px; }
+.verification-admin-page #loadReconciliationBtn[hidden] { display: none; }

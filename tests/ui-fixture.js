@@ -37,7 +37,11 @@ function query(table) {
 export const supabase={
   auth:{getSession:async()=>({data:{session:{user:{id:'own'}}}}),getUser:async()=>({data:{user:{id:'own'}}}),signOut:async()=>({})},
   from:query,
-  rpc:async(name,args)=>{window.fixtureRpc={name,args};return {data:null,error:{message:'Fixture: selection stopped before any write.'}};},
+  rpc:async(name,args)=>{
+    if(name==='igotu_backend_contract') return {data:{version:'20261026.1',notifications:'database'},error:null};
+    if(name==='provider_service_requests') return {data: mode==='empty'?[]:requests,error:mode==='error'?{message:'Fixture error'}:null};
+    if(name==='recommended_provider_candidates') return {data:mode==='empty'?[]:providers.map((p,i)=>({...p,bio:'Careful, reliable home cleaning with attention to the little details.',location:'Likas, Sabah',is_verified:i===0,distance_km:1+i,matched_specializations:['Home Cleaning'],has_weekly_hours:true,average_rating:i===0?5:null,total_reviews:i===0?1:0,total_completed:12,recent_feedback:i===0?['On time, thorough and easy to communicate with.']:[]})),error:mode==='error'?{message:'Fixture error'}:null};
+    window.fixtureRpc={name,args};return {data:null,error:{message:'Fixture: selection stopped before any write.'}};},
   channel:()=>({on(){return this;},subscribe(){return this;}}), removeChannel(){}
 };
 

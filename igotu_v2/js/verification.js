@@ -1,7 +1,6 @@
 import { authorizeWorkspace, logoutAccount } from "./profile-guard.js";
 import { isIdentityApproved } from "./identity-access.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "application/pdf"];
@@ -486,11 +485,7 @@ async function submitVerification(event) {
 
     committed = true;
     document.getElementById("idNumber").value = "";
-    await createNotification(
-      currentUser.id,
-      "Verification submitted",
-      "Your identity verification request has been submitted for administrator review.",
-    );
+
 
     document.getElementById("verificationForm").reset();
     resetFilePreview("identityDocument");

@@ -102,6 +102,7 @@ const token = `${encode({ alg: "HS256", typ: "JWT" })}.${encode({ sub: uid, aud:
             };
         } else if (url.pathname === "/auth/v1/user") data = user;
         else if (url.pathname === "/auth/v1/logout") data = {};
+        else if (url.pathname === "/rest/v1/rpc/igotu_backend_contract") data = {version:"20261026.1",notifications:"database"};
         else if (url.pathname === "/rest/v1/users") data = profile;
         else if (url.pathname === "/rest/v1/verification_requests")
           data = [

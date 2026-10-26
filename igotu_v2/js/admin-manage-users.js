@@ -1,6 +1,6 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 
 let currentUser = null;
 let allUsers = [];
@@ -254,13 +254,7 @@ async function updateUserStatus(userId, newStatus, button) {
         return;
     }
 
-    await createNotification(
-        userId,
-        newStatus === "suspended" ? "Account suspended" : "Account activated",
-        newStatus === "suspended"
-            ? "Your IGotU account has been suspended by the administrator."
-            : "Your IGotU account has been activated by the administrator."
-    );
+
 
     showMessage("User status updated successfully.", "success");
 
@@ -276,6 +270,7 @@ function handleFilters() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    if (!(await authorizeWorkspace()).allowed) return;
     currentUser = await getSessionUser();
     if (!currentUser) return;
 

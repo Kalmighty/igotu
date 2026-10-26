@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="../css/ui.css" />
     <script src="../js/app-shell.js" defer></script>
     <link rel="stylesheet" href="../css/verification-access.css" />
-  </head>
-  <body class="verification-admin-page">
+    <link rel="stylesheet" href="../css/workspace-gate.css">
+</head>
+  <body class="verification-admin-page" data-access-state="checking"><div id="workspaceAccessMessage" role="status">Checking account access…</div>
     <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
@@ -73,6 +74,14 @@
               >Back to Dashboard</a
             >
           </div>
+          <section class="panel legacy-reconciliation-panel" aria-labelledby="reconciliationHeading">
+            <div class="panel-header"><h2 id="reconciliationHeading">Legacy verification review</h2></div>
+            <div class="panel-body">
+            <p class="muted-text">Review accounts whose legacy verified flag lacks matching approval history. Records remain unchanged. Ask affected users to submit a fresh identity request with consent; review it through the normal approval process.</p>
+            <button type="button" id="loadReconciliationBtn" class="btn btn-outline">Load affected accounts</button>
+            <div id="reconciliationList" class="request-list-area" aria-live="polite"></div>
+            </div>
+          </section>
           <div id="messageBox" role="status" class="message-box hidden"></div>
           <section class="panel">
             <div class="panel-header admin-filter-header">
@@ -142,5 +151,6 @@
         </div>
       </form>
     </dialog>
-  </body>
+    <script type="module" src="../js/profile-guard.js"></script>
+</body>
 </html>

@@ -1,0 +1,1 @@
+PASS local staging artifact: production/foreign origin/secret key rejected, existing work preserved, no source edits, database drafts excluded. No network calls.

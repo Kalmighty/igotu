@@ -1,0 +1,4 @@
+PASS Admin reconciliation queue is read-only and links to existing history
+PASS Admin cannot approve a legacy submission with unrecorded consent
+PASS Admin legacy queue paginates without duplicate accounts or mutations
+{"passed":3,"failed":0}

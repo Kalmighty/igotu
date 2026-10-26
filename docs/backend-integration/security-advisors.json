@@ -1,0 +1,501 @@
+{
+  "lints": [
+    {
+      "name": "rls_enabled_no_policy",
+      "title": "RLS Enabled No Policy",
+      "level": "INFO",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Detects cases where row level security (RLS) has been enabled on a table but no RLS policies have been created.",
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy",
+      "count": 1,
+      "findings": [
+        {
+          "detail": "Table \\`public.example_table\\` has RLS enabled, but no policies exist",
+          "metadata": {
+            "name": "example_table",
+            "type": "table",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        }
+      ]
+    },
+    {
+      "name": "function_search_path_mutable",
+      "title": "Function Search Path Mutable",
+      "level": "WARN",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Detects functions where the search_path parameter is not set.",
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0011_function_search_path_mutable",
+      "count": 9,
+      "findings": [
+        {
+          "detail": "Function \\`public.format_custom_id\\` has a role mutable search_path",
+          "metadata": {
+            "name": "format_custom_id",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.set_updated_at\\` has a role mutable search_path",
+          "metadata": {
+            "name": "set_updated_at",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.assign_user_code\\` has a role mutable search_path",
+          "metadata": {
+            "name": "assign_user_code",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.assign_service_request_id\\` has a role mutable search_path",
+          "metadata": {
+            "name": "assign_service_request_id",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.assign_skill_code\\` has a role mutable search_path",
+          "metadata": {
+            "name": "assign_skill_code",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.assign_payment_id\\` has a role mutable search_path",
+          "metadata": {
+            "name": "assign_payment_id",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.assign_review_id\\` has a role mutable search_path",
+          "metadata": {
+            "name": "assign_review_id",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.assign_message_id\\` has a role mutable search_path",
+          "metadata": {
+            "name": "assign_message_id",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function \\`public.assign_notification_id\\` has a role mutable search_path",
+          "metadata": {
+            "name": "assign_notification_id",
+            "type": "function",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        }
+      ]
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "title": "Public Can Execute SECURITY DEFINER Function",
+      "level": "WARN",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Detects `SECURITY DEFINER` functions that are callable without signing in. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if it is not meant to be public.",
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable",
+      "count": 15,
+      "findings": [
+        {
+          "detail": "Function `public.admin_review_service_report(p_report_id uuid, p_status text, p_admin_note text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/admin_review_service_report`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "admin_review_service_report",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_report_id uuid, p_status text, p_admin_note text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.admin_review_verification(p_request_id uuid, p_status text, p_admin_note text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/admin_review_verification`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "admin_review_verification",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id uuid, p_status text, p_admin_note text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.admin_update_user_status(p_user_id uuid, p_status text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/admin_update_user_status`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "admin_update_user_status",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_user_id uuid, p_status text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_cancel_request(p_request_id text, p_reason text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_cancel_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_cancel_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_reason text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_complete_request(p_request_id text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_complete_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_complete_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_save_request_image(p_request_id text, p_request_image_url text, p_request_image_path text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_save_request_image`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_save_request_image",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_request_image_url text, p_request_image_path text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_select_provider(p_request_id text, p_provider_id uuid)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_select_provider`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_select_provider",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_provider_id uuid",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_update_request(p_request_id text, p_title text, p_category text, p_service_type text, p_description text, p_preferred_date date, p_preferred_time time without time zone, p_location text, p_client_lat numeric, p_client_lng numeric, p_budget numeric, p_priority text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_update_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_update_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_title text, p_category text, p_service_type text, p_description text, p_preferred_date date, p_preferred_time time without time zone, p_location text, p_client_lat numeric, p_client_lng numeric, p_budget numeric, p_priority text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.complete_basic_profile(p_full_name text, p_phone text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/complete_basic_profile`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "complete_basic_profile",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_full_name text, p_phone text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.current_user_role()` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/current_user_role`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "current_user_role",
+            "schema": "public",
+            "language": "sql",
+            "arguments": "",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.handle_new_auth_user()` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/handle_new_auth_user`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "handle_new_auth_user",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.provider_confirm_request(p_request_id text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/provider_confirm_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "provider_confirm_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.provider_decline_request(p_request_id text, p_reason text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/provider_decline_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "provider_decline_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_reason text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.provider_start_request(p_request_id text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/provider_start_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "provider_start_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.submit_service_report(p_request_id text, p_reported_user_id uuid, p_reason text, p_description text, p_evidence_path text)` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/submit_service_report`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "submit_service_report",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_reported_user_id uuid, p_reason text, p_description text, p_evidence_path text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        }
+      ]
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "title": "Signed-In Users Can Execute SECURITY DEFINER Function",
+      "level": "WARN",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Detects `SECURITY DEFINER` functions that are callable by signed-in users. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if signed-in users should not call it.",
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable",
+      "count": 15,
+      "findings": [
+        {
+          "detail": "Function `public.admin_review_service_report(p_report_id uuid, p_status text, p_admin_note text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/admin_review_service_report`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "admin_review_service_report",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_report_id uuid, p_status text, p_admin_note text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.admin_review_verification(p_request_id uuid, p_status text, p_admin_note text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/admin_review_verification`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "admin_review_verification",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id uuid, p_status text, p_admin_note text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.admin_update_user_status(p_user_id uuid, p_status text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/admin_update_user_status`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "admin_update_user_status",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_user_id uuid, p_status text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_cancel_request(p_request_id text, p_reason text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_cancel_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_cancel_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_reason text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_complete_request(p_request_id text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_complete_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_complete_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_save_request_image(p_request_id text, p_request_image_url text, p_request_image_path text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_save_request_image`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_save_request_image",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_request_image_url text, p_request_image_path text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_select_provider(p_request_id text, p_provider_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_select_provider`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_select_provider",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_provider_id uuid",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.client_update_request(p_request_id text, p_title text, p_category text, p_service_type text, p_description text, p_preferred_date date, p_preferred_time time without time zone, p_location text, p_client_lat numeric, p_client_lng numeric, p_budget numeric, p_priority text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/client_update_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "client_update_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_title text, p_category text, p_service_type text, p_description text, p_preferred_date date, p_preferred_time time without time zone, p_location text, p_client_lat numeric, p_client_lng numeric, p_budget numeric, p_priority text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.complete_basic_profile(p_full_name text, p_phone text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/complete_basic_profile`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "complete_basic_profile",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_full_name text, p_phone text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.current_user_role()` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/current_user_role`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "current_user_role",
+            "schema": "public",
+            "language": "sql",
+            "arguments": "",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.handle_new_auth_user()` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/handle_new_auth_user`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "handle_new_auth_user",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.provider_confirm_request(p_request_id text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/provider_confirm_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "provider_confirm_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.provider_decline_request(p_request_id text, p_reason text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/provider_decline_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "provider_decline_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_reason text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.provider_start_request(p_request_id text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/provider_start_request`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "provider_start_request",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        },
+        {
+          "detail": "Function `public.submit_service_report(p_request_id text, p_reported_user_id uuid, p_reason text, p_description text, p_evidence_path text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/submit_service_report`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "submit_service_report",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "p_request_id text, p_reported_user_id uuid, p_reason text, p_description text, p_evidence_path text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-26T15:27:32.514Z"
+        }
+      ]
+    },
+    {
+      "name": "auth_leaked_password_protection",
+      "title": "Leaked Password Protection Disabled",
+      "level": "WARN",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Leaked password protection is currently disabled.",
+      "remediation": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection",
+      "count": 1,
+      "findings": [
+        {
+          "detail": "Supabase Auth prevents the use of compromised passwords by checking against HaveIBeenPwned.org. Enable this feature to enhance security.",
+          "metadata": {
+            "type": "auth",
+            "entity": "Auth"
+          }
+        }
+      ]
+    }
+  ]
+}

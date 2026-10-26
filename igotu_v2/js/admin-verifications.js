@@ -1,7 +1,6 @@
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 
 let currentUser = null;
 let allRequests = [];
@@ -328,6 +327,12 @@ function requestReviewDecision(status) {
 async function reviewRequest(requestId, userId, status, button) {
   clearMessage();
 
+  // UX guidance only; the database independently enforces recorded consent.
+  const request = allRequests.find(item => item.id === requestId);
+  if (status === "approved" && (request?.age_confirmed !== true || request?.privacy_consent !== true)) {
+    showMessage("This request has no recorded age/privacy consent. Reject with an accurate reason and ask the user to resubmit. Consent cannot be backfilled.");
+    return;
+  }
   const note = await requestReviewDecision(status);
   if (note === null) return;
 
@@ -350,13 +355,7 @@ async function reviewRequest(requestId, userId, status, button) {
     return;
   }
 
-  await createNotification(
-    userId,
-    status === "approved" ? "Identity verified" : "Verification rejected",
-    status === "approved"
-      ? "Your identity verification is approved. Continue to profile setup or your workspace."
-      : "Your identity verification needs correction. Open Identity Verification to read the administrator’s note and resubmit.",
-  );
+
 
   showMessage(
     status === "approved"
@@ -379,6 +378,46 @@ function setupFilters() {
   });
 }
 
+let reconciliationAfter = null;
+async function loadReconciliation() {
+  const button = document.getElementById("loadReconciliationBtn");
+  const list = document.getElementById("reconciliationList");
+  button.disabled = true;
+  try {
+    const { data, error } = await supabase.rpc("verification_reconciliation_queue", { p_after: reconciliationAfter });
+    if (error || !Array.isArray(data)) throw new Error("Queue unavailable");
+    if (!data.length) {
+      const note = document.createElement("p");
+      note.className = "muted-text";
+      note.textContent = reconciliationAfter ? "End of the review queue." : "No affected accounts were returned.";
+      list.append(note);
+      button.hidden = true;
+      return;
+    }
+    for (const user of data) {
+      const item = document.createElement("article");
+      item.className = "request-card";
+      const title = document.createElement("h3");
+      title.textContent = `${user.full_name} · ${user.user_code}`;
+      const detail = document.createElement("p");
+      detail.textContent = `${user.role} · ${user.status} · Latest request: ${user.latest_status || "none"} · Recorded consent: ${user.recorded_consent ? "yes" : "not recorded"}`;
+      const link = document.createElement("a");
+      link.className = "btn btn-outline";
+      link.href = `verifications.html?user_id=${encodeURIComponent(user.id)}`;
+      link.textContent = "Review existing history";
+      item.append(title, detail, link);
+      list.append(item);
+    }
+    reconciliationAfter = data.at(-1).id;
+    button.textContent = "Load more affected accounts";
+    button.hidden = data.length < 100;
+  } catch {
+    showMessage("Unable to load the legacy review queue. No account records were changed. Try again or contact your deployment administrator.");
+  } finally {
+    button.disabled = false;
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   if (!(await authorizeWorkspace()).allowed) return;
   const profile = await getAdmin();
@@ -391,6 +430,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   setupLogout();
+  document.getElementById("loadReconciliationBtn")?.addEventListener("click", loadReconciliation);
   setupFilters();
   await loadData();
 });

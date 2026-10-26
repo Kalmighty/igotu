@@ -67,7 +67,7 @@ const png = Buffer.from(
   async function callCount(page, op) {
     return page.evaluate(
       (op) =>
-        window.__verificationCalls?.filter((c) => c.op === op).length || 0,
+        window.__verificationCalls?.filter((c) => c.op === op && (op !== "rpc" || c.args?.name !== "igotu_backend_contract")).length || 0,
       op,
     );
   }
@@ -89,7 +89,7 @@ const png = Buffer.from(
         assert.ok(captured.length > 0);
         assert.ok(
           captured.every((c) =>
-            ["users", "verification_requests"].includes(c.op),
+            ["users", "verification_requests"].includes(c.op) || (c.op === "rpc" && c.args?.name === "igotu_backend_contract"),
           ),
           `${role}/${file}: service initialization ran before authorization`,
         );
@@ -194,7 +194,7 @@ const png = Buffer.from(
       assert.ok(captured.length > 0);
       assert.ok(
         captured.every((c) =>
-          ["users", "verification_requests"].includes(c.op),
+          ["users", "verification_requests"].includes(c.op) || (c.op === "rpc" && c.args?.name === "igotu_backend_contract"),
         ),
         JSON.stringify(captured),
       );
@@ -211,7 +211,7 @@ const png = Buffer.from(
         await page.waitForURL("**/verification.html");
         assert.ok(
           captured.every((c) =>
-            ["users", "verification_requests"].includes(c.op),
+            ["users", "verification_requests"].includes(c.op) || (c.op === "rpc" && c.args?.name === "igotu_backend_contract"),
           ),
         );
         await context.close();
@@ -473,7 +473,7 @@ const png = Buffer.from(
         })
         .waitFor();
       const rpc = await page.evaluate(
-        () => window.__verificationCalls.find((c) => c.op === "rpc").args,
+        () => window.__verificationCalls.find((c) => c.op === "rpc" && c.args?.name === "admin_review_verification").args,
       );
       assert.equal(rpc.name, "admin_review_verification");
       assert.equal(rpc.args.p_status, decision);

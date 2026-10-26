@@ -605,25 +605,6 @@ async function loadWeeklyAvailability(userId) {
   }
 }
 
-async function saveWeeklyAvailability(userId, selectedRows) {
-  const enabledDays = selectedRows.map((row) => row.day_of_week);
-  const closedDays = WEEK_DAYS.map((row) => row.day).filter((day) => !enabledDays.includes(day));
-
-  // Upsert first, so an insert error won't erase the saved schedule.
-  if (selectedRows.length) {
-    const { error } = await supabase.from("provider_weekly_availability").upsert(
-      selectedRows.map((row) => ({ ...row, provider_id: userId })),
-      { onConflict: "provider_id,day_of_week" },
-    );
-    if (error) throw error;
-  }
-  if (closedDays.length) {
-    const { error } = await supabase.from("provider_weekly_availability")
-      .delete().eq("provider_id", userId).in("day_of_week", closedDays);
-    if (error) throw error;
-  }
-}
-
 async function loadExistingProfile(userId) {
   const { data: profile, error: profileError } = await supabase
     .from("provider_profiles")
@@ -736,61 +717,6 @@ function validateProfile(profileData, selectedSkills, selectedSpecializations) {
   return "";
 }
 
-async function saveProviderSkills(userId, selectedSkills) {
-  const { error: deleteError } = await supabase
-    .from("provider_skills")
-    .delete()
-    .eq("provider_id", userId);
-
-  if (deleteError) {
-    throw deleteError;
-  }
-
-  const skillRows = selectedSkills.map(function (category) {
-    return {
-      provider_id: userId,
-      category: category,
-    };
-  });
-
-  const { error: insertError } = await supabase
-    .from("provider_skills")
-    .insert(skillRows);
-
-  if (insertError) {
-    throw insertError;
-  }
-}
-
-async function saveProviderSpecializations(userId, selectedSpecializations) {
-  const { error: deleteError } = await supabase
-    .from("provider_specializations")
-    .delete()
-    .eq("provider_id", userId);
-
-  if (deleteError) {
-    throw deleteError;
-  }
-
-  if (selectedSpecializations.length === 0) return;
-
-  const rows = selectedSpecializations.map(function (item) {
-    return {
-      provider_id: userId,
-      category: item.category,
-      specialization: item.specialization,
-    };
-  });
-
-  const { error: insertError } = await supabase
-    .from("provider_specializations")
-    .insert(rows);
-
-  if (insertError) {
-    throw insertError;
-  }
-}
-
 async function handleSaveProfile(userId) {
   const form = document.getElementById("providerProfileForm");
   const saveBtn = document.getElementById("saveProfileBtn");
@@ -846,46 +772,17 @@ async function handleSaveProfile(userId) {
     setButtonLoading(saveBtn, true, "Saving profile...", isOnboardingMode ? "Complete Profile & Continue" : "Save Profile");
 
     try {
-      const { error: profileError } = await supabase
-        .from("provider_profiles")
-        .upsert(profileData, {
-          onConflict: "provider_id",
-        });
-
-      if (profileError) {
-        throw profileError;
-      }
-
-      await saveProviderSkills(userId, selectedSkills);
-      await saveProviderSpecializations(userId, selectedSpecializations);
-      await saveWeeklyAvailability(userId, selectedHours);
-
-      const fullNameInput = document.getElementById("fullName");
-      const phoneInput = document.getElementById("phone");
-
-      if (fullNameInput && phoneInput) {
-        const fullName = fullNameInput.value.trim();
-        const phone = phoneInput.value.trim();
-
-        const { data: completedData, error: completedError } = await supabase.rpc(
-          "complete_basic_profile",
-          {
-            p_full_name: fullName,
-            p_phone: phone,
-          },
-        );
-
-        if (completedError) throw completedError;
-
-        const updatedProfile = Array.isArray(completedData)
-          ? completedData[0]
-          : completedData;
-
-        if (updatedProfile) {
-          localStorage.setItem("igotu_user", JSON.stringify(updatedProfile));
-          displayUser(updatedProfile);
-        }
-      }
+      const { data: completedData, error } = await supabase.rpc("save_provider_profile", {
+        p_profile: profileData, p_skills: selectedSkills,
+        p_specializations: selectedSpecializations, p_weekly_hours: selectedHours,
+        p_full_name: document.getElementById("fullName").value.trim(),
+        p_phone: document.getElementById("phone").value.trim(),
+      });
+      if (error) throw error;
+      const updatedProfile = Array.isArray(completedData) ? completedData[0] : completedData;
+      if (!updatedProfile?.id) throw new Error("Profile save could not be confirmed. Refresh before retrying.");
+      localStorage.setItem("igotu_user", JSON.stringify(updatedProfile));
+      displayUser(updatedProfile);
 
       if (isOnboardingMode) {
         showMessage(

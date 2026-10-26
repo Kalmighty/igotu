@@ -1,7 +1,8 @@
+import { prepareReceiptPreviews, receiptHtml, bindReceiptButtons } from "./payment-receipts.js";
+import { providerRequests, serviceParticipants } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 
 const L = window.L;
 
@@ -81,41 +82,7 @@ function formatDateTime(value) {
     });
 }
 
-function getPaymentProofUrl(payment) {
-    if (!payment) return null;
-    return payment.proof_url || payment.proof_payment_url || null;
-}
-
-function isImageProof(url) {
-    if (!url) return false;
-    return /\.(jpg|jpeg|png|webp)(\?|#|$)/i.test(url);
-}
-
-function buildPaymentProofPreview(payment) {
-    const proofUrl = getPaymentProofUrl(payment);
-
-    if (!proofUrl) {
-        return `<p class="muted-text">Proof payment: Not uploaded.</p>`;
-    }
-
-    if (isImageProof(proofUrl)) {
-        return `
-            <div class="payment-proof-preview compact-proof-preview">
-                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">
-                    <img src="${escapeHtml(safeUrl(proofUrl))}" alt="Payment proof" class="payment-proof-image">
-                </a>
-                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open proof payment</a>
-            </div>
-        `;
-    }
-
-    return `
-        <p>
-            <strong>Proof payment:</strong>
-            <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">Open uploaded file</a>
-        </p>
-    `;
-}
+function buildPaymentProofPreview(payment) { return receiptHtml(payment); }
 
 function buildProviderPaymentBox(request) {
     if (!assignmentPaymentsLoaded) return '<p class="muted-text">Payment status could not be checked. Refresh to try again.</p>';
@@ -292,7 +259,7 @@ async function loadAssignmentPayments(requestIds) {
 
     const { data, error } = await supabase
         .from("payment_records")
-        .select("*")
+        .select("payment_id,request_id,client_id,provider_id,amount,payment_method,reference_number,created_at")
         .in("request_id", requestIds);
 
     if (error) {
@@ -300,7 +267,7 @@ async function loadAssignmentPayments(requestIds) {
         return;
     }
 
-    (data || []).forEach(function(payment) {
+    (await prepareReceiptPreviews(data || [])).forEach(function(payment) {
         assignmentPaymentMap.set(payment.request_id, payment);
     });
     assignmentPaymentsLoaded = true;
@@ -311,12 +278,7 @@ async function loadAssignments() {
 
     assignmentsList.innerHTML = `<p class="muted-text">Loading assignments...</p>`;
 
-    const { data: requests, error } = await supabase
-        .from("service_requests")
-        .select("*")
-        .eq("selected_provider_id", currentUser.id)
-        .in("status", ["confirmed", "in_progress", "completed"])
-        .order("created_at", { ascending: false });
+    const { data: requests, error } = await providerRequests(["confirmed", "in_progress", "completed"]);
 
     if (error) {
         console.error("Assignments error:", error);
@@ -341,12 +303,8 @@ async function loadAssignments() {
     await loadProviderReviews(requestIds);
     await loadAssignmentPayments(requestIds);
 
-    const clientIds = [...new Set(requests.map(request => request.client_id))];
-
-    const { data: clients } = await supabase
-        .from("users")
-        .select("id, full_name, user_code, identity_verified")
-        .in("id", clientIds);
+    const { data: clients, error: participantsError } = await serviceParticipants(requests.map(request => request.request_id));
+    if (participantsError) showMessage("Service details loaded, but participant names could not be checked. Refresh to try again.");
 
     const clientMap = new Map();
 
@@ -463,6 +421,7 @@ async function loadAssignments() {
         form.addEventListener("submit", saveProviderReview);
     });
 
+    bindReceiptButtons(assignmentsList, [...assignmentPaymentMap.values()], showMessage);
     setupStarRatings();
 
     setTimeout(function() {
@@ -554,11 +513,7 @@ async function startRequest(requestId, button) {
     button.disabled = true;
     button.textContent = "Starting...";
 
-    const { data: requestData } = await supabase
-        .from("service_requests")
-        .select("request_id, title, client_id")
-        .eq("request_id", requestId)
-        .single();
+
 
     const { error } = await supabase.rpc("provider_start_request", {
         p_request_id: requestId
@@ -572,13 +527,7 @@ async function startRequest(requestId, button) {
         return;
     }
 
-    if (requestData) {
-        await createNotification(
-            requestData.client_id,
-            "Service started",
-            `${currentProfile.full_name} started working on your request "${requestData.title}".`
-        );
-    }
+
 
     showMessage("Service started successfully.", "success");
 
@@ -629,11 +578,7 @@ async function saveProviderReview(event) {
         return;
     }
 
-    await createNotification(
-        clientId,
-        "New review received",
-        `${currentProfile.full_name} submitted a review for your completed request.`
-    );
+
 
     showMessage("Review submitted successfully.", "success");
 

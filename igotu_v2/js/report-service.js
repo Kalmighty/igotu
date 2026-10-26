@@ -1,3 +1,4 @@
+import { providerRequests, serviceParticipants } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
 
@@ -80,11 +81,12 @@ async function loadRequest() {
     return false;
   }
 
-  const { data, error } = await supabase
-    .from("service_requests")
-    .select("request_id, client_id, selected_provider_id, title, category, service_type, status")
-    .eq("request_id", requestId)
-    .single();
+  const result = currentProfile.role === "provider"
+    ? await providerRequests(null, requestId)
+    : await supabase.from("service_requests").select("request_id,client_id,selected_provider_id,title,category,service_type,status")
+        .eq("request_id", requestId).eq("client_id", currentUser.id).single();
+  const error = result.error;
+  const data = currentProfile.role === "provider" ? result.data?.[0] : result.data;
 
   if (error || !data) {
     showMessage("Service request not found.");
@@ -106,11 +108,8 @@ async function loadRequest() {
     return false;
   }
 
-  const { data: user, error: userError } = await supabase
-    .from("users")
-    .select("id, user_code, full_name, role")
-    .eq("id", reportedUserId)
-    .single();
+  const { data: participants, error: userError } = await serviceParticipants([requestId]);
+  const user = participants?.find(person => person.id === reportedUserId);
 
   if (userError || !user) {
     showMessage("Unable to load the other service participant.");

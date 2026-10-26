@@ -85,6 +85,7 @@ export const supabase = {
       return { data: { session }, error: null };
     },
   },
+  rpc: async () => ({ data: { version: "20261026.1", notifications: "database" }, error: null }),
   from(table) {
     record("from", { table });
     const query = {

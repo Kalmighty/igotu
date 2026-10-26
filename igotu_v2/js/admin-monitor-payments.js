@@ -1,3 +1,5 @@
+import { authorizeWorkspace } from "./profile-guard.js";
+import { prepareReceiptPreviews, receiptHtml, bindReceiptButtons } from "./payment-receipts.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
@@ -30,47 +32,8 @@ function formatDate(dateValue) {
 }
 
 
-function getPaymentProofUrl(payment) {
-    if (!payment) return null;
-    return payment.proof_url || payment.proof_payment_url || null;
-}
-
-function isImageProof(url) {
-    if (!url) return false;
-    return /\.(jpg|jpeg|png|webp)(\?|#|$)/i.test(url);
-}
-
-function buildAdminPaymentProofHtml(payment) {
-    const proofUrl = getPaymentProofUrl(payment);
-
-    if (!proofUrl) {
-        return `
-            <div class="admin-proof-box no-proof-box">
-                <strong>Proof Payment</strong>
-                <p class="muted-text">No proof uploaded for this payment.</p>
-            </div>
-        `;
-    }
-
-    if (isImageProof(proofUrl)) {
-        return `
-            <div class="admin-proof-box">
-                <strong>Proof Payment</strong>
-                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">
-                    <img src="${escapeHtml(safeUrl(proofUrl))}" alt="Payment proof" class="payment-proof-image admin-proof-image">
-                </a>
-                <a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open proof payment</a>
-            </div>
-        `;
-    }
-
-    return `
-        <div class="admin-proof-box">
-            <strong>Proof Payment</strong>
-            <p><a href="${escapeHtml(safeUrl(proofUrl))}" target="_blank" rel="noopener noreferrer">Open uploaded file</a></p>
-        </div>
-    `;
-}
+function getPaymentProofUrl(payment) { return payment.receiptPreview?.url || null; }
+function buildAdminPaymentProofHtml(payment) { return receiptHtml(payment); }
 
 async function getSessionUser() {
     const { data } = await supabase.auth.getSession();
@@ -177,7 +140,7 @@ async function loadPayments() {
 
     const { data, error } = await supabase
         .from("payment_records")
-        .select("*")
+        .select("payment_id,request_id,client_id,provider_id,amount,payment_method,reference_number,created_at")
         .order("created_at", { ascending: false });
 
     if (error) {
@@ -187,7 +150,7 @@ async function loadPayments() {
         return;
     }
 
-    allPayments = data || [];
+    allPayments = await prepareReceiptPreviews(data || []);
     await loadRelatedData(allPayments);
     renderStats();
     renderPayments();
@@ -309,6 +272,7 @@ function renderPayments() {
             </div>
         `;
     }).join("");
+    bindReceiptButtons(paymentsList, allPayments, showMessage);
 }
 
 function handleFilters() {
@@ -317,6 +281,7 @@ function handleFilters() {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+    if (!(await authorizeWorkspace()).allowed) return;
     currentUser = await getSessionUser();
     if (!currentUser) return;
 
