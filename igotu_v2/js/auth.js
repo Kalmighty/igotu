@@ -61,6 +61,7 @@ async function handleRegister() {
 
     registerForm.addEventListener("submit", async function(event) {
         event.preventDefault();
+        if (registerBtn.disabled) return;
         clearMessage();
 
         const fullName = document.getElementById("fullName").value.trim();
@@ -91,6 +92,7 @@ async function handleRegister() {
 
         setButtonLoading(registerBtn, true, "Creating account...", "Register");
 
+        try {
         const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password,
@@ -132,6 +134,10 @@ async function handleRegister() {
         registerBtn.textContent = "Check your email, then log in";
         const loginLink = document.querySelector('.auth-form-footer a[href="login.html"]');
         if (loginLink) loginLink.href = `login.html?role=${role}`;
+        } catch {
+            showMessage("Registration could not be completed. Check your email or try logging in before registering again.");
+            setButtonLoading(registerBtn, false, "", "Register");
+        }
     });
 }
 

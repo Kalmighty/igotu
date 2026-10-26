@@ -661,9 +661,15 @@ async function createRequest(formData, userId, button, requestImageFile) {
             const imageData = await uploadRequestImage(requestImageFile, userId, data.request_id);
             await saveRequestImage(data.request_id, imageData.imageUrl, imageData.imagePath);
         } catch (imageError) {
-            console.error("Create request image error:", imageError);
-            showMessage(imageError.message || "Request created, but image upload failed.");
-            setButtonLoading(button, false, "Creating request...", "Post Request & Find Providers");
+            // The request already exists. Retry its attachment through edit mode,
+            // including after a refresh, instead of inserting another request.
+            editingRequest = { ...formData, request_id: data.request_id, status: "pending" };
+            const savedUrl = new URL(window.location.href);
+            savedUrl.searchParams.set("request_id", data.request_id);
+            window.history.replaceState(null, "", savedUrl);
+            configureEditMode();
+            showMessage("Your service request was saved, but its image was not attached. Retry Save Changes or open My Requests to continue without the image.");
+            setButtonLoading(button, false, "Saving changes...", "Save Changes");
             return;
         }
     }
@@ -683,6 +689,7 @@ async function handleRequestForm(userId) {
 
     form.addEventListener("submit", async function(event) {
         event.preventDefault();
+        if (createBtn.disabled) return;
         clearMessage();
 
         const budgetValue = document.getElementById("budget").value.trim();
@@ -719,12 +726,16 @@ async function handleRequestForm(userId) {
             return;
         }
 
-        if (editingRequest) {
-            await updateRequest(formData, createBtn, requestImageFile, userId);
-            return;
+        try {
+            if (editingRequest) {
+                await updateRequest(formData, createBtn, requestImageFile, userId);
+                return;
+            }
+            await createRequest(formData, userId, createBtn, requestImageFile);
+        } catch {
+            showMessage("Unable to save the request. Check My Requests before retrying if the connection was interrupted.");
+            setButtonLoading(createBtn, false, "", editingRequest ? "Save Changes" : "Post Request & Find Providers");
         }
-
-        await createRequest(formData, userId, createBtn, requestImageFile);
     });
 }
 

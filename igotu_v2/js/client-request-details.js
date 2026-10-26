@@ -14,6 +14,7 @@ let currentRequest = null;
 let selectedProvider = null;
 let existingPayment = null;
 let existingReview = null;
+let settlementLoaded = false;
 let requestMap = null;
 
 function showMessage(message, type = "error") {
@@ -82,11 +83,11 @@ function hasValidCoordinates(request) {
 function getStarRatingHtml() {
     return `
         <div class="star-rating">
-            <button type="button" class="star-btn" data-value="1">★</button>
-            <button type="button" class="star-btn" data-value="2">★</button>
-            <button type="button" class="star-btn" data-value="3">★</button>
-            <button type="button" class="star-btn" data-value="4">★</button>
-            <button type="button" class="star-btn" data-value="5">★</button>
+            <button type="button" class="star-btn" data-value="1" aria-label="1 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="2" aria-label="2 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="3" aria-label="3 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="4" aria-label="4 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="5" aria-label="5 out of 5 stars" aria-pressed="false">★</button>
         </div>
         <input type="hidden" name="rating" id="rating">
         <p class="rating-text">No rating selected</p>
@@ -112,6 +113,7 @@ function setupStarRatings(container = document) {
                 stars.forEach(function(item) {
                     const value = Number(item.dataset.value);
                     item.classList.toggle("active", value <= rating);
+                    item.setAttribute("aria-pressed", String(value === rating));
                 });
 
                 ratingText.textContent = `${rating} star${rating > 1 ? "s" : ""} selected`;
@@ -179,20 +181,6 @@ function updatePaymentProofRequirement() {
     proofBadge.style.background = "#ecfdf3";
     proofBadge.style.color = "#087443";
     proofNote.textContent = "For cash payments, proof is optional because payment is given directly to the provider.";
-}
-
-function updatePaymentProofFileName() {
-    const proofInput = document.getElementById("paymentProof");
-    const proofFileName = document.getElementById("paymentProofFileName");
-
-    if (!proofInput || !proofFileName) return;
-
-    if (proofInput.files.length === 0) {
-        proofFileName.textContent = "No file selected";
-        return;
-    }
-
-    proofFileName.textContent = proofInput.files[0].name;
 }
 
 async function uploadPaymentProof(file) {
@@ -318,8 +306,7 @@ async function getPayment(requestIdValue) {
         .maybeSingle();
 
     if (error) {
-        console.error("Payment fetch error:", error);
-        return null;
+        throw new Error("Payment status could not be checked.");
     }
 
     return data;
@@ -334,8 +321,7 @@ async function getClientReview(requestIdValue) {
         .maybeSingle();
 
     if (error) {
-        console.error("Review fetch error:", error);
-        return null;
+        throw new Error("Review status could not be checked.");
     }
 
     return data;
@@ -362,9 +348,14 @@ async function loadRequest() {
 
     currentRequest = data;
     selectedProvider = await getProvider(data.selected_provider_id);
-    existingPayment = await getPayment(data.request_id);
-    existingReview = await getClientReview(data.request_id);
-
+    settlementLoaded = false;
+    try {
+        existingPayment = await getPayment(data.request_id);
+        existingReview = await getClientReview(data.request_id);
+        settlementLoaded = true;
+    } catch {
+        showMessage("Payment or review status could not be checked. Refresh before recording another payment or review.");
+    }
     renderRequest(data, selectedProvider);
 }
 
@@ -549,13 +540,6 @@ function renderRequest(request, provider) {
         updatePaymentProofRequirement();
     }
 
-    const paymentProof = document.getElementById("paymentProof");
-
-    if (paymentProof) {
-        paymentProof.addEventListener("change", updatePaymentProofFileName);
-        updatePaymentProofFileName();
-    }
-
     const reviewForm = document.getElementById("reviewForm");
 
     if (reviewForm) {
@@ -646,6 +630,7 @@ function initRequestLocationMap(request) {
 }
 
 function buildCompletedSection(request, provider) {
+    if (!settlementLoaded) return '<div class="sub-panel" role="status"><h3>Payment and review unavailable</h3><p>Refresh to check existing records before submitting another payment or review.</p></div>';
     if (!provider) {
         return `
             <div class="sub-panel">
@@ -693,18 +678,9 @@ function buildCompletedSection(request, provider) {
                         <span id="paymentProofBadge" style="display: inline-flex; align-items: center; border-radius: 999px; padding: 6px 12px; background: #ecfdf3; color: #087443; font-size: 13px; font-weight: 800;">Optional</span>
                     </div>
 
-                    <input type="file" id="paymentProof" accept="image/jpeg,image/png,image/webp,application/pdf" style="display: none;">
+                    <input type="file" id="paymentProof" accept="image/jpeg,image/png,image/webp,application/pdf">
 
-                    <label for="paymentProof" style="display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 70px; padding: 16px 18px; border: 1.5px dashed #cfd8d3; border-radius: 16px; background: #f8fbf9; cursor: pointer;">
-                        <span style="display: flex; align-items: center; gap: 14px; min-width: 0;">
-                            <span style="display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; background: #eaf7ef; color: #0b8f3a; font-size: 22px; flex: 0 0 auto;">↑</span>
-                            <span style="min-width: 0;">
-                                <strong style="display: block; color: #111827; font-size: 16px;">Upload receipt or screenshot</strong>
-                                <span id="paymentProofFileName" style="display: block; color: #64748b; font-size: 14px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">No file selected</span>
-                            </span>
-                        </span>
-                        <span style="display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: #0b8f3a; color: white; padding: 10px 14px; font-size: 14px; font-weight: 800; flex: 0 0 auto;">Choose File</span>
-                    </label>
+
 
                     <p class="muted-text" id="paymentProofNote" style="margin-top: 10px; font-size: 14px; line-height: 1.45;">For cash payments, proof is optional because payment is given directly to the provider.</p>
                     <p class="muted-text" style="margin-top: 4px; font-size: 13px; line-height: 1.4;">Accepted: JPG, PNG, WEBP, or PDF. Maximum 5MB.</p>

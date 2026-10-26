@@ -8,6 +8,8 @@ const L = window.L;
 let currentUser = null;
 let currentProfile = null;
 let providerReviews = [];
+let providerReviewsLoaded = false;
+let assignmentPaymentsLoaded = false;
 let assignmentPaymentMap = new Map();
 
 function showMessage(message, type = "error") {
@@ -116,6 +118,7 @@ function buildPaymentProofPreview(payment) {
 }
 
 function buildProviderPaymentBox(request) {
+    if (!assignmentPaymentsLoaded) return '<p class="muted-text">Payment status could not be checked. Refresh to try again.</p>';
     const payment = assignmentPaymentMap.get(request.request_id);
 
     if (!payment) {
@@ -159,11 +162,11 @@ function hasValidCoordinates(request) {
 function getStarRatingHtml() {
     return `
         <div class="star-rating">
-            <button type="button" class="star-btn" data-value="1">★</button>
-            <button type="button" class="star-btn" data-value="2">★</button>
-            <button type="button" class="star-btn" data-value="3">★</button>
-            <button type="button" class="star-btn" data-value="4">★</button>
-            <button type="button" class="star-btn" data-value="5">★</button>
+            <button type="button" class="star-btn" data-value="1" aria-label="1 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="2" aria-label="2 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="3" aria-label="3 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="4" aria-label="4 out of 5 stars" aria-pressed="false">★</button>
+            <button type="button" class="star-btn" data-value="5" aria-label="5 out of 5 stars" aria-pressed="false">★</button>
         </div>
         <input type="hidden" name="rating">
         <p class="rating-text">No rating selected</p>
@@ -189,6 +192,7 @@ function setupStarRatings(container = document) {
                 stars.forEach(function(item) {
                     const value = Number(item.dataset.value);
                     item.classList.toggle("active", value <= rating);
+                    item.setAttribute("aria-pressed", String(value === rating));
                 });
 
                 ratingText.textContent = `${rating} star${rating > 1 ? "s" : ""} selected`;
@@ -249,6 +253,7 @@ async function handleLogout() {
 }
 
 async function loadProviderReviews(requestIds) {
+    providerReviewsLoaded = false;
     if (!requestIds || requestIds.length === 0) {
         providerReviews = [];
         return;
@@ -267,6 +272,7 @@ async function loadProviderReviews(requestIds) {
     }
 
     providerReviews = data || [];
+    providerReviewsLoaded = true;
 }
 
 function getExistingReview(requestId) {
@@ -278,6 +284,7 @@ function getExistingReview(requestId) {
 
 async function loadAssignmentPayments(requestIds) {
     assignmentPaymentMap = new Map();
+    assignmentPaymentsLoaded = false;
 
     if (!requestIds || requestIds.length === 0) {
         return;
@@ -296,6 +303,7 @@ async function loadAssignmentPayments(requestIds) {
     (data || []).forEach(function(payment) {
         assignmentPaymentMap.set(payment.request_id, payment);
     });
+    assignmentPaymentsLoaded = true;
 }
 
 async function loadAssignments() {
@@ -494,6 +502,7 @@ function renderAssignmentMaps(requests) {
 }
 
 function buildProviderReviewSection(request, client) {
+    if (!providerReviewsLoaded) return '<div class="empty-box" role="status"><h3>Review status unavailable</h3><p>Refresh before submitting another review.</p></div>';
     const existingReview = getExistingReview(request.request_id);
 
     if (existingReview) {
@@ -526,8 +535,8 @@ function buildProviderReviewSection(request, client) {
             </div>
 
             <div class="form-group">
-                <label>Feedback</label>
-                <textarea name="feedback" placeholder="Write your feedback..." required></textarea>
+                <label for="reviewFeedback-${escapeHtml(request.request_id)}">Feedback</label>
+                <textarea id="reviewFeedback-${escapeHtml(request.request_id)}" name="feedback" placeholder="Write your feedback..." required></textarea>
             </div>
 
             <button type="submit" class="btn">Submit Review</button>

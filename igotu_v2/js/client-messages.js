@@ -10,6 +10,9 @@ let selectedRequest = null;
 let selectedProvider = null;
 let messageTimer = null;
 let currentMessages = [];
+let messageLoadVersion = 0;
+let sendingMessage = false;
+const drafts = new Map();
 
 function showMessage(message, type = "error") {
     const messageBox = document.getElementById("messageBox");
@@ -231,11 +234,14 @@ function renderConversationList() {
 }
 
 function selectConversation(requestId) {
+    const input = document.getElementById("messageInput");
+    if (selectedRequest) drafts.set(selectedRequest.request_id, input.value);
     selectedRequest = conversations.find(function(request) {
         return request.request_id === requestId;
     });
 
     if (!selectedRequest) return;
+    input.value = drafts.get(selectedRequest.request_id) || "";
 
     selectedProvider = providerMap.get(selectedRequest.selected_provider_id);
 
@@ -296,112 +302,85 @@ function renderMessages(messages) {
     messagesList.replaceChildren(...bubbles);
 }
 
-async function markMessagesAsRead() {
-    if (!selectedRequest) return;
-
-    const { error } = await supabase
-        .from("internal_messages")
-        .update({ is_read: true })
-        .eq("request_id", selectedRequest.request_id)
-        .eq("receiver_id", currentUser.id)
-        .eq("is_read", false);
-
-    if (error) {
-        console.error("Mark messages read error:", error);
-    }
+async function markMessagesAsRead(requestIdValue) {
+    const { error } = await supabase.from("internal_messages")
+        .update({ is_read: true }).eq("request_id", requestIdValue)
+        .eq("receiver_id", currentUser.id).eq("is_read", false);
+    if (error) showMessage("Messages loaded, but read status could not be updated.");
 }
 
 async function loadMessages(scrollToBottom = false) {
     if (!selectedRequest) return;
-
+    const requestedId = selectedRequest.request_id;
+    const version = ++messageLoadVersion;
     const messagesList = document.getElementById("messagesList");
-
-    const { data, error } = await supabase
-        .from("internal_messages")
-        .select("*")
-        .eq("request_id", selectedRequest.request_id)
-        .order("created_at", { ascending: true });
-
-    if (error) {
-        console.error("Load messages error:", error);
-        messagesList.innerHTML = `<p class="muted-text">Unable to load messages.</p>`;
-        return;
-    }
-
-    currentMessages = data || [];
-    renderMessages(currentMessages);
-
-    await markMessagesAsRead();
-
-    if (scrollToBottom) {
-        messagesList.scrollTop = messagesList.scrollHeight;
+    try {
+        const { data, error } = await supabase.from("internal_messages")
+            .select("*").eq("request_id", requestedId)
+            .order("created_at", { ascending: true });
+        // A previous thread or poll may finish after a newer selection/request.
+        if (selectedRequest?.request_id !== requestedId || version !== messageLoadVersion) return;
+        if (error) throw error;
+        currentMessages = data || [];
+        renderMessages(currentMessages);
+        if (scrollToBottom) messagesList.scrollTop = messagesList.scrollHeight;
+        await markMessagesAsRead(requestedId);
+    } catch {
+        if (selectedRequest?.request_id === requestedId && version === messageLoadVersion) {
+            messagesList.innerHTML = '<p class="muted-text">Unable to load messages. Please try again.</p>';
+        }
     }
 }
 
 async function sendMessage(event) {
     event.preventDefault();
+    if (sendingMessage) return;
     clearMessage();
-
-    if (!selectedRequest || !selectedProvider) {
+    // Capture both participants and the request before any asynchronous work.
+    const request = selectedRequest;
+    const recipient = selectedProvider;
+    if (!request || !recipient) {
         showMessage("Please select a conversation first.");
         return;
     }
-
-    const messageInput = document.getElementById("messageInput");
-    const sendBtn = document.getElementById("sendMessageBtn");
-    const messageText = messageInput.value.trim();
-
-    if (!messageText) {
-        showMessage("Please type a message.");
-        return;
-    }
-
-    sendBtn.disabled = true;
-    sendBtn.textContent = "Sending...";
-
-    const newMessage = {
-        id: generateUuid(),
-        message_id: generateMessageId(),
-        request_id: selectedRequest.request_id,
-        sender_id: currentUser.id,
-        receiver_id: selectedProvider.id,
-        message_text: messageText,
-        is_read: false,
-        created_at: new Date().toISOString()
+    const input = document.getElementById("messageInput");
+    const button = document.getElementById("sendMessageBtn");
+    const text = input.value.trim();
+    if (!text) { showMessage("Please type a message."); return; }
+    sendingMessage = true;
+    button.disabled = true;
+    input.disabled = true;
+    button.textContent = "Sending...";
+    const message = {
+        id: generateUuid(), message_id: generateMessageId(),
+        request_id: request.request_id, sender_id: currentUser.id,
+        receiver_id: recipient.id, message_text: text, is_read: false,
+        created_at: new Date().toISOString(),
     };
-
-    currentMessages = [...currentMessages, newMessage];
+    drafts.delete(request.request_id);
+    input.value = "";
+    currentMessages = [...currentMessages, message];
     renderMessages(currentMessages);
-    document.getElementById("messagesList").scrollTop = document.getElementById("messagesList").scrollHeight;
-    messageInput.value = "";
-
-    const { error } = await supabase
-        .from("internal_messages")
-        .insert(newMessage);
-
-    if (error) {
-        console.error("Send message error:", error);
-        currentMessages = currentMessages.filter(function(message) {
-            return message.message_id !== newMessage.message_id;
-        });
-        renderMessages(currentMessages);
-        showMessage(error.message || "Failed to send message.");
-        sendBtn.disabled = false;
-        sendBtn.textContent = "Send";
-        return;
+    try {
+        const { error } = await supabase.from("internal_messages").insert(message);
+        if (error) throw error;
+        await createNotification(recipient.id, "New message",
+            `${currentProfile.full_name} sent you a message about "${request.title}".`);
+        if (selectedRequest?.request_id === request.request_id) await loadMessages(true);
+    } catch {
+        drafts.set(request.request_id, text);
+        if (selectedRequest?.request_id === request.request_id) {
+            currentMessages = currentMessages.filter(row => row.message_id !== message.message_id);
+            renderMessages(currentMessages);
+            input.value = text;
+        }
+        showMessage(`Unable to send your message about "${request.title}". Your draft has been kept for retry.`);
+    } finally {
+        sendingMessage = false;
+        input.disabled = false;
+        button.disabled = false;
+        button.textContent = "Send";
     }
-
-    await createNotification(
-        selectedProvider.id,
-        "New message",
-        `${currentProfile.full_name} sent you a message about "${selectedRequest.title}".`
-    );
-
-    sendBtn.disabled = false;
-    sendBtn.textContent = "Send";
-    setTimeout(function() {
-        loadMessages(true);
-    }, 400);
 }
 
 document.addEventListener("DOMContentLoaded", async function() {

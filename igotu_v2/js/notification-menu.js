@@ -3,6 +3,7 @@ import { supabase } from "./supabaseClient.js";
 
 let currentUserId = null;
 let notificationItems = [];
+let unreadTotal = 0;
 
 function escapeHtml(value) {
   return String(value || "")
@@ -47,7 +48,7 @@ function updateTopbarBadge(unreadCount) {
 }
 
 function updateUnreadText() {
-  const unreadCount = notificationItems.filter((item) => item.is_read === false).length;
+  const unreadCount = unreadTotal;
   const countText = document.getElementById("notificationDropdownCount");
   const markAllBtn = document.getElementById("notificationMarkAllBtn");
 
@@ -134,13 +135,14 @@ async function loadNotifications() {
     `;
   }
 
-  const { data, error } = await supabase
-    .from("notifications")
-    .select("id, title, message, is_read, created_at")
-    .eq("user_id", currentUserId)
-    .order("created_at", { ascending: false })
-    .limit(8);
-
+  const [items, unread] = await Promise.all([
+    supabase.from("notifications").select("id, title, message, is_read, created_at")
+      .eq("user_id", currentUserId).order("created_at", { ascending: false }).limit(8),
+    supabase.from("notifications").select("id", { count: "exact", head: true })
+      .eq("user_id", currentUserId).eq("is_read", false),
+  ]);
+  const { data } = items;
+  const error = items.error || unread.error;
   if (error) {
     console.error("Notification dropdown load error:", error);
 
@@ -156,6 +158,7 @@ async function loadNotifications() {
   }
 
   notificationItems = data || [];
+  unreadTotal = unread.count || 0;
   renderNotifications();
 }
 
@@ -173,15 +176,7 @@ async function markOneAsRead(notificationId) {
     return;
   }
 
-  notificationItems = notificationItems.map(function (item) {
-    if (String(item.id) === String(notificationId)) {
-      return { ...item, is_read: true };
-    }
-
-    return item;
-  });
-
-  renderNotifications();
+  await loadNotifications();
 }
 
 async function markAllAsRead() {
@@ -201,18 +196,9 @@ async function markAllAsRead() {
 
   if (error) {
     console.error("Notification mark all read error:", error);
-  } else {
-    notificationItems = notificationItems.map((item) => ({
-      ...item,
-      is_read: true,
-    }));
-    renderNotifications();
   }
-
-  if (button) {
-    button.textContent = "Mark all as read";
-    updateUnreadText();
-  }
+  await loadNotifications();
+  if (button) button.textContent = "Mark all as read";
 }
 
 function closeNotificationMenu() {
@@ -288,8 +274,9 @@ document.addEventListener("DOMContentLoaded", async function () {
   document.addEventListener("click", closeNotificationMenu);
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
+    if (event.key === "Escape" && !dropdown.classList.contains("hidden")) {
       closeNotificationMenu();
+      trigger.focus();
     }
   });
 });

@@ -296,9 +296,11 @@ async function reviewReport(reportId, status, button) {
 
   let note = "";
   if (["resolved", "dismissed"].includes(status)) {
-    note = prompt(status === "resolved"
+    const answer = prompt(status === "resolved"
       ? "Optional: add a resolution note for the reporter."
-      : "Enter a short reason for dismissing this report.")?.trim() || "";
+      : "Enter a short reason for dismissing this report.");
+    if (answer === null) return;
+    note = answer.trim();
 
     if (status === "dismissed" && !note) {
       showMessage("Please enter a reason before dismissing the report.");

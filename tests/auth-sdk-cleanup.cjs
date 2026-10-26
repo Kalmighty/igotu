@@ -38,7 +38,7 @@ const token = `${encode({ alg: "HS256", typ: "JWT" })}.${encode({ sub: userId, a
         const url = new URL(route.request().url());
         if (url.origin === new URL(base).origin) return route.continue();
         if (
-          url.href === "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+          url.href === "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm"
         )
           return route.fulfill({
             contentType: "text/javascript",

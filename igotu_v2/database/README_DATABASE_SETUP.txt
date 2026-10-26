@@ -1,3 +1,11 @@
+REVIEW STATUS — HISTORICAL SETUP NOTES
+These instructions describe older schema assumptions, not a tested migration order.
+Do not rerun old setup SQL to repair a frontend error: some scripts backfill
+legacy accounts or replace policies/RPC signatures. The mandatory verification
+consent/enforcement draft and Stage A/B/C still need separate integration review
+and authorized isolated staging tests. No production change is authorized here.
+See docs/system-audit.md and docs/mandatory-identity-verification.md at repository root.
+
 IGotU Database Setup Notes
 
 Run this file first in Supabase SQL Editor:

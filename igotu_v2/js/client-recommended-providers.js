@@ -237,7 +237,7 @@ async function loadProviderTrustStats(providerIds) {
     .order("created_at", { ascending: false });
 
   if (reviewError) {
-    console.error("Provider review stats error:", reviewError);
+    throw new Error("Unable to load provider reviews. Refresh to try again.");
   }
 
   (reviewRows || []).forEach(function (review) {
@@ -268,7 +268,7 @@ async function loadProviderTrustStats(providerIds) {
     .eq("status", "completed");
 
   if (completedError) {
-    console.error("Completed service stats error:", completedError);
+    throw new Error("Unable to load completed service statistics. Refresh to try again.");
   }
 
   (completedRows || []).forEach(function (request) {
@@ -416,11 +416,7 @@ async function loadMatchingProviders(category) {
     .eq("category", category)
     .eq("specialization", requestedServiceType);
 
-  if (specializationError) {
-    console.error("Provider specialization fetch error:", specializationError);
-    providersList.innerHTML = `<p class="muted-text">Unable to load provider specializations. Please run the service specialization database setup first.</p>`;
-    return [];
-  }
+  if (specializationError) throw new Error("Unable to load provider specializations. Refresh to try again.");
 
   if (!specializationRows || specializationRows.length === 0) {
     providersList.innerHTML = `<p class="muted-text">No providers currently offer ${escapeHtml(requestedServiceType)}. Try again later or edit the request service type.</p>`;
@@ -444,11 +440,7 @@ async function loadMatchingProviders(category) {
     .eq("status", "active")
     .eq("identity_verified", true);
 
-  if (providerError) {
-    console.error("Providers fetch error:", providerError);
-    providersList.innerHTML = `<p class="muted-text">Unable to load providers.</p>`;
-    return [];
-  }
+  if (providerError) throw new Error("Unable to load providers. Refresh to try again.");
 
   const { data: profileRows, error: profileError } = await supabase
     .from("provider_profiles")
@@ -456,11 +448,7 @@ async function loadMatchingProviders(category) {
     .in("provider_id", providerIds)
     .eq("is_available", true);
 
-  if (profileError) {
-    console.error("Provider profile fetch error:", profileError);
-    providersList.innerHTML = `<p class="muted-text">Unable to load provider profiles.</p>`;
-    return [];
-  }
+  if (profileError) throw new Error("Unable to load provider profiles. Refresh to try again.");
 
   const profileMap = new Map();
   (profileRows || []).forEach(function (profile) {
@@ -471,11 +459,7 @@ async function loadMatchingProviders(category) {
     .from("provider_weekly_availability")
     .select("provider_id, day_of_week, start_time, end_time")
     .in("provider_id", providerIds);
-  if (weeklyError) {
-    console.error("Working hours lookup error:", weeklyError);
-    providersList.innerHTML = `<p class="muted-text">Unable to check provider working hours. Please run the weekly availability database setup.</p>`;
-    return [];
-  }
+  if (weeklyError) throw new Error("Unable to check provider working hours. Refresh to try again.");
   const weeklyHoursMap = new Map();
   (weeklyRows || []).forEach((row) => {
     if (!weeklyHoursMap.has(row.provider_id)) weeklyHoursMap.set(row.provider_id, []);
@@ -490,7 +474,7 @@ async function loadMatchingProviders(category) {
     .eq("request_id", currentRequest.request_id);
 
   if (declineError) {
-    console.error("Decline history lookup error:", declineError);
+    throw new Error("Unable to check declined providers. Refresh the page to try again.");
   }
 
   const declinedProviderIds = new Set((declineRows || []).map((row) => row.provider_id));
@@ -506,7 +490,7 @@ async function loadMatchingProviders(category) {
     .neq("request_id", currentRequest.request_id);
 
   if (bookingError) {
-    console.error("Provider booking lookup error:", bookingError);
+    throw new Error("Unable to check provider bookings. Refresh the page to try again.");
   }
 
   const busyProviderIds = new Set(
@@ -862,6 +846,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   currentRequest = await loadRequest(currentUser.id);
   if (!currentRequest) return;
 
-  allProviders = await loadMatchingProviders(currentRequest.category);
-  renderProviders(allProviders);
+  try {
+    allProviders = await loadMatchingProviders(currentRequest.category);
+    renderProviders(allProviders);
+  } catch (error) {
+    allProviders = [];
+    document.getElementById("providersList").replaceChildren();
+    showMessage(error.message || "Unable to check provider eligibility. Refresh to try again.");
+  }
 });
