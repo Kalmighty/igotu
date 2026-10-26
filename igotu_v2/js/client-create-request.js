@@ -11,6 +11,15 @@ let map = null;
 let marker = null;
 let accuracyCircle = null;
 let editingRequest = null;
+function creationKey(userId) {
+    const key = `igotu-create-request:${userId}`;
+    let value = sessionStorage.getItem(key);
+    if (!/^[0-9a-f-]{36}$/i.test(value || "")) {
+        value = crypto.randomUUID();
+        sessionStorage.setItem(key, value);
+    }
+    return value;
+}
 
 const defaultLat = 6.0367;
 const defaultLng = 116.1186;
@@ -638,15 +647,11 @@ async function updateRequest(formData, button, requestImageFile, userId) {
 async function createRequest(formData, userId, button, requestImageFile) {
     setButtonLoading(button, true, "Creating request...", "Post Request & Find Providers");
 
-    const { data, error } = await supabase
-        .from("service_requests")
-        .insert({
-            client_id: userId,
-            ...formData,
-            status: "pending"
-        })
-        .select("request_id")
-        .single();
+    const result = await supabase.rpc("create_service_request", {
+        p_idempotency_key: creationKey(userId), p_details: formData,
+    });
+    const error = result.error;
+    const data = Array.isArray(result.data) ? result.data[0] : result.data;
 
     if (error) {
         console.error("Create request error:", error);
@@ -655,6 +660,12 @@ async function createRequest(formData, userId, button, requestImageFile) {
         return;
     }
 
+    if (!data?.request_id) {
+        showMessage("The request could not be confirmed. Check My Requests before retrying.");
+        setButtonLoading(button, false, "", "Post Request & Find Providers");
+        return;
+    }
+    sessionStorage.removeItem(`igotu-create-request:${userId}`);
     if (requestImageFile) {
         try {
             setButtonLoading(button, true, "Uploading image...", "Post Request & Find Providers");

@@ -1,6 +1,6 @@
-# Source inventory — system audit
+# Source inventory — backend integration
 
-Generated from `355e84d` plus the audit branch working tree. Static discovery is not evidence of live schema installation.
+Generated from `7dbbf89` plus the backend integration working tree. Static discovery is not evidence of live schema installation.
 
 ## File inventory
 
@@ -47,7 +47,7 @@ Generated from `355e84d` plus the audit branch working tree. Static discovery is
 - `css/verification-access.css`
 - `css/workspace-gate.css`
 
-### .js: 37 files
+### .js: 38 files
 
 - `js/admin-manage-users.js`
 - `js/admin-monitor-payments.js`
@@ -59,6 +59,7 @@ Generated from `355e84d` plus the audit branch working tree. Static discovery is
 - `js/app-shell.js`
 - `js/auth-roles.js`
 - `js/auth.js`
+- `js/backend-access.js`
 - `js/client-complete-profile.js`
 - `js/client-create-request.js`
 - `js/client-edit-profile.js`
@@ -71,10 +72,10 @@ Generated from `355e84d` plus the audit branch working tree. Static discovery is
 - `js/html-safety.js`
 - `js/identity-access.js`
 - `js/notification-badge.js`
-- `js/notification-helper.js`
 - `js/notification-menu.js`
 - `js/notifications.js`
 - `js/password-recovery.js`
+- `js/payment-receipts.js`
 - `js/profile-guard.js`
 - `js/profile-menu.js`
 - `js/provider-assignment-details.js`
@@ -87,8 +88,12 @@ Generated from `355e84d` plus the audit branch working tree. Static discovery is
 - `js/supabaseClient.js`
 - `js/verification.js`
 
-### .sql: 19 files
+### .sql: 23 files
 
+- `database/backend-integration/20261026153952_01_foundation_draft.sql`
+- `database/backend-integration/20261026153954_02_private_readers_draft.sql`
+- `database/backend-integration/20261026153956_03_integrity_draft.sql`
+- `database/backend-integration/20261026153958_04_cutover_draft.sql`
 - `database/cancel-request-setup.sql`
 - `database/identity-verification-setup.sql`
 - `database/mandatory-identity-audit.sql`
@@ -113,13 +118,13 @@ Generated from `355e84d` plus the audit branch working tree. Static discovery is
 
 | Page | Direct scripts | Stylesheets |
 | --- | --- | --- |
-| `admin/dashboard.html` | `../js/app-shell.js`<br>`../js/admin.js` | `../css/style.css`<br>`../css/ui.css` |
-| `admin/manage-users.html` | `../js/app-shell.js`<br>`../js/admin-manage-users.js` | `../css/style.css`<br>`../css/ui.css` |
-| `admin/monitor-payments.html` | `../js/app-shell.js`<br>`../js/admin-monitor-payments.js` | `../css/style.css`<br>`../css/ui.css` |
-| `admin/monitor-requests.html` | `../js/app-shell.js`<br>`https://unpkg.com/leaflet@1.9.4/dist/leaflet.js`<br>`../js/admin-monitor-requests.js` | `../css/style.css`<br>`https://unpkg.com/leaflet@1.9.4/dist/leaflet.css`<br>`../css/ui.css` |
-| `admin/monitor-reviews.html` | `../js/app-shell.js`<br>`../js/admin-monitor-reviews.js` | `../css/style.css`<br>`../css/ui.css` |
-| `admin/reports.html` | `../js/app-shell.js`<br>`../js/admin-reports.js` | `../css/style.css`<br>`../css/ui.css` |
-| `admin/verifications.html` | `../js/app-shell.js`<br>`../js/admin-verifications.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/verification-access.css` |
+| `admin/dashboard.html` | `../js/app-shell.js`<br>`../js/admin.js`<br>`../js/profile-guard.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
+| `admin/manage-users.html` | `../js/app-shell.js`<br>`../js/admin-manage-users.js`<br>`../js/profile-guard.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
+| `admin/monitor-payments.html` | `../js/app-shell.js`<br>`../js/admin-monitor-payments.js`<br>`../js/profile-guard.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
+| `admin/monitor-requests.html` | `../js/app-shell.js`<br>`https://unpkg.com/leaflet@1.9.4/dist/leaflet.js`<br>`../js/admin-monitor-requests.js`<br>`../js/profile-guard.js` | `../css/style.css`<br>`https://unpkg.com/leaflet@1.9.4/dist/leaflet.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
+| `admin/monitor-reviews.html` | `../js/app-shell.js`<br>`../js/admin-monitor-reviews.js`<br>`../js/profile-guard.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
+| `admin/reports.html` | `../js/app-shell.js`<br>`../js/admin-reports.js`<br>`../js/profile-guard.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
+| `admin/verifications.html` | `../js/app-shell.js`<br>`../js/admin-verifications.js`<br>`../js/profile-guard.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/verification-access.css`<br>`../css/workspace-gate.css` |
 | `client/complete-profile.html` | `../js/app-shell.js`<br>`../js/profile-guard.js`<br>`../js/client-complete-profile.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
 | `client/create-request.html` | `../js/app-shell.js`<br>`https://unpkg.com/leaflet@1.9.4/dist/leaflet.js`<br>`../js/profile-guard.js`<br>`../js/notification-badge.js`<br>`../js/notification-menu.js`<br>`../js/profile-menu.js`<br>`../js/client-create-request.js` | `../css/style.css`<br>`https://unpkg.com/leaflet@1.9.4/dist/leaflet.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
 | `client/dashboard.html` | `../js/app-shell.js`<br>`../js/profile-guard.js`<br>`../js/notification-badge.js`<br>`../js/notification-menu.js`<br>`../js/profile-menu.js`<br>`../js/client.js` | `../css/style.css`<br>`../css/ui.css`<br>`../css/workspace-gate.css` |
@@ -146,7 +151,7 @@ Generated from `355e84d` plus the audit branch working tree. Static discovery is
 
 ## Browser data/API dependency inventory
 
-Literal calls below include Storage `.from` as well as table `.from`. Dynamic `countTable` uses users, service_requests, payment_records and service_reviews. All queries still need comparison with an authorized actual catalog.
+Literal calls below include Storage `.from` as well as table `.from`. Dynamic `countTable` uses users, service_requests, payment_records and service_reviews. The authorized metadata comparison is recorded in docs/backend-integration; effective staging API behavior remains untested.
 
 | Source module | `.from` targets | RPCs | Auth methods |
 | --- | --- | --- | --- |
@@ -155,29 +160,30 @@ Literal calls below include Storage `.from` as well as table `.from`. Dynamic `c
 | `admin-monitor-requests.js` | `service_requests`, `users` |  | `getSession`, `signOut` |
 | `admin-monitor-reviews.js` | `service_requests`, `service_reviews`, `users` |  | `getSession`, `signOut` |
 | `admin-reports.js` | `report-evidence`, `service_reports`, `service_requests`, `users` | `admin_review_service_report` | `getSession`, `signOut` |
-| `admin-verifications.js` | `users`, `verification-documents`, `verification_requests` | `admin_review_verification` | `getSession`, `signOut` |
+| `admin-verifications.js` | `users`, `verification-documents`, `verification_requests` | `admin_review_verification`, `verification_reconciliation_queue` | `getSession`, `signOut` |
 | `admin.js` | `service_reports`, `service_requests`, `users` |  | `getSession`, `signOut` |
 | `auth.js` | `users` |  | `getSession`, `signInWithPassword`, `signOut`, `signUp` |
+| `backend-access.js` |  | `igotu_backend_contract`, `provider_service_requests`, `recommended_provider_candidates`, `service_participants` |  |
 | `client-complete-profile.js` | `users` | `complete_basic_profile` | `getSession`, `signOut` |
-| `client-create-request.js` | `request-images`, `service_requests`, `users` | `client_save_request_image`, `client_update_request` | `getSession`, `signOut` |
+| `client-create-request.js` | `request-images`, `service_requests`, `users` | `client_save_request_image`, `client_update_request`, `create_service_request` | `getSession`, `signOut` |
 | `client-edit-profile.js` | `users` | `complete_basic_profile` | `getSession`, `signOut` |
 | `client-messages.js` | `internal_messages`, `service_requests`, `users` |  | `getSession`, `signOut` |
 | `client-my-requests.js` | `service_requests`, `users` | `client_cancel_request` | `getSession`, `signOut` |
-| `client-recommended-providers.js` | `provider_profiles`, `provider_specializations`, `provider_weekly_availability`, `service_request_declines`, `service_requests`, `service_reviews`, `users` | `client_select_provider` | `getSession`, `signOut` |
+| `client-recommended-providers.js` | `service_requests`, `users` | `client_select_provider` | `getSession`, `signOut` |
 | `client-request-details.js` | `payment-proofs`, `payment_records`, `service_requests`, `service_reviews`, `users` | `client_cancel_request`, `client_complete_request` | `getSession`, `signOut` |
 | `client.js` | `service_requests`, `users` |  | `getSession`, `signOut` |
 | `identity-access.js` | `verification_requests` |  |  |
 | `notification-badge.js` | `notifications` |  | `getSession` |
-| `notification-helper.js` | `notifications` |  |  |
 | `notification-menu.js` | `notifications` |  | `getSession` |
 | `notifications.js` | `notifications`, `users` |  | `getSession`, `signOut` |
 | `password-recovery.js` |  |  | `getSession`, `resetPasswordForEmail`, `signOut`, `updateUser` |
+| `payment-receipts.js` | `payment-proofs` | `payment_proof_reference` |  |
 | `profile-guard.js` | `users` |  | `getSession`, `signOut` |
-| `provider-assignment-details.js` | `payment_records`, `service_requests`, `service_reviews`, `users` | `provider_start_request` | `getSession`, `signOut` |
-| `provider-incoming-requests.js` | `service_requests`, `users` | `provider_confirm_request`, `provider_decline_request` | `getSession`, `signOut` |
-| `provider-messages.js` | `internal_messages`, `service_requests`, `users` |  | `getSession`, `signOut` |
-| `provider-profile.js` | `provider_profiles`, `provider_skills`, `provider_specializations`, `provider_weekly_availability`, `users` | `complete_basic_profile` | `getSession`, `signOut` |
-| `provider.js` | `service_requests`, `service_reviews`, `users` |  | `getSession`, `signOut` |
+| `provider-assignment-details.js` | `payment_records`, `service_reviews`, `users` | `provider_start_request` | `getSession`, `signOut` |
+| `provider-incoming-requests.js` | `users` | `provider_confirm_request`, `provider_decline_request` | `getSession`, `signOut` |
+| `provider-messages.js` | `internal_messages`, `users` |  | `getSession`, `signOut` |
+| `provider-profile.js` | `provider_profiles`, `provider_skills`, `provider_specializations`, `provider_weekly_availability`, `users` | `save_provider_profile` | `getSession`, `signOut` |
+| `provider.js` | `service_reviews`, `users` |  | `getSession`, `signOut` |
 | `report-service.js` | `report-evidence`, `service_requests`, `users` | `submit_service_report` | `getSession`, `signOut` |
 | `supabaseClient.js` |  |  | `stopAutoRefresh` |
 | `verification.js` | `users`, `verification-documents`, `verification_requests` |  |  |
@@ -186,6 +192,10 @@ Literal calls below include Storage `.from` as well as table `.from`. Dynamic `c
 
 | SQL source | Declared tables | Declared public functions |
 | --- | --- | --- |
+| `20261026153952_01_foundation_draft.sql` | `igotu_backend_private` |  |
+| `20261026153954_02_private_readers_draft.sql` |  | `payment_proof_reference`, `provider_service_requests`, `recommended_provider_candidates`, `service_participants`, `verification_reconciliation_queue` |
+| `20261026153956_03_integrity_draft.sql` |  | `admin_review_service_report`, `admin_review_verification`, `admin_update_user_status`, `client_cancel_request`, `client_complete_request`, `client_save_request_image`, `client_select_provider`, `client_update_request`, `complete_basic_profile`, `create_service_request`, `provider_confirm_request`, `provider_decline_request`, `provider_start_request`, `save_provider_profile`, `submit_service_report` |
+| `20261026153958_04_cutover_draft.sql` |  | `igotu_backend_contract` |
 | `cancel-request-setup.sql` |  |  |
 | `identity-verification-setup.sql` | `verification_requests` | `admin_review_verification` |
 | `mandatory-identity-audit.sql` |  |  |

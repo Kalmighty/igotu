@@ -193,6 +193,8 @@ export const supabase = {
   from: query,
   rpc: async (name, args) => {
     record("rpc", { name, args });
+    if (name === "igotu_backend_contract") return { data: { version: "20261026.1", notifications: "database" }, error: null };
+    if (name === "verification_reconciliation_queue") return {data: [], error: null};
     if (role !== "admin" || f.inactive)
       return { error: { message: "Fixture: denied" } };
     const row = adminRows.find((r) => r.id === args.p_request_id);

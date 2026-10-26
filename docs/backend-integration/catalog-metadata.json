@@ -1,0 +1,1990 @@
+{
+  "source": "Supabase read-only connector metadata tools; no SQL submitted, no application rows retrieved",
+  "project_ref": "giqtnbwyktbnbhdvjraa",
+  "observed_date": "2026-10-26",
+  "tables": [
+    {
+      "name": "public.users",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "user_code",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "full_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "email",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "role",
+          "data_type": "USER-DEFINED",
+          "format": "user_role",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'client'::user_role",
+          "enums": [
+            "client",
+            "provider",
+            "admin"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "USER-DEFINED",
+          "format": "account_status",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'active'::account_status",
+          "enums": [
+            "active",
+            "inactive",
+            "suspended"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "phone",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "profile_completed",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "false"
+        },
+        {
+          "name": "identity_verified",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "false"
+        },
+        {
+          "name": "identity_verified_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "identity_verified_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "provider_specializations_provider_id_fkey",
+          "source_table": "public.provider_specializations",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "users_id_fkey",
+          "source_table": "public.users",
+          "source_columns": [
+            "id"
+          ],
+          "target_table": "auth.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "provider_profiles_provider_id_fkey",
+          "source_table": "public.provider_profiles",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "provider_skills_provider_id_fkey",
+          "source_table": "public.provider_skills",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_requests_client_id_fkey",
+          "source_table": "public.service_requests",
+          "source_columns": [
+            "client_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_requests_selected_provider_id_fkey",
+          "source_table": "public.service_requests",
+          "source_columns": [
+            "selected_provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payment_records_client_id_fkey",
+          "source_table": "public.payment_records",
+          "source_columns": [
+            "client_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payment_records_provider_id_fkey",
+          "source_table": "public.payment_records",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reviews_reviewer_id_fkey",
+          "source_table": "public.service_reviews",
+          "source_columns": [
+            "reviewer_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reviews_reviewee_id_fkey",
+          "source_table": "public.service_reviews",
+          "source_columns": [
+            "reviewee_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "internal_messages_sender_id_fkey",
+          "source_table": "public.internal_messages",
+          "source_columns": [
+            "sender_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "internal_messages_receiver_id_fkey",
+          "source_table": "public.internal_messages",
+          "source_columns": [
+            "receiver_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "notifications_user_id_fkey",
+          "source_table": "public.notifications",
+          "source_columns": [
+            "user_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "provider_profiles_verified_by_fkey",
+          "source_table": "public.provider_profiles",
+          "source_columns": [
+            "verified_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "provider_weekly_availability_provider_id_fkey",
+          "source_table": "public.provider_weekly_availability",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "users_identity_verified_by_fkey",
+          "source_table": "public.users",
+          "source_columns": [
+            "identity_verified_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "verification_requests_user_id_fkey",
+          "source_table": "public.verification_requests",
+          "source_columns": [
+            "user_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "verification_requests_reviewed_by_fkey",
+          "source_table": "public.verification_requests",
+          "source_columns": [
+            "reviewed_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_requests_cancelled_by_fkey",
+          "source_table": "public.service_requests",
+          "source_columns": [
+            "cancelled_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_request_declines_provider_id_fkey",
+          "source_table": "public.service_request_declines",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reports_reporter_id_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "reporter_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reports_reported_user_id_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "reported_user_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reports_reviewed_by_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "reviewed_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.provider_profiles",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "provider_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "bio",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "location",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "provider_lat",
+          "data_type": "numeric",
+          "format": "numeric",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "provider_lng",
+          "data_type": "numeric",
+          "format": "numeric",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "is_available",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "true"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "is_verified",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "false"
+        },
+        {
+          "name": "verified_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "verified_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "provider_id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "provider_profiles_verified_by_fkey",
+          "source_table": "public.provider_profiles",
+          "source_columns": [
+            "verified_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "provider_profiles_provider_id_fkey",
+          "source_table": "public.provider_profiles",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.provider_skills",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "skill_code",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "provider_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "category",
+          "data_type": "USER-DEFINED",
+          "format": "service_category",
+          "options": [
+            "updatable"
+          ],
+          "enums": [
+            "Cleaning",
+            "Delivery",
+            "Repair",
+            "Moving Help",
+            "Errands",
+            "Tutoring",
+            "Other"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "provider_skills_provider_id_fkey",
+          "source_table": "public.provider_skills",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.service_requests",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "request_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "client_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "selected_provider_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "title",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "category",
+          "data_type": "USER-DEFINED",
+          "format": "service_category",
+          "options": [
+            "updatable"
+          ],
+          "enums": [
+            "Cleaning",
+            "Delivery",
+            "Repair",
+            "Moving Help",
+            "Errands",
+            "Tutoring",
+            "Other"
+          ]
+        },
+        {
+          "name": "description",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "preferred_date",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "preferred_time",
+          "data_type": "time without time zone",
+          "format": "time",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "location",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "client_lat",
+          "data_type": "numeric",
+          "format": "numeric",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "client_lng",
+          "data_type": "numeric",
+          "format": "numeric",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "budget",
+          "data_type": "numeric",
+          "format": "numeric",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "priority",
+          "data_type": "USER-DEFINED",
+          "format": "request_priority",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'normal'::request_priority",
+          "enums": [
+            "normal",
+            "urgent"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "USER-DEFINED",
+          "format": "request_status",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'pending'::request_status",
+          "enums": [
+            "pending",
+            "provider_selected",
+            "confirmed",
+            "in_progress",
+            "completed",
+            "cancelled"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "request_image_url",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "request_image_path",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "request_image_uploaded_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "service_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "cancelled_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "cancellation_reason",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "cancelled_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "service_reports_request_id_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        },
+        {
+          "name": "service_requests_cancelled_by_fkey",
+          "source_table": "public.service_requests",
+          "source_columns": [
+            "cancelled_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_requests_client_id_fkey",
+          "source_table": "public.service_requests",
+          "source_columns": [
+            "client_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_request_declines_request_id_fkey",
+          "source_table": "public.service_request_declines",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        },
+        {
+          "name": "internal_messages_request_id_fkey",
+          "source_table": "public.internal_messages",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        },
+        {
+          "name": "service_requests_selected_provider_id_fkey",
+          "source_table": "public.service_requests",
+          "source_columns": [
+            "selected_provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reviews_request_id_fkey",
+          "source_table": "public.service_reviews",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        },
+        {
+          "name": "payment_records_request_id_fkey",
+          "source_table": "public.payment_records",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.payment_records",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "payment_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "request_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "client_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "provider_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "amount",
+          "data_type": "numeric",
+          "format": "numeric",
+          "options": [
+            "updatable"
+          ],
+          "check": "amount > 0::numeric"
+        },
+        {
+          "name": "payment_method",
+          "data_type": "USER-DEFINED",
+          "format": "payment_method",
+          "options": [
+            "updatable"
+          ],
+          "enums": [
+            "Cash",
+            "QR Transfer",
+            "Bank Transfer",
+            "Other"
+          ]
+        },
+        {
+          "name": "reference_number",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "proof_url",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "proof_path",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "proof_uploaded_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "payment_records_provider_id_fkey",
+          "source_table": "public.payment_records",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payment_records_request_id_fkey",
+          "source_table": "public.payment_records",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        },
+        {
+          "name": "payment_records_client_id_fkey",
+          "source_table": "public.payment_records",
+          "source_columns": [
+            "client_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.service_reviews",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "review_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "request_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "reviewer_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "reviewee_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "rating",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "updatable"
+          ],
+          "check": "rating >= 1 AND rating <= 5"
+        },
+        {
+          "name": "feedback",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "service_reviews_reviewer_id_fkey",
+          "source_table": "public.service_reviews",
+          "source_columns": [
+            "reviewer_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reviews_reviewee_id_fkey",
+          "source_table": "public.service_reviews",
+          "source_columns": [
+            "reviewee_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reviews_request_id_fkey",
+          "source_table": "public.service_reviews",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.internal_messages",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "message_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "request_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "sender_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "receiver_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "message_text",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "is_read",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "false"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "internal_messages_sender_id_fkey",
+          "source_table": "public.internal_messages",
+          "source_columns": [
+            "sender_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "internal_messages_request_id_fkey",
+          "source_table": "public.internal_messages",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        },
+        {
+          "name": "internal_messages_receiver_id_fkey",
+          "source_table": "public.internal_messages",
+          "source_columns": [
+            "receiver_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.notifications",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "notification_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "user_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "title",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "message",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "link_url",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "is_read",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "false"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "notifications_user_id_fkey",
+          "source_table": "public.notifications",
+          "source_columns": [
+            "user_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.provider_specializations",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "provider_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "category",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "specialization",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "provider_specializations_provider_id_fkey",
+          "source_table": "public.provider_specializations",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.provider_weekly_availability",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "provider_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "day_of_week",
+          "data_type": "smallint",
+          "format": "int2",
+          "options": [
+            "updatable"
+          ],
+          "check": "day_of_week >= 0 AND day_of_week <= 6"
+        },
+        {
+          "name": "start_time",
+          "data_type": "time without time zone",
+          "format": "time",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "end_time",
+          "data_type": "time without time zone",
+          "format": "time",
+          "options": [
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "provider_id",
+        "day_of_week"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "provider_weekly_availability_provider_id_fkey",
+          "source_table": "public.provider_weekly_availability",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.verification_requests",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "user_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "role",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "role = ANY (ARRAY['client'::text, 'provider'::text])"
+        },
+        {
+          "name": "legal_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "id_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "id_type = ANY (ARRAY['mykad'::text, 'passport'::text])"
+        },
+        {
+          "name": "id_number_last4",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "identity_document_path",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "supporting_document_path",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "business_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "ssm_number",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "professional_license",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'pending'::text",
+          "check": "status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text])"
+        },
+        {
+          "name": "admin_note",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "submitted_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "reviewed_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "reviewed_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "verification_requests_reviewed_by_fkey",
+          "source_table": "public.verification_requests",
+          "source_columns": [
+            "reviewed_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "verification_requests_user_id_fkey",
+          "source_table": "public.verification_requests",
+          "source_columns": [
+            "user_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.example_table",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ]
+    },
+    {
+      "name": "public.service_request_declines",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "request_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "provider_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "reason",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "service_request_declines_provider_id_fkey",
+          "source_table": "public.service_request_declines",
+          "source_columns": [
+            "provider_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_request_declines_request_id_fkey",
+          "source_table": "public.service_request_declines",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "public.service_reports",
+      "rls_enabled": true,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "request_id",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "reporter_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "reported_user_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "reason",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "description",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "evidence_path",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'pending'::text",
+          "check": "status = ANY (ARRAY['pending'::text, 'under_review'::text, 'resolved'::text, 'dismissed'::text])"
+        },
+        {
+          "name": "admin_note",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "reviewed_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "reviewed_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "service_reports_reviewed_by_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "reviewed_by"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reports_reported_user_id_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "reported_user_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reports_reporter_id_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "reporter_id"
+          ],
+          "target_table": "public.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "service_reports_request_id_fkey",
+          "source_table": "public.service_reports",
+          "source_columns": [
+            "request_id"
+          ],
+          "target_table": "public.service_requests",
+          "target_columns": [
+            "request_id"
+          ]
+        }
+      ]
+    }
+  ],
+  "migrations": {
+    "migrations": []
+  },
+  "types": "export type Json =\n  | string\n  | number\n  | boolean\n  | null\n  | { [key: string]: Json | undefined }\n  | Json[]\n\nexport type Database = {\n  // Allows to automatically instantiate createClient with right options\n  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)\n  __InternalSupabase: {\n    PostgrestVersion: \"14.5\"\n  }\n  public: {\n    Tables: {\n      example_table: {\n        Row: {\n          id: string\n        }\n        Insert: {\n          id?: string\n        }\n        Update: {\n          id?: string\n        }\n        Relationships: []\n      }\n      internal_messages: {\n        Row: {\n          created_at: string\n          id: string\n          is_read: boolean\n          message_id: string | null\n          message_text: string\n          receiver_id: string\n          request_id: string\n          sender_id: string\n        }\n        Insert: {\n          created_at?: string\n          id?: string\n          is_read?: boolean\n          message_id?: string | null\n          message_text: string\n          receiver_id: string\n          request_id: string\n          sender_id: string\n        }\n        Update: {\n          created_at?: string\n          id?: string\n          is_read?: boolean\n          message_id?: string | null\n          message_text?: string\n          receiver_id?: string\n          request_id?: string\n          sender_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"internal_messages_receiver_id_fkey\"\n            columns: [\"receiver_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"internal_messages_request_id_fkey\"\n            columns: [\"request_id\"]\n            isOneToOne: false\n            referencedRelation: \"service_requests\"\n            referencedColumns: [\"request_id\"]\n          },\n          {\n            foreignKeyName: \"internal_messages_sender_id_fkey\"\n            columns: [\"sender_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      notifications: {\n        Row: {\n          created_at: string\n          id: string\n          is_read: boolean\n          link_url: string | null\n          message: string\n          notification_id: string | null\n          title: string\n          user_id: string\n        }\n        Insert: {\n          created_at?: string\n          id?: string\n          is_read?: boolean\n          link_url?: string | null\n          message: string\n          notification_id?: string | null\n          title: string\n          user_id: string\n        }\n        Update: {\n          created_at?: string\n          id?: string\n          is_read?: boolean\n          link_url?: string | null\n          message?: string\n          notification_id?: string | null\n          title?: string\n          user_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"notifications_user_id_fkey\"\n            columns: [\"user_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      payment_records: {\n        Row: {\n          amount: number\n          client_id: string\n          created_at: string\n          id: string\n          payment_id: string | null\n          payment_method: Database[\"public\"][\"Enums\"][\"payment_method\"]\n          proof_path: string | null\n          proof_uploaded_at: string | null\n          proof_url: string | null\n          provider_id: string\n          reference_number: string | null\n          request_id: string\n        }\n        Insert: {\n          amount: number\n          client_id: string\n          created_at?: string\n          id?: string\n          payment_id?: string | null\n          payment_method: Database[\"public\"][\"Enums\"][\"payment_method\"]\n          proof_path?: string | null\n          proof_uploaded_at?: string | null\n          proof_url?: string | null\n          provider_id: string\n          reference_number?: string | null\n          request_id: string\n        }\n        Update: {\n          amount?: number\n          client_id?: string\n          created_at?: string\n          id?: string\n          payment_id?: string | null\n          payment_method?: Database[\"public\"][\"Enums\"][\"payment_method\"]\n          proof_path?: string | null\n          proof_uploaded_at?: string | null\n          proof_url?: string | null\n          provider_id?: string\n          reference_number?: string | null\n          request_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"payment_records_client_id_fkey\"\n            columns: [\"client_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"payment_records_provider_id_fkey\"\n            columns: [\"provider_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"payment_records_request_id_fkey\"\n            columns: [\"request_id\"]\n            isOneToOne: true\n            referencedRelation: \"service_requests\"\n            referencedColumns: [\"request_id\"]\n          },\n        ]\n      }\n      provider_profiles: {\n        Row: {\n          bio: string | null\n          created_at: string\n          is_available: boolean\n          is_verified: boolean\n          location: string | null\n          provider_id: string\n          provider_lat: number | null\n          provider_lng: number | null\n          updated_at: string\n          verified_at: string | null\n          verified_by: string | null\n        }\n        Insert: {\n          bio?: string | null\n          created_at?: string\n          is_available?: boolean\n          is_verified?: boolean\n          location?: string | null\n          provider_id: string\n          provider_lat?: number | null\n          provider_lng?: number | null\n          updated_at?: string\n          verified_at?: string | null\n          verified_by?: string | null\n        }\n        Update: {\n          bio?: string | null\n          created_at?: string\n          is_available?: boolean\n          is_verified?: boolean\n          location?: string | null\n          provider_id?: string\n          provider_lat?: number | null\n          provider_lng?: number | null\n          updated_at?: string\n          verified_at?: string | null\n          verified_by?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"provider_profiles_provider_id_fkey\"\n            columns: [\"provider_id\"]\n            isOneToOne: true\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"provider_profiles_verified_by_fkey\"\n            columns: [\"verified_by\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      provider_skills: {\n        Row: {\n          category: Database[\"public\"][\"Enums\"][\"service_category\"]\n          created_at: string\n          id: string\n          provider_id: string\n          skill_code: string | null\n        }\n        Insert: {\n          category: Database[\"public\"][\"Enums\"][\"service_category\"]\n          created_at?: string\n          id?: string\n          provider_id: string\n          skill_code?: string | null\n        }\n        Update: {\n          category?: Database[\"public\"][\"Enums\"][\"service_category\"]\n          created_at?: string\n          id?: string\n          provider_id?: string\n          skill_code?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"provider_skills_provider_id_fkey\"\n            columns: [\"provider_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      provider_specializations: {\n        Row: {\n          category: string\n          created_at: string\n          id: string\n          provider_id: string\n          specialization: string\n        }\n        Insert: {\n          category: string\n          created_at?: string\n          id?: string\n          provider_id: string\n          specialization: string\n        }\n        Update: {\n          category?: string\n          created_at?: string\n          id?: string\n          provider_id?: string\n          specialization?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"provider_specializations_provider_id_fkey\"\n            columns: [\"provider_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      provider_weekly_availability: {\n        Row: {\n          day_of_week: number\n          end_time: string\n          provider_id: string\n          start_time: string\n        }\n        Insert: {\n          day_of_week: number\n          end_time: string\n          provider_id: string\n          start_time: string\n        }\n        Update: {\n          day_of_week?: number\n          end_time?: string\n          provider_id?: string\n          start_time?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"provider_weekly_availability_provider_id_fkey\"\n            columns: [\"provider_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      service_reports: {\n        Row: {\n          admin_note: string | null\n          created_at: string\n          description: string\n          evidence_path: string | null\n          id: string\n          reason: string\n          reported_user_id: string\n          reporter_id: string\n          request_id: string\n          reviewed_at: string | null\n          reviewed_by: string | null\n          status: string\n        }\n        Insert: {\n          admin_note?: string | null\n          created_at?: string\n          description: string\n          evidence_path?: string | null\n          id?: string\n          reason: string\n          reported_user_id: string\n          reporter_id: string\n          request_id: string\n          reviewed_at?: string | null\n          reviewed_by?: string | null\n          status?: string\n        }\n        Update: {\n          admin_note?: string | null\n          created_at?: string\n          description?: string\n          evidence_path?: string | null\n          id?: string\n          reason?: string\n          reported_user_id?: string\n          reporter_id?: string\n          request_id?: string\n          reviewed_at?: string | null\n          reviewed_by?: string | null\n          status?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"service_reports_reported_user_id_fkey\"\n            columns: [\"reported_user_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"service_reports_reporter_id_fkey\"\n            columns: [\"reporter_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"service_reports_request_id_fkey\"\n            columns: [\"request_id\"]\n            isOneToOne: false\n            referencedRelation: \"service_requests\"\n            referencedColumns: [\"request_id\"]\n          },\n          {\n            foreignKeyName: \"service_reports_reviewed_by_fkey\"\n            columns: [\"reviewed_by\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      service_request_declines: {\n        Row: {\n          created_at: string\n          id: string\n          provider_id: string\n          reason: string\n          request_id: string\n        }\n        Insert: {\n          created_at?: string\n          id?: string\n          provider_id: string\n          reason: string\n          request_id: string\n        }\n        Update: {\n          created_at?: string\n          id?: string\n          provider_id?: string\n          reason?: string\n          request_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"service_request_declines_provider_id_fkey\"\n            columns: [\"provider_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"service_request_declines_request_id_fkey\"\n            columns: [\"request_id\"]\n            isOneToOne: false\n            referencedRelation: \"service_requests\"\n            referencedColumns: [\"request_id\"]\n          },\n        ]\n      }\n      service_requests: {\n        Row: {\n          budget: number | null\n          cancellation_reason: string | null\n          cancelled_at: string | null\n          cancelled_by: string | null\n          category: Database[\"public\"][\"Enums\"][\"service_category\"]\n          client_id: string\n          client_lat: number | null\n          client_lng: number | null\n          created_at: string\n          description: string\n          id: string\n          location: string\n          preferred_date: string\n          preferred_time: string\n          priority: Database[\"public\"][\"Enums\"][\"request_priority\"]\n          request_id: string | null\n          request_image_path: string | null\n          request_image_uploaded_at: string | null\n          request_image_url: string | null\n          selected_provider_id: string | null\n          service_type: string | null\n          status: Database[\"public\"][\"Enums\"][\"request_status\"]\n          title: string\n          updated_at: string\n        }\n        Insert: {\n          budget?: number | null\n          cancellation_reason?: string | null\n          cancelled_at?: string | null\n          cancelled_by?: string | null\n          category: Database[\"public\"][\"Enums\"][\"service_category\"]\n          client_id: string\n          client_lat?: number | null\n          client_lng?: number | null\n          created_at?: string\n          description: string\n          id?: string\n          location: string\n          preferred_date: string\n          preferred_time: string\n          priority?: Database[\"public\"][\"Enums\"][\"request_priority\"]\n          request_id?: string | null\n          request_image_path?: string | null\n          request_image_uploaded_at?: string | null\n          request_image_url?: string | null\n          selected_provider_id?: string | null\n          service_type?: string | null\n          status?: Database[\"public\"][\"Enums\"][\"request_status\"]\n          title: string\n          updated_at?: string\n        }\n        Update: {\n          budget?: number | null\n          cancellation_reason?: string | null\n          cancelled_at?: string | null\n          cancelled_by?: string | null\n          category?: Database[\"public\"][\"Enums\"][\"service_category\"]\n          client_id?: string\n          client_lat?: number | null\n          client_lng?: number | null\n          created_at?: string\n          description?: string\n          id?: string\n          location?: string\n          preferred_date?: string\n          preferred_time?: string\n          priority?: Database[\"public\"][\"Enums\"][\"request_priority\"]\n          request_id?: string | null\n          request_image_path?: string | null\n          request_image_uploaded_at?: string | null\n          request_image_url?: string | null\n          selected_provider_id?: string | null\n          service_type?: string | null\n          status?: Database[\"public\"][\"Enums\"][\"request_status\"]\n          title?: string\n          updated_at?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"service_requests_cancelled_by_fkey\"\n            columns: [\"cancelled_by\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"service_requests_client_id_fkey\"\n            columns: [\"client_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"service_requests_selected_provider_id_fkey\"\n            columns: [\"selected_provider_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      service_reviews: {\n        Row: {\n          created_at: string\n          feedback: string | null\n          id: string\n          rating: number\n          request_id: string\n          review_id: string | null\n          reviewee_id: string\n          reviewer_id: string\n        }\n        Insert: {\n          created_at?: string\n          feedback?: string | null\n          id?: string\n          rating: number\n          request_id: string\n          review_id?: string | null\n          reviewee_id: string\n          reviewer_id: string\n        }\n        Update: {\n          created_at?: string\n          feedback?: string | null\n          id?: string\n          rating?: number\n          request_id?: string\n          review_id?: string | null\n          reviewee_id?: string\n          reviewer_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"service_reviews_request_id_fkey\"\n            columns: [\"request_id\"]\n            isOneToOne: false\n            referencedRelation: \"service_requests\"\n            referencedColumns: [\"request_id\"]\n          },\n          {\n            foreignKeyName: \"service_reviews_reviewee_id_fkey\"\n            columns: [\"reviewee_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"service_reviews_reviewer_id_fkey\"\n            columns: [\"reviewer_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      users: {\n        Row: {\n          created_at: string\n          email: string\n          full_name: string\n          id: string\n          identity_verified: boolean\n          identity_verified_at: string | null\n          identity_verified_by: string | null\n          phone: string | null\n          profile_completed: boolean\n          role: Database[\"public\"][\"Enums\"][\"user_role\"]\n          status: Database[\"public\"][\"Enums\"][\"account_status\"]\n          updated_at: string\n          user_code: string | null\n        }\n        Insert: {\n          created_at?: string\n          email: string\n          full_name: string\n          id: string\n          identity_verified?: boolean\n          identity_verified_at?: string | null\n          identity_verified_by?: string | null\n          phone?: string | null\n          profile_completed?: boolean\n          role?: Database[\"public\"][\"Enums\"][\"user_role\"]\n          status?: Database[\"public\"][\"Enums\"][\"account_status\"]\n          updated_at?: string\n          user_code?: string | null\n        }\n        Update: {\n          created_at?: string\n          email?: string\n          full_name?: string\n          id?: string\n          identity_verified?: boolean\n          identity_verified_at?: string | null\n          identity_verified_by?: string | null\n          phone?: string | null\n          profile_completed?: boolean\n          role?: Database[\"public\"][\"Enums\"][\"user_role\"]\n          status?: Database[\"public\"][\"Enums\"][\"account_status\"]\n          updated_at?: string\n          user_code?: string | null\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"users_identity_verified_by_fkey\"\n            columns: [\"identity_verified_by\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n      verification_requests: {\n        Row: {\n          admin_note: string | null\n          business_name: string | null\n          id: string\n          id_number_last4: string\n          id_type: string\n          identity_document_path: string\n          legal_name: string\n          professional_license: string | null\n          reviewed_at: string | null\n          reviewed_by: string | null\n          role: string\n          ssm_number: string | null\n          status: string\n          submitted_at: string\n          supporting_document_path: string | null\n          user_id: string\n        }\n        Insert: {\n          admin_note?: string | null\n          business_name?: string | null\n          id?: string\n          id_number_last4: string\n          id_type: string\n          identity_document_path: string\n          legal_name: string\n          professional_license?: string | null\n          reviewed_at?: string | null\n          reviewed_by?: string | null\n          role: string\n          ssm_number?: string | null\n          status?: string\n          submitted_at?: string\n          supporting_document_path?: string | null\n          user_id: string\n        }\n        Update: {\n          admin_note?: string | null\n          business_name?: string | null\n          id?: string\n          id_number_last4?: string\n          id_type?: string\n          identity_document_path?: string\n          legal_name?: string\n          professional_license?: string | null\n          reviewed_at?: string | null\n          reviewed_by?: string | null\n          role?: string\n          ssm_number?: string | null\n          status?: string\n          submitted_at?: string\n          supporting_document_path?: string | null\n          user_id?: string\n        }\n        Relationships: [\n          {\n            foreignKeyName: \"verification_requests_reviewed_by_fkey\"\n            columns: [\"reviewed_by\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n          {\n            foreignKeyName: \"verification_requests_user_id_fkey\"\n            columns: [\"user_id\"]\n            isOneToOne: false\n            referencedRelation: \"users\"\n            referencedColumns: [\"id\"]\n          },\n        ]\n      }\n    }\n    Views: {\n      [_ in never]: never\n    }\n    Functions: {\n      admin_review_service_report: {\n        Args: { p_admin_note?: string; p_report_id: string; p_status: string }\n        Returns: undefined\n      }\n      admin_review_verification: {\n        Args: { p_admin_note?: string; p_request_id: string; p_status: string }\n        Returns: undefined\n      }\n      admin_update_user_status: {\n        Args: { p_status: string; p_user_id: string }\n        Returns: undefined\n      }\n      client_cancel_request: {\n        Args: { p_reason: string; p_request_id: string }\n        Returns: undefined\n      }\n      client_complete_request: {\n        Args: { p_request_id: string }\n        Returns: undefined\n      }\n      client_save_request_image: {\n        Args: {\n          p_request_id: string\n          p_request_image_path: string\n          p_request_image_url: string\n        }\n        Returns: undefined\n      }\n      client_select_provider: {\n        Args: { p_provider_id: string; p_request_id: string }\n        Returns: undefined\n      }\n      client_update_request: {\n        Args: {\n          p_budget: number\n          p_category: string\n          p_client_lat: number\n          p_client_lng: number\n          p_description: string\n          p_location: string\n          p_preferred_date: string\n          p_preferred_time: string\n          p_priority: string\n          p_request_id: string\n          p_service_type: string\n          p_title: string\n        }\n        Returns: undefined\n      }\n      complete_basic_profile: {\n        Args: { p_full_name: string; p_phone: string }\n        Returns: {\n          created_at: string\n          email: string\n          full_name: string\n          id: string\n          identity_verified: boolean\n          identity_verified_at: string | null\n          identity_verified_by: string | null\n          phone: string | null\n          profile_completed: boolean\n          role: Database[\"public\"][\"Enums\"][\"user_role\"]\n          status: Database[\"public\"][\"Enums\"][\"account_status\"]\n          updated_at: string\n          user_code: string | null\n        }\n        SetofOptions: {\n          from: \"*\"\n          to: \"users\"\n          isOneToOne: true\n          isSetofReturn: false\n        }\n      }\n      current_user_role: { Args: never; Returns: string }\n      format_custom_id: {\n        Args: { prefix: string; seq_name: string }\n        Returns: string\n      }\n      provider_confirm_request: {\n        Args: { p_request_id: string }\n        Returns: undefined\n      }\n      provider_decline_request: {\n        Args: { p_reason: string; p_request_id: string }\n        Returns: undefined\n      }\n      provider_start_request: {\n        Args: { p_request_id: string }\n        Returns: undefined\n      }\n      submit_service_report: {\n        Args: {\n          p_description: string\n          p_evidence_path?: string\n          p_reason: string\n          p_reported_user_id: string\n          p_request_id: string\n        }\n        Returns: string\n      }\n    }\n    Enums: {\n      account_status: \"active\" | \"inactive\" | \"suspended\"\n      payment_method: \"Cash\" | \"QR Transfer\" | \"Bank Transfer\" | \"Other\"\n      request_priority: \"normal\" | \"urgent\"\n      request_status:\n        | \"pending\"\n        | \"provider_selected\"\n        | \"confirmed\"\n        | \"in_progress\"\n        | \"completed\"\n        | \"cancelled\"\n      service_category:\n        | \"Cleaning\"\n        | \"Delivery\"\n        | \"Repair\"\n        | \"Moving Help\"\n        | \"Errands\"\n        | \"Tutoring\"\n        | \"Other\"\n      user_role: \"client\" | \"provider\" | \"admin\"\n    }\n    CompositeTypes: {\n      [_ in never]: never\n    }\n  }\n}\n\ntype DatabaseWithoutInternals = Omit<Database, \"__InternalSupabase\">\n\ntype DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, \"public\">]\n\nexport type Tables<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof (DefaultSchema[\"Tables\"] & DefaultSchema[\"Views\"])\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends (DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"] &\n        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Views\"])\n    : never) = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"] &\n      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Views\"])[TableName] extends {\n      Row: infer R\n    }\n    ? R\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema[\"Tables\"] &\n        DefaultSchema[\"Views\"])\n    ? (DefaultSchema[\"Tables\"] &\n        DefaultSchema[\"Views\"])[DefaultSchemaTableNameOrOptions] extends {\n        Row: infer R\n      }\n      ? R\n      : never\n    : never\n\nexport type TablesInsert<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof DefaultSchema[\"Tables\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends (DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"]\n    : never) = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"][TableName] extends {\n      Insert: infer I\n    }\n    ? I\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema[\"Tables\"]\n    ? DefaultSchema[\"Tables\"][DefaultSchemaTableNameOrOptions] extends {\n        Insert: infer I\n      }\n      ? I\n      : never\n    : never\n\nexport type TablesUpdate<\n  DefaultSchemaTableNameOrOptions extends\n    | keyof DefaultSchema[\"Tables\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  TableName extends (DefaultSchemaTableNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"]\n    : never) = never,\n> = DefaultSchemaTableNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions[\"schema\"]][\"Tables\"][TableName] extends {\n      Update: infer U\n    }\n    ? U\n    : never\n  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema[\"Tables\"]\n    ? DefaultSchema[\"Tables\"][DefaultSchemaTableNameOrOptions] extends {\n        Update: infer U\n      }\n      ? U\n      : never\n    : never\n\nexport type Enums<\n  DefaultSchemaEnumNameOrOptions extends\n    | keyof DefaultSchema[\"Enums\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  EnumName extends (DefaultSchemaEnumNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions[\"schema\"]][\"Enums\"]\n    : never) = never,\n> = DefaultSchemaEnumNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions[\"schema\"]][\"Enums\"][EnumName]\n  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema[\"Enums\"]\n    ? DefaultSchema[\"Enums\"][DefaultSchemaEnumNameOrOptions]\n    : never\n\nexport type CompositeTypes<\n  PublicCompositeTypeNameOrOptions extends\n    | keyof DefaultSchema[\"CompositeTypes\"]\n    | { schema: keyof DatabaseWithoutInternals },\n  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {\n    schema: keyof DatabaseWithoutInternals\n  }\n    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions[\"schema\"]][\"CompositeTypes\"]\n    : never) = never,\n> = PublicCompositeTypeNameOrOptions extends {\n  schema: keyof DatabaseWithoutInternals\n}\n  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions[\"schema\"]][\"CompositeTypes\"][CompositeTypeName]\n  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema[\"CompositeTypes\"]\n    ? DefaultSchema[\"CompositeTypes\"][PublicCompositeTypeNameOrOptions]\n    : never\n\nexport const Constants = {\n  public: {\n    Enums: {\n      account_status: [\"active\", \"inactive\", \"suspended\"],\n      payment_method: [\"Cash\", \"QR Transfer\", \"Bank Transfer\", \"Other\"],\n      request_priority: [\"normal\", \"urgent\"],\n      request_status: [\n        \"pending\",\n        \"provider_selected\",\n        \"confirmed\",\n        \"in_progress\",\n        \"completed\",\n        \"cancelled\",\n      ],\n      service_category: [\n        \"Cleaning\",\n        \"Delivery\",\n        \"Repair\",\n        \"Moving Help\",\n        \"Errands\",\n        \"Tutoring\",\n        \"Other\",\n      ],\n      user_role: [\"client\", \"provider\", \"admin\"],\n    },\n  },\n} as const\n",
+  "advisors": [
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "count": 1,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy"
+    },
+    {
+      "name": "function_search_path_mutable",
+      "level": "WARN",
+      "count": 9,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0011_function_search_path_mutable"
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "level": "WARN",
+      "count": 15,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable"
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "level": "WARN",
+      "count": 15,
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
+    },
+    {
+      "name": "auth_leaked_password_protection",
+      "level": "WARN",
+      "count": 1,
+      "remediation": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection"
+    }
+  ]
+}

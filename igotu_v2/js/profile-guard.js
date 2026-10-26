@@ -1,3 +1,4 @@
+import { requireBackendContract } from "./backend-access.js";
 import { supabase, clearStoredAuthSession } from "./supabaseClient.js";
 import { readIdentityState } from "./identity-access.js";
 
@@ -57,6 +58,7 @@ async function checkAccess() {
       await logoutAccount();
       return { allowed: false };
     }
+    await requireBackendContract();
     if (expectedRole === "admin") return { allowed: true, profile };
     const identity = await readIdentityState(profile);
     const file = window.location.pathname.split("/").pop();

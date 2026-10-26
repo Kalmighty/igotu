@@ -1,0 +1,1 @@
+PASS: 66 SQL statements and 17 PL/pgSQL units parse offline; 8 audit SELECTs; no account backfill or Stage A/C changes; guarded initializer coverage. Database authorization NOT tested.

@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
@@ -336,6 +337,7 @@ function setupFilters() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    if (!(await authorizeWorkspace()).allowed) return;
   const admin = await getAdmin();
   if (!admin) return;
 

@@ -1,0 +1,2 @@
+PASS real SDK cross-tab-signout: both workspace tabs lock and return to Login, cache/session cleared. Synthetic HTTP only.
+PASS real SDK invalid-refresh: both workspace tabs lock and return to Login, cache/session cleared. Synthetic HTTP only.

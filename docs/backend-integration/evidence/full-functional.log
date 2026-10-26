@@ -1,0 +1,100 @@
+PASS Matching fails closed when service_request_declines eligibility lookup fails
+PASS Matching fails closed when service_requests eligibility lookup fails
+PASS Image failure retry preserves one committed service request
+PASS client failed message restores draft without duplicate sends
+PASS provider failed message restores draft without duplicate sends
+PASS client slow message response cannot overwrite another conversation
+FAIL provider slow message response cannot overwrite another conversation: The expression evaluated to a falsy value:
+
+  assert.ok(held)
+ {"page":"/provider/messages.html","message":"","invalid":["messageForm","messageInput"]}
+PASS Notification transport failure does not turn committed Admin approval into failure
+PASS Provider load failure cannot overwrite previously saved specializations
+PASS Admin cancelling resolution prompt does not resolve report
+PASS Incoming request never displays a short exact street address before confirmation
+PASS Cancellation dialog traps keyboard focus and restores its opener
+PASS Forgot password handles thrown transport errors and restores submit
+PASS Signup handles thrown transport errors and restores submit
+PASS Verification insert and cleanup failure restores form without exposing private paths
+PASS Unread notification count includes items beyond the latest eight
+PASS Client does not offer duplicate settlement on failed payment_records lookup
+PASS Client does not offer duplicate settlement on failed service_reviews lookup
+PASS Provider does not offer duplicate reviews when review history lookup fails
+PASS Connected registration, approval, onboarding and complete service workflow (synthetic)
+PASS Decline excludes Provider, cancellation retains history and required reasons
+PASS Recommendations exclude unavailable Provider
+PASS Recommendations exclude outside-hours Provider
+PASS Recommendations exclude declined Provider
+PASS Recommendations exclude busy Provider
+PASS Recommendations exclude wrong-specialization Provider
+PASS Recommendations exclude inactive Provider
+PASS Recommendations exclude unverified Provider
+PASS Recommendations deduplicate, sort distance, calculate reviews and respect weekly hours boundary
+PASS Payment proof required for transfers, optional for cash and validated before insert
+PASS Report submission and Admin review preserve participant associations (synthetic)
+PASS Admin search, role filters and suspend/activate controls use the existing RPC
+PASS Map search, click and GPS update actual coordinates with local Leaflet and synthetic geocoder
+PASS client completed service has no start/complete actions; duplicate review form absent
+PASS provider completed service has no start/complete actions; duplicate review form absent
+PASS Reset password rejects stale session and restores button after update errors
+FAIL Recommendation provider_specializations error is shown as an error, not an empty result: The input did not match the regular expression /Unable to/. Input:
+
+''
+ {"page":"/client/recommended-providers.html","message":"Unable to check provider eligibility. Refresh to try again.","invalid":[]}
+PASS Recommendation users error is shown as an error, not an empty result
+PASS Recommendation provider_profiles error is shown as an error, not an empty result
+PASS Recommendation provider_weekly_availability error is shown as an error, not an empty result
+PASS Recommendation service_reviews error is shown as an error, not an empty result
+PASS client report rejects unrelated service participant
+PASS provider report rejects unrelated service participant
+PASS client messaging uses participant-scoped threads and escapes message text
+PASS provider messaging uses participant-scoped threads and escapes message text
+PASS Profile menu logout clears local session even when server sign-out fails
+PASS Accessibility of real client/request-details.html?request_id=REQ-DONE form and controls
+PASS Accessibility of real provider/assignment-details.html form and controls
+PASS Accessibility of real client/create-request.html form and controls
+PASS Accessibility of real provider/edit-profile.html form and controls
+PASS Accessibility of real admin/reports.html form and controls
+PASS client in-flight send keeps original conversation and notification recipient
+PASS provider in-flight send keeps original conversation and notification recipient
+PASS Provider availability changes affect the next recommendation load
+PASS Provider fallback map remains interactive after both tile servers fail
+PASS client duplicate-email registration restores form and displays SDK error
+PASS provider duplicate-email registration restores form and displays SDK error
+PASS Password recovery sends only the synthetic request with same-origin reset destination
+PASS Successful password update clears local cache/session and returns to Login
+PASS client inconsistent approval (flag-false) cannot initialize workspace
+PASS client inconsistent approval (missing-reviewer) cannot initialize workspace
+PASS client inconsistent approval (wrong-reviewer) cannot initialize workspace
+PASS client inconsistent approval (wrong-role) cannot initialize workspace
+PASS client inconsistent approval (missing-time) cannot initialize workspace
+PASS client inconsistent approval (rejected-latest) cannot initialize workspace
+PASS provider inconsistent approval (flag-false) cannot initialize workspace
+PASS provider inconsistent approval (missing-reviewer) cannot initialize workspace
+PASS provider inconsistent approval (wrong-reviewer) cannot initialize workspace
+PASS provider inconsistent approval (wrong-role) cannot initialize workspace
+PASS provider inconsistent approval (missing-time) cannot initialize workspace
+PASS provider inconsistent approval (rejected-latest) cannot initialize workspace
+PASS Shared menus preserve Escape focus and close the other dropdown across all roles
+PASS Every workspace page runs real modules at 1440px
+PASS Every workspace page runs real modules at 1024px
+PASS Every workspace page runs real modules at 768px
+PASS Every workspace page runs real modules at 390px
+PASS Every workspace page runs real modules at 320px
+PASS client missing backend contract locks workspace before business reads
+PASS provider missing backend contract locks workspace before business reads
+PASS admin missing backend contract locks workspace before business reads
+PASS Recommendation RPC supplies cards without broad cross-user reads
+PASS Provider dashboard uses assigned request projection without raw request reads
+PASS Atomic Provider save failure preserves all saved information and restores form
+PASS Creation transport retry reuses the same idempotency key
+PASS Private receipt resolver failure never falls back to public URL
+PASS Private receipt signer failure never falls back to public URL
+PASS Private receipt ambiguous failure never falls back to public URL
+PASS Private receipt signer uses five-minute URLs and refreshes on open
+PASS Cash receipt without proof renders an explicit empty state
+PASS Admin reconciliation queue is read-only and links to existing history
+PASS client messaging avoids messages from a former assignment
+PASS provider messaging avoids messages from a former assignment
+PASS Admin cannot approve a legacy submission with unrecorded consent
+{"passed":91,"failed":2}

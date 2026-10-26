@@ -1,3 +1,4 @@
+import { providerRequests } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
@@ -46,20 +47,8 @@ function displayUser(profile) {
     document.getElementById("welcomeText").textContent = `Hello, ${profile.full_name.split(" ")[0]}. Review your assigned service requests.`;
 }
 
-function getApproximateArea(location) {
-    const parts = String(location || "").split(",").map(part => part.trim()).filter(Boolean);
-    if (!parts.length) return "Area not provided";
-    // Avoid repeating the full address when there are too few area components.
-    if (parts.length <= 3) return "Area available after confirmation";
-    return parts.slice(-3).join(", ");
-}
-
 async function loadStats(userId) {
-    const { data: requests, error } = await supabase
-        .from("service_requests")
-        .select("*")
-        .eq("selected_provider_id", userId)
-        .order("created_at", { ascending: false });
+    const { data: requests, error } = await providerRequests(null);
 
     if (error) {
         console.error(error);
@@ -97,7 +86,7 @@ async function loadStats(userId) {
         <a class="list-item" href="incoming-requests.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}">
             <div>
                 <strong>${escapeHtml(request.title)}</strong>
-                <span>${escapeHtml(request.category)} · Approximate Area: ${escapeHtml(getApproximateArea(request.location))}</span>
+                <span>${escapeHtml(request.category)} · Approximate Area: ${escapeHtml(request.approximate_area || "Area available after confirmation")}</span>
             </div>
             <em class="status-pill">${escapeHtml(request.status.replace("_", " "))}</em>
         </a>

@@ -1,7 +1,6 @@
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 import { askCancellationReason } from "./service-action-dialogs.js";
 
 let currentUser = null;
@@ -230,11 +229,7 @@ async function cancelRequest(requestId, button) {
     }
 
     if (request.selected_provider_id) {
-        await createNotification(
-            request.selected_provider_id,
-            "Request cancelled",
-            `${currentProfile.full_name} cancelled the request \"${request.title}\". Reason: ${cancellationReason}`
-        );
+
     }
 
     showMessage("Request cancelled. It remains available in your request history.", "success");

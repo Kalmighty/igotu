@@ -1,7 +1,7 @@
+import { providerRequests, serviceParticipants } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 import { askDeclineReason } from "./service-action-dialogs.js";
 
 let currentUser = null;
@@ -88,13 +88,6 @@ function formatBudget(budget) {
     return `RM ${Number(budget).toFixed(2)}`;
 }
 
-function getApproximateArea(location) {
-    const parts = String(location || "").split(",").map(part => part.trim()).filter(Boolean);
-    if (!parts.length) return "Area not provided";
-    if (parts.length <= 3) return "Area available after confirmation";
-    return parts.slice(-3).join(", ");
-}
-
 function getRequestImageUrl(request) {
     if (!request) return null;
 
@@ -122,12 +115,7 @@ async function loadIncomingRequests() {
 
     incomingList.innerHTML = `<p class="muted-text">Loading incoming requests...</p>`;
 
-    const { data: requests, error } = await supabase
-        .from("service_requests")
-        .select("*")
-        .eq("selected_provider_id", currentUser.id)
-        .eq("status", "provider_selected")
-        .order("created_at", { ascending: false });
+    const { data: requests, error } = await providerRequests(["provider_selected"]);
 
     if (error) {
         console.error("Incoming requests error:", error);
@@ -145,12 +133,8 @@ async function loadIncomingRequests() {
         return;
     }
 
-    const clientIds = [...new Set(requests.map(request => request.client_id))];
-
-    const { data: clients } = await supabase
-        .from("users")
-        .select("id, full_name, user_code, identity_verified")
-        .in("id", clientIds);
+    const { data: clients, error: participantsError } = await serviceParticipants(requests.map(request => request.request_id));
+    if (participantsError) showMessage("Service details loaded, but participant names could not be checked. Refresh to try again.");
 
     const clientMap = new Map();
 
@@ -189,7 +173,7 @@ async function loadIncomingRequests() {
                         <span>Date: <strong>${escapeHtml(request.preferred_date)}</strong></span>
                         <span>Time: <strong>${escapeHtml(request.preferred_time)}</strong></span>
                         <span>Budget: <strong>${escapeHtml(formatBudget(request.budget))}</strong></span>
-                        <span>Approximate Area: <strong>${escapeHtml(getApproximateArea(request.location))}</strong></span>
+                        <span>Approximate Area: <strong>${escapeHtml(request.approximate_area || "Area available after confirmation")}</strong></span>
                         <span class="location-privacy-inline">🔒 Exact location unlocks after confirmation</span>
                     </div>
                 </div>
@@ -230,11 +214,7 @@ async function confirmRequest(requestId, button) {
     button.disabled = true;
     button.textContent = "Confirming...";
 
-    const { data: requestData } = await supabase
-        .from("service_requests")
-        .select("request_id, title, client_id")
-        .eq("request_id", requestId)
-        .single();
+
 
     const { error } = await supabase.rpc("provider_confirm_request", {
         p_request_id: requestId
@@ -246,15 +226,6 @@ async function confirmRequest(requestId, button) {
         button.disabled = false;
         button.textContent = "Confirm";
         return;
-    }
-
-    if (requestData) {
-        await createNotification(
-            requestData.client_id,
-            "Request confirmed",
-            `${currentProfile.full_name} confirmed your request "${requestData.title}".`
-        );
-
     }
 
     showMessage("Request confirmed successfully.", "success");
@@ -273,11 +244,7 @@ async function declineRequest(requestId, button) {
     button.disabled = true;
     button.textContent = "Declining...";
 
-    const { data: requestData } = await supabase
-        .from("service_requests")
-        .select("request_id, title, client_id")
-        .eq("request_id", requestId)
-        .single();
+
 
     const { error } = await supabase.rpc("provider_decline_request", {
         p_request_id: requestId,
@@ -290,15 +257,6 @@ async function declineRequest(requestId, button) {
         button.disabled = false;
         button.textContent = "Decline";
         return;
-    }
-
-    if (requestData) {
-        await createNotification(
-            requestData.client_id,
-            "Request declined",
-            `${currentProfile.full_name} declined your request "${requestData.title}". Reason: ${declineReason}. You can select another provider.`
-        );
-
     }
 
     showMessage("Request declined. It has been returned to pending status.", "success");

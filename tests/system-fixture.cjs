@@ -225,9 +225,11 @@ async function install(
               };
               if (op.table === "service_requests")
                 row.request_id = `REQ-NEW-${state.counter}`;
+              if (op.table === "payment_records") row.payment_id = `PAY-${state.counter}`;
               if (op.table === "verification_requests")
                 row.submitted_at = new Date().toISOString();
               rows.push(row);
+              if (op.table === "internal_messages") state.tables.notifications.push({id:`note-${state.counter}`,title:"New message",message:`Service ${row.request_id}: synthetic server event`,user_id:row.receiver_id,is_read:false});
             }
             found.push(row);
           }
@@ -264,9 +266,35 @@ async function install(
       return { data: select?.[2]?.head ? null : data, count, error: null };
     }
     if (op.kind === "rpc") {
-      const { name, args: a } = op;
+      const { name, args: a = {} } = op;
       const t = state.tables;
       const r = t.service_requests.find((r) => r.request_id === a.p_request_id);
+      // Synthetic endpoint contracts, not a model/proof of PostgreSQL authorization.
+      if (name === "igotu_backend_contract") return {data:{version:"20261026.1",notifications:"database"},error:null};
+      if (name === "provider_service_requests") return {data:t.service_requests.filter(x=>x.selected_provider_id===ids[state.role] && (!a.p_statuses || a.p_statuses.includes(x.status)) && (!a.p_request_id || x.request_id===a.p_request_id)).map(x=>({...x,approximate_area:"Approximate area: Likas",...(!["confirmed","in_progress","completed"].includes(x.status)?{location:null,client_lat:null,client_lng:null}:{})})),error:null};
+      if (name === "service_participants") return {data:t.service_requests.filter(x=>a.p_request_ids.includes(x.request_id) && x.selected_provider_id && [x.client_id,x.selected_provider_id].includes(ids[state.role])).map(x=> {
+        const u=t.users.find(u=>u.id===(x.client_id===ids[state.role]?x.selected_provider_id:x.client_id));
+        return {request_id:x.request_id,id:u.id,full_name:u.full_name,user_code:u.user_code,role:u.role,identity_verified:u.identity_verified};
+      }),error:null};
+      if (name === "recommended_provider_candidates") {
+        const data=t.users.filter(u=>u.role==='provider' && u.status==='active' && u.identity_verified && t.verification_requests.some(v=>v.user_id===u.id && v.status==='approved') && t.provider_profiles.some(p=>p.provider_id===u.id && p.is_available) && t.provider_skills.some(p=>p.provider_id===u.id && p.category===r.category) && t.provider_specializations.some(p=>p.provider_id===u.id && p.category===r.category && p.specialization===r.service_type) && !t.service_request_declines.some(d=>d.request_id===r.request_id && d.provider_id===u.id) && !t.service_requests.some(b=>b.request_id!==r.request_id && b.selected_provider_id===u.id && ['provider_selected','confirmed','in_progress'].includes(b.status) && b.preferred_date===r.preferred_date && b.preferred_time===r.preferred_time) && (!t.provider_weekly_availability.some(w=>w.provider_id===u.id) || t.provider_weekly_availability.some(w=>w.provider_id===u.id && w.day_of_week===new Date(r.preferred_date+'T12:00:00Z').getUTCDay() && w.start_time<=r.preferred_time && w.end_time>r.preferred_time))).map(u=>{
+          const p=t.provider_profiles.find(p=>p.provider_id===u.id),reviews=t.service_reviews.filter(v=>v.reviewee_id===u.id);
+          return {id:u.id,full_name:u.full_name,user_code:u.user_code,bio:p.bio,location:p.location,is_verified:true,distance_km:Math.abs(Number(p.provider_lat)-Number(r.client_lat))*111.2,matched_specializations:[r.service_type],has_weekly_hours:t.provider_weekly_availability.some(w=>w.provider_id===u.id),average_rating:reviews.length?reviews.reduce((sum,v)=>sum+v.rating,0)/reviews.length:null,total_reviews:reviews.length,total_completed:t.service_requests.filter(x=>x.selected_provider_id===u.id && x.status==='completed').length,recent_feedback:reviews.map(v=>v.feedback).filter(Boolean).slice(0,2)};
+        });return {data,error:null};
+      }
+      if (name === "verification_reconciliation_queue") return {data:t.users.filter(u=>u.identity_verified && u.role!=='admin' && !t.verification_requests.some(v=>v.user_id===u.id && v.status==='approved') && (!a.p_after || u.id>a.p_after)).slice(0,100).map(u=>({id:u.id,full_name:u.full_name,user_code:u.user_code,role:u.role,status:u.status,latest_status:null,recorded_consent:false})),error:null};
+      if (name === "payment_proof_reference") return {data:t.payment_records.filter(p=>p.request_id===a.p_request_id && p.proof_path).map(p=>({payment_id:p.payment_id,proof_path:p.proof_path})),error:null};
+      if (name === "create_service_request") {
+        const existing=t.service_requests.find(x=>x.creation_key===a.p_idempotency_key);
+        if(existing) return JSON.stringify(existing._details)===JSON.stringify(a.p_details)?{data:[{request_id:existing.request_id}],error:null}:{data:null,error:{message:'Creation key already saved different details'}};
+        const x={...a.p_details,request_id:`REQ-NEW-${++state.counter}`,client_id:ids[state.role],status:'pending',selected_provider_id:null,created_at:stamp,creation_key:a.p_idempotency_key,_details:structuredClone(a.p_details)};
+        t.service_requests.push(x);return {data:[{request_id:x.request_id}],error:null};
+      }
+      if (name === "save_provider_profile") {
+        const provider_id=ids[state.role];
+        for(const [table,data] of [['provider_profiles',[a.p_profile]],['provider_skills',a.p_skills.map(category=>({category}))],['provider_specializations',a.p_specializations],['provider_weekly_availability',a.p_weekly_hours]]) t[table]=[...t[table].filter(x=>x.provider_id!==provider_id),...data.map(x=>({...x,provider_id}))];
+        Object.assign(own(),{full_name:a.p_full_name,phone:a.p_phone,profile_completed:true});return {data:own(),error:null};
+      }
       if (name === "complete_basic_profile") {
         Object.assign(own(), {
           full_name: a.p_full_name,

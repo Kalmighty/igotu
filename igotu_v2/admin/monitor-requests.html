@@ -44,9 +44,10 @@
     </style>
     <link rel="stylesheet" href="../css/ui.css">
     <script src="../js/app-shell.js" defer></script>
-  </head>
+    <link rel="stylesheet" href="../css/workspace-gate.css">
+</head>
 
-  <body>
+  <body data-access-state="checking"><div id="workspaceAccessMessage" role="status">Checking account access…</div>
     <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
       <aside class="sidebar">
@@ -147,5 +148,6 @@
     <!-- Leaflet Map JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script type="module" src="../js/admin-monitor-requests.js"></script>
-  </body>
+    <script type="module" src="../js/profile-guard.js"></script>
+</body>
 </html>

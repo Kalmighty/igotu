@@ -1,0 +1,6 @@
+PASS Recommendation provider_specializations error is shown as an error, not an empty result
+PASS Recommendation users error is shown as an error, not an empty result
+PASS Recommendation provider_profiles error is shown as an error, not an empty result
+PASS Recommendation provider_weekly_availability error is shown as an error, not an empty result
+PASS Recommendation service_reviews error is shown as an error, not an empty result
+{"passed":5,"failed":0}

@@ -106,7 +106,7 @@ const blocked = [
   name,
   status: "BLOCKED",
   reason:
-    "No explicitly authorized isolated staging project/catalog/test accounts or live external-service test authorization. No production reads/writes or real emails attempted.",
+    "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked.",
 }));
 (async () => {
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
@@ -132,6 +132,9 @@ const blocked = [
       ["tests/system-static.py", "--write-inventory", "--parse-sql"],
     ],
     ["verification-draft", "python", ["tests/check-verification-draft.py"]],
+    ["backend-drafts", "python", ["tests/backend-drafts.py"]],
+    ["staging-plan", "node", ["tests/staging/readiness.cjs"]],
+    ["staging-artifact", "node", ["tests/staging/artifact.cjs"]],
     ["homepage", "node", ["tests/home-smoke.cjs"]],
     ["auth", "node", ["tests/auth-smoke.cjs"]],
     ["sdk-cleanup", "node", ["tests/auth-sdk-cleanup.cjs"]],

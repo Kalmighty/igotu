@@ -1,7 +1,8 @@
+import { serviceParticipants } from "./backend-access.js";
+import { prepareReceiptPreviews, receiptHtml, bindReceiptButtons } from "./payment-receipts.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 import { askCancellationReason } from "./service-action-dialogs.js";
 
 const L = window.L;
@@ -130,30 +131,7 @@ function isImageProof(url) {
     return /\.(jpg|jpeg|png|webp)$/i.test(url || "");
 }
 
-function getPaymentProofHtml(payment) {
-    if (!payment || !payment.proof_url) {
-        return `<p><strong>Proof:</strong> No proof uploaded.</p>`;
-    }
-
-    if (isImageProof(payment.proof_url)) {
-        return `
-            <div class="payment-proof-preview">
-                <p><strong>Proof:</strong></p>
-                <a href="${escapeHtml(safeUrl(payment.proof_url))}" target="_blank" rel="noopener noreferrer">
-                    <img src="${escapeHtml(safeUrl(payment.proof_url))}" alt="Payment proof" class="payment-proof-image" style="width: 100%; max-width: 420px; border-radius: 12px; border: 1px solid #edf1ee; margin-top: 8px;">
-                </a>
-                <p><a href="${escapeHtml(safeUrl(payment.proof_url))}" target="_blank" rel="noopener noreferrer">Open proof payment</a></p>
-            </div>
-        `;
-    }
-
-    return `
-        <p>
-            <strong>Proof:</strong>
-            <a href="${escapeHtml(safeUrl(payment.proof_url))}" target="_blank" rel="noopener noreferrer">Open proof payment</a>
-        </p>
-    `;
-}
+function getPaymentProofHtml(payment) { return receiptHtml(payment); }
 
 function requiresPaymentProof(method) {
     return method === "QR Transfer" || method === "Bank Transfer";
@@ -220,14 +198,7 @@ async function uploadPaymentProof(file) {
         throw new Error(uploadError.message || "Failed to upload proof payment.");
     }
 
-    const { data } = supabase.storage
-        .from("payment-proofs")
-        .getPublicUrl(filePath);
-
-    return {
-        proofPath: filePath,
-        proofUrl: data.publicUrl
-    };
+    return { proofPath: filePath };
 }
 
 async function getSessionUser() {
@@ -283,25 +254,15 @@ async function handleLogout() {
 
 async function getProvider(providerId) {
     if (!providerId) return null;
-
-    const { data, error } = await supabase
-        .from("users")
-        .select("id, user_code, full_name, email")
-        .eq("id", providerId)
-        .maybeSingle();
-
-    if (error) {
-        console.error("Provider fetch error:", error);
-        return null;
-    }
-
-    return data;
+    const { data, error } = await serviceParticipants([requestId]);
+    if (error) return null;
+    return data.find(person => person.id === providerId) || null;
 }
 
 async function getPayment(requestIdValue) {
     const { data, error } = await supabase
         .from("payment_records")
-        .select("*")
+        .select("payment_id,request_id,client_id,provider_id,amount,payment_method,reference_number,created_at")
         .eq("request_id", requestIdValue)
         .maybeSingle();
 
@@ -309,7 +270,7 @@ async function getPayment(requestIdValue) {
         throw new Error("Payment status could not be checked.");
     }
 
-    return data;
+    return data ? (await prepareReceiptPreviews([data]))[0] : null;
 }
 
 async function getClientReview(requestIdValue) {
@@ -368,7 +329,7 @@ function renderRequest(request, provider) {
             <div class="detail-card">
                 <span>Selected Provider</span>
                 <strong>${escapeHtml(provider.full_name)}</strong>
-                <p>${escapeHtml(provider.user_code)} · ${escapeHtml(provider.email)}</p>
+                <p>${escapeHtml(provider.user_code)} · Contact through Messages</p>
             </div>
         `
         : `
@@ -527,6 +488,7 @@ function renderRequest(request, provider) {
         cancelBtn.addEventListener("click", cancelRequest);
     }
 
+    bindReceiptButtons(document.getElementById("requestDetailsArea"), existingPayment ? [existingPayment] : [], showMessage);
     const paymentForm = document.getElementById("paymentForm");
 
     if (paymentForm) {
@@ -584,11 +546,7 @@ async function cancelRequest() {
     }
 
     if (currentRequest.selected_provider_id) {
-        await createNotification(
-            currentRequest.selected_provider_id,
-            "Request cancelled",
-            `The client cancelled the request "${currentRequest.title}". Reason: ${cancellationReason}`
-        );
+
     }
 
     showMessage("Request cancelled. It remains available in your request history.", "success");
@@ -751,11 +709,7 @@ async function completeRequest() {
         return;
     }
 
-    await createNotification(
-        currentRequest.selected_provider_id,
-        "Request completed",
-        `The client marked "${currentRequest.title}" as completed.`
-    );
+
 
     showMessage("Request marked as completed.", "success");
 
@@ -793,7 +747,6 @@ async function savePayment(event) {
     saveBtn.textContent = proofFile ? "Uploading proof..." : "Saving payment...";
 
     let proofData = {
-        proofUrl: null,
         proofPath: null
     };
 
@@ -818,9 +771,8 @@ async function savePayment(event) {
             provider_id: currentRequest.selected_provider_id,
             amount: amount,
             payment_method: method,
-            proof_url: proofData.proofUrl,
             proof_path: proofData.proofPath,
-            proof_uploaded_at: new Date().toISOString()
+            proof_uploaded_at: proofData.proofPath ? new Date().toISOString() : null
         });
 
     if (error) {
@@ -831,11 +783,7 @@ async function savePayment(event) {
         return;
     }
 
-    await createNotification(
-        currentRequest.selected_provider_id,
-        "Payment recorded",
-        `Payment for "${currentRequest.title}" has been recorded by the client.`
-    );
+
 
     showMessage("Payment record saved successfully.", "success");
 
@@ -883,11 +831,7 @@ async function saveReview(event) {
         return;
     }
 
-    await createNotification(
-        currentRequest.selected_provider_id,
-        "New review received",
-        `The client submitted a review for "${currentRequest.title}".`
-    );
+
 
     showMessage("Review submitted successfully.", "success");
 

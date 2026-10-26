@@ -1,3 +1,4 @@
+import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
@@ -107,6 +108,7 @@ async function handleLogout() {
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
+    if (!(await authorizeWorkspace()).allowed) return;
     const user = await getSessionUser();
     if (!user) return;
 

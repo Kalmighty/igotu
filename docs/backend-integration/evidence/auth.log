@@ -1,0 +1,1 @@
+PASS: Login/Register at 1440/768/390/320px, axe, keyboard selection, dropdown sync, form validation, 9 role-match outcomes (3 accepted, 6 rejected), local session/cache cleanup, sign-out failures and fail-closed retries, onboarding, suspended/missing/error cases, signup roles, Admin rejection, Admin link and no-JS fallback. No live Supabase traffic.

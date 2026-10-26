@@ -1,6 +1,6 @@
+import { recommendedCandidates } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 
 const params = new URLSearchParams(window.location.search);
 const requestId = params.get("request_id");
@@ -95,26 +95,6 @@ function formatBudget(value) {
   }
 
   return `Request Budget: RM${amount.toFixed(2)}`;
-}
-
-function toRadians(degrees) {
-  return degrees * (Math.PI / 180);
-}
-
-function calculateDistanceKm(lat1, lng1, lat2, lng2) {
-  const earthRadiusKm = 6371;
-  const dLat = toRadians(lat2 - lat1);
-  const dLng = toRadians(lng2 - lng1);
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2);
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return earthRadiusKm * c;
 }
 
 function formatDistance(distanceKm) {
@@ -219,72 +199,6 @@ function getRecentFeedbackHtml(provider) {
   return `<p class="smart-review-text">“${escapeHtml(stats.recentFeedback[0])}”</p>`;
 }
 
-async function loadProviderTrustStats(providerIds) {
-  const trustMap = new Map();
-
-  providerIds.forEach(function (providerId) {
-    trustMap.set(providerId, getEmptyTrustStats());
-  });
-
-  if (!providerIds || providerIds.length === 0) {
-    return trustMap;
-  }
-
-  const { data: reviewRows, error: reviewError } = await supabase
-    .from("service_reviews")
-    .select("reviewee_id, rating, feedback, created_at")
-    .in("reviewee_id", providerIds)
-    .order("created_at", { ascending: false });
-
-  if (reviewError) {
-    throw new Error("Unable to load provider reviews. Refresh to try again.");
-  }
-
-  (reviewRows || []).forEach(function (review) {
-    const stats = trustMap.get(review.reviewee_id) || getEmptyTrustStats();
-    const rating = Number(review.rating || 0);
-
-    if (!stats._ratingTotal) stats._ratingTotal = 0;
-    if (!stats._ratingCount) stats._ratingCount = 0;
-
-    if (rating > 0) {
-      stats._ratingTotal += rating;
-      stats._ratingCount += 1;
-      stats.totalReviews = stats._ratingCount;
-      stats.averageRating = stats._ratingTotal / stats._ratingCount;
-    }
-
-    if (review.feedback && stats.recentFeedback.length < 2) {
-      stats.recentFeedback.push(review.feedback);
-    }
-
-    trustMap.set(review.reviewee_id, stats);
-  });
-
-  const { data: completedRows, error: completedError } = await supabase
-    .from("service_requests")
-    .select("selected_provider_id")
-    .in("selected_provider_id", providerIds)
-    .eq("status", "completed");
-
-  if (completedError) {
-    throw new Error("Unable to load completed service statistics. Refresh to try again.");
-  }
-
-  (completedRows || []).forEach(function (request) {
-    const stats = trustMap.get(request.selected_provider_id) || getEmptyTrustStats();
-    stats.totalCompleted += 1;
-    trustMap.set(request.selected_provider_id, stats);
-  });
-
-  trustMap.forEach(function (stats) {
-    delete stats._ratingTotal;
-    delete stats._ratingCount;
-  });
-
-  return trustMap;
-}
-
 async function getSessionUser() {
   const { data } = await supabase.auth.getSession();
 
@@ -377,170 +291,20 @@ async function loadRequest(userId) {
 }
 
 // Dates/times in service_requests are local wall-clock values (Malaysia time).
-function getRequestedWeeklySlot(request) {
-  const date = String(request?.preferred_date || "").slice(0, 10);
-  const time = String(request?.preferred_time || "").slice(0, 5);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time)) {
-    return null;
-  }
-  const [year, month, day] = date.split("-").map(Number);
-  const localDay = new Date(year, month - 1, day).getDay();
-  return { dayOfWeek: localDay, time };
-}
-
-function matchesProviderWeeklyHours(providerRows, requestSlot) {
-  // Legacy providers without saved hours stay visible until they set a schedule.
-  // Once a provider has any saved hours, only selected days/time windows qualify.
-  if (!requestSlot || !providerRows.length) return true;
-  return providerRows.some((row) =>
-    Number(row.day_of_week) === requestSlot.dayOfWeek &&
-    requestSlot.time >= String(row.start_time).slice(0, 5) &&
-    requestSlot.time < String(row.end_time).slice(0, 5)
-  );
-}
-
-async function loadMatchingProviders(category) {
-  const providersList = document.getElementById("providersList");
-  const requestedServiceType = String(currentRequest?.service_type || "").trim();
-
-  if (!requestedServiceType) {
-    providersList.innerHTML = `<p class="muted-text">This request does not have a service type yet. Please edit the request and choose a specific service type.</p>`;
-    return [];
-  }
-
-  providersList.innerHTML = `<p class="muted-text">Finding providers for ${escapeHtml(category)} · ${escapeHtml(requestedServiceType)}...</p>`;
-
-  const { data: specializationRows, error: specializationError } = await supabase
-    .from("provider_specializations")
-    .select("provider_id, category, specialization")
-    .eq("category", category)
-    .eq("specialization", requestedServiceType);
-
-  if (specializationError) throw new Error("Unable to load provider specializations. Refresh to try again.");
-
-  if (!specializationRows || specializationRows.length === 0) {
-    providersList.innerHTML = `<p class="muted-text">No providers currently offer ${escapeHtml(requestedServiceType)}. Try again later or edit the request service type.</p>`;
-    return [];
-  }
-
-  const specializationMap = new Map();
-  specializationRows.forEach(function (row) {
-    const current = specializationMap.get(row.provider_id) || [];
-    current.push(row.specialization);
-    specializationMap.set(row.provider_id, current);
-  });
-
-  const providerIds = [...new Set(specializationRows.map((item) => item.provider_id))];
-
-  const { data: providerRows, error: providerError } = await supabase
-    .from("users")
-    .select("id, user_code, full_name, email, role, status")
-    .in("id", providerIds)
-    .eq("role", "provider")
-    .eq("status", "active")
-    .eq("identity_verified", true);
-
-  if (providerError) throw new Error("Unable to load providers. Refresh to try again.");
-
-  const { data: profileRows, error: profileError } = await supabase
-    .from("provider_profiles")
-    .select("*")
-    .in("provider_id", providerIds)
-    .eq("is_available", true);
-
-  if (profileError) throw new Error("Unable to load provider profiles. Refresh to try again.");
-
-  const profileMap = new Map();
-  (profileRows || []).forEach(function (profile) {
-    profileMap.set(profile.provider_id, profile);
-  });
-
-  const { data: weeklyRows, error: weeklyError } = await supabase
-    .from("provider_weekly_availability")
-    .select("provider_id, day_of_week, start_time, end_time")
-    .in("provider_id", providerIds);
-  if (weeklyError) throw new Error("Unable to check provider working hours. Refresh to try again.");
-  const weeklyHoursMap = new Map();
-  (weeklyRows || []).forEach((row) => {
-    if (!weeklyHoursMap.has(row.provider_id)) weeklyHoursMap.set(row.provider_id, []);
-    weeklyHoursMap.get(row.provider_id).push(row);
-  });
-  const requestedSlot = getRequestedWeeklySlot(currentRequest);
-
-  // Exclude providers who previously declined this same request.
-  const { data: declineRows, error: declineError } = await supabase
-    .from("service_request_declines")
-    .select("provider_id")
-    .eq("request_id", currentRequest.request_id);
-
-  if (declineError) {
-    throw new Error("Unable to check declined providers. Refresh the page to try again.");
-  }
-
-  const declinedProviderIds = new Set((declineRows || []).map((row) => row.provider_id));
-
-  // Prevent double booking at the exact requested date and time.
-  const { data: bookingRows, error: bookingError } = await supabase
-    .from("service_requests")
-    .select("selected_provider_id")
-    .in("selected_provider_id", providerIds)
-    .in("status", ["provider_selected", "confirmed", "in_progress"])
-    .eq("preferred_date", currentRequest.preferred_date)
-    .eq("preferred_time", currentRequest.preferred_time)
-    .neq("request_id", currentRequest.request_id);
-
-  if (bookingError) {
-    throw new Error("Unable to check provider bookings. Refresh the page to try again.");
-  }
-
-  const busyProviderIds = new Set(
-    (bookingRows || []).map((row) => row.selected_provider_id).filter(Boolean),
-  );
-
-  const trustMap = await loadProviderTrustStats(providerIds);
-  const requestLat = currentRequest.client_lat === null ? null : Number(currentRequest.client_lat);
-  const requestLng = currentRequest.client_lng === null ? null : Number(currentRequest.client_lng);
-
-  return (providerRows || [])
-    .filter(function (provider) {
-      return profileMap.has(provider.id) &&
-        !declinedProviderIds.has(provider.id) &&
-        !busyProviderIds.has(provider.id) &&
-        matchesProviderWeeklyHours(weeklyHoursMap.get(provider.id) || [], requestedSlot);
-    })
-    .map(function (provider) {
-      const profile = profileMap.get(provider.id);
-      const providerLat = profile.provider_lat === null ? null : Number(profile.provider_lat);
-      const providerLng = profile.provider_lng === null ? null : Number(profile.provider_lng);
-      const matchedSpecializations = specializationMap.get(provider.id) || [];
-      const exactSkillMatch = true;
-      let distanceKm = null;
-
-      if (
-        requestLat !== null &&
-        requestLng !== null &&
-        providerLat !== null &&
-        providerLng !== null &&
-        !Number.isNaN(requestLat) &&
-        !Number.isNaN(requestLng) &&
-        !Number.isNaN(providerLat) &&
-        !Number.isNaN(providerLng)
-      ) {
-        distanceKm = calculateDistanceKm(requestLat, requestLng, providerLat, providerLng);
-      }
-
-      return {
-        ...provider,
-        profile,
-        distanceKm,
-        matchedSpecializations,
-        exactSkillMatch,
-        hasWeeklyHours: (weeklyHoursMap.get(provider.id) || []).length > 0,
-        requestedSlotChecked: !!requestedSlot,
-        trustStats: trustMap.get(provider.id) || getEmptyTrustStats(),
-      };
-    })
-    .sort(sortNearestFirst);
+async function loadMatchingProviders() {
+  const { data, error } = await recommendedCandidates(currentRequest.request_id);
+  if (error) throw new Error("Unable to check provider eligibility. Refresh to try again.");
+  return data.map(row => ({
+    id: row.id, full_name: row.full_name, user_code: row.user_code,
+    role: "provider", status: "active",
+    profile: {bio: row.bio, location: row.location, is_available: true, is_verified: row.is_verified},
+    distanceKm: row.distance_km == null ? null : Number(row.distance_km),
+    matchedSpecializations: row.matched_specializations || [], exactSkillMatch: true,
+    hasWeeklyHours: row.has_weekly_hours === true, requestedSlotChecked: true,
+    trustStats: {averageRating: row.average_rating == null ? null : Number(row.average_rating),
+      totalReviews: Number(row.total_reviews), totalCompleted: Number(row.total_completed),
+      recentFeedback: row.recent_feedback || []},
+  })).sort(sortNearestFirst);
 }
 
 function sortNearestFirst(a, b) {
@@ -815,11 +579,7 @@ async function selectProvider(providerId, button) {
     return;
   }
 
-  await createNotification(
-    providerId,
-    "New request assigned",
-    `${currentProfile.full_name} selected you for "${getRequestDisplayTitle(currentRequest)}".`,
-  );
+
 
   showMessage(
     "Provider selected successfully. Redirecting to request details...",

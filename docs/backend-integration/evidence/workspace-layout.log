@@ -1,0 +1,1 @@
+PASS: 84 page/viewport layouts; mobile navigation and keyboard focus; provider search/reset/selection; dashboard empty/error states. No live Supabase calls.

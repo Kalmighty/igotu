@@ -32,6 +32,13 @@ async function ready(page, url) {
     );
   await page.waitForTimeout(150);
 }
+async function waitForFixture(predicate) {
+  const deadline = Date.now() + 10000;
+  while (!predicate()) {
+    if (Date.now() >= deadline) throw new Error("Synthetic transport barrier was not reached");
+    await new Promise(resolve => setTimeout(resolve, 20));
+  }
+}
 async function requestForm(p) {
   await p.locator("#title").fill("Synthetic home clean");
   await p.locator("#category").selectOption("Cleaning");
@@ -55,13 +62,7 @@ for (const table of ["service_request_declines", "service_requests"])
     state.tables.service_requests = state.tables.service_requests.filter(
       (r) => r.request_id === "REQ-PENDING",
     );
-    state.fail = (o) =>
-      o.kind === "query" &&
-      o.table === table &&
-      (table !== "service_requests" ||
-        o.calls.some(
-          (c) => c[0] === "select" && c[1] === "selected_provider_id",
-        ));
+    state.fail = (o) => o.kind === "rpc" && o.name === "recommended_provider_candidates";
     await ready(
       page,
       "client/recommended-providers.html?request_id=REQ-PENDING",
@@ -85,13 +86,13 @@ test("Image failure retry preserves one committed service request", async ({
   await page.waitForFunction(
     () => !document.querySelector("#createRequestBtn").disabled,
   );
-  assert.equal(writes(state, "service_requests").length, 1);
+  assert.equal(state.calls.filter(o=>o.kind==="rpc" && o.name==="create_service_request").length, 1);
   await page.locator("#createRequestBtn").click();
   await page.waitForFunction(
     () => !document.querySelector("#createRequestBtn").disabled,
   );
   assert.equal(
-    writes(state, "service_requests").length,
+    state.calls.filter(o=>o.kind==="rpc" && o.name==="create_service_request").length,
     1,
     "Retry inserted a second service request",
   );
@@ -162,6 +163,7 @@ for (const role of ["client", "provider"])
       }
     };
     await ready(page, `${role}/messages.html?request_id=REQ-A`);
+    await waitForFixture(() => held);
     assert.ok(held);
     await page.locator('[data-request-id="REQ-B"]').click();
     await page.getByText("Only thread B", { exact: true }).waitFor();
@@ -647,6 +649,8 @@ test("Recommendations deduplicate, sort distance, calculate reviews and respect 
   );
   const other = "00000000-0000-4000-8000-000000000004";
   t.users.push({ ...t.users[1], id: other, full_name: "Farther Provider" });
+  t.verification_requests.push({...t.verification_requests[1],id:"approved-other",user_id:other});
+  t.provider_skills.push({...t.provider_skills[0],provider_id:other});
   t.provider_profiles.push({
     ...t.provider_profiles[0],
     provider_id: other,
@@ -878,15 +882,13 @@ for (const table of [
     state.tables.service_requests = state.tables.service_requests.filter(
       (r) => r.request_id === "REQ-PENDING",
     );
-    state.fail = (o) =>
-      o.kind === "query" &&
-      o.table === table &&
-      (table !== "users" || o.calls.some((c) => c[0] === "in"));
+    state.fail = o => o.kind === "rpc" && o.name === "recommended_provider_candidates";
     await ready(
       page,
       "client/recommended-providers.html?request_id=REQ-PENDING",
     );
     assert.equal(await page.locator(".select-provider-btn").count(), 0);
+    await page.locator("#messageBox").filter({hasText: /Unable to/}).waitFor();
     assert.match(await page.locator("#messageBox").textContent(), /Unable to/);
   });
 for (const role of ["client", "provider"])
@@ -903,10 +905,10 @@ for (const role of ["client", "provider"])
     await ready(page, `${role}/report.html?request_id=REQ-A`);
     assert.match(
       await page.locator("#messageBox").textContent(),
-      /not a participant/,
+      /not found/,
     );
     assert.equal(
-      state.calls.some((o) => o.kind === "rpc"),
+      state.calls.some((o) => o.kind === "rpc" && o.name === "submit_service_report"),
       false,
     );
   });
@@ -1002,6 +1004,7 @@ for (const role of ["client", "provider"])
     await ready(page, `${role}/messages.html?request_id=REQ-A`);
     await page.locator("#messageInput").fill("Synthetic original thread");
     await page.locator("#sendMessageBtn").click();
+    await waitForFixture(() => held);
     assert.ok(held);
     await page.locator('[data-request-id="REQ-B"]').click();
     release();
@@ -1281,6 +1284,111 @@ for (const width of [1440, 1024, 768, 390, 320])
       }
     }
   });
+
+for (const role of ["client","provider","admin"]) test(`${role} missing backend contract locks workspace before business reads`, async({page,state})=>{
+  state.role=role;state.fail=o=>o.kind==='rpc' && o.name==='igotu_backend_contract';
+  await page.goto(`${base}/${role}/dashboard.html`);
+  await page.waitForFunction(()=>document.body.dataset.accessState==='blocked');
+  assert.equal(state.calls.filter(o=>o.kind==='query' && o.table!=='users').length,0);
+  assert.match(await page.locator('body').textContent(),/could not be checked/);
+});
+test("Recommendation RPC supplies cards without broad cross-user reads",async({page,state})=>{
+ state.tables.service_requests=state.tables.service_requests.filter(x=>x.request_id==='REQ-PENDING');
+ await ready(page,'client/recommended-providers.html?request_id=REQ-PENDING');
+ await page.locator('.select-provider-btn').waitFor();
+ assert.ok(state.calls.some(o=>o.name==='recommended_provider_candidates'));
+ assert.equal(state.calls.filter(o=>o.kind==='query' && ['provider_profiles','provider_skills','provider_specializations','provider_weekly_availability','service_reviews','service_request_declines'].includes(o.table)).length,0);
+ assert.equal(state.calls.filter(o=>o.table==='users' && o.calls.some(c=>c[0]==='in')).length,0);
+});
+test("Provider dashboard uses assigned request projection without raw request reads",async({page,state})=>{
+ state.role='provider';await ready(page,'provider/dashboard.html');
+ assert.ok(state.calls.some(o=>o.name==='provider_service_requests'));
+ assert.equal(state.calls.filter(o=>o.table==='service_requests').length,0);
+});
+test("Atomic Provider save failure preserves all saved information and restores form",async({page,state})=>{
+ state.role='provider';const before=structuredClone(state.tables);
+ await ready(page,'provider/edit-profile.html');
+ state.fail=o=>o.name==='save_provider_profile';
+ await page.locator('#bio').fill('Changed synthetic bio');
+ await page.locator('#saveProfileBtn').click();
+ await page.waitForFunction(()=>!document.querySelector('#saveProfileBtn').disabled);
+ for(const table of ['users','provider_profiles','provider_skills','provider_specializations','provider_weekly_availability']) assert.deepEqual(state.tables[table],before[table]);
+ assert.equal(state.calls.filter(o=>o.name==='save_provider_profile').length,1);
+ assert.equal(state.calls.filter(o=>o.kind==='query' && o.calls.some(c=>['insert','upsert','update','delete'].includes(c[0]))).length,0);
+});
+test("Creation transport retry reuses the same idempotency key",async({page,state})=>{
+ let failed=false;state.fail=o=>o.name==='create_service_request' && !failed ? (failed=true,'throw'):false;
+ await ready(page,'client/create-request.html');await requestForm(page);
+ await page.locator('#createRequestBtn').click();await page.waitForFunction(()=>!document.querySelector('#createRequestBtn').disabled);
+ await page.locator('#createRequestBtn').click();
+ await page.waitForURL(/recommended-providers/);
+ const calls=state.calls.filter(o=>o.name==='create_service_request');
+ assert.equal(calls.length,2);assert.equal(calls[0].args.p_idempotency_key,calls[1].args.p_idempotency_key);
+ assert.equal(state.tables.service_requests.filter(x=>x.creation_key).length,1);
+});
+for(const failure of ['resolver','signer','ambiguous']) test(`Private receipt ${failure} failure never falls back to public URL`,async({page,state})=>{
+ const p={payment_id:'PAY-FIXTURE',request_id:'REQ-DONE',proof_url:'https://example.invalid/private-document.pdf',proof_path:ids.client+'/proof.pdf'};
+ state.tables.payment_records=[p];state.fail=o=>failure==='resolver'?o.name==='payment_proof_reference':failure==='signer'?o.kind==='storage':false;
+ if(failure==='ambiguous') state.tables.payment_records.push({...p});
+ await page.goto(base);
+ const result=await page.evaluate(async p=>{const m=await import('/js/payment-receipts.js');return m.receiptHtml((await m.prepareReceiptPreviews([p]))[0]);},p);
+ assert.match(result,/could not be checked/);assert.ok(!result.includes(p.proof_url));
+});
+test("Private receipt signer uses five-minute URLs and refreshes on open",async({page,state,context})=>{
+ const p={payment_id:'PAY-FIXTURE',request_id:'REQ-DONE',proof_path:ids.client+'/proof.pdf',proof_url:'https://example.invalid/legacy.pdf'};
+ state.tables.payment_records=[p];await page.goto(base);
+ await page.evaluate(async p=>{const m=await import('/js/payment-receipts.js');const rows=await m.prepareReceiptPreviews([p]);document.body.innerHTML=m.receiptHtml(rows[0]);m.bindReceiptButtons(document.body,rows,()=>{});},p);
+ await page.locator('.receipt-open-btn').click();
+ await page.waitForFunction(()=>!document.querySelector('.receipt-open-btn').disabled);
+ assert.equal(state.calls.filter(o=>o.name==='payment_proof_reference').length,2);
+ const signed=state.calls.filter(o=>o.action==='signed');assert.equal(signed.length,2);assert.ok(signed.every(o=>o.expires===300 && o.name===p.proof_path));
+ assert.ok(!(await page.content()).includes(p.proof_url));
+});
+test("Cash receipt without proof renders an explicit empty state",async({page,state})=>{
+ const p={payment_id:'PAY-CASH',request_id:'REQ-DONE',payment_method:'Cash'};state.tables.payment_records=[p];await page.goto(base);
+ const html=await page.evaluate(async p=>{const m=await import('/js/payment-receipts.js');return m.receiptHtml((await m.prepareReceiptPreviews([p]))[0]);},p);
+ assert.match(html,/No proof uploaded/);assert.equal(state.calls.filter(o=>o.action==='signed').length,0);
+});
+test("Admin reconciliation queue is read-only and links to existing history",async({page,state})=>{
+ state.role='admin';state.tables.verification_requests=state.tables.verification_requests.filter(v=>v.user_id!==ids.provider);
+ const before=structuredClone(state.tables);await ready(page,'admin/verifications.html');
+ await page.locator('#loadReconciliationBtn').click();await page.locator('#reconciliationList a').waitFor();
+ assert.match(await page.locator('#reconciliationList a').getAttribute('href'),new RegExp(ids.provider));
+ assert.deepEqual(state.tables,before);assert.ok(state.calls.some(o=>o.name==='verification_reconciliation_queue'));
+ assert.equal(await page.locator('#loadReconciliationBtn').isVisible(),false);
+ await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
+ assert.deepEqual(await page.evaluate(async()=> (await axe.run(document,{runOnly:{type:'tag',values:['wcag2a','wcag2aa','wcag21aa']}})).violations.map(v=>v.id)),[]);
+ if(process.env.SYSTEM_SCREENSHOTS) {
+  fs.mkdirSync(process.env.SYSTEM_SCREENSHOTS,{recursive:true});
+  for(const width of [1440,390,320]) {
+   await page.setViewportSize({width,height:1000});
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+   await page.screenshot({path:path.join(process.env.SYSTEM_SCREENSHOTS,`admin-reconciliation-${width}.png`),fullPage:true});
+  }
+ }
+
+});
+for(const role of ['client','provider']) test(`${role} messaging avoids messages from a former assignment`,async({page,state})=>{
+ state.role=role;state.tables.internal_messages=[{id:'old',request_id:'REQ-A',sender_id:role==='client'?'former-provider':'former-client',receiver_id:ids[role],message_text:'Former assignment private text',is_read:false,created_at:'2026-01-01'}];
+ await ready(page,`${role}/messages.html?request_id=REQ-A`);await page.locator('#chatArea:not(.hidden)').waitFor();
+ assert.ok(!(await page.locator('#messagesList').textContent()).includes('Former assignment private text'));assert.equal(state.tables.internal_messages[0].is_read,false);
+});
+test("Admin cannot approve a legacy submission with unrecorded consent",async({page,state})=>{
+ state.role='admin';const v=state.tables.verification_requests[0];v.status='pending';v.age_confirmed=null;v.privacy_consent=null;
+ await ready(page,'admin/verifications.html');await page.locator('.approve-verification-btn').click();
+ assert.match(await page.locator('#messageBox').textContent(),/Consent cannot be backfilled/);
+ assert.equal(v.status,'pending');assert.equal(state.calls.filter(o=>o.name==='admin_review_verification').length,0);
+});
+test("Admin legacy queue paginates without duplicate accounts or mutations",async({page,state})=>{
+ state.role='admin';for(let i=0;i<101;i++) state.tables.users.push({...state.tables.users[1],id:`10000000-0000-4000-8000-${String(i).padStart(12,'0')}`,full_name:`Synthetic legacy ${i}`});
+ const before=structuredClone(state.tables);await ready(page,'admin/verifications.html');
+ await page.locator('#loadReconciliationBtn').click();await page.waitForFunction(()=>document.querySelectorAll('#reconciliationList a').length===100);
+ assert.equal(await page.locator('#loadReconciliationBtn').isVisible(),true);
+ await page.locator('#loadReconciliationBtn').click();await page.waitForFunction(()=>document.querySelectorAll('#reconciliationList a').length===101);
+ assert.equal(await page.locator('#loadReconciliationBtn').isVisible(),false);
+ assert.equal(new Set(await page.locator('#reconciliationList a').evaluateAll(links=>links.map(l=>l.href))).size,101);
+ assert.deepEqual(state.tables,before);
+});
 async function main() {
   const browser = await chromium.launch({
     executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
@@ -1306,6 +1414,7 @@ async function main() {
       try {
         await t.run({ page, state, context });
         assert.deepEqual(state.unknown, [], "Unsupported fixture operations");
+        assert.equal(state.calls.filter(o=>o.kind==="query" && o.table==="notifications" && o.calls.some(c=>c[0]==="insert")).length,0,"Browser must not emit notifications");
         assert.deepEqual(errors, [], "Unexpected JavaScript errors");
         results.push({ name: t.name, status: "PASS" });
         console.log(`PASS ${t.name}`);

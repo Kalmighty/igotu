@@ -1,6 +1,6 @@
+import { providerRequests, serviceParticipants } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { supabase } from "./supabaseClient.js";
-import { createNotification } from "./notification-helper.js";
 
 let currentUser = null;
 let currentProfile = null;
@@ -126,35 +126,10 @@ async function handleLogout() {
 }
 
 async function loadClients(requests) {
-    const clientIds = [...new Set(
-        requests
-            .map(function(request) {
-                return request.client_id;
-            })
-            .filter(Boolean)
-    )];
-
-    if (clientIds.length === 0) {
-        clientMap = new Map();
-        return;
-    }
-
-    const { data, error } = await supabase
-        .from("users")
-        .select("id, full_name, user_code, email")
-        .in("id", clientIds);
-
-    if (error) {
-        console.error("Load clients error:", error);
-        clientMap = new Map();
-        return;
-    }
-
+    const { data, error } = await serviceParticipants(requests.map(request => request.request_id));
     clientMap = new Map();
-
-    (data || []).forEach(function(client) {
-        clientMap.set(client.id, client);
-    });
+    if (error) { showMessage("Conversation participants could not be loaded. Please try again."); return; }
+    (data || []).forEach(person => clientMap.set(person.id, person));
 }
 
 async function loadConversations() {
@@ -162,12 +137,7 @@ async function loadConversations() {
 
     conversationList.innerHTML = `<p class="muted-text">Loading conversations...</p>`;
 
-    const { data, error } = await supabase
-        .from("service_requests")
-        .select("*")
-        .eq("selected_provider_id", currentUser.id)
-        .in("status", ["provider_selected", "confirmed", "in_progress", "completed"])
-        .order("created_at", { ascending: false });
+    const { data, error } = await providerRequests(["provider_selected", "confirmed", "in_progress", "completed"]);
 
     if (error) {
         console.error("Load conversations error:", error);
@@ -301,21 +271,23 @@ function renderMessages(messages) {
     messagesList.replaceChildren(...bubbles);
 }
 
-async function markMessagesAsRead(requestIdValue) {
+async function markMessagesAsRead(requestIdValue, peerId) {
     const { error } = await supabase.from("internal_messages")
         .update({ is_read: true }).eq("request_id", requestIdValue)
-        .eq("receiver_id", currentUser.id).eq("is_read", false);
+        .eq("receiver_id", currentUser.id).eq("sender_id", peerId).eq("is_read", false);
     if (error) showMessage("Messages loaded, but read status could not be updated.");
 }
 
 async function loadMessages(scrollToBottom = false) {
     if (!selectedRequest) return;
     const requestedId = selectedRequest.request_id;
+    const peerId = selectedRequest.client_id;
     const version = ++messageLoadVersion;
     const messagesList = document.getElementById("messagesList");
     try {
         const { data, error } = await supabase.from("internal_messages")
             .select("*").eq("request_id", requestedId)
+            .in("sender_id", [currentUser.id, peerId]).in("receiver_id", [currentUser.id, peerId])
             .order("created_at", { ascending: true });
         // A previous thread or poll may finish after a newer selection/request.
         if (selectedRequest?.request_id !== requestedId || version !== messageLoadVersion) return;
@@ -323,7 +295,7 @@ async function loadMessages(scrollToBottom = false) {
         currentMessages = data || [];
         renderMessages(currentMessages);
         if (scrollToBottom) messagesList.scrollTop = messagesList.scrollHeight;
-        await markMessagesAsRead(requestedId);
+        await markMessagesAsRead(requestedId, peerId);
     } catch {
         if (selectedRequest?.request_id === requestedId && version === messageLoadVersion) {
             messagesList.innerHTML = '<p class="muted-text">Unable to load messages. Please try again.</p>';
@@ -363,8 +335,7 @@ async function sendMessage(event) {
     try {
         const { error } = await supabase.from("internal_messages").insert(message);
         if (error) throw error;
-        await createNotification(recipient.id, "New message",
-            `${currentProfile.full_name} sent you a message about "${request.title}".`);
+
         if (selectedRequest?.request_id === request.request_id) await loadMessages(true);
     } catch {
         drafts.set(request.request_id, text);
