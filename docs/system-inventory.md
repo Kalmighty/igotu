@@ -1,6 +1,6 @@
 # Source inventory
 
-Generated from `0a849da` plus the current working tree. Static discovery is not evidence of live schema installation.
+Generated from `b619d21` plus the current working tree. Static discovery is not evidence of live schema installation.
 
 ## File inventory
 

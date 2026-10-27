@@ -1,4 +1,5 @@
 const fs = require("node:fs");
+const path = require("node:path");
 const { check, validatePublic, validate } = require("./runtime.cjs");
 function load(args) {
   const flag = (n) => {
@@ -15,6 +16,16 @@ function load(args) {
     approval = JSON.parse(fs.readFileSync(flag("--approval"), "utf8"));
     validatePublic(config, approval);
     const secretFile = flag("--secrets");
+    const secretPath = fs.realpathSync(secretFile);
+    if (config.frontendDirectory) {
+      const frontend = fs.existsSync(config.frontendDirectory)
+        ? fs.realpathSync(config.frontendDirectory)
+        : path.resolve(config.frontendDirectory);
+      check(
+        secretPath !== frontend && !secretPath.startsWith(frontend + path.sep),
+        "SECRETS_OUTSIDE_FRONTEND_REQUIRED",
+      );
+    }
     check(
       (fs.statSync(secretFile).mode & 0o077) === 0,
       "SECRET_FILE_PERMISSIONS_REQUIRED",

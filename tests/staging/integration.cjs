@@ -9,6 +9,30 @@ const cases = {};
 const test = (id, run) => (cases[id] = run);
 let flow = {};
 const row = (r) => (Array.isArray(r) ? r[0] : r);
+function selectionRaceResult(responses) {
+  check(
+    responses.length === 2 && responses.filter((r) => r.ok).length === 1,
+    "CONCURRENT_SELECTION_NOT_EXCLUSIVE",
+  );
+  const loser = responses.find((r) => !r.ok);
+  check(
+    loser.status === 400 &&
+      loser.data?.code === "P0001" &&
+      loser.data?.message ===
+        "Provider no longer matches this request or is booked.",
+    "CONCURRENT_SELECTION_REJECTION_NOT_PROVEN",
+  );
+}
+function completeResults(results) {
+  return plan.cases.map(
+    (c) =>
+      results.find((r) => r.id === c.id) || {
+        id: c.id,
+        status: "NOT_TESTED",
+        reason: "STOPPED_AFTER_EARLIER_FAILURE",
+      },
+  );
+}
 async function reviewId(x, a) {
   const r = await x.success(
     x.table(a, "verification_requests", {
@@ -729,10 +753,7 @@ test("ST-19", async (x) => {
         }),
       ),
     );
-    check(
-      rs.filter((r) => r.ok).length === 1,
-      "CONCURRENT_SELECTION_NOT_EXCLUSIVE",
-    );
+    selectionRaceResult(rs);
     const final = await x.success(
       x.rpc(p, "provider_service_requests", {
         p_request_id: null,
@@ -789,6 +810,7 @@ async function main() {
   const { config, approval, secrets } = require("./config.cjs").load(args);
   const x = makeRuntime(config, approval, secrets);
   x.secrets = secrets;
+  const startedAt = new Date().toISOString();
   const results = [];
   for (const c of plan.cases) {
     try {
@@ -813,7 +835,7 @@ async function main() {
   }
   const output = path.resolve(
     __dirname,
-    "../../work/staging/phase7-api-results.json",
+    "../../work/staging/api-results.json",
   );
   fs.mkdirSync(path.dirname(output), { recursive: true });
   fs.writeFileSync(
@@ -823,7 +845,9 @@ async function main() {
         scope:
           "Authorized synthetic staging core API checks; separate operator/browser/SQL-session procedures remain required",
         projectRef: config.projectRef,
-        results,
+        startedAt,
+        finishedAt: new Date().toISOString(),
+        results: completeResults(results),
       },
       null,
       2,
@@ -838,4 +862,4 @@ if (require.main === module)
     console.error("BLOCKED: " + (e.safeCode || "LOCAL_CONFIGURATION_INVALID"));
     process.exitCode = 2;
   });
-module.exports = { cases };
+module.exports = { cases, selectionRaceResult, completeResults };

@@ -2,7 +2,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const http = require("node:http");
-const { check } = require("./runtime.cjs");
+const { check, validatePublic } = require("./runtime.cjs");
 async function main() {
   const args = process.argv.slice(2);
   if (!args.includes("--execute")) {
@@ -11,7 +11,7 @@ async function main() {
     );
     return;
   }
-  const { config, secrets } = require("./config.cjs").load(args);
+  const { config, approval, secrets } = require("./config.cjs").load(args);
   const root = fs.realpathSync(config.frontendDirectory),
     allowed = path.resolve(__dirname, "../../work/staging") + path.sep;
   check(root.startsWith(allowed), "LOCAL_STAGING_ARTIFACT_REQUIRED");
@@ -73,6 +73,12 @@ async function main() {
           });
           const unexpected = [];
           await ctx.route("**/*", (route) => {
+            try {
+              validatePublic(config, approval);
+            } catch {
+              unexpected.push("APPROVAL_WINDOW_CLOSED");
+              return route.abort();
+            }
             const u = new URL(route.request().url());
             if (
               [base, config.url, "https://cdn.jsdelivr.net"].includes(u.origin)

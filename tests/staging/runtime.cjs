@@ -119,6 +119,9 @@ function makeRuntime(config, approval, secrets, transport = fetch) {
     resource,
     { method = "GET", body, headers = {} } = {},
   ) {
+    // Long suites and signed-URL waits must not outlive their approved window.
+    // Recheck before every outbound request, including synthetic cleanup writes.
+    validatePublic(config, approval);
     const url = new URL(resource, origin);
     check(
       url.origin === origin &&

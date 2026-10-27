@@ -1,9 +1,9 @@
 {
   "scope": "Statement inventory accompanying manual review; no SQL execution or automatic semantic proof",
   "draft_sha256": {
-    "20261026153952_01_foundation_draft.sql": "8c15423dd8af1bc5d19fcd608fc3c622cb51cc0f133eb9632bd4c5991da3f02e",
+    "20261026153952_01_foundation_draft.sql": "753d79083a3dac4fd928c6fee5ff23ff379f88624ae7d487a88c6a84dafed60d",
     "20261026153954_02_private_readers_draft.sql": "0a3bbe701b2a0e79fdb2197fe40130dd92e286c0b130a264a541316b2d03b1c5",
-    "20261026153956_03_integrity_draft.sql": "84d56f510aa796fc5ef987767f9d4bdf0f7fc4d9e760c4a0c2aafa152e79f869",
+    "20261026153956_03_integrity_draft.sql": "e1bfd24182dc7f4fe3faf405b102cf87030a3adc53edeb01260b99dc936c11e6",
     "20261026153958_04_cutover_draft.sql": "22549d69e655a5a84f47e3d36cc6956e0cb4e571da06d9282859203c5dad1ee7"
   },
   "statements": [

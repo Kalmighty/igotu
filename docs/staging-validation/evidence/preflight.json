@@ -1,0 +1,47 @@
+{
+  "scope": "OFFLINE_ONLY_NO_DATABASE_CONNECTION",
+  "status": "PASS",
+  "hashes": [
+    {
+      "order": 0,
+      "path": "igotu_v2/database/staging-baseline/20261026165620_phase7_synthetic_baseline_draft.sql",
+      "sha256": "7485cc1fc3cb31a346cb59088ffb96337da4200b5dc4b9497049137526b7e01d"
+    },
+    {
+      "order": 1,
+      "path": "igotu_v2/database/backend-integration/20261026153952_01_foundation_draft.sql",
+      "sha256": "8c15423dd8af1bc5d19fcd608fc3c622cb51cc0f133eb9632bd4c5991da3f02e"
+    },
+    {
+      "order": 2,
+      "path": "igotu_v2/database/backend-integration/20261026153954_02_private_readers_draft.sql",
+      "sha256": "0a3bbe701b2a0e79fdb2197fe40130dd92e286c0b130a264a541316b2d03b1c5"
+    },
+    {
+      "order": 3,
+      "path": "igotu_v2/database/backend-integration/20261026153956_03_integrity_draft.sql",
+      "sha256": "84d56f510aa796fc5ef987767f9d4bdf0f7fc4d9e760c4a0c2aafa152e79f869"
+    },
+    {
+      "order": 4,
+      "path": "igotu_v2/database/backend-integration/20261026153958_04_cutover_draft.sql",
+      "sha256": "22549d69e655a5a84f47e3d36cc6956e0cb4e571da06d9282859203c5dad1ee7"
+    }
+  ],
+  "postgresRequired": 17,
+  "writerIsolationRequired": "read committed",
+  "privateSchema": "igotu_backend_private",
+  "stagingWorkflows": {
+    "prepared": 20,
+    "executed": 0,
+    "passed": 0,
+    "failed": 0,
+    "blocked": 20
+  },
+  "acceptanceGroups": {
+    "passed": 0,
+    "failed": 0,
+    "blocked": 14
+  },
+  "nextStage": "BLOCKED_PENDING_SEPARATE_PROVISIONING_APPROVAL"
+}

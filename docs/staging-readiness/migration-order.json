@@ -11,7 +11,7 @@
     {
       "order": 1,
       "path": "igotu_v2/database/backend-integration/20261026153952_01_foundation_draft.sql",
-      "sha256": "8c15423dd8af1bc5d19fcd608fc3c622cb51cc0f133eb9632bd4c5991da3f02e",
+      "sha256": "753d79083a3dac4fd928c6fee5ff23ff379f88624ae7d487a88c6a84dafed60d",
       "approval_required": true
     },
     {
@@ -23,7 +23,7 @@
     {
       "order": 3,
       "path": "igotu_v2/database/backend-integration/20261026153956_03_integrity_draft.sql",
-      "sha256": "84d56f510aa796fc5ef987767f9d4bdf0f7fc4d9e760c4a0c2aafa152e79f869",
+      "sha256": "e1bfd24182dc7f4fe3faf405b102cf87030a3adc53edeb01260b99dc936c11e6",
       "approval_required": true
     },
     {
