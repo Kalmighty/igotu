@@ -1,0 +1,555 @@
+{
+  "date_myt": "2026-10-27",
+  "scope": "Local offline/static/fixture/mock checks only; final SQL source was parsed/reviewed again after the full fixture run. No SQL or staging test executed.",
+  "local_check_groups": [
+    {
+      "name": "static",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "verification-draft",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "backend-drafts",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "migration-review",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "staging-baseline",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "staging-preparation",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "staging-plan",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "staging-artifact",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "homepage",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "auth",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "sdk-cleanup",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "sdk-lifecycle",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "verification",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "workspace-layout",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "name": "system-functional",
+      "status": "PASS",
+      "exitCode": 0
+    }
+  ],
+  "local_groups_passed": 15,
+  "local_groups_failed": 0,
+  "fixture_scenarios_passed": 94,
+  "fixture_scenarios_failed": 0,
+  "fixture_results": [
+    {
+      "name": "Matching fails closed when service_request_declines eligibility lookup fails",
+      "status": "PASS"
+    },
+    {
+      "name": "Matching fails closed when service_requests eligibility lookup fails",
+      "status": "PASS"
+    },
+    {
+      "name": "Image failure retry preserves one committed service request",
+      "status": "PASS"
+    },
+    {
+      "name": "client failed message restores draft without duplicate sends",
+      "status": "PASS"
+    },
+    {
+      "name": "provider failed message restores draft without duplicate sends",
+      "status": "PASS"
+    },
+    {
+      "name": "client slow message response cannot overwrite another conversation",
+      "status": "PASS"
+    },
+    {
+      "name": "provider slow message response cannot overwrite another conversation",
+      "status": "PASS"
+    },
+    {
+      "name": "Notification transport failure does not turn committed Admin approval into failure",
+      "status": "PASS"
+    },
+    {
+      "name": "Provider load failure cannot overwrite previously saved specializations",
+      "status": "PASS"
+    },
+    {
+      "name": "Admin cancelling resolution prompt does not resolve report",
+      "status": "PASS"
+    },
+    {
+      "name": "Incoming request never displays a short exact street address before confirmation",
+      "status": "PASS"
+    },
+    {
+      "name": "Cancellation dialog traps keyboard focus and restores its opener",
+      "status": "PASS"
+    },
+    {
+      "name": "Forgot password handles thrown transport errors and restores submit",
+      "status": "PASS"
+    },
+    {
+      "name": "Signup handles thrown transport errors and restores submit",
+      "status": "PASS"
+    },
+    {
+      "name": "Verification insert and cleanup failure restores form without exposing private paths",
+      "status": "PASS"
+    },
+    {
+      "name": "Unread notification count includes items beyond the latest eight",
+      "status": "PASS"
+    },
+    {
+      "name": "Client does not offer duplicate settlement on failed payment_records lookup",
+      "status": "PASS"
+    },
+    {
+      "name": "Client does not offer duplicate settlement on failed service_reviews lookup",
+      "status": "PASS"
+    },
+    {
+      "name": "Provider does not offer duplicate reviews when review history lookup fails",
+      "status": "PASS"
+    },
+    {
+      "name": "Connected registration, approval, onboarding and complete service workflow (synthetic)",
+      "status": "PASS"
+    },
+    {
+      "name": "Decline excludes Provider, cancellation retains history and required reasons",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations exclude unavailable Provider",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations exclude outside-hours Provider",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations exclude declined Provider",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations exclude busy Provider",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations exclude wrong-specialization Provider",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations exclude inactive Provider",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations exclude unverified Provider",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendations deduplicate, sort distance, calculate reviews and respect weekly hours boundary",
+      "status": "PASS"
+    },
+    {
+      "name": "Payment proof required for transfers, optional for cash and validated before insert",
+      "status": "PASS"
+    },
+    {
+      "name": "Report submission and Admin review preserve participant associations (synthetic)",
+      "status": "PASS"
+    },
+    {
+      "name": "Admin search, role filters and suspend/activate controls use the existing RPC",
+      "status": "PASS"
+    },
+    {
+      "name": "Map search, click and GPS update actual coordinates with local Leaflet and synthetic geocoder",
+      "status": "PASS"
+    },
+    {
+      "name": "client completed service has no start/complete actions; duplicate review form absent",
+      "status": "PASS"
+    },
+    {
+      "name": "provider completed service has no start/complete actions; duplicate review form absent",
+      "status": "PASS"
+    },
+    {
+      "name": "Reset password rejects stale session and restores button after update errors",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendation provider_specializations error is shown as an error, not an empty result",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendation users error is shown as an error, not an empty result",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendation provider_profiles error is shown as an error, not an empty result",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendation provider_weekly_availability error is shown as an error, not an empty result",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendation service_reviews error is shown as an error, not an empty result",
+      "status": "PASS"
+    },
+    {
+      "name": "client report rejects unrelated service participant",
+      "status": "PASS"
+    },
+    {
+      "name": "provider report rejects unrelated service participant",
+      "status": "PASS"
+    },
+    {
+      "name": "client messaging uses participant-scoped threads and escapes message text",
+      "status": "PASS"
+    },
+    {
+      "name": "provider messaging uses participant-scoped threads and escapes message text",
+      "status": "PASS"
+    },
+    {
+      "name": "Profile menu logout clears local session even when server sign-out fails",
+      "status": "PASS"
+    },
+    {
+      "name": "Accessibility of real client/request-details.html?request_id=REQ-DONE form and controls",
+      "status": "PASS"
+    },
+    {
+      "name": "Accessibility of real provider/assignment-details.html form and controls",
+      "status": "PASS"
+    },
+    {
+      "name": "Accessibility of real client/create-request.html form and controls",
+      "status": "PASS"
+    },
+    {
+      "name": "Accessibility of real provider/edit-profile.html form and controls",
+      "status": "PASS"
+    },
+    {
+      "name": "Accessibility of real admin/reports.html form and controls",
+      "status": "PASS"
+    },
+    {
+      "name": "client in-flight send keeps original conversation and notification recipient",
+      "status": "PASS"
+    },
+    {
+      "name": "provider in-flight send keeps original conversation and notification recipient",
+      "status": "PASS"
+    },
+    {
+      "name": "Provider availability changes affect the next recommendation load",
+      "status": "PASS"
+    },
+    {
+      "name": "Provider fallback map remains interactive after both tile servers fail",
+      "status": "PASS"
+    },
+    {
+      "name": "client duplicate-email registration restores form and displays SDK error",
+      "status": "PASS"
+    },
+    {
+      "name": "provider duplicate-email registration restores form and displays SDK error",
+      "status": "PASS"
+    },
+    {
+      "name": "Password recovery sends only the synthetic request with same-origin reset destination",
+      "status": "PASS"
+    },
+    {
+      "name": "Successful password update clears local cache/session and returns to Login",
+      "status": "PASS"
+    },
+    {
+      "name": "client inconsistent approval (flag-false) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "client inconsistent approval (missing-reviewer) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "client inconsistent approval (wrong-reviewer) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "client inconsistent approval (wrong-role) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "client inconsistent approval (missing-time) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "client inconsistent approval (rejected-latest) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "provider inconsistent approval (flag-false) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "provider inconsistent approval (missing-reviewer) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "provider inconsistent approval (wrong-reviewer) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "provider inconsistent approval (wrong-role) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "provider inconsistent approval (missing-time) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "provider inconsistent approval (rejected-latest) cannot initialize workspace",
+      "status": "PASS"
+    },
+    {
+      "name": "Shared menus preserve Escape focus and close the other dropdown across all roles",
+      "status": "PASS"
+    },
+    {
+      "name": "Every workspace page runs real modules at 1440px",
+      "status": "PASS"
+    },
+    {
+      "name": "Every workspace page runs real modules at 1024px",
+      "status": "PASS"
+    },
+    {
+      "name": "Every workspace page runs real modules at 768px",
+      "status": "PASS"
+    },
+    {
+      "name": "Every workspace page runs real modules at 390px",
+      "status": "PASS"
+    },
+    {
+      "name": "Every workspace page runs real modules at 320px",
+      "status": "PASS"
+    },
+    {
+      "name": "client missing backend contract locks workspace before business reads",
+      "status": "PASS"
+    },
+    {
+      "name": "provider missing backend contract locks workspace before business reads",
+      "status": "PASS"
+    },
+    {
+      "name": "admin missing backend contract locks workspace before business reads",
+      "status": "PASS"
+    },
+    {
+      "name": "Recommendation RPC supplies cards without broad cross-user reads",
+      "status": "PASS"
+    },
+    {
+      "name": "Provider dashboard uses assigned request projection without raw request reads",
+      "status": "PASS"
+    },
+    {
+      "name": "Atomic Provider save failure preserves all saved information and restores form",
+      "status": "PASS"
+    },
+    {
+      "name": "Creation transport retry reuses the same idempotency key",
+      "status": "PASS"
+    },
+    {
+      "name": "Private receipt resolver failure never falls back to public URL",
+      "status": "PASS"
+    },
+    {
+      "name": "Private receipt signer failure never falls back to public URL",
+      "status": "PASS"
+    },
+    {
+      "name": "Private receipt ambiguous failure never falls back to public URL",
+      "status": "PASS"
+    },
+    {
+      "name": "Private receipt signer uses five-minute URLs and refreshes on open",
+      "status": "PASS"
+    },
+    {
+      "name": "Cash receipt without proof renders an explicit empty state",
+      "status": "PASS"
+    },
+    {
+      "name": "Admin reconciliation queue is read-only and links to existing history",
+      "status": "PASS"
+    },
+    {
+      "name": "client messaging avoids messages from a former assignment",
+      "status": "PASS"
+    },
+    {
+      "name": "provider messaging avoids messages from a former assignment",
+      "status": "PASS"
+    },
+    {
+      "name": "Admin cannot approve a legacy submission with unrecorded consent",
+      "status": "PASS"
+    },
+    {
+      "name": "Admin legacy queue paginates without duplicate accounts or mutations",
+      "status": "PASS"
+    }
+  ],
+  "staging_workflows_prepared": 20,
+  "staging_workflows_executed": 0,
+  "staging_passed": 0,
+  "staging_failed": 0,
+  "real_backend_external_groups": [
+    {
+      "id": "DB-01",
+      "name": "Actual schema, API columns/RPC signatures/ACL and exposed-schema compatibility",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-02",
+      "name": "Anonymous/wrong-role/inactive API authorization and authority-field tampering",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-03",
+      "name": "Not-submitted/pending/rejected direct table and RPC workspace denial",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-04",
+      "name": "Concurrent duplicate verification submission, fake consent and private-document ownership",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-05",
+      "name": "Transactional Admin approval/rejection and Provider badge synchronization",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-06",
+      "name": "Recommendation completeness, other-Client booking visibility and approved target eligibility",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-07",
+      "name": "Concurrent selection/confirmation, decline/cancel/start/complete transition integrity",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-08",
+      "name": "Messaging participant policies, read flags and revoked-session writes",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-09",
+      "name": "Payment ownership, duplicate prevention, private legacy receipts and signed URL expiry",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-10",
+      "name": "Review ownership/completion/duplicate constraints and complete aggregate statistics",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-11",
+      "name": "Report evidence privacy, report ownership/review and transactional notification recipients",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-12",
+      "name": "Atomic Provider profile/skills/hours updates and failure rollback",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-13",
+      "name": "Stage A/B/C/identity integration, notification handoff and existing-account reconciliation",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "EXT-01",
+      "name": "Real confirmation/recovery emails, live geocoder/tiles, device GPS and production configuration",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    }
+  ],
+  "source_manifest": "statement-review.json",
+  "baseline_manifest": "migration-order.json"
+}

@@ -1,5 +1,7 @@
 # Phase 6 coordinated staging rollout — REVIEW ONLY
 
+> Phase 7 reviewed/corrected these drafts. See [current migration review](../staging-readiness/README.md), [ordered execution guide](../staging-readiness/guide.md) and [current validation](../staging-readiness/validation.md). Phase 6 evidence below is historical; use the Phase 7 gates and explicit baseline-first order.
+
 **Nothing in this directory has been applied. No staging project has been created.** The four versioned SQL files under `igotu_v2/database/backend-integration/` are deliberately outside `supabase/migrations`. They supersede the earlier Stage A/C and mandatory-identity draft rollout for the reviewed baseline. Do not concatenate or run historical setup SQL. Earlier SQL and rollout sources remain byte-identical.
 
 ## Scope and prerequisites
@@ -24,7 +26,7 @@ Review actual staging catalog, version/types, constraints, function hashes, gran
 
 Use Supabase CLI-generated versioned names, but import into an operator-reviewed staging migration workflow only after approval. The files were created locally with CLI `migration new`; no project was linked and no database command was run. A deployment/CI job must never glob and execute all repository SQL files.
 
-For each approved staging SQL session, the operator must supply `igotu.integration.staging_only=true`, `catalog_reviewed=true`, `private_schema_verified=true` and, for D01, the **actual isolated** `project_ref`. D04 additionally requires `pre_cutover_reviewed=true`, `writes_paused=true`, `notifier_inventory_reviewed=true` and `legacy_receipts_reviewed=true`. These are operator attestations, not security credentials or automated verification. Drafts require the `postgres` operator role and explicitly reject the production reference. Do not provide these settings through browser clients.
+For each approved staging SQL session, the operator must supply `igotu.integration.staging_only=true`, `catalog_reviewed=true`, `private_schema_verified=true`, `writes_paused=true` and the **actual isolated** `project_ref` for every stage; verify PostgreSQL 17 and READ COMMITTED for app writers. D04 additionally requires `pre_cutover_reviewed=true`, `writes_paused=true`, `notifier_inventory_reviewed=true` and `legacy_receipts_reviewed=true`. These are operator attestations, not security credentials or automated verification. Drafts require the `postgres` operator role and explicitly reject the production reference. Do not provide these settings through browser clients.
 
 D01–D03 are incomplete security stages. Existing permissive policies remain until D04; they must never be treated as a secure intermediate deployment. D04 revokes browser grants, replaces reviewed browser policies and adds restrictive boundaries for retained custom-role policies. It keeps only specific reads, message/read-flag writes, payment/review inserts and verification submissions. Normal profile/request/assignment mutations go through guarded RPCs. Review each effective privilege after installation, including inherited privileges and custom roles. Install all four in a maintenance window, then test before allowing staging traffic.
 

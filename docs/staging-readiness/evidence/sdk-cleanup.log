@@ -1,0 +1,1 @@
+PASS: real SDK local sign-out, simulated 503 logout and thrown sign-out all leave getSession() null, remove only this project’s stored session/cache, preserve unrelated storage and never redirect. All API responses intercepted.

@@ -1,5 +1,7 @@
 # Backend integration evidence and readiness
 
+> Phase 7 reviewed/corrected these drafts. See [current migration review](../staging-readiness/README.md), [ordered execution guide](../staging-readiness/guide.md) and [current validation](../staging-readiness/validation.md). Phase 6 evidence below is historical; use the Phase 7 gates and explicit baseline-first order.
+
 Phase 6 is based on `igotu-system-audit` at `7dbbf8932c2f99160a543be9c9b67c91eb0d87fe`. The starting tree was clean; previous homepage, role-login, verification and audit work was preserved. Branch/PR metadata and remote tips were checked: PR #1 security → main, #2 UI → security, #3 mandatory verification → UI, #4 audit → mandatory verification, all open and unmerged. This work is a separate draft PR targeting `igotu-system-audit`.
 
 **Application changes are implemented locally; the integrated backend is not installed or proven. Do not deploy this branch against the live database.** Database access was limited to authorized metadata-only SELECTs and read-only connector metadata/advisor tools. No application rows, identity documents, real credentials, database writes, migrations, project creation, merges or deployments were performed.

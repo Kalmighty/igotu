@@ -52,7 +52,7 @@ for name in ['security-hardening-stage-a-additive.sql','security-hardening-stage
     old=subprocess.check_output(['git','show',f'355e84d:igotu_v2/database/{name}'],cwd=root)
     if old!=p.read_bytes():errors.append(f'Protected draft changed: {name}')
 counts=collections.Counter(p.suffix for p in app.rglob('*') if p.is_file())
-lines=['# Source inventory — backend integration','',f'Generated from `{subprocess.check_output(["git","rev-parse","--short","HEAD"],cwd=root,text=True).strip()}` plus the backend integration working tree. Static discovery is not evidence of live schema installation.','', '## File inventory','']
+lines=['# Source inventory','',f'Generated from `{subprocess.check_output(["git","rev-parse","--short","HEAD"],cwd=root,text=True).strip()}` plus the current working tree. Static discovery is not evidence of live schema installation.','', '## File inventory','']
 for suffix in ['.html','.css','.js','.sql']:
     lines += [f'### {suffix}: {counts[suffix]} files','']+[f'- `{p.relative_to(app)}`' for p in sorted(app.rglob(f'*{suffix}'))]+['']
 lines+=['## Pages, entry scripts and stylesheet links','', '| Page | Direct scripts | Stylesheets |','| --- | --- | --- |']

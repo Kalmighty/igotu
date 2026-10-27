@@ -1,0 +1,2 @@
+Static reference/syntax checks: 30 HTML pages, 38 JS, 7 CSS, 24 SQL sources; 0 errors.
+Offline SQL syntax: 24 files, 840 statements parse. No database connection or semantic/authorization validation.

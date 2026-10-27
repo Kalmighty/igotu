@@ -1,6 +1,6 @@
-# Source inventory — backend integration
+# Source inventory
 
-Generated from `7dbbf89` plus the backend integration working tree. Static discovery is not evidence of live schema installation.
+Generated from `0a849da` plus the current working tree. Static discovery is not evidence of live schema installation.
 
 ## File inventory
 
@@ -88,7 +88,7 @@ Generated from `7dbbf89` plus the backend integration working tree. Static disco
 - `js/supabaseClient.js`
 - `js/verification.js`
 
-### .sql: 23 files
+### .sql: 24 files
 
 - `database/backend-integration/20261026153952_01_foundation_draft.sql`
 - `database/backend-integration/20261026153954_02_private_readers_draft.sql`
@@ -112,6 +112,7 @@ Generated from `7dbbf89` plus the backend integration working tree. Static disco
 - `database/security-hardening-stage-c-lockdown.sql`
 - `database/service-specialization-setup.sql`
 - `database/setup.sql`
+- `database/staging-baseline/20261026165620_phase7_synthetic_baseline_draft.sql`
 - `database/trust-safety-features-setup.sql`
 
 ## Pages, entry scripts and stylesheet links
@@ -214,6 +215,7 @@ Literal calls below include Storage `.from` as well as table `.from`. Dynamic `c
 | `security-hardening-stage-c-lockdown.sql` |  |  |
 | `service-specialization-setup.sql` | `provider_specializations` | `client_update_request` |
 | `setup.sql` |  |  |
+| `20261026165620_phase7_synthetic_baseline_draft.sql` | `public` | `admin_review_service_report`, `admin_review_verification`, `admin_update_user_status`, `assign_message_id`, `assign_notification_id`, `assign_payment_id`, `assign_review_id`, `assign_service_request_id`, `assign_skill_code`, `assign_user_code`, `client_cancel_request`, `client_complete_request`, `client_save_request_image`, `client_select_provider`, `client_update_request`, `complete_basic_profile`, `current_user_role`, `format_custom_id`, `handle_new_auth_user`, `provider_confirm_request`, `provider_decline_request`, `provider_start_request`, `set_updated_at`, `submit_service_report` |
 | `trust-safety-features-setup.sql` | `service_reports`, `service_request_declines` | `admin_review_service_report`, `client_cancel_request`, `client_select_provider`, `provider_confirm_request`, `provider_decline_request`, `submit_service_report` |
 
 ## Workflow and duplicate-code notes

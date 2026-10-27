@@ -1,0 +1,1 @@
+PASS empty baseline offline: 191 statements, 14 tables, 24 identical quarantined routine definitions; deterministic builder, no business data mutations, private document buckets; probe/catalog SQL parses. No SQL executed.

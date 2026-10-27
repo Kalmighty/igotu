@@ -4,45 +4,61 @@
 BEGIN;
 SET LOCAL lock_timeout='5s';
 SET LOCAL statement_timeout='60s';
+SET LOCAL search_path=public,pg_catalog;
 DO $gate$ BEGIN
+ IF current_setting('server_version_num')::integer / 10000 <> 17 THEN RAISE EXCEPTION 'Reviewed PostgreSQL 17 baseline required; review other versions separately.'; END IF;
  IF current_user<>'postgres' OR current_setting('igotu.integration.staging_only',true) IS DISTINCT FROM 'true'
  OR current_setting('igotu.integration.catalog_reviewed',true) IS DISTINCT FROM 'true'
  OR current_setting('igotu.integration.private_schema_verified',true) IS DISTINCT FROM 'true'
+ OR current_setting('igotu.integration.writes_paused',true) IS DISTINCT FROM 'true'
  THEN RAISE EXCEPTION 'Authorized isolated staging, catalog review and effective API-schema privacy evidence required.'; END IF;
+ IF EXISTS(SELECT 1 FROM regexp_split_to_table(coalesce(current_setting('pgrst.db_schemas',true),''),',') exposed(name)
+ WHERE trim(both '"' FROM btrim(exposed.name))='igotu_backend_private') THEN
+ RAISE EXCEPTION 'Private schema appears exposed. NULL/absent settings still require external proof.'; END IF;
 END $gate$;
 DO $dependencies$ BEGIN
+ IF current_setting('igotu.integration.project_ref',true) IS NULL OR current_setting('igotu.integration.project_ref',true)='giqtnbwyktbnbhdvjraa'
+ OR NOT EXISTS(SELECT 1 FROM igotu_backend_private.installation WHERE version='20261026.1'
+ AND project_ref=current_setting('igotu.integration.project_ref',true)) THEN RAISE EXCEPTION 'Staging project attestation does not match this installation.'; END IF;
  IF NOT EXISTS(SELECT 1 FROM igotu_backend_private.installation WHERE version='20261026.1' AND phase=2)
  THEN RAISE EXCEPTION 'Reviewed reader APIs required first.'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('admin_update_user_status(uuid,text)'))) IS DISTINCT FROM '45ca7c7966d9b7173a8d29fec046c609' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: admin_update_user_status'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('provider_start_request(text)'))) IS DISTINCT FROM 'd6e8d69a8ba2df00568806bc85aa3471' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: provider_start_request'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('client_complete_request(text)'))) IS DISTINCT FROM '83276aeb9b94e72b61dc7acc9d6cbced' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_complete_request'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('format_custom_id(text,text)'))) IS DISTINCT FROM '1b75cc9863d4eeaecebfd6a551eb1349' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: format_custom_id'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('set_updated_at()'))) IS DISTINCT FROM 'c4822644cf7d8a94a3b779a7f2c430e5' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: set_updated_at'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('assign_user_code()'))) IS DISTINCT FROM '533b048ec6006b4cb09816bd4bb7a707' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_user_code'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('assign_service_request_id()'))) IS DISTINCT FROM 'cc81eae5f333b1e2a721847087ecf02a' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_service_request_id'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('assign_skill_code()'))) IS DISTINCT FROM 'd6b0649d5a920d5c691c74a9d57201db' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_skill_code'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('assign_payment_id()'))) IS DISTINCT FROM 'e22a02aa51680a15de7321417c962071' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_payment_id'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('assign_review_id()'))) IS DISTINCT FROM '17182b2bf4d981f8dc27a993efeebb7a' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_review_id'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('assign_message_id()'))) IS DISTINCT FROM 'd24dafea56fe2319e011aa7c74e13025' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_message_id'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('assign_notification_id()'))) IS DISTINCT FROM '426dc23fa7350679557c367cd65b005c' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_notification_id'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('current_user_role()'))) IS DISTINCT FROM '126f596b9d5a89c026a286d8b335be81' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: current_user_role'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('handle_new_auth_user()'))) IS DISTINCT FROM '6e337fc906c4a58e14a09842724ba305' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: handle_new_auth_user'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('client_save_request_image(text,text,text)'))) IS DISTINCT FROM '348a966c7a7d8bdaad8d86ffec3e13f8' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_save_request_image'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('client_update_request(text,text,text,text,text,date,time without time zone,text,numeric,numeric,numeric,text)'))) IS DISTINCT FROM 'd0c8884416c5489102764366314a4c32' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_update_request'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('complete_basic_profile(text,text)'))) IS DISTINCT FROM '41675f6590ed187a06d2a20b1fa1cc6a' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: complete_basic_profile'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('admin_review_verification(uuid,text,text)'))) IS DISTINCT FROM '2fed291da2f00407a553305b353c3841' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: admin_review_verification'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('client_cancel_request(text,text)'))) IS DISTINCT FROM '0e817027f00845ea3967a58273264165' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_cancel_request'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('provider_decline_request(text,text)'))) IS DISTINCT FROM '0db321b2b32af22017e4c2e83e680915' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: provider_decline_request'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('client_select_provider(text,uuid)'))) IS DISTINCT FROM 'd1a6661b9ea82cdbae0e22645536c349' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_select_provider'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('provider_confirm_request(text)'))) IS DISTINCT FROM '080ed91fe661175825cad942370cdce7' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: provider_confirm_request'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('submit_service_report(text,uuid,text,text,text)'))) IS DISTINCT FROM '0541a7b2437e9375282f9d3a04150961' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: submit_service_report'; END IF;
- IF md5(pg_get_functiondef(to_regprocedure('admin_review_service_report(uuid,text,text)'))) IS DISTINCT FROM '518796d59faf41a6079e824ac62a084b' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: admin_review_service_report'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.admin_update_user_status(uuid,text)'))) IS DISTINCT FROM '45ca7c7966d9b7173a8d29fec046c609' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: admin_update_user_status'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.provider_start_request(text)'))) IS DISTINCT FROM 'd6e8d69a8ba2df00568806bc85aa3471' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: provider_start_request'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.client_complete_request(text)'))) IS DISTINCT FROM '83276aeb9b94e72b61dc7acc9d6cbced' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_complete_request'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.format_custom_id(text,text)'))) IS DISTINCT FROM '1b75cc9863d4eeaecebfd6a551eb1349' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: format_custom_id'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.set_updated_at()'))) IS DISTINCT FROM 'c4822644cf7d8a94a3b779a7f2c430e5' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: set_updated_at'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.assign_user_code()'))) IS DISTINCT FROM '533b048ec6006b4cb09816bd4bb7a707' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_user_code'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.assign_service_request_id()'))) IS DISTINCT FROM 'cc81eae5f333b1e2a721847087ecf02a' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_service_request_id'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.assign_skill_code()'))) IS DISTINCT FROM 'd6b0649d5a920d5c691c74a9d57201db' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_skill_code'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.assign_payment_id()'))) IS DISTINCT FROM 'e22a02aa51680a15de7321417c962071' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_payment_id'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.assign_review_id()'))) IS DISTINCT FROM '17182b2bf4d981f8dc27a993efeebb7a' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_review_id'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.assign_message_id()'))) IS DISTINCT FROM 'd24dafea56fe2319e011aa7c74e13025' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_message_id'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.assign_notification_id()'))) IS DISTINCT FROM '426dc23fa7350679557c367cd65b005c' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: assign_notification_id'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.current_user_role()'))) IS DISTINCT FROM '126f596b9d5a89c026a286d8b335be81' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: current_user_role'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.handle_new_auth_user()'))) IS DISTINCT FROM '6e337fc906c4a58e14a09842724ba305' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: handle_new_auth_user'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.client_save_request_image(text,text,text)'))) IS DISTINCT FROM '348a966c7a7d8bdaad8d86ffec3e13f8' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_save_request_image'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.client_update_request(text,text,text,text,text,date,time without time zone,text,numeric,numeric,numeric,text)'))) IS DISTINCT FROM 'd0c8884416c5489102764366314a4c32' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_update_request'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.complete_basic_profile(text,text)'))) IS DISTINCT FROM '41675f6590ed187a06d2a20b1fa1cc6a' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: complete_basic_profile'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.admin_review_verification(uuid,text,text)'))) IS DISTINCT FROM '2fed291da2f00407a553305b353c3841' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: admin_review_verification'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.client_cancel_request(text,text)'))) IS DISTINCT FROM '0e817027f00845ea3967a58273264165' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_cancel_request'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.provider_decline_request(text,text)'))) IS DISTINCT FROM '0db321b2b32af22017e4c2e83e680915' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: provider_decline_request'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.client_select_provider(text,uuid)'))) IS DISTINCT FROM 'd1a6661b9ea82cdbae0e22645536c349' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: client_select_provider'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.provider_confirm_request(text)'))) IS DISTINCT FROM '080ed91fe661175825cad942370cdce7' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: provider_confirm_request'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.submit_service_report(text,uuid,text,text,text)'))) IS DISTINCT FROM '0541a7b2437e9375282f9d3a04150961' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: submit_service_report'; END IF;
+ IF md5(pg_get_functiondef(to_regprocedure('public.admin_review_service_report(uuid,text,text)'))) IS DISTINCT FROM '518796d59faf41a6079e824ac62a084b' THEN RAISE EXCEPTION 'Baseline RPC/trigger drift: admin_review_service_report'; END IF;
 END $dependencies$;
 CREATE FUNCTION igotu_backend_private.require_writer(p_role text DEFAULT NULL) RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$ BEGIN
+ PERFORM igotu_backend_private.require_read_committed();
  -- Hold account status/approval stable through each mutation; Admin review/status
  -- writers take the same user row lock. Provider advisory lock always comes first.
  PERFORM 1 FROM public.users WHERE id=auth.uid() FOR SHARE;
  RETURN igotu_backend_private.require_workspace(p_role);
+END $$;
+CREATE FUNCTION igotu_backend_private.require_approved_writer(p_role text DEFAULT NULL) RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$ BEGIN
+ PERFORM igotu_backend_private.require_read_committed();
+ PERFORM 1 FROM public.users WHERE id=auth.uid() FOR SHARE;
+ IF NOT igotu_backend_private.approved_account(p_role) THEN RAISE EXCEPTION 'Active Admin-reviewed account required for profile completion.' USING ERRCODE='42501'; END IF;
+ RETURN auth.uid();
 END $$;
 CREATE FUNCTION igotu_backend_private.validate_request(details jsonb) RETURNS void LANGUAGE plpgsql SET search_path='' AS $$
 DECLARE lat numeric:=(details->>'client_lat')::numeric;lng numeric:=(details->>'client_lng')::numeric;budget numeric:=(details->>'budget')::numeric;
@@ -84,7 +100,7 @@ RETURNS public.users LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
 DECLARE subject uuid:=auth.uid();result public.users%rowtype;lat numeric:=(p_profile->>'provider_lat')::numeric;lng numeric:=(p_profile->>'provider_lng')::numeric;available boolean:=(p_profile->>'is_available')::boolean;
 BEGIN
  PERFORM igotu_backend_private.provider_lock(subject);
- PERFORM igotu_backend_private.require_writer('provider');
+ PERFORM igotu_backend_private.require_approved_writer('provider');
  IF nullif(btrim(p_full_name),'') IS NULL OR length(regexp_replace(coalesce(p_phone,''),'[^0-9+]','','g'))<7
  OR nullif(btrim(p_profile->>'bio'),'') IS NULL OR nullif(btrim(p_profile->>'location'),'') IS NULL
  OR lat IS NULL OR lng IS NULL OR NOT(lat BETWEEN -90 AND 90) OR NOT(lng BETWEEN -180 AND 180) OR available IS NULL
@@ -184,7 +200,7 @@ CREATE OR REPLACE FUNCTION public.client_complete_request(p_request_id text) RET
 CREATE FUNCTION igotu_backend_private.client_cancel_request(p_request_id text,p_reason text) RETURNS void LANGUAGE sql SECURITY DEFINER SET search_path='' AS $$ SELECT igotu_backend_private.transition(p_request_id,'cancel',NULL,p_reason); $$;
 CREATE OR REPLACE FUNCTION public.client_cancel_request(p_request_id text,p_reason text) RETURNS void LANGUAGE sql SECURITY INVOKER SET search_path='' AS $$ SELECT igotu_backend_private.client_cancel_request(p_request_id,p_reason); $$;
 CREATE OR REPLACE FUNCTION public.complete_basic_profile(p_full_name text, p_phone text)
- RETURNS users
+ RETURNS public.users
  LANGUAGE plpgsql
  SECURITY DEFINER
  SET search_path TO 'pg_catalog', 'public', 'pg_temp'
@@ -192,7 +208,7 @@ AS $function$
 declare
   v_user public.users%rowtype;
 begin
-    PERFORM igotu_backend_private.require_writer();
+    PERFORM igotu_backend_private.require_approved_writer('client');
 
   -- User must be logged in
   if auth.uid() is null then
@@ -237,9 +253,9 @@ begin
   end if;
 
 
-  -- Only Client and Provider use onboarding
-  if v_user.role::text not in ('client', 'provider') then
-    raise exception 'This profile setup is only for clients and providers.';
+  -- Provider completion is owned by the atomic save_provider_profile RPC.
+  if v_user.role::text <> 'client' then
+    raise exception 'Clients use basic setup; Providers must save the complete service profile.';
   end if;
 
 
@@ -417,7 +433,7 @@ begin
     from public.service_requests
 
     where request_id =
-        p_request_id;
+        p_request_id FOR SHARE;
 
 
     if not found then
@@ -476,7 +492,7 @@ begin
     -- CHECK REPORTED USER
     -- =========================================================
 
-    if p_reported_user_id <>
+    if p_reported_user_id IS DISTINCT FROM
        v_expected_reported_user
     then
 
@@ -584,6 +600,8 @@ DECLARE v public.verification_requests%rowtype;subject uuid; BEGIN
  PERFORM 1 FROM public.users WHERE id=subject FOR UPDATE;
  SELECT * INTO v FROM public.verification_requests WHERE id=p_request_id FOR UPDATE;
  IF v.status<>'pending' OR NOT EXISTS(SELECT 1 FROM public.users WHERE id=v.user_id AND role::text=v.role) THEN RAISE EXCEPTION 'Request already reviewed or applicant role changed.'; END IF;
+ IF v.id IS DISTINCT FROM (SELECT latest.id FROM public.verification_requests latest WHERE latest.user_id=subject ORDER BY latest.submitted_at DESC,latest.id DESC LIMIT 1)
+ THEN RAISE EXCEPTION 'Only the latest identity submission can be decided. Review history without rewriting it.'; END IF;
  IF p_status='approved' AND (v.age_confirmed IS DISTINCT FROM true OR v.privacy_consent IS DISTINCT FROM true) THEN RAISE EXCEPTION 'Unrecorded legacy consent requires rejection/corrected submission, never invented consent.'; END IF;
  UPDATE public.verification_requests SET status=p_status,admin_note=nullif(btrim(p_admin_note),''),reviewed_at=now(),reviewed_by=auth.uid() WHERE id=v.id;
  UPDATE public.users SET identity_verified=(p_status='approved'),identity_verified_at=CASE WHEN p_status='approved' THEN now() END,
@@ -603,7 +621,7 @@ DECLARE r public.service_reports%rowtype; BEGIN
  -- Exactly one D04 report trigger owns final-decision notifications.
 END $$;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA igotu_backend_private FROM PUBLIC,anon,authenticated,service_role;
-GRANT EXECUTE ON FUNCTION igotu_backend_private.is_admin(),igotu_backend_private.workspace(text),igotu_backend_private.applicant(),igotu_backend_private.participant(text),igotu_backend_private.can_read_receipt(text) TO anon,authenticated;
+GRANT EXECUTE ON FUNCTION igotu_backend_private.is_admin(),igotu_backend_private.approved_account(text),igotu_backend_private.workspace(text),igotu_backend_private.applicant(),igotu_backend_private.participant(text),igotu_backend_private.can_read_receipt(text) TO anon,authenticated;
 GRANT EXECUTE ON FUNCTION igotu_backend_private.provider_service_requests(text,text[]),igotu_backend_private.service_participants(text[]),igotu_backend_private.recommended_provider_candidates(text),igotu_backend_private.payment_proof_reference(text),igotu_backend_private.verification_reconciliation_queue(uuid),igotu_backend_private.create_service_request(uuid,jsonb),igotu_backend_private.save_provider_profile(jsonb,text[],jsonb,jsonb,text,text),igotu_backend_private.client_select_provider(text,uuid),igotu_backend_private.provider_confirm_request(text),igotu_backend_private.provider_decline_request(text,text),igotu_backend_private.provider_start_request(text),igotu_backend_private.client_complete_request(text),igotu_backend_private.client_cancel_request(text,text) TO authenticated;
 REVOKE ALL ON FUNCTION public.provider_service_requests(text,text[]),public.service_participants(text[]),public.recommended_provider_candidates(text),public.payment_proof_reference(text),public.verification_reconciliation_queue(uuid),public.create_service_request(uuid,jsonb),public.save_provider_profile(jsonb,text[],jsonb,jsonb,text,text),public.client_select_provider(text,uuid),public.provider_confirm_request(text),public.provider_decline_request(text,text),public.provider_start_request(text),public.client_complete_request(text),public.client_cancel_request(text,text),public.complete_basic_profile(text,text),public.client_update_request(text,text,text,text,text,date,time,text,numeric,numeric,numeric,text),public.client_save_request_image(text,text,text),public.submit_service_report(text,uuid,text,text,text),public.admin_update_user_status(uuid,text),public.admin_review_verification(uuid,text,text),public.admin_review_service_report(uuid,text,text) FROM PUBLIC,anon,authenticated,service_role;
 GRANT EXECUTE ON FUNCTION public.provider_service_requests(text,text[]),public.service_participants(text[]),public.recommended_provider_candidates(text),public.payment_proof_reference(text),public.verification_reconciliation_queue(uuid),public.create_service_request(uuid,jsonb),public.save_provider_profile(jsonb,text[],jsonb,jsonb,text,text),public.client_select_provider(text,uuid),public.provider_confirm_request(text),public.provider_decline_request(text,text),public.provider_start_request(text),public.client_complete_request(text),public.client_cancel_request(text,text),public.complete_basic_profile(text,text),public.client_update_request(text,text,text,text,text,date,time,text,numeric,numeric,numeric,text),public.client_save_request_image(text,text,text),public.submit_service_report(text,uuid,text,text,text),public.admin_update_user_status(uuid,text),public.admin_review_verification(uuid,text,text),public.admin_review_service_report(uuid,text,text) TO authenticated;

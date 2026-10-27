@@ -4,13 +4,22 @@
 BEGIN;
 SET LOCAL lock_timeout='5s';
 SET LOCAL statement_timeout='60s';
+SET LOCAL search_path=public,pg_catalog;
 DO $gate$ BEGIN
+ IF current_setting('server_version_num')::integer / 10000 <> 17 THEN RAISE EXCEPTION 'Reviewed PostgreSQL 17 baseline required; review other versions separately.'; END IF;
  IF current_user<>'postgres' OR current_setting('igotu.integration.staging_only',true) IS DISTINCT FROM 'true'
  OR current_setting('igotu.integration.catalog_reviewed',true) IS DISTINCT FROM 'true'
  OR current_setting('igotu.integration.private_schema_verified',true) IS DISTINCT FROM 'true'
+ OR current_setting('igotu.integration.writes_paused',true) IS DISTINCT FROM 'true'
  THEN RAISE EXCEPTION 'Authorized isolated staging, catalog review and effective API-schema privacy evidence required.'; END IF;
+ IF EXISTS(SELECT 1 FROM regexp_split_to_table(coalesce(current_setting('pgrst.db_schemas',true),''),',') exposed(name)
+ WHERE trim(both '"' FROM btrim(exposed.name))='igotu_backend_private') THEN
+ RAISE EXCEPTION 'Private schema appears exposed. NULL/absent settings still require external proof.'; END IF;
 END $gate$;
 DO $dependencies$ BEGIN
+ IF current_setting('igotu.integration.project_ref',true) IS NULL OR current_setting('igotu.integration.project_ref',true)='giqtnbwyktbnbhdvjraa'
+ OR NOT EXISTS(SELECT 1 FROM igotu_backend_private.installation WHERE version='20261026.1'
+ AND project_ref=current_setting('igotu.integration.project_ref',true)) THEN RAISE EXCEPTION 'Staging project attestation does not match this installation.'; END IF;
  IF NOT EXISTS(SELECT 1 FROM igotu_backend_private.installation WHERE version='20261026.1' AND phase=1)
  THEN RAISE EXCEPTION 'Apply reviewed foundation first.'; END IF;
 END $dependencies$;
@@ -127,14 +136,14 @@ LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path='' AS $$ BEGIN
  IF NOT igotu_backend_private.is_admin() THEN RAISE EXCEPTION 'Active Admin required.' USING ERRCODE='42501'; END IF;
  RETURN QUERY SELECT u.id,u.user_code,u.full_name,u.role::text,u.status::text,v.status,coalesce(v.age_confirmed AND v.privacy_consent,false)
  FROM public.users u LEFT JOIN LATERAL(SELECT * FROM public.verification_requests v WHERE v.user_id=u.id ORDER BY v.submitted_at DESC,v.id DESC LIMIT 1) v ON true
- WHERE u.role::text IN ('client','provider') AND u.identity_verified IS TRUE AND NOT igotu_backend_private.identity_approved(u.id)
+ WHERE u.role::text IN ('client','provider') AND u.identity_verified IS TRUE AND NOT igotu_backend_private.approval_history_matches(u.id)
  AND (p_after IS NULL OR u.id>p_after) ORDER BY u.id LIMIT 100;
 END $$;
 CREATE FUNCTION public.verification_reconciliation_queue(p_after uuid DEFAULT NULL)
 RETURNS TABLE(id uuid,user_code text,full_name text,role text,status text,latest_status text,recorded_consent boolean)
 LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $$ SELECT * FROM igotu_backend_private.verification_reconciliation_queue(p_after); $$;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA igotu_backend_private FROM PUBLIC,anon,authenticated,service_role;
-GRANT EXECUTE ON FUNCTION igotu_backend_private.is_admin(),igotu_backend_private.workspace(text),igotu_backend_private.applicant(),igotu_backend_private.participant(text),igotu_backend_private.can_read_receipt(text) TO anon,authenticated;
+GRANT EXECUTE ON FUNCTION igotu_backend_private.is_admin(),igotu_backend_private.approved_account(text),igotu_backend_private.workspace(text),igotu_backend_private.applicant(),igotu_backend_private.participant(text),igotu_backend_private.can_read_receipt(text) TO anon,authenticated;
 GRANT EXECUTE ON FUNCTION igotu_backend_private.provider_service_requests(text,text[]),igotu_backend_private.service_participants(text[]),igotu_backend_private.recommended_provider_candidates(text),igotu_backend_private.payment_proof_reference(text),igotu_backend_private.verification_reconciliation_queue(uuid) TO authenticated;
 REVOKE ALL ON FUNCTION public.provider_service_requests(text,text[]),public.service_participants(text[]),public.recommended_provider_candidates(text),public.payment_proof_reference(text),public.verification_reconciliation_queue(uuid) FROM PUBLIC,anon,authenticated,service_role;
 GRANT EXECUTE ON FUNCTION public.provider_service_requests(text,text[]),public.service_participants(text[]),public.recommended_provider_candidates(text),public.payment_proof_reference(text),public.verification_reconciliation_queue(uuid) TO authenticated;
