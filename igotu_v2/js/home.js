@@ -60,6 +60,25 @@
   setMenu(false);
   header.classList.add("nav-ready");
 
+  // Homepage-only category discovery. This navigates to static service tiles,
+  // never searches for Providers or sends data to the backend.
+  const explorer = document.querySelector(".service-explorer");
+  if (explorer) {
+    const categorySelect = explorer.querySelector("#service-explorer-category");
+    const exploreButton = explorer.querySelector("#service-explorer-go");
+    categorySelect.addEventListener("change", () => {
+      exploreButton.disabled = !categorySelect.value;
+    });
+    exploreButton.addEventListener("click", () => {
+      const target = document.getElementById(`service-${categorySelect.value}`);
+      if (!target) return;
+      window.location.hash = target.id;
+      target.focus({ preventScroll: true });
+    });
+    explorer.classList.add("is-ready");
+  }
+
+
   const criteria = {
     skills: {
       title: "The right skills for your request.",
