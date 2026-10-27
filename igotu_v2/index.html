@@ -211,6 +211,28 @@
                   <use href="#i-arrow" /></svg
               ></a>
             </div>
+            <div class="service-explorer" aria-labelledby="explorer-title">
+              <p class="service-explorer-title" id="explorer-title">Explore by service category</p>
+              <a class="service-explorer-fallback" href="#services">See all seven service categories</a>
+              <div class="service-explorer-fields">
+                <label class="visually-hidden" for="service-explorer-category">Service category</label>
+                <select id="service-explorer-category" aria-describedby="explorer-help">
+                  <option value="">Choose a category</option>
+                  <option value="cleaning">Cleaning</option>
+                  <option value="delivery">Delivery</option>
+                  <option value="repair">Repair</option>
+                  <option value="moving-help">Moving Help</option>
+                  <option value="errands">Errands</option>
+                  <option value="tutoring">Tutoring</option>
+                  <option value="other">Other</option>
+                </select>
+                <button class="button service-explorer-go" id="service-explorer-go" type="button" disabled>
+                  Explore
+                  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-arrow" /></svg>
+                </button>
+              </div>
+              <p class="service-explorer-help" id="explorer-help">Preview a service category first. Register as a Client to create your request.</p>
+            </div>
             <div class="hero-note">
               <svg
                 class="icon"
@@ -530,6 +552,7 @@
           <div class="category-grid">
             <a
               class="category-card"
+              id="service-cleaning"
               href="register.html"
               aria-label="Cleaning: register as a Client to create a service request"
               ><span class="category-icon"
@@ -559,6 +582,7 @@
                 <use href="#i-arrow" /></svg></a
             ><a
               class="category-card"
+              id="service-delivery"
               href="register.html"
               aria-label="Delivery: register as a Client to create a service request"
               ><span class="category-icon"
@@ -588,6 +612,7 @@
                 <use href="#i-arrow" /></svg></a
             ><a
               class="category-card"
+              id="service-repair"
               href="register.html"
               aria-label="Repair: register as a Client to create a service request"
               ><span class="category-icon"
@@ -617,6 +642,7 @@
                 <use href="#i-arrow" /></svg></a
             ><a
               class="category-card"
+              id="service-moving-help"
               href="register.html"
               aria-label="Moving Help: register as a Client to create a service request"
               ><span class="category-icon"
@@ -646,6 +672,7 @@
                 <use href="#i-arrow" /></svg></a
             ><a
               class="category-card"
+              id="service-errands"
               href="register.html"
               aria-label="Errands: register as a Client to create a service request"
               ><span class="category-icon"
@@ -675,6 +702,7 @@
                 <use href="#i-arrow" /></svg></a
             ><a
               class="category-card"
+              id="service-tutoring"
               href="register.html"
               aria-label="Tutoring: register as a Client to create a service request"
               ><span class="category-icon"
@@ -704,6 +732,7 @@
                 <use href="#i-arrow" /></svg></a
             ><a
               class="category-card"
+              id="service-other"
               href="register.html"
               aria-label="Other: register as a Client to create a service request"
               ><span class="category-icon"

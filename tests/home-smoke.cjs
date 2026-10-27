@@ -153,6 +153,21 @@ const screenshots = process.env.UI_SCREENSHOTS;
           true,
         );
       }
+      // Category explorer is an on-page discovery aid, not a Provider search.
+      const categoryPicker = page.locator("#service-explorer-category");
+      const exploreButton = page.locator("#service-explorer-go");
+      assert.equal(await exploreButton.isDisabled(), true);
+      await categoryPicker.selectOption("tutoring");
+      assert.equal(await exploreButton.isEnabled(), true);
+      await exploreButton.click();
+      assert.equal(new URL(page.url()).hash, "#service-tutoring");
+      assert.equal(
+        await page
+          .locator("#service-tutoring")
+          .evaluate((element) => document.activeElement === element),
+        true,
+        "Category shortcut must focus the requested service tile",
+      );
       for (const criterion of ["availability", "distance", "skills"]) {
         const button = page.locator(`[data-criterion="${criterion}"]`);
         await button.focus();
