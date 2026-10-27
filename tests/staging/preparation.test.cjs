@@ -1,8 +1,15 @@
 /* Mock transport and local files only. These are NOT staging integration tests. */
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const os = require("node:os");
 const { spawnSync } = require("node:child_process");
 const { validate, makeRuntime } = require("./runtime.cjs");
-const { cases } = require("./integration.cjs");
+const {
+  cases,
+  selectionRaceResult,
+  completeResults,
+} = require("./integration.cjs");
 const { signedResource } = require("./storage-expiry.cjs");
 const slots = [
   "clientA",
@@ -68,6 +75,20 @@ const approval = {
 const clone = (x) => structuredClone(x);
 (async () => {
   assert.equal(Object.keys(cases).length, 20);
+  const { inspectBundle } = require("./preflight.cjs");
+  const manifest = require("../../docs/staging-readiness/migration-order.json");
+  assert.equal(inspectBundle(manifest).status, "PASS");
+  for (const mutate of [
+    (m) => m.steps.reverse(),
+    (m) => (m.steps[1].sha256 = "0".repeat(64)),
+    (m) => (m.steps[0].path = "../../unreviewed.sql"),
+    (m) => (m.steps[0].approval_required = false),
+    (m) => m.steps.pop(),
+  ]) {
+    const m = clone(manifest);
+    mutate(m);
+    assert.throws(() => inspectBundle(m));
+  }
   const probe = require("node:fs").readFileSync(
     require("node:path").join(__dirname, "atomic-probe-install.sql"),
     "utf8",
@@ -124,6 +145,83 @@ const clone = (x) => structuredClone(x);
     x.request(actor, "https://giqtnbwyktbnbhdvjraa.supabase.co/rest/v1/users"),
   );
   assert.equal(networkCalls, 0);
+  const expiring = clone(approval);
+  const shortWindow = makeRuntime(config, expiring, secrets, transport);
+  expiring.expiresAt = "2000-01-01";
+  await assert.rejects(
+    shortWindow.request(actor, "/rest/v1/users", { method: "POST", body: {} }),
+    /APPROVAL_EXPIRED/,
+  );
+  assert.equal(networkCalls, 0, "Expired approval must stop before transport");
+  const winner = { status: 204, ok: true, data: null };
+  const conflict = {
+    status: 400,
+    ok: false,
+    data: {
+      code: "P0001",
+      message: "Provider no longer matches this request or is booked.",
+    },
+  };
+  selectionRaceResult([winner, conflict]);
+  selectionRaceResult([conflict, winner]);
+  for (const loser of [
+    { status: 500, ok: false, data: { code: "XX000" } },
+    { status: 404, ok: false, data: { code: "PGRST202" } },
+    { status: 401, ok: false, data: { code: "PGRST301" } },
+    {
+      status: 400,
+      ok: false,
+      data: { code: "P0001", message: "Unrelated failure" },
+    },
+    { status: 400, ok: false, data: { code: "22023" } },
+  ])
+    assert.throws(() => selectionRaceResult([winner, loser]));
+  assert.throws(() => selectionRaceResult([winner, winner]));
+  assert.throws(() => selectionRaceResult([conflict, conflict]));
+  const stopped = completeResults([{ id: "ST-01", status: "FAIL" }]);
+  assert.equal(stopped.length, 20);
+  assert.equal(stopped.filter((r) => r.status === "NOT_TESTED").length, 19);
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "igotu-config-"));
+  try {
+    const web = path.join(dir, "web");
+    fs.mkdirSync(web);
+    const configFile = path.join(dir, "config.json");
+    const approvalFile = path.join(dir, "approval.json");
+    const privateFile = path.join(dir, "secrets.json");
+    fs.writeFileSync(
+      configFile,
+      JSON.stringify({ ...config, frontendDirectory: web }),
+    );
+    fs.writeFileSync(approvalFile, JSON.stringify(approval));
+    fs.writeFileSync(privateFile, JSON.stringify(secrets), { mode: 0o600 });
+    const args = [
+      "--config",
+      configFile,
+      "--approval",
+      approvalFile,
+      "--secrets",
+      privateFile,
+    ];
+    const { load } = require("./config.cjs");
+    assert.equal(load(args).config.projectRef, config.projectRef);
+    fs.chmodSync(privateFile, 0o644);
+    assert.throws(() => load(args), /SECRET_FILE_PERMISSIONS_REQUIRED/);
+    fs.chmodSync(privateFile, 0o600);
+    const exposedFile = path.join(web, "secrets.json");
+    fs.copyFileSync(privateFile, exposedFile);
+    assert.throws(
+      () => load([...args.slice(0, -1), exposedFile]),
+      /SECRETS_OUTSIDE_FRONTEND_REQUIRED/,
+    );
+    const link = path.join(dir, "linked-secrets.json");
+    fs.symlinkSync(exposedFile, link);
+    assert.throws(
+      () => load([...args.slice(0, -1), link]),
+      /SECRETS_OUTSIDE_FRONTEND_REQUIRED/,
+    );
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
   await x.denied(actor, async () => ({
     status: 403,
     ok: false,

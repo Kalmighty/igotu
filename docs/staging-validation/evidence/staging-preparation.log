@@ -1,0 +1,1 @@
+PASS local preparation checks: 20 procedures, production/key/synthetic/expiry guards, mock positive controls, broken endpoints fail, import/plan do not contact staging. No staging test executed.

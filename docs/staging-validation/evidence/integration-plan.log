@@ -1,0 +1,20 @@
+ST-01 PREPARED_NOT_EXECUTED Client registration and login
+ST-02 PREPARED_NOT_EXECUTED Provider registration and login
+ST-03 PREPARED_NOT_EXECUTED Mandatory identity verification
+ST-04 PREPARED_NOT_EXECUTED Admin approval and rejection
+ST-05 PREPARED_NOT_EXECUTED Pending/rejected user access denial
+ST-06 PREPARED_NOT_EXECUTED Direct REST restrictions
+ST-07 PREPARED_NOT_EXECUTED RPC authorization
+ST-08 PREPARED_NOT_EXECUTED Private Storage access
+ST-09 PREPARED_NOT_EXECUTED Client request creation
+ST-10 PREPARED_NOT_EXECUTED Recommendation accuracy
+ST-11 PREPARED_NOT_EXECUTED Provider selection
+ST-12 PREPARED_NOT_EXECUTED Provider confirm and decline
+ST-13 PREPARED_NOT_EXECUTED Messaging
+ST-14 PREPARED_NOT_EXECUTED Service completion
+ST-15 PREPARED_NOT_EXECUTED Payment recording
+ST-16 PREPARED_NOT_EXECUTED Ratings and reviews
+ST-17 PREPARED_NOT_EXECUTED Admin monitoring
+ST-18 PREPARED_NOT_EXECUTED Account suspension
+ST-19 PREPARED_NOT_EXECUTED Concurrent Provider assignments
+ST-20 PREPARED_NOT_EXECUTED Atomic Provider profile updates

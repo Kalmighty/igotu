@@ -1,0 +1,3 @@
+PASS 190 coordinated statements, 63 function definitions and 13 compatible legacy replacements; ordered dependencies parse offline.
+PASS baseline checks cover 132 typed columns, 64 constraints, 11 trigger bindings, enum definitions and effective ACL categories.
+PASS corrected source boundaries and unchanged historical drafts. RLS/transactions/concurrency remain BLOCKED.

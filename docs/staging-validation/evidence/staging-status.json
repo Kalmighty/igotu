@@ -1,0 +1,211 @@
+{
+  "scope": "Real staging only. No prepared test counts as executed.",
+  "workflows": [
+    {
+      "id": "ST-01",
+      "name": "Client registration and login",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-02",
+      "name": "Provider registration and login",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-03",
+      "name": "Mandatory identity verification",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-04",
+      "name": "Admin approval and rejection",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-05",
+      "name": "Pending/rejected user access denial",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-06",
+      "name": "Direct REST restrictions",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-07",
+      "name": "RPC authorization",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-08",
+      "name": "Private Storage access",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-09",
+      "name": "Client request creation",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-10",
+      "name": "Recommendation accuracy",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-11",
+      "name": "Provider selection",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-12",
+      "name": "Provider confirm and decline",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-13",
+      "name": "Messaging",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-14",
+      "name": "Service completion",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-15",
+      "name": "Payment recording",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-16",
+      "name": "Ratings and reviews",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-17",
+      "name": "Admin monitoring",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-18",
+      "name": "Account suspension",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-19",
+      "name": "Concurrent Provider assignments",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    },
+    {
+      "id": "ST-20",
+      "name": "Atomic Provider profile updates",
+      "status": "BLOCKED",
+      "reason": "No separate project, SQL, fixture or execution approval"
+    }
+  ],
+  "acceptanceGroups": [
+    {
+      "id": "DB-01",
+      "name": "Actual schema, API columns/RPC signatures/ACL and exposed-schema compatibility",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-02",
+      "name": "Anonymous/wrong-role/inactive API authorization and authority-field tampering",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-03",
+      "name": "Not-submitted/pending/rejected direct table and RPC workspace denial",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-04",
+      "name": "Concurrent duplicate verification submission, fake consent and private-document ownership",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-05",
+      "name": "Transactional Admin approval/rejection and Provider badge synchronization",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-06",
+      "name": "Recommendation completeness, other-Client booking visibility and approved target eligibility",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-07",
+      "name": "Concurrent selection/confirmation, decline/cancel/start/complete transition integrity",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-08",
+      "name": "Messaging participant policies, read flags and revoked-session writes",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-09",
+      "name": "Payment ownership, duplicate prevention, private legacy receipts and signed URL expiry",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-10",
+      "name": "Review ownership/completion/duplicate constraints and complete aggregate statistics",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-11",
+      "name": "Report evidence privacy, report ownership/review and transactional notification recipients",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-12",
+      "name": "Atomic Provider profile/skills/hours updates and failure rollback",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "DB-13",
+      "name": "Stage A/B/C/identity integration, notification handoff and existing-account reconciliation",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    },
+    {
+      "id": "EXT-01",
+      "name": "Real confirmation/recovery emails, live geocoder/tiles, device GPS and production configuration",
+      "status": "BLOCKED",
+      "reason": "Production catalog metadata was reviewed read-only. No isolated staging creation, migration installation, synthetic writes or external email/service testing has been authorized; all real-backend acceptance groups remain blocked."
+    }
+  ]
+}
