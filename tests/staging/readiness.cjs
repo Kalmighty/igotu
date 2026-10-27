@@ -2,6 +2,8 @@
    account creation, mail delivery or project creation capability. */
 const assert = require("node:assert/strict");
 const plan = require("./acceptance-plan.json");
+const { cases } = require("./integration.cjs");
+assert.deepEqual(Object.keys(cases).sort(), plan.cases.map(c => c.id).sort());
 const expected = Array.from(
   { length: 13 },
   (_, i) => `DB-${String(i + 1).padStart(2, "0")}`,
@@ -20,7 +22,7 @@ assert.ok(
 );
 if (process.argv.includes("--execute")) {
   console.error(
-    "BLOCKED: This plan cannot execute staging mutations. Obtain explicit project, migration and synthetic-test approval, then implement/review the environment-specific runner.",
+    "BLOCKED: This plan cannot execute staging mutations. Obtain explicit project, migration and synthetic-test approval, then review integration.cjs with the environment configuration and separate authorization. This coverage checker never executes tests.",
   );
   process.exitCode = 2;
 } else {

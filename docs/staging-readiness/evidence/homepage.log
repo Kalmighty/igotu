@@ -1,0 +1,1 @@
+PASS: homepage at 1440/1024/768/390/320px; no overflow or clipped content; axe WCAG A/AA checks; mobile menu, Escape, anchor and resize focus; keyboard criteria/skip link; valid categories and Login/Register destinations; reduced motion and no-JS fallback; no external requests or browser errors.

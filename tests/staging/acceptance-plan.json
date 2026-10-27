@@ -18,7 +18,9 @@
         "EXT-01"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Register a synthetic Client, confirm through isolated mail capture, test the nine selected-role/account-role combinations, invalid credentials and missing profile; assert mismatch logout/cache removal and no workspace redirect."
+      "procedure_and_assertions": "Register a synthetic Client, confirm through isolated mail capture, test the nine selected-role/account-role combinations, invalid credentials and missing profile; assert mismatch logout/cache removal and no workspace redirect.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-01"
     },
     {
       "id": "ST-02",
@@ -28,7 +30,9 @@
         "EXT-01"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Register a synthetic Provider; verify Auth trigger persists only Client/Provider and ignores forged Admin metadata; test confirmation, recovery and session revocation with mail capture."
+      "procedure_and_assertions": "Register a synthetic Provider; verify Auth trigger persists only Client/Provider and ignores forged Admin metadata; test confirmation, recovery and session revocation with mail capture.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-02"
     },
     {
       "id": "ST-03",
@@ -38,7 +42,9 @@
         "DB-04"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Submit inert generated PDF/PNG, explicit true consents, owned paths; race two submissions, expect exactly one pending. Deny false/omitted consent, forged role/reviewer/status and foreign/missing document."
+      "procedure_and_assertions": "Submit inert generated PDF/PNG, explicit true consents, owned paths; race two submissions, expect exactly one pending. Deny false/omitted consent, forged role/reviewer/status and foreign/missing document.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-03"
     },
     {
       "id": "ST-04",
@@ -47,7 +53,9 @@
         "DB-05"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "With existing synthetic Admin approve pending consented Client/Provider, reject with reason, resubmit; assert users flags and Provider badge atomically agree. Replayed final decisions denied without duplicate notifications."
+      "procedure_and_assertions": "With existing synthetic Admin approve pending consented Client/Provider, reject with reason, resubmit; assert users flags and Provider badge atomically agree. Replayed final decisions denied without duplicate notifications.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-04"
     },
     {
       "id": "ST-05",
@@ -56,7 +64,9 @@
         "DB-03"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "For not-submitted, pending, rejected, mismatched latest history and legacy flag-only users, deny all workspace tables/RPCs via REST, not only UI. Own verification and account reads remain available."
+      "procedure_and_assertions": "For not-submitted, pending, rejected, mismatched latest history and legacy flag-only users, deny all workspace tables/RPCs via REST, not only UI. Own verification and account reads remain available.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-05"
     },
     {
       "id": "ST-06",
@@ -67,7 +77,9 @@
         "DB-03"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Compare schema/ACL with reviewed contracts; anonymous and unrelated users denied raw users, requests, Provider data, receipts, reports and authority-field PATCH. Test explicit private-schema Accept-Profile and Content-Profile as anon/auth, including inherited privileges, readable views and default EXECUTE grants."
+      "procedure_and_assertions": "Compare schema/ACL with reviewed contracts; anonymous and unrelated users denied raw users, requests, Provider data, receipts, reports and authority-field PATCH. Test explicit private-schema Accept-Profile and Content-Profile as anon/auth, including inherited privileges, readable views and default EXECUTE grants.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-06"
     },
     {
       "id": "ST-07",
@@ -77,7 +89,9 @@
         "DB-07"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "For every public RPC try anonymous, wrong-role, suspended, unapproved and unrelated IDs. Private mutation helpers must not be remotely routable/callable. Assert no side effects after denials."
+      "procedure_and_assertions": "For every public RPC try anonymous, wrong-role, suspended, unapproved and unrelated IDs. Private mutation helpers must not be remotely routable/callable. Assert no side effects after denials.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-07"
     },
     {
       "id": "ST-08",
@@ -88,7 +102,9 @@
         "DB-11"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Upload inert docs/receipts/evidence as synthetic owners; deny anonymous URLs, foreign owner folders, update/upsert and receipt delete. Allow only authorized owner/participant/Admin signed reads. Verify token expiry after 300s, refresh and signed-link limitations."
+      "procedure_and_assertions": "Upload inert docs/receipts/evidence as synthetic owners; deny anonymous URLs, foreign owner folders, update/upsert and receipt delete. Allow only authorized owner/participant/Admin signed reads. Verify token expiry after 300s, refresh and signed-link limitations.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-08"
     },
     {
       "id": "ST-09",
@@ -97,7 +113,9 @@
         "DB-07"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Approved Client creates correct category/specialization/date/time/GPS. Race identical idempotency key, expect one request/ID; simulate lost response and retry, expect original ID; changed details same key must fail. Preserve image-failure edit retry."
+      "procedure_and_assertions": "Approved Client creates correct category/specialization/date/time/GPS. Race identical idempotency key, expect one request/ID; simulate lost response and retry, expect original ID; changed details same key must fail. Preserve image-failure edit retry.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-09"
     },
     {
       "id": "ST-10",
@@ -107,7 +125,9 @@
         "DB-10"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Seed matching/nonmatching categories, specializations, unavailable/unverified/inactive/declined Providers, weekly hours/boundaries, missing coordinates and other-Client same-slot bookings. Compare exact eligible set, distance order, complete review/completion aggregates and limited feedback; no raw coordinates/contact/booking details."
+      "procedure_and_assertions": "Seed matching/nonmatching categories, specializations, unavailable/unverified/inactive/declined Providers, weekly hours/boundaries, missing coordinates and other-Client same-slot bookings. Compare exact eligible set, distance order, complete review/completion aggregates and limited feedback; no raw coordinates/contact/booking details.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-10"
     },
     {
       "id": "ST-11",
@@ -117,7 +137,9 @@
         "DB-07"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Client selects only from own pending request and eligible target; reject forged/inactive/unapproved/unavailable/declined/conflicting target. Exact repeat is idempotent. Provider cannot browse other open requests or apply."
+      "procedure_and_assertions": "Client selects only from own pending request and eligible target; reject forged/inactive/unapproved/unavailable/declined/conflicting target. Exact repeat is idempotent. Provider cannot browse other open requests or apply.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-11"
     },
     {
       "id": "ST-12",
@@ -126,7 +148,9 @@
         "DB-07"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Only selected approved Provider confirms/declines; verify reason, decline history/exclusion and rematching. Exact repeated transition has no duplicate event; stale/invalid transitions fail. Two same-slot legacy selections may not both confirm."
+      "procedure_and_assertions": "Only selected approved Provider confirms/declines; verify reason, decline history/exclusion and rematching. Exact repeated transition has no duplicate event; stale/invalid transitions fail. Two same-slot legacy selections may not both confirm.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-12"
     },
     {
       "id": "ST-13",
@@ -135,7 +159,9 @@
         "DB-08"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Only current service pair can send; own sender enforced, receiver can update only read flag. Unrelated, former Provider, suspended and revoked sessions denied sending. Concurrent thread navigation preserves drafts/recipient; no arbitrary notification insert."
+      "procedure_and_assertions": "Only current service pair can send; own sender enforced, receiver can update only read flag. Unrelated, former Provider, suspended and revoked sessions denied sending. Concurrent thread navigation preserves drafts/recipient; no arbitrary notification insert.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-13"
     },
     {
       "id": "ST-14",
@@ -144,7 +170,9 @@
         "DB-07"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Provider starts only confirmed own service; Client completes only own in-progress service. Race cancel/start/complete, assert valid serial result and history retained. Validate repeat versus stale transition behavior."
+      "procedure_and_assertions": "Provider starts only confirmed own service; Client completes only own in-progress service. Race cancel/start/complete, assert valid serial result and history retained. Validate repeat versus stale transition behavior.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-14"
     },
     {
       "id": "ST-15",
@@ -153,7 +181,9 @@
         "DB-09"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "After completion Client records Cash or transfer with owned private proof. Race duplicate request payment, expect one. Deny wrong payer/provider/amount/method/missing transfer proof. Resolve consistent path and legacy URL-only proofs; reject foreign URL, mismatched path, traversal, ambiguous ID, missing/foreign object; no public URL persistence."
+      "procedure_and_assertions": "After completion Client records Cash or transfer with owned private proof. Race duplicate request payment, expect one. Deny wrong payer/provider/amount/method/missing transfer proof. Resolve consistent path and legacy URL-only proofs; reject foreign URL, mismatched path, traversal, ambiguous ID, missing/foreign object; no public URL persistence.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-15"
     },
     {
       "id": "ST-16",
@@ -162,7 +192,9 @@
         "DB-10"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Both participants can review completed service once; race duplicates and enforce rating range/participant pairing. Deny premature/wrong target review. Compare recommendation aggregate across all records, no browser-limited statistics."
+      "procedure_and_assertions": "Both participants can review completed service once; race duplicates and enforce rating range/participant pairing. Deny premature/wrong target review. Compare recommendation aggregate across all records, no browser-limited statistics.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-16"
     },
     {
       "id": "ST-17",
@@ -173,7 +205,9 @@
         "DB-13"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Admin monitors tables and private proofs, reviews participant reports with owned evidence; require active existing Admin. Browser cannot self-register/promote. Reconciliation queue paginates consistently without changing flags/history; no real user data in exports/screenshots."
+      "procedure_and_assertions": "Admin monitors tables and private proofs, reviews participant reports with owned evidence; require active existing Admin. Browser cannot self-register/promote. Reconciliation queue paginates consistently without changing flags/history; no real user data in exports/screenshots.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-17"
     },
     {
       "id": "ST-18",
@@ -183,7 +217,9 @@
         "DB-08"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Admin RPC must use account_status, suspend synthetic Client/Provider with active work; direct REST reads/writes/RPCs denied after status change; preserve all assignments/history. Test cross-tab sign-out and invalid refresh tokens; decide self/last-Admin policy separately."
+      "procedure_and_assertions": "Admin RPC must use account_status, suspend synthetic Client/Provider with active work; direct REST reads/writes/RPCs denied after status change; preserve all assignments/history. Test cross-tab sign-out and invalid refresh tokens; decide self/last-Admin policy separately.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-18"
     },
     {
       "id": "ST-19",
@@ -192,7 +228,9 @@
         "DB-07"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Run two Client JWTs concurrently selecting same Provider/exact date/time on different requests: exactly one succeeds; repeat at least 20 iterations, both arrival orders. Race profile availability/hours and suspension against selection, then confirm/decline/cancel. Inspect final rows/events independently as test operator; no duplicate active reservation."
+      "procedure_and_assertions": "Run two Client JWTs concurrently selecting same Provider/exact date/time on different requests: exactly one succeeds; repeat at least 20 iterations, both arrival orders. Race profile availability/hours and suspension against selection, then confirm/decline/cancel. Inspect final rows/events independently as test operator; no duplicate active reservation.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-19"
     },
     {
       "id": "ST-20",
@@ -201,7 +239,10 @@
         "DB-12"
       ],
       "status": "PREPARED_NOT_EXECUTED",
-      "procedure_and_assertions": "Snapshot synthetic profile/skills/specs/hours/own basic fields; inject late unique/validation failure inside single RPC and compare every set unchanged. Successful save commits all sets; concurrent two saves yields one complete set, never mixed rows. Race with selection/suspension and check eligibility reflects committed state."
+      "procedure_and_assertions": "Snapshot synthetic profile/skills/specs/hours/own basic fields; inject late unique/validation failure inside single RPC and compare every set unchanged. Successful save commits all sets; concurrent two saves yields one complete set, never mixed rows. Race with selection/suspension and check eligibility reflects committed state.",
+      "prepared_entrypoint": "tests/staging/integration.cjs (ordered full synthetic fixture run; --plan by default)",
+      "additional_procedures": "docs/staging-readiness/operator-tests.md#st-20"
     }
-  ]
+  ],
+  "execution_notice": "Prepared entrypoints are not authorized for execution. Core API passes are separate from full acceptance; partial procedure coverage exits 3. No staging tests ran in Phase 7."
 }

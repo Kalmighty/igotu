@@ -1,0 +1,15 @@
+{
+  "notice": "EXAMPLE ONLY. Local attestations do not grant permission. Fill only AFTER separate explicit authorization for this staging project and test scope.",
+  "syntheticOnly": true,
+  "projectRef": "REPLACE_WITH_APPROVED_STAGING_REF",
+  "expiresAt": "REPLACE_WITH_APPROVAL_EXPIRY_ISO_TIMESTAMP",
+  "network": false,
+  "syntheticWrites": false,
+  "authSignups": false,
+  "mailCapture": false,
+  "migrationsReviewed": false,
+  "migrationsInstalled": false,
+  "privateSchemaReviewed": false,
+  "testAccountsReviewed": false,
+  "atomicProbeProvider": "REPLACE_WITH_PROVIDER_B_UUID_AFTER_SEPARATE_PROBE_DDL_APPROVAL"
+}

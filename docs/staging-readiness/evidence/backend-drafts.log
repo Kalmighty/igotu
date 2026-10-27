@@ -1,0 +1,7 @@
+PASS D01 offline: 38 statements, 15 PL/pgSQL units
+PASS D02 offline: 26 statements, 15 PL/pgSQL units
+PASS D03 offline: 40 statements, 29 PL/pgSQL units
+PASS D04 offline: 86 statements, 20 PL/pgSQL units
+PASS offline frontend/draft invariants. No database connection.
+PASS all Admin initializers await the shared compatibility/auth guard.
+PASS request-derived peer lookup contract.

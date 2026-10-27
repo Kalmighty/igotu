@@ -1,0 +1,63 @@
+{
+  "syntheticOnly": true,
+  "projectRef": "REPLACE_WITH_APPROVED_STAGING_REF",
+  "url": "https://REPLACE_WITH_APPROVED_STAGING_REF.supabase.co",
+  "publishableKey": "REPLACE_WITH_STAGING_PUBLISHABLE_KEY",
+  "mailDomain": "igotu.test",
+  "date": "2030-01-07",
+  "frontendDirectory": "/workspace/igotu/work/staging/REPLACE_WITH_APPROVED_ARTIFACT",
+  "receiptRequestId": "REPLACE_WITH_COMPLETED_SYNTHETIC_TRANSFER_REQUEST",
+  "accounts": {
+    "clientA": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "client"
+    },
+    "clientB": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "client"
+    },
+    "providerA": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "provider"
+    },
+    "providerB": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "provider"
+    },
+    "admin": { "synthetic": true, "id": "REPLACE_WITH_UUID", "role": "admin" },
+    "unverified": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "client"
+    },
+    "pending": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "provider"
+    },
+    "rejected": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "client"
+    },
+    "suspended": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "client"
+    },
+    "legacy": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "provider"
+    },
+    "legacySuspended": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "provider"
+    }
+  }
+}

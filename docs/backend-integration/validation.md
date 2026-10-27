@@ -1,5 +1,7 @@
 # Validation evidence — Phase 6
 
+> Phase 7 reviewed/corrected these drafts. See [current migration review](../staging-readiness/README.md), [ordered execution guide](../staging-readiness/guide.md) and [current validation](../staging-readiness/validation.md). Phase 6 evidence below is historical; use the Phase 7 gates and explicit baseline-first order.
+
 **12 local check groups passed; 94 fixture scenarios passed across the full run and focused reruns. No real-backend integration test passed.** All 14 database/external acceptance groups remain BLOCKED. [Machine-readable results](validation-results.json) retain case names, evidence sources, initial failures and their corrections.
 
 | Check | Executed result | Limits |
