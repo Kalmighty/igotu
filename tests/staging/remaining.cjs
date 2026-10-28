@@ -143,6 +143,7 @@ async function negativeInsert(x, j, a, c, p, requestId, key, changes) {
 const checks = {};
 checks['ST-13'] = async (x, j) => {
   const id = x.config.remaining?.messageRequestId || 'SR0001';
+  if (id === 'SR0001') block('PROTECTED_SR0001_MESSAGING_IS_READ_ONLY');
   const { c, p } = await pair(x, id), b = await active(x, 'clientB', 'client');
   await message(x, j, id, c, p, b, 'client-to-provider');
   await message(x, j, id, p, c, b, 'provider-to-client');
@@ -228,6 +229,9 @@ async function createFixture(x, j, c, key, details) {
   }
   check(rows.length === 1 && rows[0].request_id !== 'SR0001' && rows[0].client_id === c.id && rows[0].title === details.title && rows[0].preferred_date === details.preferred_date, 'SYNTHETIC_FIXTURE_READBACK_FAILED');
   check(Number(rows[0].budget) === Number(details.budget) && rows[0].category === details.category && rows[0].service_type === details.service_type && String(rows[0].preferred_time).slice(0,5) === details.preferred_time.slice(0,5), 'SYNTHETIC_FIXTURE_DETAILS_CHANGED');
+  for (const field of ['description','location','priority','client_lat','client_lng']) if (field in details) check(typeof details[field] === 'number' ? Number(rows[0][field]) === details[field] : rows[0][field] === details[field], 'SYNTHETIC_FIXTURE_DETAILS_CHANGED');
+  j.data.fixtures ||= {};
+  j.data.fixtures[key] = { key,requestId:rows[0].request_id,ownerId:c.id,title:rows[0].title,statusAtRead:rows[0].status };
   j.data.actions[key] = 'verified'; j.save();
   return rows[0];
 }
@@ -317,6 +321,10 @@ checks['ST-19'] = async (x, j) => {
       check(final.filter(r => r.status === 'provider_selected' && r.selected_provider_id === p.id).length === 1 && final.filter(r => r.status === 'pending' && r.selected_provider_id === null).length === 1, 'RACE_FINAL_STATE_NOT_EXCLUSIVE');
       const projection = await x.success(x.rpc(p, 'provider_service_requests', { p_request_id: null, p_statuses: ['provider_selected'] }));
       check(projection.filter(r => [one.request_id,two.request_id].includes(r.request_id)).length === 1, 'RACE_PROVIDER_PROJECTION_NOT_EXCLUSIVE');
+      const loser=final.find(r=>r.status==='pending');
+      const loserActor=jobs.find(([,r])=>r.request_id===loser.request_id)[0];
+      const candidates=await x.success(x.rpc(loserActor,'recommended_provider_candidates',{ p_request_id:loser.request_id }));
+      check(!candidates.some(candidate=>candidate.id===p.id),'BOOKED_PROVIDER_STILL_RECOMMENDED');
       j.data.checks[key + '.exclusive'] = true; j.save();
     }
     // Preserve all request/history rows; release only this run's synthetic slots.
@@ -368,6 +376,7 @@ async function run(x, j, selected, emit = () => {}) {
 }
 async function main(args) {
   const selected = selection(args);
+  if (args.includes("--execute") && !args.includes("--only")) block("EXPLICIT_CASE_SELECTION_REQUIRED_USE_PRIORITY_RUNNER");
   if (!args.includes('--execute')) {
     for (const id of selected) console.log(id + ' PREPARED_NOT_EXECUTED ' + (supported[id] ? 'focused existing-fixture checks' : 'BLOCKED separate operator/browser procedure'));
     return;
@@ -405,4 +414,4 @@ async function main(args) {
   }
   process.exitCode = results.some(r => r.status === 'FAIL') ? 1 : results.some(r => r.status === 'BLOCKED') ? 2 : 3;
 }
-module.exports = { main, run, checks, selection, stateFile, reportResults, message, negativeInsert };
+module.exports = { main, run, checks, selection, stateFile, reportResults, message, negativeInsert, active, getOne, protectedSnapshot, createFixture, block, supported, gaps };

@@ -65,7 +65,7 @@
     }
   },
   "remaining": {
-    "messageRequestId": "SR0001",
+    "messageRequestId": "REPLACE_WITH_NEW_SYNTHETIC_THREAD_FOR_EXPLICIT_RETEST_ONLY",
     "decline": {
       "synthetic": true,
       "create": false

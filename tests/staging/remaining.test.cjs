@@ -4,10 +4,10 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { makeRuntime, validate } = require('./runtime.cjs');
-const { run, stateFile, selection, reportResults } = require('./remaining.cjs');
+const { run, stateFile, selection, reportResults, checks } = require('./remaining.cjs');
 const ref = 'oqalpauljjhytnrpzcqp';
 const names = ['clientA','providerA','clientB'];
-const config = { syntheticOnly: true, projectRef: ref, url: `https://${ref}.supabase.co`, publishableKey: 'sb_publishable_synthetic_public_fixture', mailDomain: 'igotu.test', date: '2030-01-07', accounts: Object.fromEntries(names.map((name,i) => [name, { synthetic: true, role: name === 'providerA' ? 'provider' : 'client', id: `00000000-0000-4000-8000-${String(i).padStart(12,'0')}` }])) };
+const config = { remaining: { messageRequestId: 'SYNTHETIC-ST13-THREAD' }, syntheticOnly: true, projectRef: ref, url: `https://${ref}.supabase.co`, publishableKey: 'sb_publishable_synthetic_public_fixture', mailDomain: 'igotu.test', date: '2030-01-07', accounts: Object.fromEntries(names.map((name,i) => [name, { synthetic: true, role: name === 'providerA' ? 'provider' : 'client', id: `00000000-0000-4000-8000-${String(i).padStart(12,'0')}` }])) };
 const approval = { syntheticOnly: true, projectRef: ref, expiresAt: new Date(Date.now()+3600000).toISOString(), network: true, syntheticWrites: true, migrationsReviewed: true, migrationsInstalled: true, privateSchemaReviewed: true, testAccountsReviewed: true, remainingTests: true };
 const secrets = Object.fromEntries(names.map(n => [n,{ email: n+'@igotu.test', password: 'SYNTHETICpassword123!' }]));
 const options = { remaining: true, actors: names };
@@ -15,6 +15,7 @@ const id = n => config.accounts[n].id;
 function fixture({ lost = false, brokenDenial = false, wrongRead = false, missingWrite = false } = {}) {
   const users = names.map(n => ({ ...config.accounts[n], status: 'active', profile_completed: true, identity_verified: true }));
   const service = { id: 'synthetic-row', request_id: 'SR0001', client_id: id('clientA'), selected_provider_id: id('providerA'), status: 'completed' };
+  const thread = { ...service, request_id: 'SYNTHETIC-ST13-THREAD', id: 'synthetic-thread' };
   const payment = [{ id: 'synthetic-payment', request_id: 'SR0001', amount: 100, payment_method: 'Cash' }];
   const reviews = [id('clientA'),id('providerA')].map((reviewer_id,i) => ({ id: 'review-'+i, request_id: 'SR0001', reviewer_id, rating: 5 }));
   const messages = [], notifications = []; let calls=0, inserts=0, lostOnce=false;
@@ -32,11 +33,11 @@ function fixture({ lost = false, brokenDenial = false, wrongRead = false, missin
     const actorId = config.accounts[name]?.id;
     if (opts.headers['Accept-Profile'] || opts.headers['Content-Profile']) return response(406,{ code: 'PGRST106' });
     if (u.pathname.endsWith('/rpc/igotu_backend_contract')) return response(200,{ version: '20261026.1', notifications: 'database' });
-    if (u.pathname.endsWith('/rpc/provider_service_requests')) return name === 'providerA' ? response(200,[service]) : denied();
+    if (u.pathname.endsWith('/rpc/provider_service_requests')) return name === 'providerA' ? response(200,[u.searchParams.get("unused") ? service : thread]) : denied();
     const table = u.pathname.split('/').at(-1);
     const filter = rows => rows.filter(r => [...u.searchParams].every(([k,v]) => !v.startsWith('eq.') || String(r[k]) === v.slice(3)));
     if (table === 'users') return actorId ? response(200,filter(users.filter(r => r.id === actorId))) : denied();
-    if (table === 'service_requests') return response(200, name === 'clientA' ? filter([service]) : []);
+    if (table === 'service_requests') return response(200, name === 'clientA' ? filter([service,thread]) : []);
     if (table === 'payment_records') return response(200,payment);
     if (table === 'service_reviews') return response(200,reviews);
     if (table === 'notifications') return method === 'GET' ? response(200,filter(notifications.filter(n => n.user_id === actorId))) : denied();
@@ -61,6 +62,7 @@ function fixture({ lost = false, brokenDenial = false, wrongRead = false, missin
   return { x: makeRuntime(config, approval, secrets, transport, options), messages, notifications, counts: () => ({ calls,inserts }) };
 }
 (async () => {
+  await assert.rejects(checks['ST-13']({config:{remaining:{messageRequestId:'SR0001'}}},{}),/PROTECTED_SR0001_MESSAGING_IS_READ_ONLY/);
   assert.deepEqual(selection([]),['ST-13']);
   assert.throws(() => selection(['--only','ST-99']), /UNKNOWN_CASE/);
   assert.equal(validate(config,approval,secrets,options), true, 'Remaining scope needs neither signups nor all eleven passwords');
