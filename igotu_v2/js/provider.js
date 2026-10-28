@@ -87,7 +87,7 @@ async function loadStats(userId) {
         <a class="list-item" href="incoming-requests.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}">
             <div>
                 <strong>${escapeHtml(request.title)}</strong>
-                <span>${escapeHtml(request.category)} · Approximate Area: ${escapeHtml(request.approximate_area || "Area available after confirmation")}</span>
+                <span>${escapeHtml(request.category)} · Approximate Area: ${escapeHtml(String(request.approximate_area || "").replace(/^(?:\s*approximate\s+area\s*:\s*)+/i, "").trim() || "Area available after confirmation")}</span>
             </div>
             <em class="status-pill">${escapeHtml(request.status.replace("_", " "))}</em>
         </a>

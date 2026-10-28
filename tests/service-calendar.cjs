@@ -249,6 +249,26 @@ for (const [destination, target, statuses] of [
   }
 }
 
+test("provider: approximate area has one label and never falls back to private location", async ({ page, state }) => {
+  const request = state.tables.service_requests.find((r) => r.request_id === "AWAITING");
+  for (const [value, expected] of [
+    ["Approximate area: Likas", "Likas"],
+    ["Likas", "Likas"],
+    ["  APPROXIMATE AREA: Approximate area: Likas  ", "Likas"],
+    [null, "Area available after confirmation"],
+    ["Approximate area: ", "Area available after confirmation"],
+    ["<img src=x onerror=alert(1)>", "<img src=x onerror=alert(1)>"],
+  ]) {
+    request.approximate_area = value;
+    await ready(page, "provider");
+    const card = page.locator('#incomingRequests a[href$="request_id=AWAITING"]');
+    assert.equal(await card.locator("span").textContent(), `Cleaning · Approximate Area: ${expected}`);
+    assert.equal(await card.locator("img").count(), 0);
+    assert.doesNotMatch(await card.textContent(), /Unit 7|116\.12|6\.04/);
+  }
+  assert.equal(state.calls.some((op) => op.kind === "query" && op.table === "service_requests"), false);
+});
+
 for (const [width, zone] of [[320, "Pacific/Honolulu"], [390, "Asia/Kuala_Lumpur"], [1440, "Pacific/Kiritimati"]]) {
   test(`Responsive/a11y/wall dates: ${width}px ${zone}`, async ({ page, context }) => {
     await page.setViewportSize({ width, height: 1000 });
@@ -257,6 +277,10 @@ for (const [width, zone] of [[320, "Pacific/Honolulu"], [390, "Asia/Kuala_Lumpur
     assert.match(await page.locator(".calendar-details h3").textContent(), /November 2, 2026/);
     assert.match(await page.locator(".calendar-details").textContent(), /10:00/);
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+    const legend = page.getByRole("list", { name: "Service status legend" });
+    assert.deepEqual(await legend.locator("li > span:last-child").allTextContents(), ["Preferred / unconfirmed", "Confirmed / in progress", "Completed", "Cancelled"]);
+    assert.equal(await legend.locator('[aria-hidden="true"]').count(), 4);
+    assert.equal(await legend.locator("button, a, [tabindex]").count(), 0);
     await page.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
     const violations = await page.evaluate(async () => (await axe.run("#serviceCalendar")).violations);
     assert.deepEqual(violations.map((v) => ({ id: v.id, impact: v.impact })), []);

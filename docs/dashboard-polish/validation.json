@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Kuala_Lumpur",
+  "branch": "feat/dashboard-visual-polish",
+  "scope": "Synthetic Chromium fixtures only; no live backend or SQL execution",
+  "changes": [
+    "Provider approximate-area prefix normalization; escaped RPC area only; no private-location fallback",
+    "Wrapping four-item semantic status legend; explicit unchanged meanings and hidden decorative symbols",
+    "Four refreshed synthetic screenshots"
+  ],
+  "checks": {
+    "calendar": {
+      "passed": 29,
+      "failed": 0
+    },
+    "functional": {
+      "passed": 94,
+      "failed": 0
+    },
+    "layout": {
+      "passed": 84,
+      "failed": 0
+    },
+    "mandatory_verification": "PASS: 16 guarded routes and approval/account workflows",
+    "dashboard_width_keyboard_overflow_and_automated_wcag_a_aa": [
+      {
+        "role": "client",
+        "width": 1440,
+        "status": "PASS"
+      },
+      {
+        "role": "client",
+        "width": 1024,
+        "status": "PASS"
+      },
+      {
+        "role": "client",
+        "width": 768,
+        "status": "PASS"
+      },
+      {
+        "role": "client",
+        "width": 390,
+        "status": "PASS"
+      },
+      {
+        "role": "client",
+        "width": 320,
+        "status": "PASS"
+      },
+      {
+        "role": "provider",
+        "width": 1440,
+        "status": "PASS"
+      },
+      {
+        "role": "provider",
+        "width": 1024,
+        "status": "PASS"
+      },
+      {
+        "role": "provider",
+        "width": 768,
+        "status": "PASS"
+      },
+      {
+        "role": "provider",
+        "width": 390,
+        "status": "PASS"
+      },
+      {
+        "role": "provider",
+        "width": 320,
+        "status": "PASS"
+      }
+    ],
+    "syntax_and_diff_whitespace": "PASS",
+    "unchanged_auth_identity_backend_access_and_supabase_configuration": "PASS"
+  },
+  "regression_notes": [
+    "Initial preview-server responses were empty; restarted the stale loopback server with file logging and reran all affected suites successfully. No application repair was needed for that infrastructure failure."
+  ],
+  "limitations": [
+    "Synthetic fixtures do not prove live RPC/RLS authorization",
+    "Automated accessibility checks do not replace manual assistive-technology evaluation"
+  ],
+  "supabase_or_production_access": false,
+  "sql_or_migration_changes": false,
+  "deployment": false
+}
