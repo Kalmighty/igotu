@@ -7,6 +7,14 @@
 
 This is an **operator worksheet**, not a SQL command, automated deployment script or substitute for separate informed approval. The responsible operator should record the date, reviewed commit/content digest, scope, sign-off and result outside this public GitHub repository. **Do not commit credentials, user data, JWTs, project service keys, identity files, or sensitive logs.**
 
+## Conditional user authorization — recorded after operator review
+
+The user responded **"yes"** to the explicit question: *"Do you authorize applying the exact reviewed D03 migration to igotu-staging (oqalpauljjhytnrpzcqp) only, provided the writer pause and execution safeguards are verified first?"* This is **conditional D03-only permission**, not permission to attest unverified preconditions, modify the SQL, bypass the managed environment, apply D04, change production, or enable users. It supersedes earlier documents' statement that no D03 approval whatsoever had been expressed, **but the conditions remain unmet**, so execution is still on hold.
+
+After that authorization, the current Supabase project readback still showed **phase=2**, `ACTIVE_HEALTHY`, PostgreSQL 17.11, `postgres`/READ COMMITTED, and zero other *active* client sessions at the checked instant. The exact local staged D03 SQL also matched SHA-256 `e1bfd24182dc7f4fe3faf405b102cf87030a3adc53edeb01260b99dc936c11e6`. These results do **not** establish an enforceable maintenance freeze.
+
+**Execution blocker:** The assistant's available migration interface has not demonstrated equivalent session-attestation, explicit BEGIN/COMMIT and ledger semantics to the required `psql` operator workflow. No configured local `psql` binary, PostgreSQL service file or authorized staging operator connection was available in the current execution environment. Do not use an unreviewed modified migration, reset guards, claim `writes_paused=true`, or substitute another route to force execution. A permitted operator environment must establish a supported **direct or session-mode** PostgreSQL connection with separately held credentials and verified project identity, then enforce and attest the writer pause. The conditional approval can only be acted on once those predicates have truly been verified. D03 has **not** been applied.
+
 ## Verified preconditions (evidence recorded elsewhere in PR #11)
 
 - [x] Target project identity is different from known production `giqtnbwyktbnbhdvjraa`; staging project currently healthy and on PostgreSQL 17.
