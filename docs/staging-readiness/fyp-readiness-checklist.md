@@ -4,10 +4,10 @@ This is a sign-off checklist, not a claim that all items passed. P0 items suppor
 
 ## Established baseline
 
-- [x] Owner reports focused **live PASS** for ST-06, ST-07, ST-13 and ST-17. Keep their private original reports; this session did not re-execute them.
+- [x] Owner reports focused **live PASS** for ST-06, ST-07, ST-08, ST-10, ST-13 and ST-17. Keep their private original reports; this session did not re-execute them.
 - [x] Owner reports completed SR0001 with one RM100 Cash payment, two reciprocal reviews and two messages. Preserve these records and the associated evidence.
 - [x] Existing staging architecture and Client-selected Provider business flow retained. No Provider job-browsing/application flow added.
-- [ ] Remaining priority cases have focused live reports: ST-05, ST-08, ST-10, ST-12, ST-19. Explain blocked fixture/approval gaps honestly.
+- [ ] Remaining priority cases have focused live reports: ST-05, ST-12, ST-19. ST-08/ST-10 focused passes are retained; do not rerun them. Explain blocked fixture/approval gaps honestly.
 - [ ] Supervisor/demo scope accepts documented residual gaps; no offline/model result is presented as real backend proof.
 
 ## P0 — Client browser demonstration
@@ -23,7 +23,7 @@ This is a sign-off checklist, not a claim that all items passed. P0 items suppor
 
 ## P0 — Provider browser demonstration
 
-- [ ] Provider B submits truthful synthetic identity/consents through the ordinary flow. Obtain separate explicit authorization before its Admin decision; do not bypass verification to finish tests.
+- [x] Owner reports Provider B identity approved and independently verified. Do not perform another Admin decision; recheck latest approved history/consents before profile completion via the [isolated finishing workflow](provider-b-finish.md).
 - [ ] Approved Provider completes profile, categories/specializations, synthetic coordinates, availability and weekly hours; validation is clear and saved sets are consistent.
 - [ ] Provider sees only assignments addressed to them; no raw browse-all requests, application button or other Clients' booking details.
 - [ ] Before confirmation, exact Client location/description/image is hidden as specified; after confirmation the authorized service details appear.

@@ -1,3 +1,5 @@
+> Current next step: [Provider B finishing runbook](provider-b-finish.md). Provider B approval and focused ST-08/ST-10 passes are now owner-reported. Do not repeat any Admin decision or these passed checks; use the isolated ST-12/ST-19 helper. The plan below is retained as the earlier phase record.
+
 # IGotU remaining staging plan and Windows runbook
 
 Continuation base: `igotu-staging-remaining-tests` at `473db55b302f4acabaea92428382d99783e3b8a7`. Review branch: `igotu-staging-fyp-priority`. Only staging `oqalpauljjhytnrpzcqp` is permitted. No Admin mutation, schema/RLS change, migration execution, production connection or deployment is included.

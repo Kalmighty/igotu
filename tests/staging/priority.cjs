@@ -6,12 +6,12 @@ const { check, makeRuntime, validate } = require('./runtime.cjs');
 const { active, getOne, protectedSnapshot, createFixture, block, checks, stateFile, supported, gaps } = require('./remaining.cjs');
 const acceptance = require('./acceptance-plan.json');
 const PRIORITIES = ['ST-05','ST-08','ST-10','ST-12','ST-19'];
-const COMPLETED = ['ST-06','ST-07','ST-13','ST-17'];
+const COMPLETED = ['ST-06','ST-07','ST-08','ST-10','ST-13','ST-17'];
 const SCENARIOS = ['exact','near','far','start','wrongCategory','wrongSpecialization','beforeHours','endExclusive'];
 function selected(args) {
   const i = args.indexOf('--only');
-  const ids = i < 0 ? PRIORITIES : (args[i+1] || '').split(',');
-  check(ids.length && ids.every(id => PRIORITIES.includes(id)) && new Set(ids).size === ids.length, 'PRIORITY_CASE_SELECTION_INVALID');
+  const ids = i < 0 ? PRIORITIES.filter(id => !COMPLETED.includes(id)) : (args[i+1] || '').split(',');
+  check(ids.length && ids.every(id => PRIORITIES.includes(id) && !COMPLETED.includes(id)) && new Set(ids).size === ids.length, 'PRIORITY_CASE_SELECTION_INVALID');
   return ids;
 }
 function mode(args) {
@@ -22,10 +22,22 @@ function mode(args) {
 function guardRuntime(x) {
   const rpc = x.rpc, table = x.table, request = x.request;
   const readers = ['igotu_backend_contract','provider_service_requests','recommended_provider_candidates','payment_proof_reference'];
-  const writers = ['create_service_request','client_select_provider','provider_confirm_request','provider_start_request','client_complete_request','client_cancel_request'];
-  x.rpc = (a, name, args = {}) => {
+  const writers = ['create_service_request','client_select_provider','provider_confirm_request','provider_start_request','client_complete_request','client_cancel_request','provider_decline_request'];
+  x.rpc = async (a, name, args = {}) => {
     check(readers.includes(name) || writers.includes(name) || (name === 'save_provider_profile' && a.name === 'providerB'), 'PRIORITY_RPC_OUTSIDE_SCOPE');
     if (writers.includes(name)) check(args.p_request_id !== 'SR0001', 'PROTECTED_SR0001_WRITE_REJECTED');
+    if (name === 'provider_decline_request') {
+      check(a?.role === 'provider' && ['providerA','providerB'].includes(a.name) &&
+        x.config.accounts?.[a.name]?.role === 'provider' && a.id === x.config.accounts[a.name].id &&
+        typeof a.token === 'string' && a.token.length > 0, 'AUTHENTICATED_PROVIDER_REQUIRED');
+      check(typeof args.p_request_id === 'string' && args.p_request_id.trim() &&
+        typeof args.p_reason === 'string' && args.p_reason.trim() &&
+        Object.keys(args).every(key => ['p_request_id','p_reason'].includes(key)), 'DECLINE_ARGUMENTS_OUTSIDE_SCOPE');
+      await x.sessionControl(a);
+      const assigned = await x.success(rpc(a,'provider_service_requests',{ p_request_id:args.p_request_id,p_statuses:['provider_selected'] }));
+      check(assigned.length === 1 && assigned[0].request_id === args.p_request_id &&
+        assigned[0].selected_provider_id === a.id && assigned[0].status === 'provider_selected', 'DECLINE_OWN_ASSIGNMENT_REQUIRED');
+    }
     return rpc(a,name,args);
   };
   x.table = (a,name,query = {}, method = 'GET',body) => {
@@ -80,7 +92,10 @@ async function providerB(x,j,prepare) {
   // Preserve any existing partial profile rather than replacing it with test data.
   for (const table of ['provider_profiles','provider_skills','provider_specializations','provider_weekly_availability']) {
     const rows = await x.success(x.table(a,table,{ provider_id:'eq.'+a.id }));
-    if (rows.length) block('PROVIDER_B_PARTIAL_PROFILE_REQUIRES_ORDINARY_UI_COMPLETION');
+    const emptyProfile = table === 'provider_profiles' && rows.length === 1 && rows[0].provider_id === a.id &&
+      [rows[0].bio,rows[0].location].every(v => v == null || String(v).trim() === '') &&
+      rows[0].provider_lat == null && rows[0].provider_lng == null;
+    if (rows.length && !emptyProfile) block('PROVIDER_B_PARTIAL_PROFILE_REQUIRES_ORDINARY_UI_COMPLETION');
   }
   j.data.actions['providerB.profile'] = 'attempted'; j.save();
   await x.success(x.rpc(a,'save_provider_profile',expected));
@@ -236,6 +251,8 @@ async function matching(x,j,prepare) {
   return cases;
 }
 async function executeCase(x,j,id,operation) {
+  if (id === 'ST-19' && j.data.checks['priority.pass.ST-12'] !== true) block('ST12_FOCUSED_PASS_REQUIRED_BEFORE_ST19');
+  if (id === 'ST-19' && operation === '--run' && j.data.checks['priority.prepared.ST-19'] !== true) block('ST19_PREPARATION_REQUIRED_BEFORE_TRIALS');
   if (operation === '--prepare' && ['ST-12','ST-19'].includes(id)) await providerB(x,j,true);
   await prerequisite(x,id);
   if (id === 'ST-08') {
@@ -256,10 +273,18 @@ async function executeCase(x,j,id,operation) {
   } else if (operation === '--prepare' && id === 'ST-12') {
     const c = await x.actor('clientA');
     const r = await createFixture(x,j,c,'decline.create',x.details('SYNTHETIC ST-12 '+j.data.runId,x.config.date,'12:00:00'));
+    if (j.data.actions['decline.select']) {
+      if (!['pending','provider_selected'].includes(r.status)) block('DECLINE_FIXTURE_STATE_REQUIRES_REVIEW');
+      return []; // Run reconciles an interrupted transition; Prepare must not replay it.
+    }
     check(r.status === 'pending' && r.selected_provider_id === null,'DECLINE_PREPARATION_NOT_PRISTINE');
     const rows = await x.success(x.rpc(c,'recommended_provider_candidates',{ p_request_id:r.request_id }));
     if (!['providerA','providerB'].every(n => rows.some(row => row.id === x.config.accounts[n].id))) block('TWO_ELIGIBLE_APPROVED_PROVIDERS_REQUIRED');
   } else if (operation === '--prepare' && id === 'ST-19') {
+    if (Object.keys(j.data.actions).some(key => /^race[.][0-9]+$/.test(key))) {
+      if (j.data.checks['priority.prepared.ST-19'] !== true) block('ST19_PREPARATION_EVIDENCE_REQUIRES_REVIEW');
+      return [];
+    }
     for (let i=0;i<20;i++) {
       const when=new Date(x.config.date+'T12:00:00Z');when.setUTCDate(when.getUTCDate()+i+1);
       for (const [name,suffix,label] of [['clientA','a','A'],['clientB','b','B']]) {
@@ -269,6 +294,7 @@ async function executeCase(x,j,id,operation) {
         if (!rows.some(row=>row.id===x.config.accounts.providerB.id)) block('RACE_PROVIDER_NOT_ELIGIBLE');
       }
     }
+    j.data.checks['priority.prepared.ST-19']=true;j.save();
   } else if (operation === '--run') {
     x.config.remaining = { ...x.config.remaining,decline:{ synthetic:true,create:true },concurrency:true };
     return checks[id](x,j);
@@ -278,7 +304,7 @@ async function executeCase(x,j,id,operation) {
 function reportRows(results,ids = PRIORITIES) {
   return acceptance.cases.map(c => ({ id:c.id,name:c.name,fullAcceptance:'UNVERIFIED',remainingAssertions:gaps[c.id] || [c.procedure_and_assertions],
     priorFocusedLive:COMPLETED.includes(c.id) ? { status:'PASS',provenance:'OWNER_REPORTED',reexecuted:false } : undefined,
-    ...(results.find(r => r.id === c.id) || { status:ids.includes(c.id)?'BLOCKED':'SKIPPED',code:COMPLETED.includes(c.id) ? 'PRIOR_LIVE_PASS_NOT_REPEATED' : ids.includes(c.id)?'STOPPED_BEFORE_CASE_EXECUTION':'NOT_SELECTED' }) }));
+    ...(results.find(r => r.id === c.id) || { status:ids.includes(c.id)&&!COMPLETED.includes(c.id)?'BLOCKED':'SKIPPED',code:COMPLETED.includes(c.id) ? 'PRIOR_LIVE_PASS_NOT_REPEATED' : ids.includes(c.id)?'STOPPED_BEFORE_CASE_EXECUTION':'NOT_SELECTED' }) }));
 }
 async function inspectCase(x,j,id) {
   await prerequisite(x,id);
@@ -298,7 +324,7 @@ async function inspectCase(x,j,id) {
 async function main(args, transport = fetch) {
   const operation=mode(args), ids=selected(args);
   if (operation === '--plan') {
-    console.log('OFFLINE PLAN: '+ids.join(', ')+'. Prior live ST-06/07/13/17 excluded. Inspect -> Prepare -> Run. No credentials read or network used.'); return;
+    console.log('OFFLINE PLAN: '+ids.join(', ')+'. Prior live ST-06/07/08/10/13/17 excluded; ST-19 requires ST-12 PASS. Inspect -> Prepare -> Run. No credentials read or network used.'); return;
   }
   const arg = (name,fallback) => { const i=args.indexOf(name);return i<0?fallback:args[i+1]; };
   const privateDir = arg('--private-dir');check(privateDir,'PRIVATE_DIRECTORY_REQUIRED');

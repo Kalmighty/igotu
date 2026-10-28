@@ -9,7 +9,8 @@ const { main,selected,mode,guardRuntime,protectedEvidence,providerB,prerequisite
 function model(fault={}) {
   const names=['clientA','providerA','clientB','providerB','pending','rejected','suspended'];
   const accounts=Object.fromEntries(names.map((n,i)=>[n,{ synthetic:true,id:`00000000-0000-4000-8000-${String(i).padStart(12,'0')}`,role:/provider|pending/.test(n)?'provider':'client' }]));
-  const actors=Object.fromEntries(names.map(n=>[n,{ ...accounts[n],name:n }]));
+  if (fault.providerBId) accounts.providerB.id=fault.providerBId;
+  const actors=Object.fromEntries(names.map(n=>[n,{ ...accounts[n],name:n,token:n }]));
   const id=n=>accounts[n].id;
   const users=names.map(n=>({ ...actors[n],status:n==='suspended'?'suspended':'active',profile_completed:n!=='providerB',identity_verified:!['providerB','pending','rejected'].includes(n) }));
   const history=names.map(n=>({ user_id:id(n),status:n==='providerB'||n==='pending'?'pending':n==='rejected'?'rejected':'approved',age_confirmed:true,privacy_consent:true }));
@@ -20,7 +21,7 @@ function model(fault={}) {
   const profiles=[{ provider_id:id('providerA'),bio:'SYNTHETIC',location:'SYNTHETIC',provider_lat:6,provider_lng:116,is_available:true }];
   const skills=[{ provider_id:id('providerA'),category:'Cleaning' }],specs=[{ provider_id:id('providerA'),category:'Cleaning',specialization:'Home Cleaning' }];
   const hours=Array.from({ length:7 },(_,i)=>({ provider_id:id('providerA'),day_of_week:i,start_time:'08:00:00',end_time:'18:00:00' }));
-  const objects=[];let writes=0,faulted=false;
+  const declines=[],notifications=[],objects=[];let writes=0,faulted=false;
   const ok=data=>({ ok:true,status:200,data });
   const filter=(rows,query={})=>structuredClone(rows.filter(r=>Object.entries(query).every(([k,v])=>!String(v).startsWith('eq.')||String(r[k])===v.slice(3))));
   const config={ projectRef:'oqalpauljjhytnrpzcqp',url:'https://oqalpauljjhytnrpzcqp.supabase.co',syntheticOnly:true,publishableKey:'sb_publishable_synthetic_public_fixture',mailDomain:'igotu.test',date:'2030-01-07',accounts,priority:{ matchingReviewed:true,expectedProviderNames:{ exact:['providerA'],near:['providerA'],far:['providerA'],start:['providerA'],wrongCategory:[],wrongSpecialization:[],beforeHours:[],endExclusive:[] } } };
@@ -31,7 +32,7 @@ function model(fault={}) {
     details:(title,date=config.date,time='10:00:00')=>({ title,preferred_date:date,preferred_time:time,budget:100,category:'Cleaning',service_type:'Home Cleaning',description:'SYNTHETIC',location:'SYNTHETIC',client_lat:6,client_lng:116,priority:'normal' }),
     profile:a=>({ p_profile:{ bio:'SYNTHETIC',location:'SYNTHETIC',provider_lat:6,provider_lng:116,is_available:true },p_full_name:'Synthetic '+a.name,p_phone:'01000000000',p_skills:['Cleaning'],p_specializations:[{ category:'Cleaning',specialization:'Home Cleaning' }],p_weekly_hours:Array.from({ length:7 },(_,day_of_week)=>({ day_of_week,start_time:'08:00',end_time:'18:00' })) }),
     table:async(a,name,query={},method='GET',body)=>{
-      const tables={ users,service_requests:requests,payment_records:payments,service_reviews:reviews,internal_messages:messages,verification_requests:history,provider_profiles:profiles,provider_skills:skills,provider_specializations:specs,provider_weekly_availability:hours };
+      const tables={ users,service_requests:requests,payment_records:payments,service_reviews:reviews,internal_messages:messages,verification_requests:history,provider_profiles:profiles,provider_skills:skills,provider_specializations:specs,provider_weekly_availability:hours,service_request_declines:declines,notifications };
       assert(name in tables,'Unknown table '+name);
       if(method==='POST') {assert.equal(name,'payment_records');writes++;if(fault.at==='payment'&&fault.commit===false)fail('payment');payments.push({ ...body,id:'payment-'+payments.length });fail('payment');return ok([body]);}
       return ok(filter(tables[name],query));
@@ -42,13 +43,15 @@ function model(fault={}) {
       if(name==='create_service_request') {writes++;const request_id='SR'+String(requests.length+1).padStart(4,'0');requests.push({ ...args.p_details,request_id,id:'row-'+requests.length,client_id:a.id,creation_key:args.p_idempotency_key,status:'pending',selected_provider_id:null });return ok([{ request_id }]);}
       if(name==='recommended_provider_candidates') {
         const eligible=r.category==='Cleaning'&&r.service_type==='Home Cleaning'&&r.preferred_time>='08:00:00'&&r.preferred_time<'18:00:00';
-        return ok(eligible?[{ id:id('providerA'),distance_km:Math.abs(r.client_lat-6)*111.19492664 }]:[]);
+        return ok(eligible?['providerA','providerB'].filter(n=>users.find(u=>u.id===id(n)).identity_verified && users.find(u=>u.id===id(n)).profile_completed && !declines.some(d=>d.request_id===r.request_id&&d.provider_id===id(n)) && !requests.some(b=>b.request_id!==r.request_id&&b.selected_provider_id===id(n)&&['provider_selected','confirmed','in_progress'].includes(b.status)&&b.preferred_date===r.preferred_date&&b.preferred_time===r.preferred_time)).map(n=>({ id:id(n),distance_km:Math.abs(r.client_lat-6)*111.19492664 })):[]);
       }
       if(name==='payment_proof_reference')return ok(payments.filter(p=>p.request_id===r.request_id).map(p=>({ proof_path:p.proof_path })));
       if(name==='provider_service_requests')return a.role==='provider'?ok(requests.filter(r=>r.selected_provider_id===a.id&&(!args.p_request_id||r.request_id===args.p_request_id))):{ ok:false,status:403,data:{ code:'42501' } };
-      if(name==='save_provider_profile') {writes++;const user=users.find(u=>u.id===a.id);user.profile_completed=true;user.full_name=args.p_full_name;user.phone=args.p_phone;profiles.push({ provider_id:a.id,...args.p_profile });skills.push({ provider_id:a.id,category:'Cleaning' });specs.push({ provider_id:a.id,category:'Cleaning',specialization:'Home Cleaning' });hours.push(...args.p_weekly_hours.map(h=>({ provider_id:a.id,...h })));return ok(user);}
+      if(name==='provider_decline_request') {writes++;if(fault.at==='decline'&&fault.commit===false)fail('decline');assert.equal(r.selected_provider_id,a.id);declines.push({ request_id:r.request_id,provider_id:a.id,reason:args.p_reason });notifications.push({ user_id:r.client_id,event_key:'service_requests:'+r.id+':pending:'+a.id });r.status='pending';r.selected_provider_id=null;fail('decline');return ok(null);}
+      if(name==='client_cancel_request'){writes++;assert.equal(r.client_id,a.id);r.status='cancelled';return ok(null);}
+      if(name==='save_provider_profile') {writes++;const user=users.find(u=>u.id===a.id);user.profile_completed=true;user.full_name=args.p_full_name;user.phone=args.p_phone;const current=profiles.find(p=>p.provider_id===a.id);if(current)Object.assign(current,args.p_profile);else profiles.push({ provider_id:a.id,...args.p_profile });skills.push({ provider_id:a.id,category:'Cleaning' });specs.push({ provider_id:a.id,category:'Cleaning',specialization:'Home Cleaning' });hours.push(...args.p_weekly_hours.map(h=>({ provider_id:a.id,...h })));return ok(user);}
       const transitions={ client_select_provider:'provider_selected',provider_confirm_request:'confirmed',provider_start_request:'in_progress',client_complete_request:'completed' };
-      if(name in transitions) {writes++;r.status=transitions[name];if(args.p_provider_id)r.selected_provider_id=args.p_provider_id;return ok(null);}
+      if(name in transitions) {writes++;if(name==='client_select_provider'&&requests.some(b=>b.request_id!==r.request_id&&b.selected_provider_id===args.p_provider_id&&['provider_selected','confirmed','in_progress'].includes(b.status)&&b.preferred_date===r.preferred_date&&b.preferred_time===r.preferred_time))return{ok:false,status:400,data:{code:'P0001',message:'Provider no longer matches this request or is booked.'}};r.status=transitions[name];if(args.p_provider_id)r.selected_provider_id=args.p_provider_id;return ok(null);}
       throw Error('Unexpected RPC '+name);
     },
     request:async(a,resource,options={})=>{
@@ -70,10 +73,10 @@ function model(fault={}) {
       else result=await x.request(a,u.pathname,{ ...options,body });}
     return{ ...result,text:async()=>JSON.stringify(result.data) };
   };
-  return{ x,transport,users,history,messages,requests,payments,objects,profiles,count:()=>writes };
+  return{ x,transport,declines,notifications,actors,users,history,messages,requests,payments,objects,profiles,count:()=>writes };
 }
-(async()=>{
-  assert.deepEqual(selected([]),['ST-05','ST-08','ST-10','ST-12','ST-19']);
+async function test(){
+  assert.deepEqual(selected([]),['ST-05','ST-12','ST-19']);
   assert.throws(()=>selected(['--only','ST-13']),/PRIORITY_CASE_SELECTION_INVALID/);
   assert.throws(()=>mode(['--run','--prepare']),/ONE_PRIORITY_MODE_REQUIRED/);
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'igotu-priority-'));
@@ -102,18 +105,12 @@ function model(fault={}) {
     const verified=model(),vj=stateFile(path.join(dir,'provider.json'),'verified');
     verified.users.find(u=>u.name==='providerB').identity_verified=true;verified.history.find(h=>h.user_id===verified.x.config.accounts.providerB.id).status='approved';
     await providerB(verified.x,vj,true);assert(verified.users.find(u=>u.name==='providerB').profile_completed);count=verified.count();await providerB(verified.x,vj,true);assert.equal(verified.count(),count);
-    const cli=model(),privateDir=path.join(dir,'private');fs.mkdirSync(privateDir);
-    const approval={ syntheticOnly:true,projectRef:cli.x.config.projectRef,expiresAt:new Date(Date.now()+3600000).toISOString(),network:true,syntheticWrites:true,migrationsReviewed:true,migrationsInstalled:true,privateSchemaReviewed:true,testAccountsReviewed:true,remainingTests:true };
-    const secrets=Object.fromEntries(Object.keys(cli.x.config.accounts).map(n=>[n,{ email:n+'@igotu.test',password:'SYNTHETICpassword123!' }]));
-    for(const [name,value]of Object.entries({ config:cli.x.config,approval,secrets }))fs.writeFileSync(path.join(privateDir,name+'.json'),JSON.stringify(value),{ mode:0o600 });
-    count=cli.count();await main(['--inspect','--only','ST-08,ST-12','--private-dir',privateDir],cli.transport);assert.equal(cli.count(),count,'Inspect must not mutate application data');
-    await main(['--prepare','--only','ST-08,ST-12','--private-dir',privateDir],cli.transport);assert.equal(process.exitCode,2);
-    let report=JSON.parse(fs.readFileSync(path.join(privateDir,'priority-reports',fs.readdirSync(path.join(privateDir,'priority-reports')).filter(f=>f.endsWith('.json')).sort().at(-1))));
-    assert.equal(report.results.find(r=>r.id==='ST-08').fixtureStatus,'PREPARED');assert.equal(report.results.find(r=>r.id==='ST-12').status,'BLOCKED');
-    count=cli.count();await main(['--run','--only','ST-08','--private-dir',privateDir],cli.transport);assert.equal(process.exitCode,3);assert.equal(cli.count(),count);
-    await main(['--run','--only','ST-08','--private-dir',privateDir],cli.transport);assert.equal(cli.count(),count);
+    const gate=model(),gj=stateFile(path.join(dir,'gate.json'),'gate');
+    await assert.rejects(executeCase(gate.x,gj,'ST-19','--prepare'),/ST12_FOCUSED_PASS_REQUIRED/);assert.equal(gate.count(),0);
     assert(reportRows([]).filter(r=>r.priorFocusedLive).every(r=>r.status==='SKIPPED'&&r.priorFocusedLive.reexecuted===false&&r.fullAcceptance==='UNVERIFIED'));
     process.exitCode=0;
     console.log('PASS OFFLINE priority: protected messages, no Admin/authority writes, Provider B approval gate, once-only transfer/proof/payment reconciliation, eight matching fixtures, independent blocked cases, persisted passes and credential-free reports. No live test executed.');
   } finally {fs.rmSync(dir,{recursive:true,force:true});}
-})().catch(e=>{console.error(e);process.exitCode=1;});
+}
+if(require.main===module)test().catch(e=>{console.error(e);process.exitCode=1;});
+module.exports={model};
