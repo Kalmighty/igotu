@@ -271,7 +271,7 @@ async function install(
       const r = t.service_requests.find((r) => r.request_id === a.p_request_id);
       // Synthetic endpoint contracts, not a model/proof of PostgreSQL authorization.
       if (name === "igotu_backend_contract") return {data:{version:"20261026.1",notifications:"database"},error:null};
-      if (name === "provider_service_requests") return {data:t.service_requests.filter(x=>x.selected_provider_id===ids[state.role] && (!a.p_statuses || a.p_statuses.includes(x.status)) && (!a.p_request_id || x.request_id===a.p_request_id)).map(x=>({...x,approximate_area:"Approximate area: Likas",...(!["confirmed","in_progress","completed"].includes(x.status)?{location:null,client_lat:null,client_lng:null}:{})})),error:null};
+      if (name === "provider_service_requests") return {data:t.service_requests.filter(x=>x.selected_provider_id===ids[state.role] && (!a.p_statuses || a.p_statuses.includes(x.status)) && (!a.p_request_id || x.request_id===a.p_request_id)).map(x=>({...x,approximate_area:Object.hasOwn(x,"approximate_area")?x.approximate_area:"Approximate area: Likas",...(!["confirmed","in_progress","completed"].includes(x.status)?{location:null,client_lat:null,client_lng:null}:{})})),error:null};
       if (name === "service_participants") return {data:t.service_requests.filter(x=>a.p_request_ids.includes(x.request_id) && x.selected_provider_id && [x.client_id,x.selected_provider_id].includes(ids[state.role])).map(x=> {
         const u=t.users.find(u=>u.id===(x.client_id===ids[state.role]?x.selected_provider_id:x.client_id));
         return {request_id:x.request_id,id:u.id,full_name:u.full_name,user_code:u.user_code,role:u.role,identity_verified:u.identity_verified};

@@ -10,7 +10,9 @@
 .calendar-today { padding: 8px 16px; }
 .service-calendar button:focus-visible, .calendar-service-title:focus-visible { outline: 3px solid #155b37; outline-offset: 3px; }
 .service-calendar button:disabled { cursor: wait; opacity: .6; }
-.calendar-legend { color: #355342; font-size: .85rem; line-height: 1.8; }
+.calendar-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 0; list-style: none; color: #355342; font-size: .875rem; line-height: 1.5; }
+.calendar-legend-item { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 10px; border: 1px solid #d8e9de; border-radius: 8px; background: #f5faf6; }
+.calendar-legend-marker { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 24px; width: 24px; height: 24px; font-size: 1.25rem; font-weight: 700; color: #175c36; }
 .calendar-status { min-height: 1.5em; color: #355342; line-height: 1.6; }
 .calendar-content { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
 .calendar-content[hidden] { display: none; }

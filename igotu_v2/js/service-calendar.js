@@ -84,7 +84,16 @@ export function mountServiceCalendar(root, { role, userId, loadRequests }) {
   previous.setAttribute("aria-label", "Previous month");
   next.setAttribute("aria-label", "Next month");
   toolbar.append(previous, monthLabel, next, todayButton);
-  const legend = element("p", "calendar-legend", "○ Preferred / unconfirmed   ● Confirmed / in progress   ✓ Completed   × Cancelled");
+  const legend = element("ul", "calendar-legend");
+  legend.setAttribute("role", "list");
+  legend.setAttribute("aria-label", "Service status legend");
+  for (const [symbol, label] of [["○", "Preferred / unconfirmed"], ["●", "Confirmed / in progress"], ["✓", "Completed"], ["×", "Cancelled"]]) {
+    const item = element("li", "calendar-legend-item");
+    const marker = element("span", "calendar-legend-marker", symbol);
+    marker.setAttribute("aria-hidden", "true");
+    item.append(marker, element("span", "", label));
+    legend.append(item);
+  }
   const instructions = element("p", "calendar-help", "Choose a date. Use arrow keys to move by day or week, Home/End for the week, and Page Up/Page Down for months.");
   instructions.id = "serviceCalendarHelp";
   const status = element("p", "calendar-status");

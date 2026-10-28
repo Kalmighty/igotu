@@ -23,7 +23,7 @@ npm --prefix tests run test:calendar
 
 The standalone test starts a loopback-only server, replaces supabaseClient.js with the existing stateful fixture transport and aborts external requests. No live project keys, production data or real accounts are needed. Chromium defaults to /usr/bin/chromium; CHROMIUM_PATH may select an installed local executable.
 
-28 browser scenarios plus date/ownership model checks cover scoped Client/Provider loading, status/decline transitions, read-only links, stale-detail removal/error recovery, empty/loading states, duplicate refresh suppression, automatic refresh, keyboard/month/year/Today navigation, backend-compatibility and mandatory identity denial, escaped/encoded untrusted fields, and layout/axe accessibility at 320/390/1440 pixels across Honolulu, Kuala Lumpur and Kiritimati. Results and screenshots are written to ignored work/service-calendar. The main audit runner also includes this suite.
+29 browser scenarios plus date/ownership model checks cover scoped Client/Provider loading, status/decline transitions, read-only links, stale-detail removal/error recovery, empty/loading states, duplicate refresh suppression, automatic refresh, keyboard/month/year/Today navigation, backend-compatibility and mandatory identity denial, escaped/encoded untrusted fields, and layout/axe accessibility at 320/390/1440 pixels across Honolulu, Kuala Lumpur and Kiritimati. The suite also checks single-label approximate-area rendering without private-location fallback and the accessible four-item status legend. Results and screenshots are written to ignored work/service-calendar. The main audit runner also includes this suite.
 
 Screenshots contain synthetic data only: [mobile](calendar-390.png), [desktop](calendar-1440.png).
 
