@@ -6,7 +6,7 @@
   "scope": "Frontend only, synthetic intercepted transport, no live Supabase or SQL execution",
   "checks": {
     "calendar_browser_scenarios": {
-      "passed": 16,
+      "passed": 28,
       "failed": 0
     },
     "calendar_date_and_ownership_model": "PASS",
@@ -22,7 +22,13 @@
     "existing_mandatory_verification": "PASS: 16 direct route gates and identity/account fixture scenarios",
     "offline_backend_bundle_hashes": "PASS",
     "unchanged_auth_identity_backend_access_and_client_configuration": "PASS",
-    "syntax_and_diff_whitespace": "PASS"
+    "syntax_and_diff_whitespace": "PASS",
+    "provider_destination_link_scenarios": {
+      "passed": 12,
+      "failed": 0,
+      "included_in_calendar_browser_scenarios": true,
+      "cases": "Both Provider destination pages: valid, missing parameter, missing service, unauthorized, invalid, duplicate; unchanged RPC arguments, no raw-table fetch, focus/scroll/actions and accessibility"
+    }
   },
   "not_tested": [
     "Live PostgreSQL/RLS authorization",
@@ -31,5 +37,8 @@
   ],
   "database_or_migration_changes": false,
   "production_or_staging_data_access": false,
-  "deployment": false
+  "deployment": false,
+  "regression_notes": [
+    "An initial full run reported one transient Leaflet popup color-contrast assertion on the unchanged Client request-details page. The isolated recheck and a complete 94-case rerun passed; no Client/map behavior was changed."
+  ]
 }

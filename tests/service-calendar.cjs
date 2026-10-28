@@ -186,6 +186,69 @@ test("Calendar titles and request links are safe text/encoded values", async ({ 
   assert.equal(await page.locator(".calendar-service-title").filter({ hasText: "<img" }).getAttribute("href"), `request-details.html?request_id=${encodeURIComponent(row.request_id)}`);
 });
 
+for (const [destination, target, statuses] of [
+  ["incoming-requests", "AWAITING", ["provider_selected"]],
+  ["assignment-details", "CONFIRMED", ["confirmed", "in_progress", "completed"]],
+]) {
+  for (const scenario of ["valid", "missing parameter", "missing service", "unauthorized", "invalid", "duplicate"]) {
+    test(`provider: ${destination} safely handles ${scenario} request_id`, async ({ page, state }) => {
+      state.tables.service_requests.find((r) => r.request_id === "FOREIGN").status = statuses[0];
+      if (scenario === "valid") {
+        const template = state.tables.service_requests.find((r) => r.request_id === target);
+        state.tables.service_requests.unshift(...Array.from({ length: 3 }, (_, i) => ({
+          ...template, request_id: `EARLIER-${i}`, title: `Synthetic preceding service ${i}`,
+          client_lat: null, client_lng: null,
+        })));
+      }
+      const suffix = {
+        valid: `?request_id=${target}`,
+        "missing parameter": "",
+        "missing service": "?request_id=NOT-RETURNED",
+        unauthorized: "?request_id=FOREIGN",
+        invalid: "?request_id=%22%5D%3Cimg%20src=x%20onerror=alert(1)%3E",
+        duplicate: `?request_id=${target}&request_id=FOREIGN`,
+      }[scenario];
+      await page.goto(`${process.env.UI_BASE_URL}/provider/${destination}.html${suffix}`);
+      await page.waitForFunction(() => document.body.dataset.accessState === "allowed");
+      await page.locator(`[data-service-request-id="${target}"]`).waitFor();
+      // Action binding and highlighting finish after secondary scoped reads.
+      await page.waitForFunction(() => {
+        const list = document.querySelector("#incomingList, #assignmentsList");
+        return list && !list.textContent.includes("Loading");
+      });
+      const marked = page.locator(".requested-service");
+      if (scenario === "valid") {
+        await marked.waitFor();
+        assert.equal(await marked.getAttribute("data-service-request-id"), target);
+        assert.equal(await marked.locator(".requested-service-label").textContent(), "Selected service");
+        assert.equal(await marked.evaluate((card) => card === document.activeElement), true);
+        assert.ok(await page.evaluate(() => window.scrollY > 0));
+        const bounds = await marked.boundingBox();
+        assert.ok(bounds.y >= 0 && bounds.y < 200, `Target not aligned in view: ${bounds.y}`);
+        const action = marked.getByRole("button", { name: destination === "incoming-requests" ? "Confirm" : "Start Service", exact: true });
+        assert.equal(await action.isEnabled(), true);
+        await action.focus();
+        assert.equal(await action.evaluate((button) => button === document.activeElement), true);
+        await page.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
+        const issues = await page.evaluate(async () => (await axe.run(".requested-service")).violations.map((v) => v.id));
+        assert.deepEqual(issues, []);
+      } else {
+        assert.equal(await marked.count(), 0);
+        assert.equal(await page.locator(".requested-service-label").count(), 0);
+      }
+      assert.equal(await page.locator('[data-service-request-id="FOREIGN"]').count(), 0);
+      const reads = state.calls.filter((op) => op.kind === "rpc" && op.name === "provider_service_requests");
+      assert.equal(reads.length, 1);
+      assert.deepEqual(reads[0].args, { p_request_id: null, p_statuses: statuses });
+      assert.equal(state.calls.some((op) => op.kind === "query" && op.table === "service_requests"), false);
+      const allowed = new Set(state.tables.service_requests.filter((r) => r.selected_provider_id === ids.provider && statuses.includes(r.status)).map((r) => r.request_id));
+      for (const op of state.calls.filter((op) => op.kind === "rpc" && op.name === "service_participants")) {
+        assert.ok(op.args.p_request_ids.every((id) => allowed.has(id)));
+      }
+    });
+  }
+}
+
 for (const [width, zone] of [[320, "Pacific/Honolulu"], [390, "Asia/Kuala_Lumpur"], [1440, "Pacific/Kiritimati"]]) {
   test(`Responsive/a11y/wall dates: ${width}px ${zone}`, async ({ page, context }) => {
     await page.setViewportSize({ width, height: 1000 });
