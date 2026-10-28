@@ -26,7 +26,13 @@ async function main() {
     control.some((r) => r.id === config.accounts.providerA.id),
     "MATCHING_POSITIVE_CONTROL_FAILED",
   );
-  for (const test of config.matchingCases) {
+  await runMatrix(x, c);
+  console.log(
+    "PASS supplied synthetic matching truth table. Seed completeness must be reviewed independently.",
+  );
+}
+async function runMatrix(x, c) {
+  for (const test of x.config.matchingCases) {
     check(
       test.synthetic === true &&
         test.requestId &&
@@ -44,6 +50,7 @@ async function main() {
         JSON.stringify([...test.expectedProviderIds].sort()),
       "MATCHING_SET_DIFFERENT",
     );
+    for (const r of rows) check(!["email", "phone", "provider_lat", "provider_lng"].some(k => k in r), "RECOMMENDATION_PII_LEAK");
     for (const expectation of test.statistics || []) {
       const r = rows.find((r) => r.id === expectation.providerId);
       check(r, "MATCHING_STATS_PROVIDER_MISSING");
@@ -68,10 +75,8 @@ async function main() {
         "DISTANCE_ORDER_DIFFERENT",
       );
   }
-  console.log(
-    "PASS supplied synthetic matching truth table. Seed completeness must be reviewed independently.",
-  );
 }
+module.exports = { runMatrix };
 if (require.main === module)
   main().catch((e) => {
     console.error(

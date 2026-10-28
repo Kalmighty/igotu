@@ -28,7 +28,11 @@
       "id": "REPLACE_WITH_UUID",
       "role": "provider"
     },
-    "admin": { "synthetic": true, "id": "REPLACE_WITH_UUID", "role": "admin" },
+    "admin": {
+      "synthetic": true,
+      "id": "REPLACE_WITH_UUID",
+      "role": "admin"
+    },
     "unverified": {
       "synthetic": true,
       "id": "REPLACE_WITH_UUID",
@@ -59,5 +63,13 @@
       "id": "REPLACE_WITH_UUID",
       "role": "provider"
     }
+  },
+  "remaining": {
+    "messageRequestId": "SR0001",
+    "decline": {
+      "synthetic": true,
+      "create": false
+    },
+    "concurrency": false
   }
 }

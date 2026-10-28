@@ -1,0 +1,349 @@
+{
+  "scope": "Focused staging API evidence only. No full acceptance pass is inferred.",
+  "projectRef": "oqalpauljjhytnrpzcqp",
+  "startedAt": "2026-10-28T15:14:30.215Z",
+  "finishedAt": "2026-10-28T15:14:30.220Z",
+  "selected": [
+    "ST-13"
+  ],
+  "results": [
+    {
+      "id": "ST-01",
+      "name": "Client registration and login",
+      "groups": [
+        "DB-02",
+        "EXT-01"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Register a synthetic Client, confirm through isolated mail capture, test the nine selected-role/account-role combinations, invalid credentials and missing profile; assert mismatch logout/cache removal and no workspace redirect."
+      ]
+    },
+    {
+      "id": "ST-02",
+      "name": "Provider registration and login",
+      "groups": [
+        "DB-02",
+        "EXT-01"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Register a synthetic Provider; verify Auth trigger persists only Client/Provider and ignores forged Admin metadata; test confirmation, recovery and session revocation with mail capture."
+      ]
+    },
+    {
+      "id": "ST-03",
+      "name": "Mandatory identity verification",
+      "groups": [
+        "DB-03",
+        "DB-04"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Submit inert generated PDF/PNG, explicit true consents, owned paths; race two submissions, expect exactly one pending. Deny false/omitted consent, forged role/reviewer/status and foreign/missing document."
+      ]
+    },
+    {
+      "id": "ST-04",
+      "name": "Admin approval and rejection",
+      "groups": [
+        "DB-05"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "With existing synthetic Admin approve pending consented Client/Provider, reject with reason, resubmit; assert users flags and Provider badge atomically agree. Replayed final decisions denied without duplicate notifications."
+      ]
+    },
+    {
+      "id": "ST-05",
+      "name": "Pending/rejected user access denial",
+      "groups": [
+        "DB-03"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Full workspace endpoint/state matrix and UI route guards"
+      ]
+    },
+    {
+      "id": "ST-06",
+      "name": "Direct REST restrictions",
+      "groups": [
+        "DB-01",
+        "DB-02",
+        "DB-03"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Operator ACL/default grants/views/GraphQL review; authority PATCH probe"
+      ]
+    },
+    {
+      "id": "ST-07",
+      "name": "RPC authorization",
+      "groups": [
+        "DB-02",
+        "DB-07"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Every RPC and caller-state combination; private helper routing"
+      ]
+    },
+    {
+      "id": "ST-08",
+      "name": "Private Storage access",
+      "groups": [
+        "DB-04",
+        "DB-09",
+        "DB-11"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Identity/report files, overwrite/delete races, signed URL expiry, payment proof ownership writes"
+      ]
+    },
+    {
+      "id": "ST-09",
+      "name": "Client request creation",
+      "groups": [
+        "DB-07"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Approved Client creates correct category/specialization/date/time/GPS. Race identical idempotency key, expect one request/ID; simulate lost response and retry, expect original ID; changed details same key must fail. Preserve image-failure edit retry."
+      ]
+    },
+    {
+      "id": "ST-10",
+      "name": "Recommendation accuracy",
+      "groups": [
+        "DB-06",
+        "DB-10"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Independent fixture completeness and UI recommendation rendering"
+      ]
+    },
+    {
+      "id": "ST-11",
+      "name": "Provider selection",
+      "groups": [
+        "DB-06",
+        "DB-07"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Client selects only from own pending request and eligible target; reject forged/inactive/unapproved/unavailable/declined/conflicting target. Exact repeat is idempotent. Provider cannot browse other open requests or apply."
+      ]
+    },
+    {
+      "id": "ST-12",
+      "name": "Provider confirm and decline",
+      "groups": [
+        "DB-07"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Confirm conflict/replay and concurrent stale transitions"
+      ]
+    },
+    {
+      "id": "ST-13",
+      "name": "Messaging",
+      "groups": [
+        "DB-08"
+      ],
+      "status": "BLOCKED",
+      "code": "STOPPED_AFTER_FAILURE_OR_BLOCK",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Former Provider, suspended/revoked JWT and browser draft/thread navigation"
+      ]
+    },
+    {
+      "id": "ST-14",
+      "name": "Service completion",
+      "groups": [
+        "DB-07"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Provider starts only confirmed own service; Client completes only own in-progress service. Race cancel/start/complete, assert valid serial result and history retained. Validate repeat versus stale transition behavior."
+      ]
+    },
+    {
+      "id": "ST-15",
+      "name": "Payment recording",
+      "groups": [
+        "DB-09"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "After completion Client records Cash or transfer with owned private proof. Race duplicate request payment, expect one. Deny wrong payer/provider/amount/method/missing transfer proof. Resolve consistent path and legacy URL-only proofs; reject foreign URL, mismatched path, traversal, ambiguous ID, missing/foreign object; no public URL persistence."
+      ]
+    },
+    {
+      "id": "ST-16",
+      "name": "Ratings and reviews",
+      "groups": [
+        "DB-10"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Both participants can review completed service once; race duplicates and enforce rating range/participant pairing. Deny premature/wrong target review. Compare recommendation aggregate across all records, no browser-limited statistics."
+      ]
+    },
+    {
+      "id": "ST-17",
+      "name": "Admin monitoring",
+      "groups": [
+        "DB-05",
+        "DB-11",
+        "DB-13"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Report review writes, inactive Admin and 101-row queue pagination"
+      ]
+    },
+    {
+      "id": "ST-18",
+      "name": "Account suspension",
+      "groups": [
+        "DB-02",
+        "DB-08"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Admin RPC must use account_status, suspend synthetic Client/Provider with active work; direct REST reads/writes/RPCs denied after status change; preserve all assignments/history. Test cross-tab sign-out and invalid refresh tokens; decide self/last-Admin policy separately."
+      ]
+    },
+    {
+      "id": "ST-19",
+      "name": "Concurrent Provider assignments",
+      "groups": [
+        "DB-07"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Operator barriers and profile/confirm/decline/suspension interleavings"
+      ]
+    },
+    {
+      "id": "ST-20",
+      "name": "Atomic Provider profile updates",
+      "groups": [
+        "DB-12"
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED",
+      "acceptanceStatus": "UNVERIFIED",
+      "remaining": [
+        "Snapshot synthetic profile/skills/specs/hours/own basic fields; inject late unique/validation failure inside single RPC and compare every set unchanged. Successful save commits all sets; concurrent two saves yields one complete set, never mixed rows. Race with selection/suspension and check eligibility reflects committed state."
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "id": "PREFLIGHT",
+      "status": "BLOCKED",
+      "code": "EXPLICIT_CONFIG_APPROVAL_AND_SECRET_FILES_REQUIRED"
+    }
+  ],
+  "acceptanceGroups": [
+    {
+      "id": "DB-01",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-02",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-03",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-04",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-05",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-06",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-07",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-08",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-09",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-10",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-11",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-12",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-13",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "EXT-01",
+      "status": "UNVERIFIED"
+    }
+  ]
+}

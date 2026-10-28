@@ -11,5 +11,6 @@
   "migrationsInstalled": false,
   "privateSchemaReviewed": false,
   "testAccountsReviewed": false,
-  "atomicProbeProvider": "REPLACE_WITH_PROVIDER_B_UUID_AFTER_SEPARATE_PROBE_DDL_APPROVAL"
+  "atomicProbeProvider": "REPLACE_WITH_PROVIDER_B_UUID_AFTER_SEPARATE_PROBE_DDL_APPROVAL",
+  "remainingTests": false
 }
