@@ -1,0 +1,264 @@
+/* IGotU dashboard-only visual refinement.
+   Loaded after style.css, ui.css and service-calendar.css on Client/Provider dashboard pages.
+   No changes to access gates, service fetching, calendar state, or other workspaces. */
+.dashboard-polish {
+  --dashboard-ink: #153c2b;
+  --dashboard-accent: #167844;
+  --dashboard-line: #dbe9df;
+  --dashboard-soft: #f1f8f2;
+  --dashboard-shadow: 0 12px 32px rgb(18 76 59 / 6%);
+  background: #f7faf7;
+}
+.dashboard-polish .content-area { max-width: 1440px; }
+.dashboard-polish .page-heading {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  align-items: center;
+  padding: clamp(22px, 3vw, 36px);
+  border: 1px solid #cfe5d6;
+  border-radius: 22px;
+  background: linear-gradient(120deg, #f5fbf3 0%, #e8f4ea 72%, #e0f1e4 100%);
+  box-shadow: 0 8px 26px rgb(18 76 59 / 4%);
+}
+.dashboard-polish .page-heading::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: 230px;
+  aspect-ratio: 1;
+  right: -100px;
+  top: -125px;
+  border: 1px solid #84bc9638;
+  border-radius: 50%;
+  box-shadow: 0 0 0 40px #80b99410, 0 0 0 80px #80b9940b;
+  pointer-events: none;
+}
+.dashboard-polish .page-heading > div { min-width: 0; }
+.dashboard-polish .page-eyebrow {
+  font-weight: 800;
+  letter-spacing: .12em;
+  color: #22764a;
+}
+.dashboard-polish .page-heading h1 {
+  font-size: clamp(27px, 2.9vw, 37px);
+  font-weight: 800;
+  letter-spacing: -1.1px;
+  color: #173e2c;
+}
+.dashboard-polish .page-heading p {
+  margin-top: 9px;
+  color: #446754;
+  line-height: 1.65;
+}
+.dashboard-polish .page-heading > .btn {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  box-shadow: 0 7px 20px rgb(10 88 40 / 14%);
+}
+.dashboard-polish .stats-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.dashboard-polish .stat-card {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  padding: 23px;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--dashboard-shadow);
+}
+.dashboard-polish .stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #26844f, #abd7b6);
+}
+.dashboard-polish .stat-icon {
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  background: #ebf6ed;
+  border: 1px solid #d7e9db;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  font-size: 20px;
+}
+.dashboard-polish .stat-card span {
+  font-size: 13px;
+  color: #506e5c;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.dashboard-polish .stat-card strong {
+  font-size: clamp(27px, 2.8vw, 35px);
+  letter-spacing: -.6px;
+  color: #173f2e;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.dashboard-polish .panel:not(.service-calendar) {
+  overflow: hidden;
+  border: 1px solid var(--dashboard-line);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: var(--dashboard-shadow);
+}
+.dashboard-polish .panel-header {
+  padding: 22px 24px;
+  background: linear-gradient(90deg, #fff, #f6fbf7);
+}
+.dashboard-polish .panel-header h2 { color: var(--dashboard-ink); }
+.dashboard-polish .panel-header a { color: #126d3b; }
+.dashboard-polish .list-box { padding: 18px 24px 24px; }
+.dashboard-polish .list-item {
+  border-radius: 14px;
+  border-color: #dfebe2;
+  background: #fff;
+  gap: 14px;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.dashboard-polish .list-item:hover {
+  border-color: #9fceb0;
+  background: #fafdFA;
+  box-shadow: 0 5px 16px rgb(19 83 46 / 8%);
+  transform: translateY(-1px);
+}
+.dashboard-polish .list-item strong { color: #1a3f2c; }
+.dashboard-polish .list-item:focus-visible {
+  outline: 3px solid #17663b;
+  outline-offset: 3px;
+}
+.dashboard-polish .workspace-tip {
+  border: 1px solid #c8e2d2;
+  border-radius: 18px;
+  background: linear-gradient(110deg, #ecf8ee, #f8fcf8);
+  box-shadow: 0 5px 20px rgb(17 98 48 / 5%);
+}
+.dashboard-polish .workspace-tip strong { color: #174b30; }
+.dashboard-polish .workspace-tip > .btn {
+  white-space: nowrap;
+  background: white;
+}
+.dashboard-polish .service-calendar {
+  border: 1px solid var(--dashboard-line);
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: var(--dashboard-shadow);
+  padding: clamp(17px, 2vw, 27px);
+}
+.dashboard-polish .calendar-header {
+  margin-bottom: 16px;
+  gap: 16px;
+  align-items: center;
+}
+.dashboard-polish .calendar-header h2 {
+  font-size: clamp(20px, 2vw, 25px);
+  color: #1b4c33;
+  letter-spacing: -.5px;
+}
+.dashboard-polish .calendar-toolbar {
+  padding: 12px 14px;
+  border: 1px solid #d8eadc;
+  border-radius: 14px;
+  background: #f3f9f4;
+}
+.dashboard-polish .calendar-month {
+  font-size: clamp(16px, 1.7vw, 19px);
+  font-weight: 750;
+  color: #173f2c;
+}
+.dashboard-polish .calendar-nav,
+.dashboard-polish .calendar-today {
+  background: white;
+  border-color: #bad7c4;
+  color: #175c36;
+  transition: background .2s ease, border-color .2s ease;
+}
+.dashboard-polish .calendar-nav:hover,
+.dashboard-polish .calendar-today:hover {
+  border-color: #6faf83;
+  background: #edf7ef;
+}
+.dashboard-polish .calendar-legend {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+.dashboard-polish .calendar-status { font-weight: 600; }
+.dashboard-polish .calendar-day {
+  border: 1px solid #edf3ef;
+  background: #f8fbf8;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+.dashboard-polish .calendar-day.has-services {
+  border-color: #b7d8c1;
+  background: #eaf5ed;
+}
+.dashboard-polish .calendar-day[aria-pressed="true"] {
+  background: #17663b;
+  border-color: #17663b;
+  color: white;
+}
+.dashboard-polish .calendar-details {
+  border-color: #d8e9de;
+  border-radius: 15px;
+  background: #f5faf6;
+}
+.dashboard-polish .calendar-details h3 { color: #1d4e34; }
+.dashboard-polish .calendar-service {
+  border-color: #dceadf;
+}
+.dashboard-polish .calendar-service-title { color: #126b3a; }
+@media (max-width: 1100px) {
+  .dashboard-polish .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 650px) {
+  .dashboard-polish .page-heading {
+    align-items: stretch;
+    gap: 20px;
+    padding: 22px 19px;
+  }
+  .dashboard-polish .page-heading > .btn {
+    align-self: flex-start;
+    white-space: normal;
+  }
+  .dashboard-polish .stats-grid { gap: 12px; }
+  .dashboard-polish .stat-card { padding: 16px; }
+  .dashboard-polish .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .dashboard-polish .stat-card strong { font-size: 27px; }
+  .dashboard-polish .panel-header { padding: 17px; }
+  .dashboard-polish .list-box { padding: 14px; }
+  .dashboard-polish .service-calendar { padding: 15px; }
+  .dashboard-polish .calendar-toolbar {
+    padding: 9px;
+    gap: 7px;
+  }
+  .dashboard-polish .calendar-month { min-width: 0; flex: 1 1 auto; }
+  .dashboard-polish .calendar-day { min-height: 52px; }
+  .dashboard-polish .workspace-tip > .btn { white-space: normal; }
+}
+@media (max-width: 355px) {
+  .dashboard-polish .stat-card { padding: 13px; }
+  .dashboard-polish .stat-card span { font-size: 12px; }
+  .dashboard-polish .stat-card strong { font-size: 25px; }
+  .dashboard-polish .calendar-toolbar { padding: 6px; gap: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-polish .list-item,
+  .dashboard-polish .calendar-day,
+  .dashboard-polish .calendar-nav,
+  .dashboard-polish .calendar-today { transition: none; }
+}
