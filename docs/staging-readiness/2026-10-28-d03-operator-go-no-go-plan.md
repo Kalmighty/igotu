@@ -56,6 +56,29 @@ This is an **operator worksheet**, not a SQL command, automated deployment scrip
 - [ ] Only begin D04's separately approved pre-cutover review after verified phase 3; notifier inventory, historical receipts, evidence-bucket rules, Storage ownership and effective ACLs remain independent gates.
 - [ ] No real Auth user workflow, synthetic test-write batch, site deployment, signup enablement, production changes or GitHub PR merge merely because D03 applied. The approved D04 and end-to-end staging plan must complete first.
 
+## Recommended operator connection route (official Supabase connection guidance, checked 2026-10-28)
+
+This is a **procedure recommendation**, not proof of an established or authorized connection. Supabase currently recommends a **direct PostgreSQL connection for migrations**, with the **shared session-mode pooler** as an alternative when the operator's environment is IPv4-only. Both preserve long-lived PostgreSQL session state. The **transaction-mode pooler** does not preserve session state between transactions and must not be selected as a casual substitute for the reviewed `psql` + attestation-file workflow.
+
+- **Preferred:** use the project Dashboard **Connect → Direct connection**, from a supported and explicitly permitted operator environment with IPv6 (or approved IPv4 add-on), using the exact host/username from the Dashboard, not a reconstructed pooler hostname.
+- **Conditional alternative:** if direct connectivity is unavailable solely due to IPv4, evaluate **Connect → Session pooler** with a documented operator capability test and confirmed session semantics. Do not use the **Transaction pooler**.
+- **Transport:** use TLS with server-certificate validation according to the operating environment and Supabase certificate settings; never store a database password in GitHub, the browser source, an open issue, or any user-facing screenshot.
+- **Execution:** preserve the repository's `psql -X --set=ON_ERROR_STOP=1` and single-connection operator attestation procedure as written; confirm the exact staged project reference and transaction semantics before any execution approval. D03 already contains `BEGIN`/`COMMIT`, so do **not** wrap or decompose it blindly through an unverified migration/SQL API. An `apply_migration` tool is **not** presumed equivalent to this procedure. Reconcile the installed D01/D02 migration ledger (`20261027` versions) with the repository D03 draft filename (`20261026`) in an approved migration ledger plan; do not use `db push`, force history repair, run all SQL files, or fabricate a new applied revision.
+- **Operator-level read-only connectivity preflight:** independently establish that the permitted connection resolves to `igotu-staging` with expected PostgreSQL role/phase and can keep session-local state within the intended operator-controlled scope. This is not yet demonstrated via that external `psql` environment.
+- **Migration approval:** the user previously authorized SELECT-only metadata access, **not** D03 DDL/DML. No invocation of a migration or service pause has occurred.
+
+Official documentation: [Connect to your database](https://supabase.com/docs/guides/database/connecting-to-postgres) (migration/direct vs session vs transaction modes), [Database migrations](https://supabase.com/docs/guides/deployment/database-migrations) (migration history and deploy synchronization).
+
+### Proportionate future-object privilege policy for the D03 decision
+
+The `postgres` role was confirmed as the intended migration owner with required CREATE rights, and existing `postgres`-created application objects are quarantined. The broader `supabase_admin` `public` **future-object** default grants apply when that managed role creates new public objects, **not automatically to postgres-created D03 functions**. No `ALTER DEFAULT PRIVILEGES` is necessary just to address an unrelated owner's defaults in this isolated D03 transaction. Instead, the operator must explicitly prevent unauthorized `supabase_admin`-owned future application objects and assess any planned new owner/schema/role before creation. Never alter Supabase-managed privilege defaults without a separate reviewed reason and change authorization. Verify the actual final grants after any approved D03 and especially after D04.
+
+### One practical owner confirmation needed before scheduling a maintenance window
+
+The project owner must account for any staging credentials shared with **CodeSandbox, Netlify, CI, external APIs, direct database clients, Auth Admin/service-role scripts, webhooks or a test browser**. If no external staging writer has ever been connected, record that as a scope-limited owner declaration and still enforce no new staging writes for the entire approved window. Disabled new signup and a zero-active-session snapshot alone do not prove this. A responsible operator must control the pause, verify it immediately before execution, and only resume writers after the separately approved safe cutover and tests.
+
+**Result:** Supabase offers a documented *candidate* connection method; no approved operator connection, maintenance freeze or D03 write authorization exists yet. **D03 remains NO-GO.**
+
 ## Decision log
 
 | Decision | Current state | Required to advance |
