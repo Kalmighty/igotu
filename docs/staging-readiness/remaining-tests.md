@@ -1,3 +1,5 @@
+> Current continuation: use [the priority plan](priority-plan.md). ST-06/07/13/17 are owner-reported focused live passes and excluded from the new runner. SR0001, including its two messages, is read-only. Legacy `--remaining --execute` now requires explicit `--only`, and ST-13 refuses SR0001. The original instructions below describe the earlier preparation phase and must not be used to replay protected evidence.
+
 # Continue installed staging tests safely
 
 Source inspected: `igotu-staging-validation` at `dd13352e31d6a53251baf501181a657882d840f0`. This continuation uses the existing integration/runtime/config modules. It does not install migrations, provision accounts, change schemas, grant Admin privileges or deploy. The original full suite is unchanged in scope and still starts with registration: **use `--remaining` for continuation**.

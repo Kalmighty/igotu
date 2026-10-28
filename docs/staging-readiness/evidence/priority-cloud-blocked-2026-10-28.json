@@ -1,0 +1,297 @@
+{
+  "operation": "--inspect",
+  "evidenceMode": "STAGING_HTTP",
+  "newFocusedLivePasses": 0,
+  "projectRef": "oqalpauljjhytnrpzcqp",
+  "startedAt": "2026-10-28T16:06:01.570Z",
+  "finishedAt": "2026-10-28T16:06:01.573Z",
+  "scope": "Only STAGING_HTTP + --run + PASS is focused live evidence. OFFLINE_MOCK is offline only. Prepare/Inspect are not test passes.",
+  "results": [
+    {
+      "id": "ST-01",
+      "name": "Client registration and login",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Register a synthetic Client, confirm through isolated mail capture, test the nine selected-role/account-role combinations, invalid credentials and missing profile; assert mismatch logout/cache removal and no workspace redirect."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-02",
+      "name": "Provider registration and login",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Register a synthetic Provider; verify Auth trigger persists only Client/Provider and ignores forged Admin metadata; test confirmation, recovery and session revocation with mail capture."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-03",
+      "name": "Mandatory identity verification",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Submit inert generated PDF/PNG, explicit true consents, owned paths; race two submissions, expect exactly one pending. Deny false/omitted consent, forged role/reviewer/status and foreign/missing document."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-04",
+      "name": "Admin approval and rejection",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "With existing synthetic Admin approve pending consented Client/Provider, reject with reason, resubmit; assert users flags and Provider badge atomically agree. Replayed final decisions denied without duplicate notifications."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-05",
+      "name": "Pending/rejected user access denial",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Full workspace endpoint/state matrix and UI route guards"
+      ],
+      "status": "BLOCKED",
+      "code": "STOPPED_BEFORE_CASE_EXECUTION"
+    },
+    {
+      "id": "ST-06",
+      "name": "Direct REST restrictions",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Operator ACL/default grants/views/GraphQL review; authority PATCH probe"
+      ],
+      "priorFocusedLive": {
+        "status": "PASS",
+        "provenance": "OWNER_REPORTED",
+        "reexecuted": false
+      },
+      "status": "SKIPPED",
+      "code": "PRIOR_LIVE_PASS_NOT_REPEATED"
+    },
+    {
+      "id": "ST-07",
+      "name": "RPC authorization",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Every RPC and caller-state combination; private helper routing"
+      ],
+      "priorFocusedLive": {
+        "status": "PASS",
+        "provenance": "OWNER_REPORTED",
+        "reexecuted": false
+      },
+      "status": "SKIPPED",
+      "code": "PRIOR_LIVE_PASS_NOT_REPEATED"
+    },
+    {
+      "id": "ST-08",
+      "name": "Private Storage access",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Identity/report files, overwrite/delete races, signed URL expiry, payment proof ownership writes"
+      ],
+      "status": "BLOCKED",
+      "code": "STOPPED_BEFORE_CASE_EXECUTION"
+    },
+    {
+      "id": "ST-09",
+      "name": "Client request creation",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Approved Client creates correct category/specialization/date/time/GPS. Race identical idempotency key, expect one request/ID; simulate lost response and retry, expect original ID; changed details same key must fail. Preserve image-failure edit retry."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-10",
+      "name": "Recommendation accuracy",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Independent fixture completeness and UI recommendation rendering"
+      ],
+      "status": "BLOCKED",
+      "code": "STOPPED_BEFORE_CASE_EXECUTION"
+    },
+    {
+      "id": "ST-11",
+      "name": "Provider selection",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Client selects only from own pending request and eligible target; reject forged/inactive/unapproved/unavailable/declined/conflicting target. Exact repeat is idempotent. Provider cannot browse other open requests or apply."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-12",
+      "name": "Provider confirm and decline",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Confirm conflict/replay and concurrent stale transitions"
+      ],
+      "status": "BLOCKED",
+      "code": "STOPPED_BEFORE_CASE_EXECUTION"
+    },
+    {
+      "id": "ST-13",
+      "name": "Messaging",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Former Provider, suspended/revoked JWT and browser draft/thread navigation"
+      ],
+      "priorFocusedLive": {
+        "status": "PASS",
+        "provenance": "OWNER_REPORTED",
+        "reexecuted": false
+      },
+      "status": "SKIPPED",
+      "code": "PRIOR_LIVE_PASS_NOT_REPEATED"
+    },
+    {
+      "id": "ST-14",
+      "name": "Service completion",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Provider starts only confirmed own service; Client completes only own in-progress service. Race cancel/start/complete, assert valid serial result and history retained. Validate repeat versus stale transition behavior."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-15",
+      "name": "Payment recording",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "After completion Client records Cash or transfer with owned private proof. Race duplicate request payment, expect one. Deny wrong payer/provider/amount/method/missing transfer proof. Resolve consistent path and legacy URL-only proofs; reject foreign URL, mismatched path, traversal, ambiguous ID, missing/foreign object; no public URL persistence."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-16",
+      "name": "Ratings and reviews",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Both participants can review completed service once; race duplicates and enforce rating range/participant pairing. Deny premature/wrong target review. Compare recommendation aggregate across all records, no browser-limited statistics."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-17",
+      "name": "Admin monitoring",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Report review writes, inactive Admin and 101-row queue pagination"
+      ],
+      "priorFocusedLive": {
+        "status": "PASS",
+        "provenance": "OWNER_REPORTED",
+        "reexecuted": false
+      },
+      "status": "SKIPPED",
+      "code": "PRIOR_LIVE_PASS_NOT_REPEATED"
+    },
+    {
+      "id": "ST-18",
+      "name": "Account suspension",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Admin RPC must use account_status, suspend synthetic Client/Provider with active work; direct REST reads/writes/RPCs denied after status change; preserve all assignments/history. Test cross-tab sign-out and invalid refresh tokens; decide self/last-Admin policy separately."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    },
+    {
+      "id": "ST-19",
+      "name": "Concurrent Provider assignments",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Operator barriers and profile/confirm/decline/suspension interleavings"
+      ],
+      "status": "BLOCKED",
+      "code": "STOPPED_BEFORE_CASE_EXECUTION"
+    },
+    {
+      "id": "ST-20",
+      "name": "Atomic Provider profile updates",
+      "fullAcceptance": "UNVERIFIED",
+      "remainingAssertions": [
+        "Snapshot synthetic profile/skills/specs/hours/own basic fields; inject late unique/validation failure inside single RPC and compare every set unchanged. Successful save commits all sets; concurrent two saves yields one complete set, never mixed rows. Race with selection/suspension and check eligibility reflects committed state."
+      ],
+      "status": "SKIPPED",
+      "code": "NOT_SELECTED"
+    }
+  ],
+  "fixtures": [],
+  "controls": [
+    {
+      "id": "CONTROL",
+      "status": "BLOCKED",
+      "code": "LOCAL_CONFIGURATION_INVALID"
+    }
+  ],
+  "acceptanceGroups": [
+    {
+      "id": "DB-01",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-02",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-03",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-04",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-05",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-06",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-07",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-08",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-09",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-10",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-11",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-12",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "DB-13",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "EXT-01",
+      "status": "UNVERIFIED"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "notice": "LOCAL REVIEW REQUIRED. These expected sets are examples for a fixture population with only Provider A eligible for Home Cleaning. Never copy observed recommendation output into the expected sets.",
+  "matchingReviewed": false,
+  "expectedProviderNames": {
+    "exact": ["providerA"],
+    "near": ["providerA"],
+    "far": ["providerA"],
+    "start": ["providerA"],
+    "wrongCategory": [],
+    "wrongSpecialization": [],
+    "beforeHours": [],
+    "endExclusive": []
+  }
+}

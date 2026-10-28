@@ -802,6 +802,7 @@ test("ST-20", async (x) => {
 });
 async function main() {
   const args = process.argv.slice(2);
+  if (args.includes("--priority")) return require("./priority.cjs").main(args);
   if (args.includes("--remaining")) return require("./remaining.cjs").main(args);
   if (!args.includes("--execute")) {
     for (const c of plan.cases)

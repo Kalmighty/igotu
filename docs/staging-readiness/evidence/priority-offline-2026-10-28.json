@@ -1,0 +1,63 @@
+{
+  "scope": "OFFLINE ONLY; no new live staging test executed",
+  "baseBranch": "igotu-staging-remaining-tests",
+  "baseCommit": "473db55b302f4acabaea92428382d99783e3b8a7",
+  "reviewBranch": "igotu-staging-fyp-priority",
+  "runtime": "Node.js 24.19.0 on Linux; Windows commands reviewed but not executed here",
+  "newLiveTestsExecuted": 0,
+  "priorFocusedLiveOwnerReported": {
+    "cases": [
+      "ST-06",
+      "ST-07",
+      "ST-13",
+      "ST-17"
+    ],
+    "status": "PASS",
+    "reexecuted": false,
+    "originalReports": "Private Windows reports unavailable in Cloud; retain original evidence"
+  },
+  "offlineChecks": [
+    {
+      "command": "node tests/staging/priority.test.cjs",
+      "status": "PASS",
+      "scope": "In-memory REST/Storage model and temporary local files; no live connection"
+    },
+    {
+      "command": "node tests/staging/remaining.test.cjs",
+      "status": "PASS",
+      "scope": "Existing messaging transport model on a separate mock thread; protected SR0001 guard tested"
+    },
+    {
+      "command": "node tests/staging/remaining-lifecycle.test.cjs",
+      "status": "PASS",
+      "scope": "Twenty modeled race iterations and decline/recovery resume; not database concurrency evidence"
+    },
+    {
+      "command": "node tests/staging/preparation.test.cjs",
+      "status": "PASS",
+      "scope": "Existing offline regression including plan-only subprocesses"
+    },
+    {
+      "command": "node tests/staging/preflight.cjs",
+      "status": "PASS",
+      "scope": "Five unchanged bundle hashes; no SQL execution"
+    },
+    {
+      "command": "node tests/staging/readiness.cjs",
+      "status": "PASS",
+      "scope": "20-case/14-group preparation mapping only"
+    },
+    {
+      "command": "node tests/staging/integration.cjs --priority --plan",
+      "status": "PASS",
+      "scope": "No private config read or network"
+    },
+    {
+      "command": "node --check priority.cjs / remaining.cjs and git diff --check",
+      "status": "PASS",
+      "scope": "Syntax/patch checks"
+    }
+  ],
+  "fullAcceptanceStatus": "UNVERIFIED",
+  "cloudLiveExecution": "BLOCKED: managed environment has no configured staging user credentials; controlled missing-config probe stopped before transport"
+}
