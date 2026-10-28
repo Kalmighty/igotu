@@ -7,8 +7,8 @@ const providers = [
   {id:'p2', full_name:'Daniel Wong', user_code:'PR-202', role:'provider', status:'active'}
 ];
 const requests = [
-  {request_id:'REQ-101', title:'Weekly home cleaning', category:'Cleaning', service_type:'Home Cleaning', location:'Kota Kinabalu, Sabah, Malaysia', budget:120, status:role==='provider'?'provider_selected':'pending', preferred_date:'2026-10-26', preferred_time:'10:00', client_lat:6.0367, client_lng:116.1186},
-  {request_id:'REQ-102', title:'Kitchen tap repair', category:'Repair', location:'Likas, Sabah, Malaysia', status:'completed'}
+  {request_id:'REQ-101', client_id:'own', selected_provider_id:role==='provider'?'own':null, title:'Weekly home cleaning', category:'Cleaning', service_type:'Home Cleaning', location:'Kota Kinabalu, Sabah, Malaysia', budget:120, status:role==='provider'?'provider_selected':'pending', preferred_date:'2026-10-26', preferred_time:'10:00', client_lat:6.0367, client_lng:116.1186},
+  {request_id:'REQ-102', client_id:'own', selected_provider_id:role==='provider'?'own':'p1', preferred_date:'2026-10-27', preferred_time:'11:00', title:'Kitchen tap repair', category:'Repair', location:'Likas, Sabah, Malaysia', status:'completed'}
 ];
 function query(table) {
   const calls=[];

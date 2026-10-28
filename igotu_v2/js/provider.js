@@ -1,3 +1,4 @@
+import { mountServiceCalendar, calendarRequests } from "./service-calendar.js";
 import { providerRequests } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
@@ -53,10 +54,10 @@ async function loadStats(userId) {
     if (error) {
         console.error(error);
         document.getElementById("incomingRequests").innerHTML = `<div class="ui-state" role="alert"><h3>Requests could not be loaded</h3><p>Refresh the page to try again.</p><a class="btn btn-outline" href="dashboard.html">Try again</a></div>`;
-        return;
+        throw new Error("Services could not be loaded");
     }
 
-    const list = requests || [];
+    const list = calendarRequests(requests || [], "provider", userId);
 
     document.getElementById("incomingCount").textContent = list.filter(r => r.status === "provider_selected").length;
     document.getElementById("activeCount").textContent = list.filter(r => ["confirmed", "in_progress"].includes(r.status)).length;
@@ -79,7 +80,7 @@ async function loadStats(userId) {
 
     if (incoming.length === 0) {
         incomingBox.innerHTML = `<div class="ui-state"><h3>You’re all caught up</h3><p>When a client selects you, their request will appear here. Keep your services and working hours up to date.</p><a class="btn btn-outline" href="edit-profile.html">Manage services &amp; availability</a></div>`;
-        return;
+        return list;
     }
 
     incomingBox.innerHTML = incoming.slice(0, 5).map(request => `
@@ -91,6 +92,7 @@ async function loadStats(userId) {
             <em class="status-pill">${escapeHtml(request.status.replace("_", " "))}</em>
         </a>
     `).join("");
+    return list;
 }
 
 async function handleLogout() {
@@ -114,6 +116,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (!profile) return;
 
     displayUser(profile);
-    await loadStats(user.id);
+    mountServiceCalendar(document.getElementById("serviceCalendar"), {
+        role: "provider",
+        userId: user.id,
+        loadRequests: () => loadStats(user.id),
+    });
     handleLogout();
 });

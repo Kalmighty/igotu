@@ -4,7 +4,8 @@
   "private": true,
   "description": "Local browser fixtures only; never connects to live Supabase",
   "scripts": {
-    "test": "node run-audit.cjs"
+    "test": "node run-audit.cjs",
+    "test:calendar": "node service-calendar.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",
