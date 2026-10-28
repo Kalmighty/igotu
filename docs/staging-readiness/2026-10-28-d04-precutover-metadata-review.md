@@ -39,3 +39,26 @@ All findings are metadata snapshots, not proof of complete SQL execution, runtim
 5. **Safety and approval:** D04 mutates database and bucket settings; the user's authorization for D03 did **not** authorize D04. Obtain independent D04 approval after completing the above and local file SHA-256 verification. Do not deploy the production-hardcoded frontend or enable public signup before full synthetic authorization tests.
 
 **Decision:** D04 *metadata/name-collision preflight* passed. **D04 application remains blocked pending receipts/notifier/ACL evidence, controlled operator maintenance pause and separate explicit D04 authorization.** No changes to Supabase or production were made in this review.
+
+## Follow-up verified read-only results
+
+The project owner requested continuation of the D04 pre-cutover review. Additional **read-only aggregate** SQL checked counts, not payment, identity, file names, user details or row content. Independent findings on 2026-10-28:
+
+| Scoped staging collection | Count |
+| --- | ---: |
+| `public.payment_records` | **0** |
+| Payment rows with nonempty `proof_path` or `proof_url` | **0** |
+| `storage.objects` objects in `payment-proofs` | **0** |
+| `public.service_requests` | **0** |
+| `public.notifications` | **0** |
+| `auth.users` | **0** |
+| `public.verification_requests` | **0** |
+| `public.service_reports` | **0** |
+
+**Legacy receipt review:** The current staging project is empty in the examined receipt-related tables, so the D04 gate's receipt-path/ownership mismatch check has **no historical payment rows to inspect**. This resolves the historical receipt-data blocker **for the observed snapshot**, subject to a fresh count immediately before any authorized D04 transaction; it does **not** mean that D04 is installed or that synthetic fixtures have been created.
+
+**Source file:** A fresh SHA-256 computed over the fetched **42,788-byte UTF-8/LF D04 source** is **`22549d69e655a5a84f47e3d36cc6956e0cb4e571da06d9282859203c5dad1ee7`**, exactly matching `docs/staging-readiness/statement-review.json`; Git blob SHA `cfef9cc48a069fdaa5a6fa53d9d9f793571a83d3`. This corrects the earlier status stating that the current session had not recomputed the digest. The operator must *still* hash the actual local file before any approved execution, because downloads can drift.
+
+**Scope of potential D04 permission-conflict preflight:** no unexpected `public` or `igotu_backend_private` function owners, no unexpected `public` table owners, no public views/foreign tables, and **7** currently browser-callable public SECURITY DEFINER functions; those 7 existing public functions are all expressly allowed by the reviewed D04 `$final_acl$` allowlist. There are **19** private functions with current effective browser-role execute privileges; D04 applies a new explicit full private-function REVOKE followed by an allowlisted GRANT, with an effective permission gate before COMMIT. This is a source/catalog comparison, not a live simulation of RLS or Storage access.
+
+**Updated stage decision:** receipt-history check **PASS for the current snapshot**, D04 source SHA-256 **PASS**, catalog name/owner/definer preflight **PASS**. Still **NO-GO for actual D04 execution** until separately authorized D04 migration, verified operator-controlled writer pause, fresh Data API private-schema verification and review of the exact changes including Storage and notification behavior. D03 has been committed, D04 has **not**. Manual `psql` D03 did not add a Supabase CLI ledger entry; do not rerun D03 or force migration history.
