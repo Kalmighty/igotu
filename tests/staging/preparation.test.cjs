@@ -204,21 +204,26 @@ const clone = (x) => structuredClone(x);
     ];
     const { load } = require("./config.cjs");
     assert.equal(load(args).config.projectRef, config.projectRef);
-    fs.chmodSync(privateFile, 0o644);
-    assert.throws(() => load(args), /SECRET_FILE_PERMISSIONS_REQUIRED/);
-    fs.chmodSync(privateFile, 0o600);
+    if (process.platform !== "win32") {
+      fs.chmodSync(privateFile, 0o644);
+      assert.throws(() => load(args), /SECRET_FILE_PERMISSIONS_REQUIRED/);
+      fs.chmodSync(privateFile, 0o600);
+    }
     const exposedFile = path.join(web, "secrets.json");
     fs.copyFileSync(privateFile, exposedFile);
     assert.throws(
       () => load([...args.slice(0, -1), exposedFile]),
       /SECRETS_OUTSIDE_FRONTEND_REQUIRED/,
     );
+    // Windows symlink creation may require a privilege unavailable to the test user.
+    if (process.platform !== "win32") {
     const link = path.join(dir, "linked-secrets.json");
     fs.symlinkSync(exposedFile, link);
     assert.throws(
       () => load([...args.slice(0, -1), link]),
       /SECRETS_OUTSIDE_FRONTEND_REQUIRED/,
     );
+    }
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

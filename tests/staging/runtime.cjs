@@ -10,14 +10,16 @@ class CheckError extends Error {
 const check = (value, code) => {
   if (!value) throw new CheckError(code);
 };
-function validatePublic(config, approval) {
+function validatePublic(config, approval, options = {}) {
+  if (options.remaining) check(approval.remainingTests === true, "REMAINING_TEST_SCOPE_ACKNOWLEDGEMENT_REQUIRED");
   check(
     config.syntheticOnly === true && approval.syntheticOnly === true,
     "SYNTHETIC_SCOPE_REQUIRED",
   );
   check(
     /^[a-z]{20}$/.test(config.projectRef || "") &&
-      config.projectRef !== "giqtnbwyktbnbhdvjraa",
+      config.projectRef !== "giqtnbwyktbnbhdvjraa" &&
+      (!options.remaining || config.projectRef === "oqalpauljjhytnrpzcqp"),
     "STAGING_REF_REQUIRED",
   );
   check(
@@ -32,8 +34,7 @@ function validatePublic(config, approval) {
   for (const key of [
     "network",
     "syntheticWrites",
-    "authSignups",
-    "mailCapture",
+    ...(options.remaining ? [] : ["authSignups", "mailCapture"]),
     "migrationsReviewed",
     "migrationsInstalled",
     "privateSchemaReviewed",
@@ -60,9 +61,9 @@ function validatePublic(config, approval) {
   );
   return true;
 }
-function validate(config, approval, secrets) {
-  validatePublic(config, approval);
-  const required = [
+function validate(config, approval, secrets, options = {}) {
+  validatePublic(config, approval, options);
+  const required = options.actors || [
     "clientA",
     "clientB",
     "providerA",
@@ -87,9 +88,10 @@ function validate(config, approval, secrets) {
     );
     check(
       ["client", "provider", "admin"].includes(a.role) &&
-        secret?.email?.endsWith("@" + config.mailDomain) &&
+        ((options.remaining && typeof secret?.accessToken === "string" && secret.accessToken.length > 20) ||
+        (secret?.email?.endsWith("@" + config.mailDomain) &&
         typeof secret?.password === "string" &&
-        secret.password.length >= 12,
+        secret.password.length >= 12)),
       "TEST_CREDENTIALS_REQUIRED",
     );
   }
@@ -98,7 +100,7 @@ function validate(config, approval, secrets) {
       required.length,
     "DISTINCT_ACTORS_REQUIRED",
   );
-  for (const r of ["client", "provider"])
+  for (const r of options.remaining ? [] : ["client", "provider"])
     check(
       secrets["registration" + r]?.email?.endsWith("@" + config.mailDomain) &&
         secrets["registration" + r]?.password?.length >= 12,
@@ -110,8 +112,8 @@ function validate(config, approval, secrets) {
   );
   return true;
 }
-function makeRuntime(config, approval, secrets, transport = fetch) {
-  validate(config, approval, secrets);
+function makeRuntime(config, approval, secrets, transport = fetch, options = {}) {
+  validate(config, approval, secrets, options);
   const actors = new Map();
   const origin = new URL(config.url).origin;
   async function request(
@@ -121,7 +123,7 @@ function makeRuntime(config, approval, secrets, transport = fetch) {
   ) {
     // Long suites and signed-URL waits must not outlive their approved window.
     // Recheck before every outbound request, including synthetic cleanup writes.
-    validatePublic(config, approval);
+    validatePublic(config, approval, options);
     const url = new URL(resource, origin);
     check(
       url.origin === origin &&
@@ -159,9 +161,18 @@ function makeRuntime(config, approval, secrets, transport = fetch) {
     return { status: response.status, ok: response.ok, data };
   }
   async function actor(name, { refresh = false } = {}) {
+    check(!options.actors || options.actors.includes(name), "ACTOR_OUTSIDE_SELECTED_SCOPE");
     if (refresh) actors.delete(name);
     if (actors.has(name)) return actors.get(name);
-    const r = await request(null, "/auth/v1/token?grant_type=password", {
+    let r;
+    if (options.remaining && secrets[name]?.accessToken) {
+      let claims;
+      try { claims = JSON.parse(Buffer.from(secrets[name].accessToken.split(".")[1], "base64url").toString()); } catch { check(false, "JWT_FORMAT_INVALID"); }
+      check(claims.iss === config.url + "/auth/v1" && claims.sub === config.accounts[name].id &&
+        claims.role === "authenticated" && claims.exp * 1000 > Date.now(), "STAGING_JWT_BINDING_REQUIRED");
+      const verified = await request({ token: secrets[name].accessToken }, "/auth/v1/user");
+      r = { ...verified, data: { access_token: secrets[name].accessToken, user: verified.data } };
+    } else r = await request(null, "/auth/v1/token?grant_type=password", {
       method: "POST",
       body: { email: secrets[name].email, password: secrets[name].password },
     });
