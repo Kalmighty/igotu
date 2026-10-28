@@ -40,3 +40,7 @@ Technical preflight from the previous report: **phase 2, 24/24 function fingerpr
 **Operational state: NO-GO.** The unknown Netlify/external host settings, staging Auth and other writer access, verified freeze, future-object policy and approved operator/mutation process remain unresolved. Do not attest `writes_paused=true` or apply `03_integrity_draft.sql` now. D04 has separate later gates and approval. No database or production state was changed.
 
 Related: [exact catalog review](2026-10-28-d03-exact-catalog-verified.md), [writer and future-grant audit](2026-10-28-writer-and-future-grant-audit.md), [ordered execution guide](guide.md).
+
+## Owner confirmation — external staging connections
+
+On 28 October 2026, the IGotU project owner stated that they have **never connected** the staging Supabase project `oqalpauljjhytnrpzcqp` to **CodeSandbox, Netlify, a local website, or an external script**. This narrows the owner-known external-writer inventory. It is a self-reported scope statement, **not independent evidence of a maintenance freeze** and does not exclude Supabase platform services, administration tools, forgotten credentials, unrecognized external clients or writes during the actual migration window. It does not authorize any migration, credential changes, deployment, Auth activity or SQL mutation. D03 remains **NO-GO** until an operator enforces and verifies a controlled pause and the user separately approves the exact D03 write step.
