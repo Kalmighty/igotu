@@ -1,4 +1,5 @@
 import { providerRequests, serviceParticipants } from "./backend-access.js";
+import { highlightAuthorizedRequest } from "./provider-request-highlight.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
@@ -146,7 +147,7 @@ async function loadIncomingRequests() {
                 const client = clientMap.get(request.client_id);
 
                 return `
-            <div class="incoming-card">
+            <div class="incoming-card" data-service-request-id="${escapeHtml(request.request_id)}">
                 <div>
                     <div class="card-topline">
                         <span class="status-pill">${escapeHtml(formatStatus(request.status))}</span>
@@ -206,6 +207,7 @@ async function loadIncomingRequests() {
             await declineRequest(this.dataset.requestId, this);
         });
     });
+    highlightAuthorizedRequest(incomingList, requests);
 }
 
 async function confirmRequest(requestId, button) {

@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-28",
+  "timezone": "Asia/Kuala_Lumpur",
+  "base_branch": "igotu-staging-validation",
+  "base_commit": "dd13352e31d6a53251baf501181a657882d840f0",
+  "scope": "Frontend only, synthetic intercepted transport, no live Supabase or SQL execution",
+  "checks": {
+    "calendar_browser_scenarios": {
+      "passed": 28,
+      "failed": 0
+    },
+    "calendar_date_and_ownership_model": "PASS",
+    "calendar_axe_and_responsive": "PASS at 320,390,1440 pixels; three time zones",
+    "existing_functional_scenarios": {
+      "passed": 94,
+      "failed": 0
+    },
+    "existing_layout_checks": {
+      "passed": 84,
+      "failed": 0
+    },
+    "existing_mandatory_verification": "PASS: 16 direct route gates and identity/account fixture scenarios",
+    "offline_backend_bundle_hashes": "PASS",
+    "unchanged_auth_identity_backend_access_and_client_configuration": "PASS",
+    "syntax_and_diff_whitespace": "PASS",
+    "provider_destination_link_scenarios": {
+      "passed": 12,
+      "failed": 0,
+      "included_in_calendar_browser_scenarios": true,
+      "cases": "Both Provider destination pages: valid, missing parameter, missing service, unauthorized, invalid, duplicate; unchanged RPC arguments, no raw-table fetch, focus/scroll/actions and accessibility"
+    }
+  },
+  "not_tested": [
+    "Live PostgreSQL/RLS authorization",
+    "Live caller-scoped RPC and result completeness/pagination",
+    "Live confirmation/decline/status transactions"
+  ],
+  "database_or_migration_changes": false,
+  "production_or_staging_data_access": false,
+  "deployment": false,
+  "regression_notes": [
+    "An initial full run reported one transient Leaflet popup color-contrast assertion on the unchanged Client request-details page. The isolated recheck and a complete 94-case rerun passed; no Client/map behavior was changed."
+  ]
+}

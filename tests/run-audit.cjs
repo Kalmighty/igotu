@@ -145,6 +145,7 @@ const blocked = [
     ["verification", "node", ["tests/mandatory-verification.cjs"]],
     ["workspace-layout", "node", ["tests/ui-smoke.cjs"]],
     ["system-functional", "node", ["tests/system-functional.cjs"]],
+    ["service-calendar", "node", ["tests/service-calendar.cjs"]],
   ];
   const results = [];
   try {

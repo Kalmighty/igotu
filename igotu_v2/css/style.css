@@ -650,6 +650,22 @@ p {
   border-color: #d8f0dd;
 }
 
+.incoming-card.requested-service {
+  border-color: #17663b;
+  box-shadow: 0 0 0 2px #b6d7c1;
+  scroll-margin-top: 120px;
+}
+.requested-service-label {
+  display: inline-block;
+  padding: 4px 9px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: #e9f5ed;
+  color: #155b37;
+  font-size: .875rem;
+  font-weight: 700;
+}
+
 .card-topline {
   display: flex;
   gap: 10px;

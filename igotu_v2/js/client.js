@@ -1,3 +1,4 @@
+import { mountServiceCalendar, calendarRequests } from "./service-calendar.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
@@ -56,10 +57,10 @@ async function loadStats(userId) {
     if (error) {
         console.error(error);
         document.getElementById("recentRequests").innerHTML = `<div class="ui-state" role="alert"><h3>Requests could not be loaded</h3><p>Your requests are still saved. Refresh the page to try again.</p><a class="btn btn-outline" href="dashboard.html">Try again</a></div>`;
-        return;
+        throw new Error("Services could not be loaded");
     }
 
-    const requests = data || [];
+    const requests = calendarRequests(data || [], "client", userId);
 
     document.getElementById("totalRequests").textContent = requests.length;
     document.getElementById("pendingRequests").textContent = requests.filter(r => r.status === "pending").length;
@@ -70,7 +71,7 @@ async function loadStats(userId) {
 
     if (requests.length === 0) {
         recentBox.innerHTML = `<div class="ui-state"><h3>What can we help you with?</h3><p>Create a request to find providers for the service you need. Track each request here from start to finish.</p><a class="btn" href="create-request.html">Create your first request</a></div>`;
-        return;
+        return requests;
     }
 
     recentBox.innerHTML = requests.slice(0, 5).map(request => `
@@ -82,6 +83,7 @@ async function loadStats(userId) {
             <em class="status-pill">${escapeHtml(request.status.replace("_", " "))}</em>
         </a>
     `).join("");
+    return requests;
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
@@ -93,5 +95,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (!profile) return;
 
     displayUser(profile);
-    await loadStats(user.id);
+    mountServiceCalendar(document.getElementById("serviceCalendar"), {
+        role: "client",
+        userId: user.id,
+        loadRequests: () => loadStats(user.id),
+    });
 });
