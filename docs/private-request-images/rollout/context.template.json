@@ -1,0 +1,34 @@
+{
+  "notice": "PRIVATE CONTEXT TEMPLATE ONLY. Keep filled copies, paths, UUIDs and credential/snapshot files OUTSIDE every Git checkout and frontend artifact. No source is attested paused here.",
+  "projectRef": "oqalpauljjhytnrpzcqp",
+  "baseline": {"requestId": "SR0052", "path": ""},
+  "protectedPins": {
+    "SR0001": {"rowMd5": "", "relatedMd5": ""},
+    "SR0002": {"rowMd5": "", "relatedMd5": ""},
+    "SR0011": {"rowMd5": "", "relatedMd5": ""},
+    "SR0052": {"rowMd5": "2ce13c921f2443f78a752e439fc37b79", "relatedMd5": ""}
+  },
+  "expectedImageObjectCount": null,
+  "reviewedPostCutoverFingerprints": {"saveRpcMd5": "", "operationMd5": "", "policiesMd5": ""},
+  "reviewedImageReaders": {},
+  "operationContractReviewed": false,
+  "effectivePrivilegesReviewed": false,
+  "cachePlanReviewed": false,
+  "reviewedSyntheticRequestIds": [],
+  "cases": [],
+  "maintenance": {
+    "confirmedBy": "",
+    "startsAt": "",
+    "expiresAt": "",
+    "sources": {
+      "clients-previews": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""},
+      "frontends-backends": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""},
+      "auth-admin-provisioning": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""},
+      "workers-queues-retries": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""},
+      "ci-cd-schedules": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""},
+      "webhooks-notifications": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""},
+      "local-development": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""},
+      "privileged-writers": {"owner":"","state":"UNVERIFIED","confirmedBy":"","confirmedAt":"","evidence":"","exceptions":[],"expiresAt":"","resumptionAuthority":""}
+    }
+  }
+}

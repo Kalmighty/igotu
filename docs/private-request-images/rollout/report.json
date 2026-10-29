@@ -1,0 +1,201 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "based_on_commit": "7b9ccc67e59cf87ca756988f6f628945e02fa1f4",
+  "branch": "fix/private-request-images",
+  "status": "REVIEW_ONLY_NO_GO_FOR_LIVE_EXECUTION",
+  "independent_database_evidence": "Recorded from user-supplied independent SELECT-only results in evidence.json; no recollection by Codex",
+  "current_bucket_state": "Public, per independent evidence; unchanged by this package",
+  "current_task_tests": {
+    "readiness_runner_cases": [
+      {
+        "name": "Independent evidence pins match the runner; committed templates remain unsigned/unapproved",
+        "status": "PASS"
+      },
+      {
+        "name": "Default dry-run ignores supplied private paths, makes no requests and writes no files",
+        "status": "PASS"
+      },
+      {
+        "name": "Live phase without explicit execute is blocked before private file access",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: production origin",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: missing approval",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: wrong scope",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: expired approval",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: context mismatch",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: candidate mismatch",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: unpaused writer",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: writer exception",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: stale snapshot",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: missing protected pin",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: SR0052 row drift",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: image metadata drift",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: cache mismatch",
+        "status": "PASS"
+      },
+      {
+        "name": "Pre-network gate: live policy drift",
+        "status": "PASS"
+      },
+      {
+        "name": "Baseline anonymous exact URL twice, body SHA, cache observations, no auth or sensitive report",
+        "status": "PASS"
+      },
+      {
+        "name": "Baseline stops: unknown cache",
+        "status": "PASS"
+      },
+      {
+        "name": "Baseline stops: changed body",
+        "status": "PASS"
+      },
+      {
+        "name": "Approval expiry is rechecked between HTTP requests",
+        "status": "PASS"
+      },
+      {
+        "name": "Redirects, oversized responses and sensitive/unknown cache headers stop without leaking",
+        "status": "PASS"
+      },
+      {
+        "name": "Service-role or foreign-issuer tokens are rejected before any HTTP",
+        "status": "PASS"
+      },
+      {
+        "name": "Shared-cache extensions and invalid Age are not accepted as the stored one-hour baseline",
+        "status": "PASS"
+      },
+      {
+        "name": "Changed approval file stops an in-flight phase without renewal or further requests",
+        "status": "PASS"
+      },
+      {
+        "name": "Post-cutover matrix covers all eight actors; only allowlisted routes; tokens never reported",
+        "status": "PASS"
+      },
+      {
+        "name": "Native list 200 empty is separately labeled filtered, while any returned metadata stops",
+        "status": "PASS"
+      },
+      {
+        "name": "Matrix stops: bad credentials",
+        "status": "PASS"
+      },
+      {
+        "name": "Matrix stops: proxy 403",
+        "status": "PASS"
+      },
+      {
+        "name": "Matrix stops: unexpected signing allowed",
+        "status": "PASS"
+      },
+      {
+        "name": "Matrix stops: unauthorized image bytes",
+        "status": "PASS"
+      },
+      {
+        "name": "Matrix stops: old public response",
+        "status": "PASS"
+      },
+      {
+        "name": "Missing operation review, wrong actor, unrelated negative target and protected preconfirm fixture blocked",
+        "status": "PASS"
+      },
+      {
+        "name": "Finalization requires new after-snapshot and strict service, payment/review/message/image protection",
+        "status": "PASS"
+      },
+      {
+        "name": "Report binding and actor/fixture state changes stop matrix finalization",
+        "status": "PASS"
+      },
+      {
+        "name": "Private files and reports cannot live in Git/frontend or overwrite evidence",
+        "status": "PASS"
+      },
+      {
+        "name": "Forbidden mutation/signup/production/redirect routes never allowed; Windows transport keeps TLS/proxy",
+        "status": "PASS"
+      }
+    ],
+    "readiness_summary": {
+      "passed": 37,
+      "failed": 0,
+      "transport": "Injected memory transport only; no sockets or real Auth/Storage requests"
+    },
+    "existing_image_cases": {
+      "passed": 21,
+      "failed": 0,
+      "scope": "Synthetic intercepted browser fixtures only"
+    },
+    "sql_parser": "PASS SQL/PLpgSQL + SELECT-only snapshot + same canonical polcmd::text fingerprint expression in all three files",
+    "node_syntax": "PASS",
+    "default_dry_run": "PASS: zero network requests, credential reads or file writes",
+    "manifest_hashes": "PASS before commit",
+    "application_proposal_and_prior_evidence_unchanged_files": 172
+  },
+  "native_windows_adapter": "UNVERIFIED on Windows; static proxy/TLS/redirect/response-bound review only. No PowerShell HTTP worker was executed. Windows offline AST check is documented.",
+  "live_http_baseline": "UNVERIFIED / NOT AUTHORIZED / NOT EXECUTED",
+  "live_authentication_and_authorization_matrix": "UNVERIFIED / NOT AUTHORIZED / NOT EXECUTED",
+  "operation_tag_runtime_behavior": "UNVERIFIED; known helper digest is not runtime proof",
+  "required_future_evidence": [
+    "Explicit phase-specific HTTP/auth approval with reviewed private config/context/snapshot/proposal SHA bindings",
+    "Actual source owners, confirmations, drain/pause evidence, expiry and resumption authority for every writer",
+    "Missing protected request/related-data baseline pins and fresh before/after snapshots for all four protected records",
+    "Approved dedicated before-confirmation/confirmed/inactive fixtures, actor bindings and known positive response hashes; no provisioning by runner",
+    "Actual Windows runtime/proxy/TLS behavior and HTTP/cache baseline",
+    "Actual post-cutover reader definitions/ACL fingerprints and observed Storage authorization/operation/cache outcomes",
+    "Separate explicit migration/bucket-change authorization; none is created by this runner"
+  ],
+  "safety": {
+    "sql_executed": false,
+    "real_credentials_loaded": false,
+    "real_auth_tests": false,
+    "live_image_http_downloads": false,
+    "bucket_or_policy_or_grant_or_record_changes": false,
+    "production_access": false,
+    "approval_files_created_or_extended": false,
+    "deploy_or_merge": false
+  },
+  "stop_conditions": "Missing/expired/modified bindings or approval, unpaused source, any protected integrity mismatch, unsupported/unknown operation or permission response, proxy/TLS/auth failure, unknown cache behavior, unexpected download/list/sign success. No repairs or automatic extensions.",
+  "runtime_reports": "Only future private files outside all Git/frontend paths; no raw passwords/JWTs/image paths/URLs are emitted by runner. Only this sanitized offline summary is committed."
+}

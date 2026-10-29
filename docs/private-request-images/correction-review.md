@@ -1,5 +1,7 @@
 # PG17 fingerprint correction and remaining evidence
 
+Historical review at candidate `7b9ccc6`. The newer [rollout-readiness package](rollout/README.md) and [independent evidence record](rollout/evidence.json) supersede the database/cache-metadata unknowns below. No new live HTTP/auth or migration approval follows from that evidence.
+
 This updates review-only candidate `4c42c18`. No live SQL, bucket/configuration changes, application/data writes, deployment or merge are authorized or performed. Application JavaScript/CSS/HTML, the proposal's policies/GRANT/REVOKE statements and existing staging evidence are unchanged by this correction.
 
 ## Fingerprint correction and stability

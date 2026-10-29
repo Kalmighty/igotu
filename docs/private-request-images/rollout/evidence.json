@@ -1,0 +1,26 @@
+{
+  "source": "Independent database evidence reported by the user; not executed or independently recollected by Codex",
+  "projectRef": "oqalpauljjhytnrpzcqp",
+  "postgresMajor": 17,
+  "backendPhase": 4,
+  "correctedFingerprintQuery": "Independently reported successful execution",
+  "saveRpcMd5": "fcf40031bee715b5078ccdd803d5e64b",
+  "operationMd5": "e2f7d55adc027df69ec4b42c6c08f50f",
+  "policiesMd5": "d32ba30e81d6497aa55b53d507dab2b0",
+  "SR0052": {
+    "requestRowMd5": "2ce13c921f2443f78a752e439fc37b79",
+    "imageMetadataMd5": "a05a9342d3ff96970818bac4fb00a8cf",
+    "canonicalAssociation": true,
+    "ownerMatches": true,
+    "mime": "image/webp",
+    "sizeAcceptable": true,
+    "storedCacheControl": "max-age=3600"
+  },
+  "requestImageObjectCount": 1,
+  "bucketPublic": true,
+  "httpBaseline": "UNVERIFIED / NOT AUTHORIZED",
+  "operationTagBehavior": "UNVERIFIED",
+  "liveAuthorizationMatrix": "UNVERIFIED / NOT AUTHORIZED",
+  "writerPause": "UNVERIFIED",
+  "migrationApproval": false
+}

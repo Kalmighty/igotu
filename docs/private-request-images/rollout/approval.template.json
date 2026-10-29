@@ -1,0 +1,18 @@
+{
+  "notice": "NON-EXECUTABLE TEMPLATE. Do not copy/fill until separate explicit human authorization. The runner never creates or renews approvals.",
+  "projectRef": "oqalpauljjhytnrpzcqp",
+  "approved": false,
+  "scope": "UNAPPROVED",
+  "authorizationReference": "",
+  "approvedBy": "",
+  "approvedAt": "",
+  "expiresAt": "",
+  "privateFilesAclReviewed": false,
+  "proposalSha256": "",
+  "contextSha256": "",
+  "configSha256": "",
+  "beforeSnapshotSha256": "",
+  "authenticateExistingSynthetic": false,
+  "readOnlyImageHttp": false,
+  "denyListSignChecks": false
+}

@@ -60,6 +60,9 @@ def assert_explicit_command_cast(expression):
     assert len(columns) == 1 and casts == [[{'String': {'sval': 'text'}}]], 'polcmd must be explicitly cast to text'
 
 canonical = policy_fingerprint_expression(proposal)
+snapshot = (root/'docs/private-request-images/rollout/snapshot-read-only.sql').read_text()
+assert all(type(raw.stmt).__name__ in ('TransactionStmt', 'SelectStmt') for raw in parse_sql(snapshot))
+assert canonical == policy_fingerprint_expression(snapshot), 'Snapshot must use the same canonical policy fingerprint'
 assert canonical == policy_fingerprint_expression(read_only), 'Preflight and installation hashes must use the identical canonical expression'
 assert 'ORDER BY polname' in canonical
 assert_explicit_command_cast(canonical)
@@ -85,4 +88,4 @@ assert all(model_md5(order) == expected for order in itertools.permutations(rows
 assert model_md5([]) == 'd41d8cd98f00b204e9800998ecf8427e'
 assert model_md5([dict(rows[0], cmd='a'), rows[1]]) != expected
 print('PASS: SQL/PLpgSQL parse, identical canonical expressions, explicit polcmd::text AST and old-bug rejection, deterministic synthetic policy MD5:', expected)
-print('Staging MD5 and PostgreSQL execution remain UNVERIFIED; no live SQL, policy operation-tag or Storage access test was performed.')
+print('No PostgreSQL execution by this test. Independent staging digests are operator-reported evidence, not execution approval; operation tags/live HTTP remain UNVERIFIED.')

@@ -15,14 +15,14 @@
     "storage_operation_helper_md5": null
   },
   "files_sha256": {
-    "docs/private-request-images/README.md": "66b50ec3c976d5e41a4ee51d3e1b95e5d2c4830841a9605a34f3e54d63a3bae3",
+    "docs/private-request-images/README.md": "3d43a1b2bdd62aed0abed5afa90cd568ce4223d1b5d9935ff31c4bf71f7e24ba",
     "docs/private-request-images/preflight-read-only.sql": "478c68dc3cfcdcbaa2935b6784132c054f09cf81844c44ac6addacf7ee52dfaf",
     "docs/private-request-images/proposal.sql": "1252483658c43ec5342d4302a9318163d3db5fcf3a75b2b4a70d642c9a707a03",
     "docs/private-request-images/screenshots/private-image-panel-1024.png": "be879327eedc90ee242ab0a29094d15605723abcd9012af150c8ca9bfae6f43c",
     "docs/private-request-images/screenshots/private-image-panel-1440.png": "419a583bcc2038ae6e625b3ed2b399ebbdaf196d7e4595a5eecc610b363fe977",
     "docs/private-request-images/screenshots/private-image-panel-390.png": "f84945f33bb62fee80433875f2c133695296410e5b7496ea0c892c3e4b8ed7aa",
     "docs/private-request-images/screenshots/private-image-panel-768.png": "fd1b613ff7868d2dc25a1b75dd4eba955eff22bf342abea0df1c6b70dacb5d8c",
-    "docs/private-request-images/validation.json": "df153d48aca52be6ce6f29f6b26555babde4ba24b1876f7ef1a233da6a961498",
+    "docs/private-request-images/validation.json": "21c6e10dd54be23bd3b6fa3b03ee1029887798dbc4df2c9468611b3473ac7165",
     "igotu_v2/admin/monitor-requests.html": "9fb8e6b45349790c1edcf5422aaf17db0e794eff008466d270a61d941d9a15f9",
     "igotu_v2/client/create-request.html": "e5e4bd7a5002acf213140f04e47277440f5c7a686cb6e98cac82d2e36c21bb73",
     "igotu_v2/client/request-details.html": "b694ce8c84afd6df5a7a621d58fce2b39a7b8dffa1ebf4a2d021008b7e18a23a",
@@ -35,17 +35,33 @@
     "igotu_v2/js/request-images.js": "318dfef18a968dffe3a8bc83862b88453d52e06f3f1cb69ee6c54ee82acfdaa3",
     "igotu_v2/provider/assignment-details.html": "c16c5ec230ac44c7d27c74bbe77aaff37d283b4455ce61f5e5fcf079f533f3ab",
     "igotu_v2/provider/incoming-requests.html": "bf5f91097a977ca565cafa4f7a43563adef8d816cf0b65f6e06f18a1d86dc2ef",
-    "tests/package.json": "55f3cbd3a40dbcf00ac80f7d9ae0cf43b1a1b8a24931595e1d559dbeba2151aa",
+    "tests/package.json": "5ba2c79019d31cd44cb5a44d2a7456b7ec187facbbb1c61d40d12cae7b2988f6",
     "tests/private-request-images.cjs": "152b5823b93a5591c202cc0d90c57ad5eecc4b02325c7423e9e4752559feb086",
     "tests/provider-assignment-layout.cjs": "977c5c0327a94644ce1fa8780daec09684b96e2886563a569b81ec4765be493f",
     "tests/request-image-model.cjs": "4fe988e13d9c9709e4bc37dc7c710af09144491d372cce14700b081e0ac804eb",
-    "tests/request-image-sql.py": "ae150cfcb04cfca0e7408030305bbe9358426837d85a35a4a17576b466c84a67",
+    "tests/request-image-sql.py": "b065f12a50abeb331171bcd74e51609394dd294e949a4808f5d07053b11f0779",
     "tests/system-fixture.cjs": "b5aa26f79bd020c9e5d6e80c54d3c8fb2d9b636c66ecd964dd5c7f0f3c1ae896",
     "tests/system-fixture.js": "99b4c768a5ade5403c73eee7a30fc54a9e961e2500b095cbd86ef40de2bb52ce",
     "tests/system-functional.cjs": "cfaf88793e448462a8231222e6d772b7249c7da2c537d731bcd70b7f8fdb74a7",
     "tests/verification-fixture.js": "89ffa1657227775bdc9d6edfd5fec61b8c201831e7027aa6ce2336a80d9653e5",
-    "docs/private-request-images/correction-review.md": "0d537228cc563983d6c1fb31912ec74a063fec16329848d192fbc9d8932bc378"
+    "docs/private-request-images/correction-review.md": "b9a887b3ce09f724638be21f802ec8ba93f5cd7d1f5be09d80a0dbf2c4a302a2",
+    "docs/private-request-images/rollout/README.md": "aabd5c0cf4a64d2461aa49de6063eb5da865bd6cc53aba2bcd7412e979502bfe",
+    "docs/private-request-images/rollout/approval.template.json": "659ed6b8b09ac4c0fb78fd3e973e9a9929961bbffcf07c71007aab7395e77376",
+    "docs/private-request-images/rollout/context.template.json": "b8538fd10384362ba2644fa085243e0ecaa9095cd76ecf13cfa0148b82b964ff",
+    "docs/private-request-images/rollout/evidence.json": "c1f55fc32f55606bffbe700719bc4d44e91270eccc8ab828192ceda363f8e667",
+    "docs/private-request-images/rollout/report.json": "905e8b0ec824bd62398cf6f52ec9a4ed8b2df786847e7ff1c2eb62ba4ca0e972",
+    "docs/private-request-images/rollout/snapshot-read-only.sql": "3c4059167f506543e2c4628cfcd90d8a8461cc59d9e948ce1c1fc4e40dd0d75f",
+    "tests/request-image-readiness.cjs": "c254b72e571b509509fbfb99839ad41374ab07fd33c63dc8bd86f2bdce952c6a",
+    "tools/request-image-http.ps1": "2f3cf90e9f266182d8097ed696ca4c81bed8f59d84d60fb207b46b36645d4e07",
+    "tools/request-image-readiness.cjs": "077471c47f0977ce3637735614108590f8e0283f6b9299e93dcacb439f41b34d"
   },
   "revision_of_commit": "4c42c18a8dca3b24ffd37e3c2a67471bcec41248",
-  "correction_review": "docs/private-request-images/correction-review.md"
+  "correction_review": "docs/private-request-images/correction-review.md",
+  "readiness_based_on_commit": "7b9ccc67e59cf87ca756988f6f628945e02fa1f4",
+  "reported_database_fingerprints": {
+    "saveRpcMd5": "fcf40031bee715b5078ccdd803d5e64b",
+    "operationMd5": "e2f7d55adc027df69ec4b42c6c08f50f",
+    "policiesMd5": "d32ba30e81d6497aa55b53d507dab2b0"
+  },
+  "readiness_package": "docs/private-request-images/rollout/README.md"
 }
