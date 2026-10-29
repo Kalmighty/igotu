@@ -1,3 +1,4 @@
+import { requestImageHtml, bindRequestImages } from "./request-images.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
@@ -272,6 +273,7 @@ function renderRequests() {
                         </div>
                     ` : ""}
 
+                    ${requestImageHtml(request)}
                     ${mapHtml}
                 </div>
 
@@ -291,6 +293,7 @@ function renderRequests() {
             </div>
         `;
     }).join("");
+    bindRequestImages(requestsList);
 
     setTimeout(function() {
         if (currentRenderVersion !== mapRenderVersion) return;

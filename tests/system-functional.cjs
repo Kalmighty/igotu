@@ -490,6 +490,9 @@ test("Connected registration, approval, onboarding and complete service workflow
   assert.equal(r.client_id, ids.client);
   assert.equal(r.status, "pending");
   assert.ok(r.request_image_path);
+  assert.equal(r.request_image_url, null, 'Do not persist public or temporary image URLs');
+  assert.equal(state.calls.find(o=>o.name==='client_save_request_image').args.p_request_image_url, null);
+  assert.equal(state.objects.find(o=>o.bucket==='request-images').options.cacheControl, '0');
   await page.locator(".select-provider-btn").click();
   await page.waitForURL("**/request-details.html?request_id=*");
   assert.equal(r.status, "provider_selected");

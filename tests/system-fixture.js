@@ -54,6 +54,11 @@ export const supabase = {
   },
   storage: {
     from: (bucket) => ({
+      download: async (name) => {
+        const result = await window.__systemApi({kind:"storage",action:"download",bucket,name});
+        if (result.error) return result;
+        return {data:new Blob([Uint8Array.from(atob(result.data.base64),c=>c.charCodeAt(0))],{type:result.data.type}),error:null};
+      },
       upload: (name, file, options) =>
         window.__systemApi({
           kind: "storage",

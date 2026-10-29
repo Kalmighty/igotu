@@ -1,6 +1,7 @@
+import { requestImageHtml } from "./request-images.js";
 import { providerRequests, serviceParticipants } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
-import { escapeHtml, safeUrl } from "./html-safety.js";
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { askDeclineReason } from "./service-action-dialogs.js";
 
@@ -88,27 +89,7 @@ function formatBudget(budget) {
     return `RM ${Number(budget).toFixed(2)}`;
 }
 
-function getRequestImageUrl(request) {
-    if (!request) return null;
-
-    return request.request_image_url || null;
-}
-
-function buildRequestImagePreview(request) {
-    const imageUrl = getRequestImageUrl(request);
-
-    if (!imageUrl) return "";
-
-    return `
-        <div class="request-image-box">
-            <h4>Submitted Image</h4>
-            <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer">
-                <img src="${escapeHtml(safeUrl(imageUrl))}" alt="Submitted request image" class="request-submitted-image">
-            </a>
-            <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
-        </div>
-    `;
-}
+function buildRequestImagePreview(request) { return requestImageHtml(request, true); }
 
 async function loadIncomingRequests() {
     const incomingList = document.getElementById("incomingList");

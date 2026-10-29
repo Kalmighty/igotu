@@ -1,0 +1,262 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "base_commit": "d4cb593ed95f616677e89c6bd5e3afa61b5dee83",
+  "branch": "fix/private-request-images",
+  "scope": "Offline parsing, structural review, synthetic authorization model and real-page/component browser fixtures. No database SQL executed. No Storage/project access or writes. Public documentation only.",
+  "checks": {
+    "request_image_cases": [
+      {
+        "name": "client: authorized private preview, expiry and logout",
+        "status": "PASS"
+      },
+      {
+        "name": "provider: authorized private preview, expiry and logout",
+        "status": "PASS"
+      },
+      {
+        "name": "admin: authorized private preview, expiry and logout",
+        "status": "PASS"
+      },
+      {
+        "name": "Provider: before confirmation, after confirmation, decline/reassignment and status transitions",
+        "status": "PASS"
+      },
+      {
+        "name": "anonymous: reference and direct download denied",
+        "status": "PASS"
+      },
+      {
+        "name": "unrelated-client: reference and direct download denied",
+        "status": "PASS"
+      },
+      {
+        "name": "nonselected-provider: reference and direct download denied",
+        "status": "PASS"
+      },
+      {
+        "name": "inactive: reference and direct download denied",
+        "status": "PASS"
+      },
+      {
+        "name": "unverified: reference and direct download denied",
+        "status": "PASS"
+      },
+      {
+        "name": "Legacy canonical URL-only image preserved; mismatched/foreign/signed URLs fail closed",
+        "status": "PASS"
+      },
+      {
+        "name": "Missing private capability or Storage failure never uses public URL fallback",
+        "status": "PASS"
+      },
+      {
+        "name": "Unsupported MIME and corrupt image bytes fail closed",
+        "status": "PASS"
+      },
+      {
+        "name": "Removed card cannot repopulate a preview after a delayed download",
+        "status": "PASS"
+      },
+      {
+        "name": "Even authorized readers cannot mint signed URLs or list request-image objects",
+        "status": "PASS"
+      },
+      {
+        "name": "Real Provider confirmation unlocks the image only on the authorized assignment page",
+        "status": "PASS"
+      },
+      {
+        "name": "Real Provider assignment image responsive/accessibility at 390px",
+        "status": "PASS"
+      },
+      {
+        "name": "Real Provider assignment image responsive/accessibility at 768px",
+        "status": "PASS"
+      },
+      {
+        "name": "Real Provider assignment image responsive/accessibility at 1024px",
+        "status": "PASS"
+      },
+      {
+        "name": "Real Provider assignment image responsive/accessibility at 1440px",
+        "status": "PASS"
+      },
+      {
+        "name": "Real Client edit and Admin monitor expose only private controls",
+        "status": "PASS"
+      },
+      {
+        "name": "Upload compatibility gate blocks before any request or Storage write",
+        "status": "PASS"
+      }
+    ],
+    "existing_functional": {
+      "passed": 94,
+      "failed": 0
+    },
+    "upload_lifecycle_additional_path_only_and_zero_cache_assertions": "PASS: focused lifecycle rerun",
+    "existing_layout": "PASS: 84 page/viewport checks",
+    "mandatory_verification": "PASS: 16 guarded routes and account/approval fixture workflows",
+    "assignment_layout": [
+      {
+        "width": 390,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          },
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          },
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          },
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          }
+        ]
+      },
+      {
+        "width": 768,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          },
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          },
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          },
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          }
+        ]
+      },
+      {
+        "width": 1024,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          },
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          },
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          },
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          }
+        ]
+      },
+      {
+        "width": 1440,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          },
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          },
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          },
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          }
+        ]
+      }
+    ],
+    "sql_and_plpgsql": "PASS: pglast 8.7 syntax and structural assertions; no live catalog/type/ACL/semantic proof",
+    "javascript_syntax_and_diff_whitespace": "PASS",
+    "protected_versioned_files_byte_identical_to_base": 92
+  },
+  "live_checks": "BLOCKED: not authorized/performed",
+  "remaining_live_prerequisites": [
+    "Independent staging identity/operator and writer-pause evidence",
+    "Reviewed actual save RPC and all Storage policy fingerprints/ACLs",
+    "Documented Storage operation helper availability, reviewed fingerprint/privileges and actual authenticated-download operation behavior",
+    "Existing image path/URL/ownership/MIME/size/shared-path inventory, including read-only SR0052 preservation snapshot",
+    "Storage read/list/sign/copy and authorization matrix using separately approved dedicated fixtures",
+    "Legacy public URL/cache and any previously issued signed URL expiry/revocation verification",
+    "Live upload/association concurrency and cross-feature acceptance under separate bounded authorization"
+  ],
+  "regression_notes": [
+    "Initial full functional run: existing Client recommendation timing assertion and duplicate image-region landmark labels failed. Unique request-specific labels fixed; full 94-case rerun passed.",
+    "Verification fixture lacked the SDK auth-state subscription API; fixture shape corrected and suite passed. Real authentication/identity guards are unchanged.",
+    "Image cases include real Provider confirmation UI, MIME/corrupt-byte rejection, detached-card delay, expiry/logout, legacy references, direct denial model, operation restrictions, upload capability gating and four responsive widths. These are not live RLS proof."
+  ],
+  "supabase_storage_or_db_changes_applied": false,
+  "production_access": false,
+  "deployment_or_merge": false,
+  "protected_live_records": "SR0001/SR0002/SR0011/SR0052 not read or written; no independent live hash snapshot was taken."
+}

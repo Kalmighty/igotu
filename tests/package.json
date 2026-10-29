@@ -5,7 +5,8 @@
   "description": "Local browser fixtures only; never connects to live Supabase",
   "scripts": {
     "test": "node run-audit.cjs",
-    "test:assignments": "node provider-assignment-layout.cjs"
+    "test:assignments": "node provider-assignment-layout.cjs",
+    "test:request-images": "node private-request-images.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1",

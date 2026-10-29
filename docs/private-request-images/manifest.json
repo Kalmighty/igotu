@@ -1,0 +1,48 @@
+{
+  "status": "REVIEW_ONLY_NOT_APPROVED_FOR_EXECUTION",
+  "project_ref": "oqalpauljjhytnrpzcqp",
+  "base_commit": "d4cb593ed95f616677e89c6bd5e3afa61b5dee83",
+  "sql_order": [
+    "docs/private-request-images/proposal.sql"
+  ],
+  "read_only_evidence_file": "docs/private-request-images/preflight-read-only.sql",
+  "execution_approval_received": false,
+  "writes_paused": "NOT_ATTESTED",
+  "private_schema_verified": "NOT_ATTESTED",
+  "expected_live_fingerprints": {
+    "save_rpc_md5": null,
+    "storage_policies_md5": null,
+    "storage_operation_helper_md5": null
+  },
+  "files_sha256": {
+    "docs/private-request-images/README.md": "b25cc258b8288d70201c99ec28c09fe65199a943025e51b1fc8a47607f7e6568",
+    "docs/private-request-images/preflight-read-only.sql": "0bb539d6fdb933dbb45d6d668d4ecfffdd1b298c72802edcc15c0abf019882c8",
+    "docs/private-request-images/proposal.sql": "72e82949d44f5f80eeab12064219493132849fdc8478a33e7862ab521cf4528e",
+    "docs/private-request-images/screenshots/private-image-panel-1024.png": "be879327eedc90ee242ab0a29094d15605723abcd9012af150c8ca9bfae6f43c",
+    "docs/private-request-images/screenshots/private-image-panel-1440.png": "419a583bcc2038ae6e625b3ed2b399ebbdaf196d7e4595a5eecc610b363fe977",
+    "docs/private-request-images/screenshots/private-image-panel-390.png": "f84945f33bb62fee80433875f2c133695296410e5b7496ea0c892c3e4b8ed7aa",
+    "docs/private-request-images/screenshots/private-image-panel-768.png": "fd1b613ff7868d2dc25a1b75dd4eba955eff22bf342abea0df1c6b70dacb5d8c",
+    "docs/private-request-images/validation.json": "f14b10c8273ab1798afbbfcdd6a38b83e74522546a03776c243986c73f9b768f",
+    "igotu_v2/admin/monitor-requests.html": "9fb8e6b45349790c1edcf5422aaf17db0e794eff008466d270a61d941d9a15f9",
+    "igotu_v2/client/create-request.html": "e5e4bd7a5002acf213140f04e47277440f5c7a686cb6e98cac82d2e36c21bb73",
+    "igotu_v2/client/request-details.html": "b694ce8c84afd6df5a7a621d58fce2b39a7b8dffa1ebf4a2d021008b7e18a23a",
+    "igotu_v2/css/request-images.css": "cb2dffdabd3c69f4f499cd1576fc8e8daa677acf1ea3cd286e6b8d0393f43fc6",
+    "igotu_v2/js/admin-monitor-requests.js": "d22801ab7b8659350dbc964bff74824cb42e2bfbcdb15801ec973a6529d9aef3",
+    "igotu_v2/js/client-create-request.js": "9721e92f9b7211393e9ef96b6c4c524515ca318988bee42afd048bca8feb4ccc",
+    "igotu_v2/js/client-request-details.js": "365e056c8f3a3a7980e7f03076f34560593e1145c7323ed9addfe9925f44c5ab",
+    "igotu_v2/js/provider-assignment-details.js": "5f2f75499cda3483fca6a3b27af2335ede01c2d41a2b0f5ff1fe85d0cfd26020",
+    "igotu_v2/js/provider-incoming-requests.js": "9df5ce51ba0c701413cbdca68d91993ff95199a3db7186fad3f697ff11932ea1",
+    "igotu_v2/js/request-images.js": "318dfef18a968dffe3a8bc83862b88453d52e06f3f1cb69ee6c54ee82acfdaa3",
+    "igotu_v2/provider/assignment-details.html": "c16c5ec230ac44c7d27c74bbe77aaff37d283b4455ce61f5e5fcf079f533f3ab",
+    "igotu_v2/provider/incoming-requests.html": "bf5f91097a977ca565cafa4f7a43563adef8d816cf0b65f6e06f18a1d86dc2ef",
+    "tests/package.json": "55f3cbd3a40dbcf00ac80f7d9ae0cf43b1a1b8a24931595e1d559dbeba2151aa",
+    "tests/private-request-images.cjs": "152b5823b93a5591c202cc0d90c57ad5eecc4b02325c7423e9e4752559feb086",
+    "tests/provider-assignment-layout.cjs": "977c5c0327a94644ce1fa8780daec09684b96e2886563a569b81ec4765be493f",
+    "tests/request-image-model.cjs": "4fe988e13d9c9709e4bc37dc7c710af09144491d372cce14700b081e0ac804eb",
+    "tests/request-image-sql.py": "d8010ed12e4ee63a574d13d16b06fa9f00eabb43121ecabb3cdfe31ccaeb728e",
+    "tests/system-fixture.cjs": "b5aa26f79bd020c9e5d6e80c54d3c8fb2d9b636c66ecd964dd5c7f0f3c1ae896",
+    "tests/system-fixture.js": "99b4c768a5ade5403c73eee7a30fc54a9e961e2500b095cbd86ef40de2bb52ce",
+    "tests/system-functional.cjs": "cfaf88793e448462a8231222e6d772b7249c7da2c537d731bcd70b7f8fdb74a7",
+    "tests/verification-fixture.js": "89ffa1657227775bdc9d6edfd5fec61b8c201831e7027aa6ce2336a80d9653e5"
+  }
+}

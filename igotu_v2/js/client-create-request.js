@@ -1,5 +1,5 @@
+import { requestImageHtml, bindRequestImages, requirePrivateRequestImages } from "./request-images.js";
 import { authorizeWorkspace } from "./profile-guard.js";
-import { safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 
 const L = window.L;
@@ -124,12 +124,6 @@ function validateRequestImageFile(file) {
     return "";
 }
 
-function getRequestImageUrl(request) {
-    if (!request) return null;
-
-    return request.request_image_url || null;
-}
-
 function clearRequestImagePreview() {
     const requestImageInput = document.getElementById("requestImage");
     const uploadBox = document.getElementById("requestImageUploadBox");
@@ -149,24 +143,6 @@ function clearRequestImagePreview() {
     if (uploadBox) uploadBox.classList.remove("hidden");
 }
 
-function showExistingRequestImage(imageUrl) {
-    const uploadBox = document.getElementById("requestImageUploadBox");
-    const previewBox = document.getElementById("requestImagePreview");
-    const previewImg = document.getElementById("requestImagePreviewImg");
-    const fileName = document.getElementById("requestImageFileName");
-    const fileStatus = document.getElementById("requestImageFileStatus");
-
-    if (!previewBox || !previewImg || !fileName || !imageUrl) return;
-
-    const previewUrl = safeUrl(imageUrl);
-    if (!previewUrl) return;
-    previewImg.src = previewUrl;
-    previewImg.classList.remove("hidden");
-    fileName.textContent = "Request image uploaded";
-    if (fileStatus) fileStatus.textContent = "Current image for this service request";
-    previewBox.classList.remove("hidden");
-    if (uploadBox) uploadBox.classList.add("hidden");
-}
 
 function updateRequestImagePreview() {
     const file = getSelectedRequestImageFile();
@@ -226,7 +202,7 @@ async function uploadRequestImage(file, userId, requestIdValue) {
     const { error: uploadError } = await supabase.storage
         .from("request-images")
         .upload(filePath, file, {
-            cacheControl: "3600",
+            cacheControl: "0",
             upsert: false
         });
 
@@ -235,20 +211,13 @@ async function uploadRequestImage(file, userId, requestIdValue) {
         throw new Error(uploadError.message || "Failed to upload request image.");
     }
 
-    const { data } = supabase.storage
-        .from("request-images")
-        .getPublicUrl(filePath);
-
-    return {
-        imagePath: filePath,
-        imageUrl: data.publicUrl
-    };
+    return { imagePath: filePath };
 }
 
-async function saveRequestImage(requestIdValue, imageUrl, imagePath) {
+async function saveRequestImage(requestIdValue, imagePath) {
     const { error } = await supabase.rpc("client_save_request_image", {
         p_request_id: requestIdValue,
-        p_request_image_url: imageUrl,
+        p_request_image_url: null,
         p_request_image_path: imagePath
     });
 
@@ -555,10 +524,8 @@ function populateRequestForm(request) {
     document.getElementById("priority").value = request.priority || "normal";
     document.getElementById("location").value = request.location || "";
 
-    const imageUrl = getRequestImageUrl(request);
-    if (imageUrl) {
-        showExistingRequestImage(imageUrl);
-    }
+    document.getElementById("requestImagePreview").insertAdjacentHTML("afterend", requestImageHtml(request));
+    bindRequestImages();
 
     const lat = Number(request.client_lat);
     const lng = Number(request.client_lng);
@@ -628,7 +595,7 @@ async function updateRequest(formData, button, requestImageFile, userId) {
         try {
             setButtonLoading(button, true, "Uploading image...", "Save Changes");
             const imageData = await uploadRequestImage(requestImageFile, userId, editingRequest.request_id);
-            await saveRequestImage(editingRequest.request_id, imageData.imageUrl, imageData.imagePath);
+            await saveRequestImage(editingRequest.request_id, imageData.imagePath);
         } catch (imageError) {
             console.error("Update request image error:", imageError);
             showMessage(imageError.message || "Request updated, but image upload failed.");
@@ -670,7 +637,7 @@ async function createRequest(formData, userId, button, requestImageFile) {
         try {
             setButtonLoading(button, true, "Uploading image...", "Post Request & Find Providers");
             const imageData = await uploadRequestImage(requestImageFile, userId, data.request_id);
-            await saveRequestImage(data.request_id, imageData.imageUrl, imageData.imagePath);
+            await saveRequestImage(data.request_id, imageData.imagePath);
         } catch (imageError) {
             // The request already exists. Retry its attachment through edit mode,
             // including after a refresh, instead of inserting another request.
@@ -737,6 +704,14 @@ async function handleRequestForm(userId) {
             return;
         }
 
+        if (requestImageFile) {
+            createBtn.disabled = true;
+            try { await requirePrivateRequestImages(); }
+            catch {
+                showMessage("Private image uploads are temporarily unavailable. Remove the image to continue without it.");
+                return;
+            } finally { createBtn.disabled = false; }
+        }
         try {
             if (editingRequest) {
                 await updateRequest(formData, createBtn, requestImageFile, userId);

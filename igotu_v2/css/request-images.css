@@ -1,0 +1,5 @@
+.private-request-image { min-width: 0; margin: 16px 0; padding: 14px; border: 1px solid #d8e9de; border-radius: 12px; background: #f5faf6; overflow-wrap: anywhere; }
+.private-request-image .request-submitted-image { display: block; width: auto; max-width: min(100%, 460px); max-height: 220px; object-fit: contain; margin: 12px 0; }
+.private-request-image .request-image-status { color: #355342; font-size: .875rem; }
+.private-request-image .request-image-open { color: #14532d; text-decoration: underline; }
+.private-request-image .btn { white-space: normal; }

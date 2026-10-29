@@ -1,6 +1,7 @@
 /* Synthetic contracts only: this intentionally does not implement or prove RLS. */
 const fs = require("node:fs");
 const path = require("node:path");
+const {imagePath,canReadImage} = require('./request-image-model.cjs');
 const stamp = "2026-10-26T02:00:00Z";
 const ids = {
   client: "00000000-0000-4000-8000-000000000001",
@@ -140,6 +141,16 @@ async function install(
             : { message: "Synthetic request failed", code: "FIXTURE" },
       };
     const own = () => state.tables.users.find((u) => u.id === ids[state.role]);
+    if(op.kind==='rpc' && op.name==='request_image_access_contract') return state.imageBackend===false?{data:null,error:{message:'Unavailable'}}:{data:'private-request-images-v1',error:null};
+    if(op.kind==='rpc' && op.name==='request_image_reference') {
+      const r=state.tables.service_requests.find(r=>r.request_id===op.args.p_request_id);
+      return {data:r&&canReadImage(state,ids[state.role],r)&&imagePath(r)?[{image_path:imagePath(r)}]:[],error:null};
+    }
+    if(op.kind==='storage'&&op.bucket==='request-images'&&['signed','list'].includes(op.action)) return {data:null,error:{message:'Operation denied'}};
+    if(op.kind==='storage'&&op.action==='download') {
+      const allowed=state.tables.service_requests.some(r=>imagePath(r)===op.name&&canReadImage(state,ids[state.role],r));
+      return allowed?{data:{type:state.imageMime||'image/png',base64:state.imageBase64||'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jr1sAAAAASUVORK5CYII='},error:null}:{data:null,error:{message:'Denied'}};
+    }
     if (op.kind === "auth") {
       state.authEvents.push(op);
       if (["signOut", "clear"].includes(op.name)) {

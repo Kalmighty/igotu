@@ -167,6 +167,7 @@ export async function clearStoredAuthSession() {
 }
 export const supabase = {
   auth: {
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
     getSession: async () => ({
       data: { session: f.noSession ? null : { user: { id: own } } },
       error: null,

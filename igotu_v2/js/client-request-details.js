@@ -1,7 +1,8 @@
+import { requestImageHtml, bindRequestImages } from "./request-images.js";
 import { serviceParticipants } from "./backend-access.js";
 import { prepareReceiptPreviews, receiptHtml, bindReceiptButtons } from "./payment-receipts.js";
 import { authorizeWorkspace } from "./profile-guard.js";
-import { escapeHtml, safeUrl } from "./html-safety.js";
+import { escapeHtml } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
 import { askCancellationReason } from "./service-action-dialogs.js";
 
@@ -46,29 +47,7 @@ function formatBudget(budget) {
     return `RM ${Number(budget).toFixed(2)}`;
 }
 
-function getRequestImageUrl(request) {
-    if (!request) return null;
-
-    return request.request_image_url || null;
-}
-
-function buildRequestImagePreview(request) {
-    const imageUrl = getRequestImageUrl(request);
-
-    if (!imageUrl) return "";
-
-    return `
-        <div class="description-box">
-            <h3>Submitted Image</h3>
-            <div class="request-image-box flat-request-image-box">
-                <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer">
-                    <img src="${escapeHtml(safeUrl(imageUrl))}" alt="Submitted request image" class="request-submitted-image">
-                </a>
-                <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
-            </div>
-        </div>
-    `;
-}
+function buildRequestImagePreview(request) { return requestImageHtml(request); }
 
 function hasValidCoordinates(request) {
     return (
@@ -475,6 +454,8 @@ function renderRequest(request, provider) {
 
         ${completedHtml}
     `;
+
+    bindRequestImages();
 
     const completeBtn = document.getElementById("completeRequestBtn");
 

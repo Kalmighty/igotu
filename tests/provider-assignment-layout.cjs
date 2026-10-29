@@ -40,7 +40,7 @@ const results = [];
         title:'Synthetic deep cleaning and maintenance — ' + 'VeryLongServiceTitle'.repeat(4),
         description:'Synthetic visual fixture only. ' + 'Detailed service requirements for a spacious family home. '.repeat(3),
         location:'Synthetic Unit 123, Jalan Example, ' + 'LongBuildingName'.repeat(8) + ', Kota Kinabalu, Sabah',
-        request_image_url:process.env.UI_BASE_URL+'/layout-image.svg',
+        request_image_path:`${ids.client}/SYN-LAYOUT-${i}.png`,
       }));
       tables.service_requests[3].location='Approximate grid: latitude 6.000000000000001 to 6.1, longitude 116.1 to 116.19999999999999';
       tables.service_reviews = [{request_id:'SYN-LAYOUT-2',reviewer_id:ids.provider,reviewee_id:ids.client,rating:5,feedback:'Synthetic feedback — '+ 'LongReviewWithoutSpaces'.repeat(14)}];
@@ -56,6 +56,10 @@ const results = [];
         await page.goto(process.env.UI_BASE_URL+'/provider/assignment-details.html');
         await page.waitForFunction(()=>document.querySelectorAll('.assignment-card').length===4);
         await page.locator('.assignment-map.leaflet-container').last().waitFor();
+        if(phase!=='before'){
+          for(const button of await page.locator('.request-image-view').all()) await button.click();
+          await page.waitForFunction(()=>document.querySelectorAll('.private-request-image img').length===4);
+        }
         await page.waitForTimeout(700);
         const measure = () => page.locator('.assignment-card').evaluateAll(cards=>cards.map(card=>{
           const [details,actions]=card.children;
@@ -111,7 +115,7 @@ const results = [];
         assert.deepEqual(errors,[]);
         assert.deepEqual(state.unknown,[]);
         assert.equal(state.calls.some(o=>o.kind==='query'&&o.calls?.some(c=>['insert','update','delete','upsert'].includes(c[0]))),false,'no fixture mutations');
-        assert.equal(state.calls.some(o=>o.kind==='rpc'&&!['igotu_backend_contract','provider_service_requests','service_participants','payment_proof_reference'].includes(o.name)),false,'read-only RPCs');
+        assert.equal(state.calls.some(o=>o.kind==='rpc'&&!['igotu_backend_contract','provider_service_requests','service_participants','payment_proof_reference','request_image_access_contract','request_image_reference'].includes(o.name)),false,'read-only RPCs');
         results.push({width,status:'PASS',metrics});console.log('PASS',phase,width);
       } catch(e){results.push({width,status:'FAIL',error:e.stack});console.error('FAIL',width,e.message);}
       finally{await context.close();}
