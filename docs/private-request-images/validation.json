@@ -236,15 +236,35 @@
         ]
       }
     ],
-    "sql_and_plpgsql": "PASS: pglast 8.7 syntax and structural assertions; no live catalog/type/ACL/semantic proof",
+    "sql_and_plpgsql": "PASS offline: SQL/PLpgSQL parse; identical canonical fingerprint expressions; polcmd::text AST assertion; old-bug mutation rejected; deterministic synthetic digest. Actual staging PostgreSQL execution/MD5 UNVERIFIED.",
     "javascript_syntax_and_diff_whitespace": "PASS",
-    "protected_versioned_files_byte_identical_to_base": 92
+    "protected_versioned_files_byte_identical_to_base": 92,
+    "fingerprint_model": {
+      "synthetic_md5": "fa2d2c8fcee9a23f7399545056830cd2",
+      "empty_synthetic_md5": "d41d8cd98f00b204e9800998ecf8427e",
+      "ordering_null_and_command_change_checks": "PASS",
+      "actual_staging_md5": "UNVERIFIED; no live SQL executed"
+    },
+    "proposal_scope": "PASS: compared to 4c42c18, only polcmd::text changes in proposal.sql; policies, GRANT/REVOKE statements and execution/security gates unchanged.",
+    "correction_rerun": {
+      "image_cases": {
+        "passed": 21,
+        "failed": 0
+      },
+      "functional": {
+        "passed": 94,
+        "failed": 0
+      },
+      "layout": "84 PASS",
+      "assignment_widths": "390,768,1024,1440 PASS including image, map and accessibility checks",
+      "new_failures": 0
+    }
   },
   "live_checks": "BLOCKED: not authorized/performed",
   "remaining_live_prerequisites": [
     "Independent staging identity/operator and writer-pause evidence",
     "Reviewed actual save RPC and all Storage policy fingerprints/ACLs",
-    "Documented Storage operation helper availability, reviewed fingerprint/privileges and actual authenticated-download operation behavior",
+    "Storage helper existence is operator-confirmed; installed definition/ACL review and actual operation-tag behavior remain UNVERIFIED",
     "Existing image path/URL/ownership/MIME/size/shared-path inventory, including read-only SR0052 preservation snapshot",
     "Storage read/list/sign/copy and authorization matrix using separately approved dedicated fixtures",
     "Legacy public URL/cache and any previously issued signed URL expiry/revocation verification",
@@ -253,10 +273,35 @@
   "regression_notes": [
     "Initial full functional run: existing Client recommendation timing assertion and duplicate image-region landmark labels failed. Unique request-specific labels fixed; full 94-case rerun passed.",
     "Verification fixture lacked the SDK auth-state subscription API; fixture shape corrected and suite passed. Real authentication/identity guards are unchanged.",
-    "Image cases include real Provider confirmation UI, MIME/corrupt-byte rejection, detached-card delay, expiry/logout, legacy references, direct denial model, operation restrictions, upload capability gating and four responsive widths. These are not live RLS proof."
+    "Image cases include real Provider confirmation UI, MIME/corrupt-byte rejection, detached-card delay, expiry/logout, legacy references, direct denial model, operation restrictions, upload capability gating and four responsive widths. These are not live RLS proof.",
+    "Follow-up: independent PostgreSQL 17 execution found SQLSTATE 42725 in text || internal char concatenation. Explicit polcmd::text added in both canonical expressions, with AST regression and synthetic stability checks. This correction was parsed but never executed against PostgreSQL. No frontend or grant/policy changes were needed; all requested offline reruns passed without failures."
   ],
   "supabase_storage_or_db_changes_applied": false,
   "production_access": false,
   "deployment_or_merge": false,
-  "protected_live_records": "SR0001/SR0002/SR0011/SR0052 not read or written; no independent live hash snapshot was taken."
+  "protected_live_records": "SR0001/SR0002/SR0011/SR0052 not read or written; no independent live hash snapshot was taken.",
+  "revision_of_commit": "4c42c18a8dca3b24ffd37e3c2a67471bcec41248",
+  "supporting_independent_evidence": {
+    "source": "User-reported independent SELECT-only review; not repeated by Codex",
+    "postgresql_17": "CONFIRMED_BY_OPERATOR",
+    "backend_phase_4": "CONFIRMED_BY_OPERATOR",
+    "storage_operation_helper_exists": "CONFIRMED_BY_OPERATOR",
+    "SR0052": {
+      "canonical_association": "CONFIRMED_BY_OPERATOR",
+      "owner_match": "CONFIRMED_BY_OPERATOR",
+      "mime": "image/webp, CONFIRMED_BY_OPERATOR",
+      "size_acceptable": "CONFIRMED_BY_OPERATOR",
+      "exact_size_bytes": null,
+      "stored_cacheControl": null,
+      "served_http_cache_headers": null,
+      "cache_metadata_status": "NOT PROVIDED / UNVERIFIED"
+    }
+  },
+  "live_status": {
+    "effective_schema_usage_and_function_execute": "UNVERIFIED; SELECT-only evidence queries prepared; no privilege changes",
+    "operation_tag_behavior": "UNVERIFIED",
+    "unauthorized_download_enforcement": "UNVERIFIED",
+    "old_public_url_cache_acceptance": "UNVERIFIED",
+    "actual_corrected_policy_md5": "UNVERIFIED"
+  }
 }

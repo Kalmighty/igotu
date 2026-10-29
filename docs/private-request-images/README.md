@@ -2,6 +2,8 @@
 
 Branch `fix/private-request-images`, based on `fix/provider-assignment-layout` commit `d4cb593ed95f616677e89c6bd5e3afa61b5dee83`. Authorized target for a future separately approved rollout: **oqalpauljjhytnrpzcqp only**. No production access, database/Storage changes, live image downloads, fixture writes, deployment or merge were performed in preparing this candidate.
 
+See [the PG17 correction, effective-privilege review and SR0052 cache evidence](correction-review.md) for the follow-up to candidate `4c42c18`. The independent findings are supporting evidence; operation tags, live denials, effective ACLs, actual staging MD5 and cache acceptance remain UNVERIFIED.
+
 ## Findings and design
 
 The reported public bucket bypasses Storage SELECT policies for public downloads. Saved D04 also treats request images as generic workspace content; a private bucket alone does not establish the required owner/confirmed-Provider boundary. Existing D02 masks the Provider URL before confirmation, but masking a field cannot revoke a previously known public URL. Existing D03 requires a canonical public URL in `client_save_request_image(text,text,text)`.

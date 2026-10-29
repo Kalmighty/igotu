@@ -33,7 +33,7 @@ BEGIN
  actual := md5(pg_get_functiondef('public.client_save_request_image(text,text,text)'::regprocedure));
  IF current_setting('igotu.images.reviewed_save_md5',true) IS DISTINCT FROM actual
  THEN RAISE EXCEPTION 'Save RPC fingerprint not reviewed/matched'; END IF;
- SELECT md5(coalesce(string_agg(coalesce(pg_get_expr(polqual,polrelid),'')||'|'||coalesce(pg_get_expr(polwithcheck,polrelid),'')||'|'||polname||'|'||polcmd||'|'||polpermissive::text||'|'||polroles::text,E'\n' ORDER BY polname),''))
+ SELECT md5(coalesce(string_agg(coalesce(pg_get_expr(polqual,polrelid),'')||'|'||coalesce(pg_get_expr(polwithcheck,polrelid),'')||'|'||polname||'|'||polcmd::text||'|'||polpermissive::text||'|'||polroles::text,E'\n' ORDER BY polname),''))
  INTO actual FROM pg_policy WHERE polrelid='storage.objects'::regclass;
  IF current_setting('igotu.images.reviewed_storage_policies_md5',true) IS DISTINCT FROM actual
  THEN RAISE EXCEPTION 'Complete Storage policy inventory not reviewed/matched'; END IF;

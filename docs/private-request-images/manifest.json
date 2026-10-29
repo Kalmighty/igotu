@@ -15,14 +15,14 @@
     "storage_operation_helper_md5": null
   },
   "files_sha256": {
-    "docs/private-request-images/README.md": "b25cc258b8288d70201c99ec28c09fe65199a943025e51b1fc8a47607f7e6568",
-    "docs/private-request-images/preflight-read-only.sql": "0bb539d6fdb933dbb45d6d668d4ecfffdd1b298c72802edcc15c0abf019882c8",
-    "docs/private-request-images/proposal.sql": "72e82949d44f5f80eeab12064219493132849fdc8478a33e7862ab521cf4528e",
+    "docs/private-request-images/README.md": "66b50ec3c976d5e41a4ee51d3e1b95e5d2c4830841a9605a34f3e54d63a3bae3",
+    "docs/private-request-images/preflight-read-only.sql": "478c68dc3cfcdcbaa2935b6784132c054f09cf81844c44ac6addacf7ee52dfaf",
+    "docs/private-request-images/proposal.sql": "1252483658c43ec5342d4302a9318163d3db5fcf3a75b2b4a70d642c9a707a03",
     "docs/private-request-images/screenshots/private-image-panel-1024.png": "be879327eedc90ee242ab0a29094d15605723abcd9012af150c8ca9bfae6f43c",
     "docs/private-request-images/screenshots/private-image-panel-1440.png": "419a583bcc2038ae6e625b3ed2b399ebbdaf196d7e4595a5eecc610b363fe977",
     "docs/private-request-images/screenshots/private-image-panel-390.png": "f84945f33bb62fee80433875f2c133695296410e5b7496ea0c892c3e4b8ed7aa",
     "docs/private-request-images/screenshots/private-image-panel-768.png": "fd1b613ff7868d2dc25a1b75dd4eba955eff22bf342abea0df1c6b70dacb5d8c",
-    "docs/private-request-images/validation.json": "f14b10c8273ab1798afbbfcdd6a38b83e74522546a03776c243986c73f9b768f",
+    "docs/private-request-images/validation.json": "df153d48aca52be6ce6f29f6b26555babde4ba24b1876f7ef1a233da6a961498",
     "igotu_v2/admin/monitor-requests.html": "9fb8e6b45349790c1edcf5422aaf17db0e794eff008466d270a61d941d9a15f9",
     "igotu_v2/client/create-request.html": "e5e4bd7a5002acf213140f04e47277440f5c7a686cb6e98cac82d2e36c21bb73",
     "igotu_v2/client/request-details.html": "b694ce8c84afd6df5a7a621d58fce2b39a7b8dffa1ebf4a2d021008b7e18a23a",
@@ -39,10 +39,13 @@
     "tests/private-request-images.cjs": "152b5823b93a5591c202cc0d90c57ad5eecc4b02325c7423e9e4752559feb086",
     "tests/provider-assignment-layout.cjs": "977c5c0327a94644ce1fa8780daec09684b96e2886563a569b81ec4765be493f",
     "tests/request-image-model.cjs": "4fe988e13d9c9709e4bc37dc7c710af09144491d372cce14700b081e0ac804eb",
-    "tests/request-image-sql.py": "d8010ed12e4ee63a574d13d16b06fa9f00eabb43121ecabb3cdfe31ccaeb728e",
+    "tests/request-image-sql.py": "ae150cfcb04cfca0e7408030305bbe9358426837d85a35a4a17576b466c84a67",
     "tests/system-fixture.cjs": "b5aa26f79bd020c9e5d6e80c54d3c8fb2d9b636c66ecd964dd5c7f0f3c1ae896",
     "tests/system-fixture.js": "99b4c768a5ade5403c73eee7a30fc54a9e961e2500b095cbd86ef40de2bb52ce",
     "tests/system-functional.cjs": "cfaf88793e448462a8231222e6d772b7249c7da2c537d731bcd70b7f8fdb74a7",
-    "tests/verification-fixture.js": "89ffa1657227775bdc9d6edfd5fec61b8c201831e7027aa6ce2336a80d9653e5"
-  }
+    "tests/verification-fixture.js": "89ffa1657227775bdc9d6edfd5fec61b8c201831e7027aa6ce2336a80d9653e5",
+    "docs/private-request-images/correction-review.md": "0d537228cc563983d6c1fb31912ec74a063fec16329848d192fbc9d8932bc378"
+  },
+  "revision_of_commit": "4c42c18a8dca3b24ffd37e3c2a67471bcec41248",
+  "correction_review": "docs/private-request-images/correction-review.md"
 }
