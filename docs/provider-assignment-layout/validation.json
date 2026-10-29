@@ -1,0 +1,167 @@
+{
+  "date": "2026-10-29",
+  "timezone": "Asia/Kuala_Lumpur",
+  "base_commit": "146fa47f834d13f6633933873b1e0c85ed2240ac",
+  "scope": "Offline frontend/visual only, synthetic intercepted transport and generated images/tiles; no real Supabase/data access",
+  "checks": {
+    "assignment_layout": [
+      {
+        "width": 390,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          },
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          },
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          },
+          {
+            "details": 282,
+            "actions": 282,
+            "stacked": true,
+            "mapWidth": 254,
+            "mapHeight": 258
+          }
+        ]
+      },
+      {
+        "width": 768,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          },
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          },
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          },
+          {
+            "details": 640,
+            "actions": 640,
+            "stacked": true,
+            "mapWidth": 612,
+            "mapHeight": 258
+          }
+        ]
+      },
+      {
+        "width": 1024,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          },
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          },
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          },
+          {
+            "details": 628,
+            "actions": 628,
+            "stacked": true,
+            "mapWidth": 600,
+            "mapHeight": 258
+          }
+        ]
+      },
+      {
+        "width": 1440,
+        "status": "PASS",
+        "metrics": [
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          },
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          },
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          },
+          {
+            "details": 700,
+            "actions": 320,
+            "stacked": false,
+            "mapWidth": 672,
+            "mapHeight": 298
+          }
+        ]
+      }
+    ],
+    "grid_label_model": "PASS: floating tails, negative coordinates, unrecognized/non-grid strings preserved",
+    "functional": {
+      "passed": 94,
+      "failed": 0
+    },
+    "existing_ui_layout": "PASS: 84 page/viewport checks",
+    "mandatory_verification": "PASS: 16 guarded routes plus account/approval fixture states",
+    "staging_artifact_builder": "PASS offline with synthetic public configuration; no real staging artifact built in Codex",
+    "unchanged_existing_versioned_evidence_files": 62,
+    "auth_identity_backend_access_sql_production_configuration": "Unchanged from base"
+  },
+  "regression_notes": [
+    "First full functional run: 93 pass, 1 timing failure in unchanged Client recommendation error rendering. Isolated recheck passed and complete 94-case rerun passed without Client code changes.",
+    "Initial focused run found an existing low-contrast Open image link; fixed only within assignment cards. Final focused run passed all four widths.",
+    "Focused fallback resize assertion found early invalidation before navigation breakpoint settled when ResizeObserver was unavailable; debounced fallback added and final tests passed including this case."
+  ],
+  "limits": [
+    "No live backend or RLS acceptance performed",
+    "No SR0001/SR0002/SR0011/SR0052 evidence read or written in Supabase; existing tracked evidence remains unchanged",
+    "Automated accessibility checks do not replace manual screen-reader validation"
+  ],
+  "writes_or_deployment": false
+}

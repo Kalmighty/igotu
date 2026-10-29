@@ -1,0 +1,57 @@
+/* Assignment cards only: do not change shared Incoming Requests sizing. */
+.assignment-card {
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+}
+.assignment-card > *,
+.assignment-card .details-grid > *,
+.assignment-card .incoming-actions > * { min-width: 0; }
+.assignment-card > div:first-child,
+.assignment-card .incoming-actions { overflow-wrap: anywhere; }
+.assignment-card .incoming-actions {
+  width: 100%;
+  min-width: 0;
+  align-content: start;
+}
+.assignment-card .incoming-actions :is(.mini-form, .compact-success, .empty-box) {
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 16px;
+}
+.assignment-card .incoming-actions :is(.btn, .danger-btn) {
+  white-space: normal;
+  text-align: center;
+}
+.assignment-card .card-topline,
+.assignment-card .payment-visibility-header { flex-wrap: wrap; }
+.assignment-card .details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.assignment-card .assignment-location { grid-column: 1 / -1; }
+.assignment-card .payment-visibility-box .details-grid { grid-template-columns: 1fr; }
+.assignment-card .assignment-map-box { padding: 12px; }
+.assignment-card .assignment-map {
+  width: 100%;
+  height: clamp(260px, 22vw, 300px);
+  min-width: 0;
+}
+.assignment-card .leaflet-popup-content { max-width: 180px; white-space: normal; }
+.assignment-card :is(.request-submitted-image, .payment-proof-image) {
+  width: auto;
+  max-width: min(100%, 460px);
+  max-height: 220px;
+  object-fit: contain;
+}
+.assignment-card textarea { max-width: 100%; }
+.assignment-card .proof-open-link { color: #14532d; text-decoration: underline; }
+@media (min-width: 700px) {
+  .assignment-card .payment-visibility-box .details-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .assignment-card .payment-visibility-box .details-grid > span:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 1199px) {
+  .assignment-card { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 600px) {
+  .assignment-card { padding: 14px; gap: 18px; }
+  .assignment-card .details-grid { grid-template-columns: minmax(0, 1fr); }
+  .assignment-card .assignment-map { height: 260px; }
+}

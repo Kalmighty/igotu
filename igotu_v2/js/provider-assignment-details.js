@@ -3,6 +3,7 @@ import { providerRequests, serviceParticipants } from "./backend-access.js";
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml, safeUrl } from "./html-safety.js";
 import { supabase } from "./supabaseClient.js";
+import { formatApproximateGridLabel } from "./assignment-presentation.js";
 
 const L = window.L;
 
@@ -12,6 +13,27 @@ let providerReviews = [];
 let providerReviewsLoaded = false;
 let assignmentPaymentsLoaded = false;
 let assignmentPaymentMap = new Map();
+const assignmentMaps = new Map();
+const mapSizeObserver = window.ResizeObserver ? new ResizeObserver(entries => {
+    for (const { target } of entries) {
+        assignmentMaps.get(target)?.invalidateSize({ pan: false });
+    }
+}) : null;
+
+function clearAssignmentMaps() {
+    mapSizeObserver?.disconnect();
+    assignmentMaps.forEach(map => map.remove());
+    assignmentMaps.clear();
+}
+
+let mapResizeTimer;
+window.addEventListener("resize", () => {
+    clearTimeout(mapResizeTimer);
+    // Wait for the workspace navigation breakpoint to finish changing layout.
+    mapResizeTimer = setTimeout(() => {
+        assignmentMaps.forEach(map => map.invalidateSize({ pan: false }));
+    }, 100);
+});
 
 function showMessage(message, type = "error") {
     const messageBox = document.getElementById("messageBox");
@@ -276,6 +298,7 @@ async function loadAssignmentPayments(requestIds) {
 async function loadAssignments() {
     const assignmentsList = document.getElementById("assignmentsList");
 
+    clearAssignmentMaps();
     assignmentsList.innerHTML = `<p class="muted-text">Loading assignments...</p>`;
 
     const { data: requests, error } = await providerRequests(["confirmed", "in_progress", "completed"]);
@@ -354,7 +377,7 @@ async function loadAssignments() {
                     <h4>Client Service Location</h4>
                     <div id="assignmentMap-${escapeHtml(request.request_id)}" class="assignment-map"></div>
                     <p class="map-status">
-                        Latitude: ${escapeHtml(Number(request.client_lat).toFixed(7))} · Longitude: ${escapeHtml(Number(request.client_lng).toFixed(7))}
+                        Latitude: ${escapeHtml(Number(request.client_lat).toFixed(5))} · Longitude: ${escapeHtml(Number(request.client_lng).toFixed(5))}
                     </p>
                 </div>
             `
@@ -393,7 +416,7 @@ async function loadAssignments() {
                         <span>Date: <strong>${escapeHtml(request.preferred_date)}</strong></span>
                         <span>Time: <strong>${escapeHtml(request.preferred_time)}</strong></span>
                         <span>Budget: <strong>${escapeHtml(formatBudget(request.budget))}</strong></span>
-                        <span>Location: <strong>${escapeHtml(request.location)}</strong></span>
+                        <span class="assignment-location">Location: <strong>${escapeHtml(formatApproximateGridLabel(request.location))}</strong></span>
                     </div>
 
                     ${paymentHtml}
@@ -443,7 +466,10 @@ function renderAssignmentMaps(requests) {
         const lat = Number(request.client_lat);
         const lng = Number(request.client_lng);
 
+        if (assignmentMaps.has(mapElement)) return;
         const assignmentMap = L.map(mapId).setView([lat, lng], 16);
+        assignmentMaps.set(mapElement, assignmentMap);
+        mapSizeObserver?.observe(mapElement);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
@@ -451,11 +477,14 @@ function renderAssignmentMaps(requests) {
         }).addTo(assignmentMap);
 
         L.marker([lat, lng]).addTo(assignmentMap)
-            .bindPopup("Client service location")
-            .openPopup();
+            .bindPopup("Client service location", {
+                maxWidth: 160,
+                autoPanPadding: L.point(12, 12),
+                autoPanPaddingTopLeft: L.point(12, 90)
+            });
 
         setTimeout(function() {
-            assignmentMap.invalidateSize();
+            if (mapElement.isConnected) assignmentMap.invalidateSize({ pan: false });
         }, 250);
     });
 }
