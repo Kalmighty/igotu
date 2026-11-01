@@ -1,0 +1,13 @@
+PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 1536px
+PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 1440px
+PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 1024px
+PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 768px
+PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 390px
+PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 320px
+PASS actual registration, password-recovery and homepage link destinations
+PASS genuine scene playback, user pause/resume, offscreen stop, simulated tab visibility, runtime reduced motion
+PASS actual busy spinner, frozen role controls, password re-mask and error recovery with synthetic credentials
+PASS independent login and static workflow fallback: blockPreview
+PASS independent login and static workflow fallback: badImage
+PASS independent login and static workflow fallback: noJS
+PASS fixed illustration dimensions before and after delayed image loading

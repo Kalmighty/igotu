@@ -1,0 +1,90 @@
+{
+  "scope": "OFFLINE_LOGIN_PRESENTATION_REVIEW_ONLY",
+  "branch": "feat/login-service-preview",
+  "baseBranch": "feat/homepage-reference-redesign",
+  "baseCommit": "00ab4ccc330dc7e192d75e20155f0e99d4b6b461",
+  "date": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "results": {
+    "responsive": [
+      1536,
+      1440,
+      1024,
+      768,
+      390,
+      320
+    ],
+    "previewSuite": "PASS; all six scenes at all six widths, reduced motion, native playback, input retention, password controls, busy/error states, fallback, reserved image dimensions",
+    "axe": "PASS WCAG A/AA and best-practice checks at all six widths; existing auth suite includes registration too",
+    "roleLoginMatrix": "PASS existing suite: 3 matching accepts and all 6 mismatches rejected; account roles fetched by unchanged Auth module",
+    "existingAuthSmoke": "PASS",
+    "functional": {
+      "passed": 94,
+      "failed": 0
+    },
+    "workspaceLayouts": 84,
+    "mandatoryVerification": "PASS including 16 direct guarded workspace routes",
+    "realSdkCleanup": "PASS local/failed/thrown signout; all HTTP responses synthetic",
+    "realSdkLifecycle": "PASS cross-tab signout and invalid-refresh lock; all HTTP responses synthetic",
+    "browserErrors": 0,
+    "externalPreviewRequests": 0,
+    "protectedExistingFiles": 326,
+    "controlAttributes": "Unchanged email/password/form/submit/status and all role-button attributes",
+    "syntax": "PASS",
+    "whitespace": "PASS",
+    "scopeAndCredentialPatternScan": "PASS",
+    "publicLinks": "PASS actual header/form registration links, password-recovery link and homepage logo",
+    "recordedAnimation": "PASS actual Chromium screencast, 214 frames, approximately 13 seconds, video-only/no audio"
+  },
+  "animation": {
+    "implementation": "Working HTML/CSS/SVG scenes over original generated WebP illustration; not an embedded video or GIF",
+    "loopSeconds": 10.8,
+    "scenes": 6,
+    "pausePlay": true,
+    "manualNextStep": true,
+    "offscreen": "Actual IntersectionObserver verified",
+    "backgroundTab": "Standard document.hidden handler tested with simulated visibility events; not physical OS background profiling",
+    "reducedMotion": "Static preview; explicit manual steps; restoring preference never forces autoplay",
+    "fallback": "Form and transcript work when optional preview script/image fails; no-JS illustration is static, authentication still requires existing JS",
+    "recording": "workflow-demo.mp4: actual local Chromium CDP screencast; no audio; review artifact only"
+  },
+  "assets": [
+    {
+      "file": "igotu_v2/assets/login/login-leaves.svg",
+      "bytes": 695,
+      "sha256": "ac33743c7e75fa5890ec00bd01db92c687e9e43b599084089e7efb8a6475ec2a"
+    },
+    {
+      "file": "igotu_v2/assets/login/student-preview.webp",
+      "bytes": 67740,
+      "sha256": "8bbaef97fa2e3d0c7dbef40415fe63e2bfdf62f1f919666fbdddfae0b795dc63"
+    }
+  ],
+  "comparison": {
+    "reference": "User supplied 1536x1024 login illustration",
+    "method": "Visual review of actual browser screenshots; no pixel-perfect similarity score claimed",
+    "matched": [
+      "Logo/header and account CTA",
+      "Centered italic welcome heading",
+      "Green Client, cream Provider, forest-green Admin role cards",
+      "Illustrated student/storyboard on left, white login panel on right",
+      "Mobile compact selectors then form before preview",
+      "Green background curves and original brand identity"
+    ],
+    "differences": [
+      "Original generated student art rather than copying reference imagery",
+      "HTML/CSS workflow animation with truthful illustration labels, controls and transcript instead of GIF badge",
+      "Full desktop page about 1233px tall; accessibility controls and reserved role description space add height",
+      "Phone view stacks the form before decorative content"
+    ]
+  },
+  "notPerformed": [
+    "Live Supabase authentication, sessions, database, Storage, RLS or account tests",
+    "Real account/data creation",
+    "Physical-device and native background-tab performance profiling",
+    "Manual screen-reader audit",
+    "Safari/Firefox testing",
+    "Deployment or merge"
+  ],
+  "existingHomepagePr12Changed": false
+}

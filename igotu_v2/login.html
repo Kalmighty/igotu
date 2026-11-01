@@ -8,9 +8,11 @@
     <link rel="icon" href="assets/igotu-mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/auth-roles.css" />
+    <link rel="stylesheet" href="css/login.css" />
     <script src="js/auth-roles.js" defer></script>
+    <script src="js/login-preview.js" defer></script>
   </head>
-  <body data-page="login" class="auth-experience">
+  <body data-page="login" class="auth-experience login-redesign">
     <a class="auth-skip-link" href="#authContent">Skip to sign in</a>
     <svg
       class="auth-icon-library"
@@ -39,6 +41,14 @@
         </symbol>
         <symbol id="auth-check" viewBox="0 0 24 24">
           <path d="m5 12 4 4L19 6" />
+        </symbol>
+        <symbol id="auth-mail" viewBox="0 0 24 24">
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="m3 6 9 7 9-7" />
+        </symbol>
+        <symbol id="auth-eye" viewBox="0 0 24 24">
+          <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" />
+          <circle cx="12" cy="12" r="3" />
         </symbol>
         <symbol id="auth-lock" viewBox="0 0 24 24">
           <rect x="5" y="10" width="14" height="11" rx="2" />
@@ -133,12 +143,8 @@
                 <use href="#auth-check" /></svg></span></span
           ><strong class="role-card-title">I Need a Service</strong
           ><span class="role-description" id="clientDescription"
-            ><span class="role-description-wide"
-              >Create service requests, receive smart Provider recommendations,
-              and manage your services.</span
-            ><span class="role-description-compact"
-              >Request, compare and choose.</span
-            ></span
+            >Create service requests, receive suitable Provider recommendations
+            and manage your services.</span
           ><span class="role-card-action"
             >Continue as Client<svg
               class="auth-icon"
@@ -188,12 +194,8 @@
                 <use href="#auth-check" /></svg></span></span
           ><strong class="role-card-title">I Offer Services</strong
           ><span class="role-description" id="providerDescription"
-            ><span class="role-description-wide"
-              >Manage your skills and availability, receive assignments, and
-              connect with Clients.</span
-            ><span class="role-description-compact"
-              >Share your skills and availability.</span
-            ></span
+            >Manage your skills and availability, receive selected assignments
+            and connect with Clients.</span
           ><span class="role-card-action"
             >Continue as Provider<svg
               class="auth-icon"
@@ -243,12 +245,8 @@
                 <use href="#auth-check" /></svg></span></span
           ><strong class="role-card-title">Platform Administration</strong
           ><span class="role-description" id="adminDescription"
-            ><span class="role-description-wide"
-              >Access IGotU’s management dashboard to monitor users, service
-              requests, payments, and platform activity.</span
-            ><span class="role-description-compact"
-              >Authorized accounts only.</span
-            ></span
+            >Access IGotU’s management dashboard to monitor users, service
+            requests, payment records and platform activity.</span
           ><span class="role-card-action"
             >Admin Login<svg
               class="auth-icon"
@@ -265,69 +263,13 @@
         </button>
       </div>
       <div class="auth-login-layout">
-        <aside class="auth-welcome-note" aria-labelledby="connectionTitle">
-          <span class="auth-note-icon"
-            ><svg
-              class="auth-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <use href="#auth-brand" /></svg
-          ></span>
-          <p class="auth-eyebrow">A helpful connection starts here</p>
-          <h2 id="connectionTitle">
-            Your next step.<br />A little more connected.
-          </h2>
-          <p>
-            Whether you’re finding help, offering a skill or supporting the
-            platform, IGotU brings your service journey together.
-          </p>
-          <div class="auth-note-points">
-            <span
-              ><svg
-                class="auth-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <use href="#auth-request" />
-              </svg>
-              Request-first matching</span
-            ><span
-              ><svg
-                class="auth-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <use href="#auth-profile" />
-              </svg>
-              A workspace for your role</span
-            >
-          </div>
-          <p class="auth-account-note">
-            Select the login section that matches your registered account.
-          </p>
-        </aside>
         <section class="auth-form-panel" aria-labelledby="authFormTitle">
           <div class="auth-form-heading">
             <span class="auth-form-kicker">Welcome back</span>
-            <h2 id="authFormTitle">Login to IGotU</h2>
+            <h2 id="authFormTitle">Client Login</h2>
             <p id="authFormHint" aria-live="polite">
-              Sign in to access your account’s workspace.
+              Sign in to create requests, compare recommendations and manage
+              your services.
             </p>
           </div>
           <div
@@ -338,7 +280,19 @@
           ></div>
           <form id="loginForm">
             <div class="form-group">
-              <label for="email">Email Address</label
+              <label for="email"
+                ><svg
+                  class="auth-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <use href="#auth-mail" /></svg
+                >Email Address</label
               ><input
                 type="email"
                 id="email"
@@ -348,19 +302,54 @@
               />
             </div>
             <div class="form-group">
-              <label for="password">Password</label
-              ><input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                autocomplete="current-password"
-                required
-              />
-            </div>
-            <div class="auth-password-row">
-              <a href="forgot-password.html" class="forgot-password-link"
-                >Forgot password?</a
-              >
+              <div class="password-label-row">
+                <label for="password"
+                  ><svg
+                    class="auth-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#auth-lock" /></svg
+                  >Password</label
+                ><a href="forgot-password.html" class="forgot-password-link"
+                  >Forgot password?</a
+                >
+              </div>
+              <div class="password-field">
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  required
+                /><button
+                  class="password-toggle"
+                  id="passwordToggle"
+                  type="button"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                  aria-controls="password"
+                  hidden
+                >
+                  <svg
+                    class="auth-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#auth-eye" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <button type="submit" class="btn full-btn" id="loginBtn">
               Login
@@ -385,6 +374,324 @@
             Your login selection must match your account’s role.
           </p>
         </section>
+        <aside class="auth-welcome-note" aria-labelledby="connectionTitle">
+          <div class="preview-intro">
+            <p class="auth-eyebrow">A helpful connection starts here</p>
+            <h2 id="connectionTitle">
+              Your next step.<br /><em>A little more connected.</em>
+            </h2>
+            <p>
+              See how IGotU works in a few simple steps, from requesting a
+              service to finding suitable help.
+            </p>
+          </div>
+          <figure class="service-preview" aria-labelledby="preview-caption">
+            <div class="preview-canvas" aria-hidden="true">
+              <img
+                class="preview-student"
+                src="assets/login/student-preview.webp"
+                alt=""
+                width="1024"
+                height="768"
+                decoding="async"
+              /><span class="preview-badge">Workflow illustration</span>
+              <div class="preview-scenes" id="servicePreviewScenes">
+                <div
+                  class="workflow-scene"
+                  style="--scene-index: 0"
+                  data-scene="0"
+                >
+                  <span class="scene-number">01 / 06</span>
+                  <h3>Create a request</h3>
+                  <p class="preview-mini-brand">IGotU.</p>
+                  <div class="demo-option chosen">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-request" /></svg
+                    ><span>Room Cleaning</span
+                    ><svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-check" />
+                    </svg>
+                  </div>
+                  <div class="demo-option">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-provider" /></svg
+                    ><span>Laptop Repair</span>
+                  </div>
+                  <div class="demo-option">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-request" /></svg
+                    ><span>Tutoring</span>
+                  </div>
+                  <p class="scene-note">Start with what you need.</p>
+                </div>
+                <div
+                  class="workflow-scene"
+                  style="--scene-index: 1"
+                  data-scene="1"
+                >
+                  <span class="scene-number">02 / 06</span>
+                  <h3>Get recommendations</h3>
+                  <p class="scene-note">Illustrative Providers</p>
+                  <div class="demo-provider">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-profile" /></svg
+                    ><span>Provider A<small>Relevant skills</small></span>
+                  </div>
+                  <div class="demo-provider">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-profile" /></svg
+                    ><span
+                      >Provider B<small>Time & location context</small></span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="workflow-scene"
+                  style="--scene-index: 2"
+                  data-scene="2"
+                >
+                  <span class="scene-number">03 / 06</span>
+                  <h3>Make your choice</h3>
+                  <div class="demo-provider chosen">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-profile" /></svg
+                    ><span
+                      >Provider A<small
+                        >Illustrative recommendation</small
+                      ></span
+                    ><svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-check" />
+                    </svg>
+                  </div>
+                  <p class="scene-note">The Client chooses a Provider.</p>
+                </div>
+                <div
+                  class="workflow-scene"
+                  style="--scene-index: 3"
+                  data-scene="3"
+                >
+                  <span class="scene-number">04 / 06</span>
+                  <h3>Provider response</h3>
+                  <div class="demo-option">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-request" /></svg
+                    ><span>Selected assignment</span>
+                  </div>
+                  <p class="scene-note">The selected Provider can:</p>
+                  <div class="demo-responses">
+                    <span>Confirm</span><span>Decline</span>
+                  </div>
+                </div>
+                <div
+                  class="workflow-scene"
+                  style="--scene-index: 4"
+                  data-scene="4"
+                >
+                  <span class="scene-number">05 / 06</span>
+                  <h3>Track the service</h3>
+                  <p class="scene-note">After Provider confirmation</p>
+                  <ol class="demo-progress">
+                    <li>Confirmed</li>
+                    <li>In progress</li>
+                    <li>Completed</li>
+                  </ol>
+                  <p class="scene-note">Record offline payment & review.</p>
+                </div>
+                <div
+                  class="workflow-scene"
+                  style="--scene-index: 5"
+                  data-scene="5"
+                >
+                  <span class="scene-number">06 / 06</span>
+                  <h3>Your choice matters</h3>
+                  <div class="demo-brand-icon">
+                    <svg
+                      class="auth-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#auth-brand" />
+                    </svg>
+                  </div>
+                  <p class="preview-mini-brand">IGotU.</p>
+                  <p class="demo-tagline">
+                    Your request.<br />Your match.<br />Your choice.
+                  </p>
+                </div>
+              </div>
+              <span class="preview-visual-caption"
+                >Your request. Your match. Your choice.</span
+              >
+            </div>
+            <figcaption id="preview-caption">
+              Illustrative workflow only. No live Providers or activity.
+            </figcaption>
+            <div class="preview-controls">
+              <button
+                id="previewToggle"
+                type="button"
+                aria-controls="servicePreviewScenes"
+                hidden
+              >
+                Pause preview</button
+              ><button
+                id="previewNext"
+                type="button"
+                aria-controls="servicePreviewScenes"
+                hidden
+              >
+                Next step</button
+              ><span id="previewState">Static preview</span>
+            </div>
+            <details class="preview-transcript">
+              <summary>Read the workflow</summary>
+              <ol>
+                <li>Create a service request describing what you need.</li>
+                <li>
+                  Receive suitable Provider recommendations using skills,
+                  availability and relevant location information.
+                </li>
+                <li>Choose one recommended Provider.</li>
+                <li>
+                  The selected Provider can confirm or decline the assignment.
+                </li>
+                <li>
+                  After confirmation, track service progress, record offline
+                  payment information and exchange reviews.
+                </li>
+                <li>Your request. Your match. Your choice.</li>
+              </ol>
+            </details>
+          </figure>
+          <div class="auth-note-points">
+            <span
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-request" /></svg
+              >Request-first<br />matching</span
+            ><span
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-profile" /></svg
+              >A workspace<br />for your role</span
+            ><span
+              ><svg
+                class="auth-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#auth-shield" /></svg
+              >Identity-verification<br />process</span
+            >
+          </div>
+        </aside>
       </div>
     </main>
     <footer class="auth-page-footer">

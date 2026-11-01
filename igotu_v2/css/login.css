@@ -1,0 +1,1645 @@
+/* Login-only presentation. Registration/shared Auth styles and guards are unchanged. */
+.login-redesign {
+  --auth-forest: #00563a;
+  --auth-ink: #092b23;
+  --auth-muted: #41535b;
+  --auth-line: #dce6de;
+  --login-ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+  font-family: Arial, Helvetica, sans-serif;
+  background: #fcfcfa url("../assets/login/login-leaves.svg") center 72px / 100%
+    650px no-repeat;
+  color: var(--auth-ink);
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+.login-redesign [hidden] {
+  display: none !important;
+}
+.login-redesign .auth-container {
+  width: min(1360px, calc(100% - 96px));
+}
+.login-redesign :is(a, button, input, summary, [tabindex]):focus-visible {
+  outline: 3px solid #2b8550;
+  outline-offset: 4px;
+}
+.login-redesign .auth-header {
+  background: #ffffffc9;
+  border-color: #e0e7e2;
+}
+.login-redesign .auth-header-inner {
+  min-height: 72px;
+  max-width: 1280px;
+}
+.login-redesign .auth-brand {
+  font-size: 31px;
+  font-weight: 800;
+  letter-spacing: -1.4px;
+}
+.login-redesign .auth-brand > span:first-child {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: #00563a;
+  color: #fff;
+}
+.login-redesign .auth-header-link {
+  font-size: 14px;
+  gap: 19px;
+}
+.login-redesign .auth-header-link a {
+  border: 1px solid #0d6a45;
+  border-radius: 24px;
+  padding: 9px 20px;
+  min-height: 42px;
+  font-size: 14px;
+  gap: 18px;
+  transition:
+    background-color 220ms,
+    box-shadow 220ms;
+}
+.login-redesign .auth-header-link a:hover {
+  background: #edf5e6;
+  box-shadow: 0 3px 12px #0b513312;
+}
+.login-redesign .auth-header-link .auth-icon {
+  width: 20px;
+  height: 20px;
+  transition: translate 220ms;
+}
+.login-redesign .auth-header-link a:hover .auth-icon {
+  translate: 3px 0;
+}
+.login-redesign .auth-workspace {
+  padding-top: 24px;
+  padding-bottom: 30px;
+}
+.login-redesign .auth-page-heading {
+  text-align: center;
+  margin-bottom: 25px;
+}
+.login-redesign .auth-eyebrow {
+  text-transform: uppercase;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #006232;
+  letter-spacing: 1.35px;
+  font-weight: 800;
+}
+.login-redesign .auth-page-heading h1 {
+  font-size: clamp(44px, 4.2vw, 64px);
+  font-weight: 780;
+  line-height: 1.1;
+  letter-spacing: -2.3px;
+  margin-top: 12px;
+  color: #05291f;
+  position: relative;
+  display: inline-block;
+}
+.login-redesign .auth-page-heading h1 em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  color: #09683b;
+  position: relative;
+  white-space: nowrap;
+}
+.login-redesign .auth-page-heading h1 em:after {
+  content: "";
+  position: absolute;
+  height: 4px;
+  background: #cee6b9;
+  border-radius: 50%;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  transform: rotate(-1deg);
+}
+.login-redesign .auth-page-heading h1:after {
+  content: "✦";
+  position: absolute;
+  right: -33px;
+  top: -12px;
+  color: #65a82f;
+  font-size: 32px;
+  transform: rotate(13deg);
+}
+.login-redesign .auth-page-heading > p:last-child {
+  font-size: 19px;
+  line-height: 1.5;
+  margin-top: 18px;
+  color: #41535b;
+}
+/* Keep native role buttons and the existing allowlisted section-selection JS. */
+.login-redesign .login-roles {
+  max-width: 1280px;
+  margin: 0 auto 26px;
+  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.login-redesign .role-card {
+  border-radius: 24px;
+  border: 1px solid transparent;
+  padding: 20px 30px;
+  min-height: 246px;
+  background: linear-gradient(120deg, #f4faed, #f0f6e7);
+  color: #05291f;
+  box-shadow: 0 5px 22px #153e2205;
+  transition:
+    transform 220ms var(--login-ease),
+    box-shadow 220ms,
+    border-color 220ms;
+}
+.login-redesign .role-provider {
+  background: linear-gradient(120deg, #fcf8f1, #faf1e3);
+}
+.login-redesign .role-admin {
+  color: #fff;
+  background: linear-gradient(125deg, #006342, #00482f);
+}
+.login-redesign .role-card-top {
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 12px;
+  width: 100%;
+}
+.login-redesign .role-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: #ffffff9c;
+  border: 1px solid #b7d998;
+  color: #005d34;
+  box-shadow: 0 3px 5px #0c402308;
+}
+.login-redesign .role-icon .auth-icon {
+  width: 29px;
+  height: 29px;
+}
+.login-redesign .role-provider .role-icon {
+  border-color: #e5c8a3;
+}
+.login-redesign .role-admin .role-icon {
+  background: #19824c;
+  border-color: #19824c;
+  color: #fff;
+}
+.login-redesign .role-name {
+  font-size: 14px;
+  letter-spacing: 1.2px;
+  font-weight: 800;
+  color: #005e30;
+}
+.login-redesign .role-admin .role-name {
+  color: #fff;
+}
+.login-redesign .role-selected-mark {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #00623d;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 220ms;
+}
+.login-redesign .role-selected-mark .auth-icon {
+  width: 20px;
+  height: 20px;
+}
+.login-redesign .role-admin .role-selected-mark {
+  background: #ecf8df;
+  color: #006238;
+}
+.login-redesign .role-card-title {
+  font-size: 27px;
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.8px;
+  margin: 0 0 10px;
+}
+.login-redesign .role-description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #354b51;
+  margin: 0 0 14px;
+  display: block;
+}
+.login-redesign .role-admin .role-description {
+  color: #f5fff6;
+}
+.login-redesign .role-card-action {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  border: 1px solid #006039;
+  background: #006039;
+  color: #fff;
+  border-radius: 16px;
+  padding: 9px 20px;
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: auto;
+  transition:
+    background-color 220ms,
+    box-shadow 220ms;
+}
+.login-redesign .role-card-action .auth-icon {
+  width: 22px;
+  height: 22px;
+  transition: translate 220ms;
+}
+.login-redesign .role-provider .role-card-action {
+  background: #ffffffbd;
+  border-color: #a5d77d;
+  color: #083b26;
+}
+.login-redesign .role-admin .role-card-action {
+  background: #e9f8dc;
+  color: #00532f;
+  border-color: #e9f8dc;
+}
+.login-redesign .role-card[aria-pressed="true"] {
+  border-color: #007244;
+  box-shadow:
+    inset 0 0 0 0.5px #007244,
+    0 8px 26px #124c3b0b;
+}
+.login-redesign .role-admin[aria-pressed="true"] {
+  border-color: #bbe99d;
+  box-shadow:
+    inset 0 0 0 1px #bbe99d,
+    0 8px 26px #124c3b0b;
+}
+.login-redesign .role-card[aria-pressed="true"] .role-selected-mark {
+  opacity: 1;
+}
+.login-redesign .role-admin:focus-visible {
+  outline-color: #b6db88;
+}
+.login-redesign .role-card:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+/* Form first in DOM; CSS places it on the right only at desktop widths. */
+.login-redesign .auth-login-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  grid-template-areas: "preview form";
+  gap: 28px;
+  align-items: start;
+}
+.login-redesign .auth-form-panel {
+  grid-area: form;
+  padding: 26px 28px;
+  background: #fff;
+  border: 1px solid #e0e8e0;
+  border-radius: 29px;
+  box-shadow: 0 9px 30px #1b4c3210;
+  min-width: 0;
+}
+.login-redesign .auth-form-heading {
+  margin-bottom: 20px;
+}
+.login-redesign .auth-form-kicker {
+  color: #006130;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+}
+.login-redesign .auth-form-heading h2 {
+  font-size: 32px;
+  font-weight: 750;
+  line-height: 1.2;
+  margin-top: 6px;
+  letter-spacing: -1.2px;
+  color: #092c21;
+}
+.login-redesign .auth-form-heading > p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #172c31;
+  margin-top: 8px;
+  min-height: 42px;
+}
+.login-redesign .form-group {
+  margin-bottom: 19px;
+}
+.login-redesign .form-group label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  color: #132b24;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.login-redesign label .auth-icon {
+  width: 18px;
+  height: 18px;
+  color: #006737;
+}
+.login-redesign .form-group input {
+  min-height: 46px;
+  border-radius: 14px;
+  border: 1px solid #d2dadd;
+  padding: 11px 15px;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #142b26;
+  transition:
+    border-color 200ms,
+    box-shadow 200ms;
+}
+.login-redesign .form-group input:focus {
+  border-color: #36885c;
+  box-shadow: 0 0 0 3px #d9ecd68c;
+}
+.login-redesign .password-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 15px;
+}
+.login-redesign .forgot-password-link {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #006438;
+  text-decoration: none;
+  min-height: 30px;
+}
+.login-redesign .forgot-password-link:hover {
+  text-decoration: underline;
+}
+.login-redesign .password-field {
+  position: relative;
+}
+.login-redesign .password-field input {
+  padding-right: 52px;
+}
+.login-redesign .password-toggle {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 0;
+  border-radius: 11px;
+  color: #52636b;
+  cursor: pointer;
+}
+.login-redesign .password-toggle .auth-icon {
+  width: 22px;
+  height: 22px;
+  transition:
+    opacity 200ms,
+    transform 200ms;
+}
+.login-redesign .password-toggle[aria-pressed="true"] .auth-icon {
+  transform: scale(1.08);
+  color: #006438;
+}
+.login-redesign .password-toggle:hover {
+  background: #edf5e8;
+}
+.login-redesign #loginBtn {
+  border: 0;
+  border-radius: 14px;
+  background: #005d38;
+  min-height: 49px;
+  font-size: 17px;
+  font-weight: 700;
+  transition:
+    background-color 220ms,
+    box-shadow 220ms,
+    transform 220ms;
+}
+.login-redesign #loginBtn:hover {
+  background: #004a2f;
+  box-shadow: 0 5px 14px #005d3820;
+}
+.login-redesign #loginBtn:active {
+  transform: translateY(1px);
+}
+.login-redesign #loginBtn:disabled {
+  cursor: wait;
+}
+.login-redesign #loginForm[aria-busy="true"] #loginBtn:before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  border: 2px solid #ffffff70;
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: login-spin 700ms linear infinite;
+}
+.login-redesign .auth-form-footer {
+  font-size: 14px;
+  margin-top: 17px !important;
+  color: #50616a;
+}
+.login-redesign .auth-form-footer a {
+  color: #006133;
+  font-weight: 700;
+}
+.login-redesign .auth-form-note {
+  margin-top: 20px !important;
+  border-top: 1px solid #dce5dd;
+  padding-top: 16px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #31464c;
+  align-items: flex-start;
+  text-align: center;
+}
+.login-redesign .auth-form-note .auth-icon {
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+.login-redesign .message-box {
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  border-radius: 12px;
+  animation: login-message 200ms ease;
+}
+.login-redesign .message-box.hidden {
+  animation: none;
+}
+/* An original local illustration under six real CSS workflow scenes. */
+.login-redesign .auth-welcome-note {
+  grid-area: preview;
+  max-width: none;
+  padding: 24px 0 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 22px 24px;
+  align-items: start;
+  min-width: 0;
+}
+.login-redesign .preview-intro {
+  min-width: 0;
+}
+.login-redesign .preview-intro .auth-eyebrow {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.login-redesign .preview-intro h2 {
+  font-size: 38px;
+  font-weight: 750;
+  line-height: 1.18;
+  letter-spacing: -1.2px;
+  color: #092c21;
+  margin-top: 18px;
+}
+.login-redesign .preview-intro h2 em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -1px;
+  color: #00633b;
+  display: inline-block;
+  margin-top: 7px;
+}
+.login-redesign .preview-intro > p:last-child {
+  font-size: 17px;
+  line-height: 1.75;
+  color: #41535b;
+  max-width: 315px;
+  margin-top: 20px;
+}
+.login-redesign .service-preview {
+  margin: 0;
+  min-width: 0;
+}
+.login-redesign .preview-canvas {
+  position: relative;
+  aspect-ratio: 1.48;
+  overflow: hidden;
+  border: 6px solid #fff;
+  border-radius: 28px;
+  box-shadow: 0 7px 24px #1b4c3216;
+  background: #eee9d8;
+  isolation: isolate;
+}
+.login-redesign .preview-student {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.login-redesign .preview-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 10px;
+  padding: 5px 8px;
+  background: #173728bd;
+  color: #fff;
+  border-radius: 18px;
+  z-index: 2;
+  line-height: 1.4;
+}
+.login-redesign .preview-scenes {
+  position: absolute;
+  top: 11%;
+  right: 4%;
+  width: 46%;
+  bottom: 13%;
+  border-radius: 18px;
+  background: #fffef9ed;
+  box-shadow: 0 4px 14px #31241312;
+  padding: 14px;
+  min-width: 0;
+}
+.login-redesign .workflow-scene {
+  position: absolute;
+  inset: 13px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+}
+.login-redesign .workflow-scene:first-child {
+  opacity: 1;
+}
+.login-redesign .scene-number {
+  font-size: 9px;
+  color: #43614f;
+  letter-spacing: 0.7px;
+  font-weight: 700;
+}
+.login-redesign .workflow-scene h3 {
+  font-size: 15px;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+  color: #12392a;
+  margin: 0 0 2px;
+}
+.login-redesign .preview-mini-brand {
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: -1px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #074630;
+  margin: 0 0 6px;
+}
+.login-redesign .demo-option,
+.login-redesign .demo-provider {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e4e7de;
+  border-radius: 10px;
+  padding: 7px 6px;
+  background: #f5f3ed;
+  color: #153b28;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 0;
+  line-height: 1.25;
+}
+.login-redesign .demo-option > .auth-icon,
+.login-redesign .demo-provider > .auth-icon {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+.login-redesign .demo-option.chosen,
+.login-redesign .demo-provider.chosen {
+  border-color: #72b45f;
+  background: #f0f6e8;
+}
+.login-redesign .demo-option > .auth-icon:last-child:not(:first-child),
+.login-redesign .demo-provider > .auth-icon:last-child:not(:first-child) {
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+}
+.login-redesign .demo-provider small {
+  display: block;
+  font-size: 8px;
+  font-weight: 400;
+  color: #4b5c4f;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+.login-redesign .scene-note {
+  font-size: 9px;
+  line-height: 1.4;
+  color: #52634e;
+  margin: 0;
+}
+.login-redesign .demo-responses {
+  display: flex;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+}
+.login-redesign .demo-responses span {
+  border: 1px solid #a4c791;
+  border-radius: 8px;
+  padding: 7px;
+  background: #eaf6e2;
+  color: #14432a;
+}
+.login-redesign .demo-responses span:last-child {
+  background: #fff9ed;
+  border-color: #d5c5a7;
+  color: #674b24;
+}
+.login-redesign .demo-progress {
+  list-style: none;
+  padding: 0;
+  margin: 3px 0;
+  display: grid;
+  gap: 7px;
+  font-size: 11px;
+  color: #14432a;
+  font-weight: 700;
+}
+.login-redesign .demo-progress li {
+  position: relative;
+  padding-left: 18px;
+}
+.login-redesign .demo-progress li:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #82b26b;
+}
+.login-redesign .demo-tagline {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.2;
+  color: #08603b;
+  text-align: center;
+}
+.login-redesign .demo-brand-icon {
+  display: grid;
+  place-items: center;
+  background: #00623c;
+  color: #fff;
+  border-radius: 12px;
+  width: 41px;
+  height: 41px;
+  align-self: center;
+}
+.login-redesign .demo-brand-icon .auth-icon {
+  width: 27px;
+  height: 27px;
+}
+.login-redesign .preview-visual-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 9px;
+  color: #fff;
+  background: linear-gradient(transparent, #17251bd9);
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 700;
+  text-align: center;
+}
+.login-redesign .service-preview figcaption {
+  font-size: 11px;
+  color: #556650;
+  line-height: 1.5;
+  margin-top: 9px;
+}
+.login-redesign .preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 7px;
+}
+.login-redesign .preview-controls button {
+  border: 1px solid #bfd2b8;
+  border-radius: 9px;
+  background: #f4f9ed;
+  color: #145438;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  min-height: 35px;
+  cursor: pointer;
+  transition: background-color 200ms;
+}
+.login-redesign .preview-controls button:hover {
+  background: #e4f1d8;
+}
+.login-redesign .preview-controls button:disabled {
+  cursor: default;
+  color: #52634f;
+  background: #f5f6f2;
+}
+.login-redesign #previewState {
+  font-size: 10px;
+  color: #58664f;
+}
+.login-redesign .preview-transcript {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #314b37;
+}
+.login-redesign .preview-transcript summary {
+  cursor: pointer;
+  min-height: 35px;
+  display: list-item;
+  align-content: center;
+  font-weight: 700;
+}
+.login-redesign .preview-transcript ol {
+  font-size: 13px;
+  line-height: 1.7;
+  padding: 10px 0 0 20px;
+  margin: 0;
+}
+.login-redesign .preview-transcript li {
+  padding-left: 4px;
+  margin-bottom: 8px;
+}
+.login-redesign .auth-note-points {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 22px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #193c2b;
+}
+.login-redesign .auth-note-points > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.login-redesign .auth-note-points .auth-icon {
+  width: 37px;
+  height: 37px;
+  padding: 7px;
+  background: #e6f2dc;
+  color: #00643b;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.login-redesign .auth-page-footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 0;
+  width: 100%;
+  max-width: none;
+  min-height: 94px;
+  padding: 45px max(32px, calc((100vw - 1360px) / 2)) 18px;
+  font-size: 11px;
+  align-items: flex-end;
+  background: linear-gradient(
+    to bottom,
+    #d1e7c4 0 15px,
+    #368b5d 16px 35px,
+    #146d46 36px 100%
+  );
+  border-radius: 50% 40% 0 0/45px 30px 0 0;
+  color: #fff;
+}
+.login-redesign .auth-page-footer a {
+  color: #fff;
+}
+.login-redesign .auth-page-footer .auth-icon {
+  width: 17px;
+  height: 17px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .login-redesign .role-card:not(:disabled):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px #124c3b17;
+    border-color: #9cba89;
+  }
+  .login-redesign .role-card:not(:disabled):hover .role-card-action .auth-icon {
+    translate: 3px 0;
+  }
+  .login-redesign .role-card:not(:disabled):hover .role-card-action {
+    box-shadow: 0 3px 9px #124c3b15;
+  }
+}
+@keyframes login-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes login-message {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes login-enter {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.login-redesign .login-enter {
+  animation: login-enter 420ms var(--login-ease) var(--login-delay, 0ms) both;
+}
+.login-redesign .login-enter:focus-within,
+.login-redesign .login-enter:focus {
+  animation: none;
+}
+@keyframes workflow-cycle {
+  0%,
+  12.5% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  16.66% {
+    opacity: 0;
+    translate: 0 -7px;
+  }
+  96% {
+    opacity: 0;
+    translate: 0 9px;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.login-redesign .preview-animated .workflow-scene {
+  animation: workflow-cycle 10800ms linear infinite;
+  animation-delay: calc(
+    var(--scene-index) * 1800ms - 10800ms - var(--preview-offset, 0ms)
+  );
+  animation-play-state: paused;
+}
+.login-redesign .preview-playing .workflow-scene {
+  animation-play-state: running;
+}
+.login-redesign .preview-manual .workflow-scene {
+  animation: none;
+  opacity: 0;
+  translate: 0 0;
+}
+.login-redesign .preview-manual .workflow-scene.is-current {
+  opacity: 1;
+}
+@media (max-width: 1250px) {
+  .login-redesign .auth-container {
+    width: calc(100% - 64px);
+  }
+  .login-redesign .role-card {
+    padding: 23px;
+    min-height: 250px;
+  }
+  .login-redesign .role-card-title {
+    font-size: 24px;
+  }
+  .login-redesign .role-description {
+    font-size: 14px;
+  }
+  .login-redesign .role-card-action {
+    padding: 10px 14px;
+    font-size: 13px;
+    gap: 15px;
+  }
+  .login-redesign .role-icon {
+    width: 42px;
+    height: 42px;
+  }
+  .login-redesign .role-name {
+    font-size: 12px;
+  }
+  .login-redesign .auth-login-layout {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 28px;
+  }
+  .login-redesign .auth-welcome-note {
+    grid-template-columns: 1fr;
+    padding-top: 0;
+    gap: 20px;
+  }
+  .login-redesign .preview-intro h2 {
+    font-size: 32px;
+  }
+  .login-redesign .preview-intro h2 br {
+    display: none;
+  }
+  .login-redesign .preview-intro h2 em {
+    font-size: 32px;
+  }
+  .login-redesign .preview-intro > p:last-child {
+    font-size: 15px;
+    max-width: none;
+    margin-top: 13px;
+  }
+  .login-redesign .preview-intro .auth-eyebrow {
+    font-size: 11px;
+  }
+  .login-redesign .preview-canvas {
+    max-width: 520px;
+  }
+  .login-redesign .auth-note-points {
+    gap: 13px;
+    flex-wrap: wrap;
+  }
+  .login-redesign .auth-note-points > span {
+    font-size: 11px;
+  }
+  .login-redesign .auth-note-points .auth-icon {
+    width: 34px;
+    height: 34px;
+  }
+  .login-redesign .workflow-scene h3 {
+    font-size: 16px;
+  }
+  .login-redesign .scene-note {
+    font-size: 11px;
+  }
+  .login-redesign .demo-option,
+  .login-redesign .demo-provider {
+    font-size: 12px;
+    padding: 8px;
+  }
+  .login-redesign .demo-provider small {
+    font-size: 10px;
+  }
+  .login-redesign .demo-tagline {
+    font-size: 24px;
+  }
+  .login-redesign .scene-number {
+    font-size: 10px;
+  }
+}
+@media (max-width: 850px) {
+  .login-redesign .auth-container {
+    width: calc(100% - 48px);
+  }
+  .login-redesign .auth-page-heading h1 {
+    font-size: 48px;
+    max-width: 100%;
+  }
+  .login-redesign .auth-page-heading h1:after {
+    right: -20px;
+    font-size: 22px;
+  }
+  .login-redesign .auth-page-heading > p:last-child {
+    font-size: 17px;
+  }
+  .login-redesign .login-roles {
+    gap: 14px;
+    max-width: 660px;
+    margin-bottom: 24px;
+  }
+  .login-redesign .role-card {
+    min-height: 112px;
+    padding: 15px 17px;
+    border-radius: 17px;
+  }
+  .login-redesign .role-card-top {
+    margin: 0;
+    gap: 12px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .login-redesign .role-icon {
+    width: 39px;
+    height: 39px;
+  }
+  .login-redesign .role-name {
+    font-size: 13px;
+    letter-spacing: 0.8px;
+  }
+  .login-redesign .role-selected-mark {
+    position: absolute;
+    right: -9px;
+    top: -9px;
+    width: 24px;
+    height: 24px;
+  }
+  .login-redesign .role-selected-mark .auth-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .login-redesign .role-card-title,
+  .login-redesign .role-card-action {
+    display: none;
+  }
+  .login-redesign .role-description {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    margin: 0;
+  }
+  .login-redesign .auth-login-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "form" "preview";
+    gap: 48px;
+    max-width: 660px;
+    margin: auto;
+  }
+  .login-redesign .auth-form-panel {
+    padding: 30px;
+  }
+  .login-redesign .auth-form-heading > p {
+    min-height: 42px;
+    font-size: 14px;
+  }
+  .login-redesign .auth-welcome-note {
+    max-width: 660px;
+  }
+  .login-redesign .preview-intro > p:last-child {
+    font-size: 17px;
+    max-width: 590px;
+  }
+  .login-redesign .preview-intro h2 {
+    font-size: 36px;
+  }
+  .login-redesign .preview-intro h2 em {
+    font-size: 36px;
+  }
+  .login-redesign .preview-canvas {
+    max-width: none;
+    aspect-ratio: 1.6;
+  }
+  .login-redesign .workflow-scene {
+    inset: 22px;
+    gap: 13px;
+  }
+  .login-redesign .workflow-scene h3 {
+    font-size: 23px;
+  }
+  .login-redesign .scene-number {
+    font-size: 12px;
+  }
+  .login-redesign .demo-option,
+  .login-redesign .demo-provider {
+    font-size: 15px;
+    padding: 12px;
+    gap: 9px;
+  }
+  .login-redesign .demo-provider small {
+    font-size: 12px;
+  }
+  .login-redesign .demo-option > .auth-icon,
+  .login-redesign .demo-provider > .auth-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .login-redesign .preview-mini-brand {
+    font-size: 30px;
+  }
+  .login-redesign .scene-note {
+    font-size: 13px;
+  }
+  .login-redesign .demo-progress {
+    font-size: 17px;
+    gap: 12px;
+  }
+  .login-redesign .demo-progress li:before {
+    top: 8px;
+  }
+  .login-redesign .demo-responses {
+    font-size: 15px;
+  }
+  .login-redesign .demo-responses span {
+    padding: 12px;
+  }
+  .login-redesign .demo-tagline {
+    font-size: 32px;
+  }
+  .login-redesign .demo-brand-icon {
+    width: 50px;
+    height: 50px;
+  }
+  .login-redesign .preview-badge {
+    font-size: 12px;
+  }
+  .login-redesign .preview-visual-caption {
+    font-size: 13px;
+  }
+  .login-redesign .service-preview figcaption {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+  .login-redesign .preview-controls button {
+    font-size: 13px;
+    min-height: 44px;
+    padding: 9px 14px;
+  }
+  .login-redesign #previewState {
+    font-size: 12px;
+  }
+  .login-redesign .preview-transcript summary {
+    min-height: 44px;
+    font-size: 14px;
+  }
+  .login-redesign .preview-transcript ol {
+    font-size: 15px;
+  }
+  .login-redesign .auth-note-points {
+    gap: 24px;
+    margin-top: 8px;
+  }
+  .login-redesign .auth-note-points > span {
+    font-size: 13px;
+  }
+  .login-redesign .auth-note-points .auth-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .login-redesign .auth-workspace {
+    padding-bottom: 48px;
+  }
+  .login-redesign .auth-page-footer {
+    padding: 42px 24px 18px;
+    min-height: 90px;
+  }
+}
+@media (max-width: 600px) {
+  .login-redesign .auth-container {
+    width: calc(100% - 32px);
+  }
+  .login-redesign .auth-header-inner {
+    min-height: 72px;
+    gap: 15px;
+  }
+  .login-redesign .auth-brand {
+    font-size: 26px;
+  }
+  .login-redesign .auth-brand > span:first-child {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
+  .login-redesign .auth-header-link > span {
+    display: none;
+  }
+  .login-redesign .auth-header-link a {
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 10px;
+  }
+  .login-redesign .auth-header-link .auth-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .login-redesign .auth-workspace {
+    padding-top: 27px;
+  }
+  .login-redesign .auth-page-heading {
+    margin-bottom: 25px;
+  }
+  .login-redesign .auth-eyebrow {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .login-redesign .auth-page-heading h1 {
+    font-size: 39px;
+    letter-spacing: -1.5px;
+    line-height: 1.12;
+    margin-top: 15px;
+  }
+  .login-redesign .auth-page-heading h1 em {
+    display: block;
+    margin-top: 5px;
+  }
+  .login-redesign .auth-page-heading h1:after {
+    right: -8px;
+    top: 46px;
+    font-size: 21px;
+  }
+  .login-redesign .auth-page-heading > p:last-child {
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 315px;
+    margin: 20px auto 0;
+  }
+  .login-redesign .login-roles {
+    gap: 10px;
+    margin-bottom: 23px;
+  }
+  .login-redesign .role-card {
+    min-height: 100px;
+    padding: 14px 9px;
+    border-radius: 15px;
+  }
+  .login-redesign .role-card-top {
+    flex-direction: column;
+    justify-content: center;
+    gap: 9px;
+  }
+  .login-redesign .role-name {
+    font-size: 11px;
+    letter-spacing: 0.7px;
+    line-height: 1.3;
+  }
+  .login-redesign .role-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+  .login-redesign .role-icon .auth-icon {
+    width: 23px;
+    height: 23px;
+  }
+  .login-redesign .role-selected-mark {
+    width: 20px;
+    height: 20px;
+    top: -7px;
+    right: -4px;
+  }
+  .login-redesign .role-selected-mark .auth-icon {
+    width: 13px;
+    height: 13px;
+  }
+  .login-redesign .auth-form-panel {
+    padding: 24px 21px;
+    border-radius: 24px;
+  }
+  .login-redesign .auth-form-heading {
+    margin-bottom: 18px;
+  }
+  .login-redesign .auth-form-heading h2 {
+    font-size: 30px;
+  }
+  .login-redesign .auth-form-heading > p {
+    font-size: 13px;
+    line-height: 1.65;
+    min-height: 65px;
+  }
+  .login-redesign .auth-form-kicker {
+    font-size: 11px;
+  }
+  .login-redesign .form-group input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+  .login-redesign .form-group label {
+    font-size: 13px;
+    gap: 7px;
+  }
+  .login-redesign .forgot-password-link {
+    font-size: 11px;
+  }
+  .login-redesign .password-label-row {
+    gap: 10px;
+  }
+  .login-redesign .auth-form-footer {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .login-redesign .auth-form-note {
+    font-size: 11px;
+    line-height: 1.65;
+    text-align: left;
+  }
+  .login-redesign .password-toggle {
+    width: 42px;
+    height: 42px;
+  }
+  .login-redesign .auth-login-layout {
+    gap: 44px;
+  }
+  .login-redesign .auth-welcome-note {
+    gap: 23px;
+  }
+  .login-redesign .preview-intro h2 {
+    font-size: 32px;
+    letter-spacing: -0.8px;
+  }
+  .login-redesign .preview-intro h2 em {
+    font-size: 31px;
+    display: block;
+    margin-top: 8px;
+  }
+  .login-redesign .preview-intro > p:last-child {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .login-redesign .preview-intro .auth-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.8px;
+  }
+  .login-redesign .preview-canvas {
+    aspect-ratio: 1.35;
+    border-width: 5px;
+    border-radius: 24px;
+  }
+  .login-redesign .preview-scenes {
+    top: 12%;
+    right: 3%;
+    width: 47%;
+    bottom: 14%;
+    padding: 9px;
+    border-radius: 14px;
+  }
+  .login-redesign .workflow-scene {
+    inset: 9px;
+    gap: 7px;
+  }
+  .login-redesign .workflow-scene h3 {
+    font-size: 14px;
+  }
+  .login-redesign .scene-number {
+    font-size: 9px;
+  }
+  .login-redesign .preview-mini-brand {
+    font-size: 21px;
+    margin-bottom: 3px;
+  }
+  .login-redesign .demo-option,
+  .login-redesign .demo-provider {
+    font-size: 10px;
+    padding: 7px 5px;
+    gap: 5px;
+    border-radius: 8px;
+  }
+  .login-redesign .demo-option > .auth-icon,
+  .login-redesign .demo-provider > .auth-icon {
+    width: 17px;
+    height: 17px;
+  }
+  .login-redesign .demo-provider small {
+    font-size: 8px;
+  }
+  .login-redesign .scene-note {
+    font-size: 9px;
+  }
+  .login-redesign .demo-responses {
+    font-size: 9px;
+    gap: 4px;
+  }
+  .login-redesign .demo-responses span {
+    padding: 7px 5px;
+  }
+  .login-redesign .demo-progress {
+    font-size: 12px;
+    gap: 9px;
+    margin: 2px 0;
+  }
+  .login-redesign .demo-progress li:before {
+    top: 5px;
+  }
+  .login-redesign .demo-tagline {
+    font-size: 22px;
+  }
+  .login-redesign .demo-brand-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+  .login-redesign .demo-brand-icon .auth-icon {
+    width: 24px;
+    height: 24px;
+  }
+  .login-redesign .preview-badge {
+    font-size: 9px;
+    top: 9px;
+    left: 8px;
+    padding: 4px 7px;
+  }
+  .login-redesign .preview-visual-caption {
+    font-size: 9px;
+    padding: 8px 5px;
+  }
+  .login-redesign .service-preview figcaption {
+    font-size: 11px;
+  }
+  .login-redesign #previewState {
+    font-size: 11px;
+  }
+  .login-redesign .preview-controls {
+    gap: 8px;
+  }
+  .login-redesign .preview-controls button {
+    font-size: 12px;
+    padding: 8px 11px;
+    min-height: 44px;
+  }
+  .login-redesign .auth-note-points {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .login-redesign .auth-note-points > span {
+    font-size: 12px;
+  }
+  .login-redesign .auth-note-points .auth-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .login-redesign .auth-page-footer {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    text-align: center;
+    font-size: 11px;
+    min-height: 111px;
+    padding-top: 40px;
+  }
+}
+@media (max-width: 350px) {
+  .login-redesign .auth-container {
+    width: calc(100% - 28px);
+  }
+  .login-redesign .auth-brand {
+    font-size: 24px;
+  }
+  .login-redesign .auth-brand > span:first-child {
+    width: 30px;
+    height: 30px;
+  }
+  .login-redesign .auth-header-link a {
+    font-size: 11px;
+    padding: 8px 10px;
+    gap: 5px;
+  }
+  .login-redesign .auth-header-link .auth-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .login-redesign .auth-page-heading h1 {
+    font-size: 34px;
+  }
+  .login-redesign .auth-page-heading h1:after {
+    right: -5px;
+    top: 40px;
+    font-size: 18px;
+  }
+  .login-redesign .role-name {
+    font-size: 10px;
+  }
+  .login-redesign .role-card {
+    padding-inline: 8px;
+  }
+  .login-redesign .auth-form-panel {
+    padding: 23px 17px;
+  }
+  .login-redesign .password-label-row {
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .login-redesign .forgot-password-link {
+    font-size: 10px;
+  }
+  .login-redesign .form-group label {
+    font-size: 12px;
+  }
+  .login-redesign .auth-form-heading > p {
+    font-size: 12px;
+    min-height: 62px;
+  }
+  .login-redesign .preview-intro h2 {
+    font-size: 30px;
+  }
+  .login-redesign .preview-intro h2 em {
+    font-size: 28px;
+  }
+  .login-redesign .preview-canvas {
+    aspect-ratio: 1.15;
+  }
+  .login-redesign .preview-scenes {
+    width: 47%;
+    top: 13%;
+    bottom: 13%;
+  }
+  .login-redesign .workflow-scene h3 {
+    font-size: 12px;
+  }
+  .login-redesign .demo-tagline {
+    font-size: 20px;
+  }
+  .login-redesign .demo-option,
+  .login-redesign .demo-provider {
+    font-size: 9px;
+  }
+  .login-redesign .demo-provider small {
+    font-size: 7px;
+  }
+  .login-redesign .scene-note {
+    font-size: 8px;
+  }
+  .login-redesign .preview-badge {
+    font-size: 8px;
+  }
+  .login-redesign .scene-number {
+    font-size: 8px;
+  }
+  .login-redesign .preview-visual-caption {
+    font-size: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-redesign *,
+  .login-redesign *:before,
+  .login-redesign *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .login-redesign .role-card:not(:disabled):hover {
+    transform: none;
+  }
+  .login-redesign .role-card-action .auth-icon,
+  .login-redesign .auth-header-link a .auth-icon {
+    translate: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .login-redesign .role-card,
+  .login-redesign .role-card-action,
+  .login-redesign .auth-form-panel,
+  .login-redesign .preview-controls button {
+    border: 1px solid CanvasText;
+  }
+  .login-redesign .role-selected-mark {
+    forced-color-adjust: none;
+  }
+  .login-redesign:before,
+  .login-redesign:after {
+    display: none;
+  }
+}
+
+/* Explicitly reset the shared compact Admin layout on this login page only. */
+.login-redesign .login-roles .role-admin {
+  grid-column: auto;
+  display: flex;
+}
+.login-redesign .role-card-top {
+  display: flex;
+}
+.login-redesign .auth-eyebrow {
+  font-size: 13px !important;
+}
+.login-redesign .workflow-scene[data-scene="0"] {
+  gap: 6px;
+}
+.login-redesign .workflow-scene[data-scene="0"] .scene-note,
+.login-redesign .workflow-scene[data-scene="5"] h3 {
+  display: none;
+}
+@media (max-width: 600px) {
+  .login-redesign .auth-eyebrow {
+    font-size: 10px !important;
+  }
+  .login-redesign .preview-intro .auth-eyebrow {
+    font-size: 10px !important;
+  }
+}
+/* Keep the storyboard within its fixed canvas at intermediate widths. */
+@media (min-width: 601px) and (max-width: 850px) {
+  .login-redesign .workflow-scene {
+    gap: 10px;
+  }
+  .login-redesign .workflow-scene[data-scene="0"] .demo-option {
+    padding-block: 9px;
+  }
+}
+@media (max-width: 600px) {
+  .login-redesign .workflow-scene[data-scene="0"] .preview-mini-brand {
+    display: none;
+  }
+}
+@media (max-width: 350px) {
+  .login-redesign .workflow-scene[data-scene="4"] > .scene-note:last-child {
+    display: none;
+  }
+}
