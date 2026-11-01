@@ -1,0 +1,7 @@
+PASS reference layout, disclosures, category and navigation keyboard checks: 1536px
+PASS reference layout, disclosures, category and navigation keyboard checks: 1440px
+PASS reference layout, disclosures, category and navigation keyboard checks: 1024px
+PASS reference layout, disclosures, category and navigation keyboard checks: 768px
+PASS reference layout, disclosures, category and navigation keyboard checks: 390px
+PASS reference layout, disclosures, category and navigation keyboard checks: 320px
+PASS: all 16 idea/category/CTA registration links, no public Provider directory, no role bypass, no external requests or browser errors. Screenshots are actual Chromium renders.

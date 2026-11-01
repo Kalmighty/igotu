@@ -78,7 +78,6 @@
     explorer.classList.add("is-ready");
   }
 
-
   const criteria = {
     skills: {
       title: "The right skills for your request.",
@@ -120,23 +119,45 @@
     .querySelector(".matching-explainer")
     .classList.add("explainer-ready");
 
-  if ("IntersectionObserver" in window) {
-    const links = [...document.querySelectorAll(".nav-links a")];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          links.forEach((link) => {
-            if (link.hash === `#${entry.target.id}`)
-              link.setAttribute("aria-current", "location");
-            else link.removeAttribute("aria-current");
-          });
-        }
-      },
-      { rootMargin: "-15% 0px -55% 0px", threshold: 0 },
+  // Pick the last navigation section above the sticky header. Several sections
+  // can be visible at once on this compact homepage; observer entry order is
+  // not evidence of which navigation item should be current.
+  const links = [...document.querySelectorAll(".nav-links a")];
+  const sections = links
+    .map((link) => document.querySelector(link.hash))
+    .sort((a, b) =>
+      a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
     );
-    document
-      .querySelectorAll(".section-anchor")
-      .forEach((section) => observer.observe(section));
+  let scheduled = false;
+  function updateCurrentSection() {
+    const boundary = header.getBoundingClientRect().height + 80;
+    let current = sections[0];
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= boundary) current = section;
+    }
+    // On a short desktop page, a clicked section cannot always reach the top.
+    // Keep its link current while the explicitly selected section is visible.
+    const selected = sections.find(
+      (section) => `#${section.id}` === location.hash,
+    );
+    if (selected) {
+      const rect = selected.getBoundingClientRect();
+      if (rect.top < innerHeight && rect.bottom > boundary) current = selected;
+    }
+    links.forEach((link) => {
+      if (link.hash === `#${current.id}`)
+        link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+    scheduled = false;
   }
+  function scheduleCurrentSection() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(updateCurrentSection);
+  }
+  window.addEventListener("scroll", scheduleCurrentSection, { passive: true });
+  window.addEventListener("resize", scheduleCurrentSection);
+  window.addEventListener("hashchange", scheduleCurrentSection);
+  updateCurrentSection();
 })();

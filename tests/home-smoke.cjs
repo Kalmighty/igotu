@@ -31,7 +31,7 @@ const screenshots = process.env.UI_SCREENSHOTS;
       return route.continue();
     });
     if (screenshots) fs.mkdirSync(screenshots, { recursive: true });
-    for (const width of [1440, 1024, 768, 390, 320]) {
+    for (const width of [1536, 1440, 1024, 768, 390, 320]) {
       await page.setViewportSize({ width, height: width > 650 ? 1000 : 844 });
       await page.goto(`${base}/index.html`);
       assert.equal(await page.title(), "IGotU — Need a service? We got you.");
@@ -52,46 +52,34 @@ const screenshots = process.env.UI_SCREENSHOTS;
           elements
             .filter((e) => {
               const r = e.getBoundingClientRect();
-              return r.width && (r.left < -1 || r.right > innerWidth + 1);
+              return (
+                e.checkVisibility() &&
+                r.width &&
+                (r.left < -1 || r.right > innerWidth + 1)
+              );
             })
             .map((e) => e.className || e.tagName),
         );
       assert.deepEqual(clipped, [], `Clipped content at ${width}`);
-      // The supporting Provider card must not cover meaningful parts of the primary card.
-      const overlap = await page.evaluate(() => {
-        const a = document
-          .querySelector(".preview-provider")
-          .getBoundingClientRect();
-        const b = document
-          .querySelector(".preview-alternative")
-          .getBoundingClientRect();
-        return (
-          Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) *
-          Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top))
-        );
-      });
+      // The new photographic hero replaces the old illustrated request cards.
+      assert.equal(await page.locator(".floating-service").count(), 3);
+      assert.equal(await page.locator(".idea-card").count(), 5);
+      assert.equal(await page.locator(".sample-card").count(), 3);
+      assert.equal(await page.locator(".steps > li").count(), 4);
+      assert.equal(await page.locator(".hero-example-note").isVisible(), true);
       assert.ok(
-        overlap < 250,
-        `Provider illustration cards overlap at ${width}`,
+        (await page.locator(".sample-matches").innerText()).includes(
+          "Illustrative recommendations only.",
+        ),
       );
-      if (width <= 850) {
-        const clear = await page.evaluate(() => {
-          const request = document
-            .querySelector(".preview-request")
-            .getBoundingClientRect();
-          const provider = document
-            .querySelector(".preview-provider")
-            .getBoundingClientRect();
-          return (
-            request.right <= provider.left || request.bottom <= provider.top
-          );
-        });
-        assert.equal(
-          clear,
-          true,
-          `Illustrative request text is obscured at ${width}`,
-        );
-      }
+      assert.equal(
+        await page
+          .locator("img")
+          .evaluateAll((imgs) =>
+            imgs.every((i) => i.complete && i.naturalWidth > 0),
+          ),
+        true,
+      );
       if (screenshots && [1440, 390].includes(width)) {
         const name = width === 1440 ? "desktop" : "mobile";
         await page.screenshot({
@@ -154,6 +142,7 @@ const screenshots = process.env.UI_SCREENSHOTS;
         );
       }
       // Category explorer is an on-page discovery aid, not a Provider search.
+      await page.locator(".explorer-disclosure summary").click();
       const categoryPicker = page.locator("#service-explorer-category");
       const exploreButton = page.locator("#service-explorer-go");
       assert.equal(await exploreButton.isDisabled(), true);
@@ -168,6 +157,7 @@ const screenshots = process.env.UI_SCREENSHOTS;
         true,
         "Category shortcut must focus the requested service tile",
       );
+      await page.locator(".criteria-disclosure summary").click();
       for (const criterion of ["availability", "distance", "skills"]) {
         const button = page.locator(`[data-criterion="${criterion}"]`);
         await button.focus();
@@ -300,7 +290,7 @@ const screenshots = process.env.UI_SCREENSHOTS;
     );
     assert.equal(await fallback.locator("h1").isVisible(), true);
     console.log(
-      "PASS: homepage at 1440/1024/768/390/320px; no overflow or clipped content; axe WCAG A/AA checks; mobile menu, Escape, anchor and resize focus; keyboard criteria/skip link; valid categories and Login/Register destinations; reduced motion and no-JS fallback; no external requests or browser errors.",
+      "PASS: homepage at 1536/1440/1024/768/390/320px; no overflow or clipped content; axe WCAG A/AA checks; mobile menu, Escape, anchor and resize focus; keyboard criteria/skip link; valid categories and Login/Register destinations; reduced motion and no-JS fallback; no external requests or browser errors.",
     );
   } finally {
     await browser.close();
