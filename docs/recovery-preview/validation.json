@@ -1,0 +1,115 @@
+{
+  "review_date": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "branch": "feat/password-recovery-experience",
+  "reviewed_base": "89a5c6176f81c61927e6d99968a7841e24c8cde5",
+  "draft_pr_base": "feat/registration-experience",
+  "reference_comparison": "PENDING: no Forgot Password reference image available; implemented from detailed text brief and reviewed authentication styles",
+  "testing": "Local Chromium and synthetic fixture SDK only; all external requests blocked",
+  "checks": {
+    "recovery_preview": {
+      "status": "PASS",
+      "assertions": 228,
+      "viewport_widths": [
+        1536,
+        1440,
+        1366,
+        1024,
+        768,
+        390,
+        320
+      ],
+      "pages": [
+        "forgot-password",
+        "reset-password"
+      ],
+      "axe_wcag_a_aa_scans": 14,
+      "axe_violations": 0,
+      "external_requests": 0,
+      "page_errors": 0,
+      "coverage": [
+        "native empty/email/minlength validation",
+        "same-origin resetPasswordForEmail destination",
+        "enumeration-safe success and no delivery assertion",
+        "pending states and duplicate-submit prevention",
+        "request error/transport failure and explicit retry",
+        "current session rechecked on update retry",
+        "missing/session-error/session-transport failure blocks updateUser",
+        "six-character minimum and mismatch",
+        "keyboard password visibility and masking",
+        "update errors preserve input",
+        "update success and local sign-out",
+        "signOut error/throw fallback and cleanup failure blocks redirect",
+        "account/session cleanup before Login",
+        "original handler works without optional presentation script",
+        "visible no-JS form",
+        "finite entrances and reduced motion"
+      ]
+    },
+    "auth_smoke": {
+      "status": "PASS",
+      "role_match_outcomes": 9,
+      "widths": [
+        1440,
+        768,
+        390,
+        320
+      ]
+    },
+    "mandatory_verification": {
+      "status": "PASS",
+      "direct_workspace_routes_gated": 16
+    },
+    "ui_layout": {
+      "status": "PASS",
+      "page_viewport_combinations": 84
+    },
+    "functional": {
+      "status": "PASS",
+      "passed": 94,
+      "failed": 0
+    },
+    "static": {
+      "status": "PASS",
+      "checks": [
+        "presentation and test JavaScript syntax",
+        "SVG XML parsing",
+        "unique HTML IDs and original form IDs",
+        "original field types/required/minlength preserved",
+        "Git whitespace",
+        "credential-pattern scan",
+        "all other previously tracked files unchanged"
+      ]
+    }
+  },
+  "fixture_correction": "Initial fixture setup recreated a synthetic session marker on Login; restricted seeding to recovery pages and reran. Application cleanup logic and assertions unchanged.",
+  "not_verified": [
+    "Live recovery email requests/delivery",
+    "Real recovery tokens and expiry",
+    "Live Supabase session/update/cleanup",
+    "Database/RLS authorization",
+    "Full manual screen-reader audit",
+    "Safari/Firefox",
+    "Physical devices",
+    "Exact missing reference image comparison"
+  ],
+  "unchanged": [
+    "password-recovery.js",
+    "auth.js",
+    "auth-roles.js",
+    "session/identity/workspace guards",
+    "Supabase settings/configuration",
+    "shared styles",
+    "homepage/login/registration/dashboard files",
+    "database/RLS/Storage/SQL",
+    "matching and service workflows"
+  ],
+  "no_actions": [
+    "No live Supabase project access",
+    "No real accounts or data",
+    "No SQL execution",
+    "No configuration changes",
+    "No deployment",
+    "No merge"
+  ]
+}

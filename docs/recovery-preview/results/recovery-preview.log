@@ -1,0 +1,15 @@
+PASS responsive/axe forgot-password 1536
+PASS responsive/axe reset-password 1536
+PASS responsive/axe forgot-password 1440
+PASS responsive/axe reset-password 1440
+PASS responsive/axe forgot-password 1366
+PASS responsive/axe reset-password 1366
+PASS responsive/axe forgot-password 1024
+PASS responsive/axe reset-password 1024
+PASS responsive/axe forgot-password 768
+PASS responsive/axe reset-password 768
+PASS responsive/axe forgot-password 390
+PASS responsive/axe reset-password 390
+PASS responsive/axe forgot-password 320
+PASS responsive/axe reset-password 320
+PASS 228 recovery assertions; 14 viewport axe scans; zero external requests/page errors

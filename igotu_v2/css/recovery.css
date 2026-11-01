@@ -1,0 +1,678 @@
+/* Scoped recovery-page presentation; shared authentication and guards are unchanged. */
+.recovery-experience {
+  --recovery-green: #00563a;
+  --recovery-ink: #0b3026;
+  --recovery-muted: #465c50;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--recovery-ink);
+  background: #fcfcfa url("../assets/login/login-leaves.svg") center 68px/100%
+    650px no-repeat;
+  min-height: 100vh;
+}
+.recovery-experience [hidden] {
+  display: none !important;
+}
+.recovery-experience .recovery-container {
+  width: min(1240px, calc(100% - 96px));
+  margin-inline: auto;
+}
+.recovery-experience .recovery-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+.recovery-experience .recovery-icon-library {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.recovery-experience :is(a, button, input, [tabindex]):focus-visible {
+  outline: 3px solid #287e4b;
+  outline-offset: 4px;
+}
+.recovery-experience .recovery-skip {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  z-index: 20;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--recovery-green);
+  transform: translateY(-200%);
+}
+.recovery-experience .recovery-skip:focus {
+  transform: none;
+}
+.recovery-experience .recovery-header {
+  border-bottom: 1px solid #dce6d9;
+  background: #fffffff0;
+}
+.recovery-experience .recovery-header-inner {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.recovery-experience .recovery-brand {
+  display: inline-flex;
+  align-items: center;
+  color: var(--recovery-green);
+  text-decoration: none;
+  font-size: 31px;
+  font-weight: 800;
+  letter-spacing: -1.4px;
+  min-height: 44px;
+}
+.recovery-experience .recovery-brand > span:first-child {
+  display: grid;
+  place-items: center;
+  background: var(--recovery-green);
+  color: white;
+  width: 37px;
+  height: 37px;
+  border-radius: 9px;
+  margin-right: 10px;
+}
+.recovery-experience .recovery-brand .recovery-icon {
+  width: 26px;
+  height: 26px;
+}
+.recovery-experience .recovery-brand-dot {
+  color: #35935b;
+}
+.recovery-experience .recovery-member {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  color: var(--recovery-muted);
+}
+.recovery-experience .recovery-member a {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #126b46;
+  border-radius: 24px;
+  min-height: 44px;
+  padding: 9px 20px;
+  color: var(--recovery-green);
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color 220ms,
+    box-shadow 220ms;
+}
+.recovery-experience .recovery-member a:hover {
+  background: #eef5e7;
+  box-shadow: 0 3px 12px #0b513312;
+}
+.recovery-experience a .recovery-icon {
+  transition: transform 220ms;
+}
+.recovery-experience a:hover .recovery-icon {
+  transform: translateX(3px);
+}
+.recovery-experience .recovery-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-areas: "heading form" "support form" "art form";
+  column-gap: 64px;
+  row-gap: 28px;
+  align-items: start;
+  padding: 60px 0 52px;
+}
+.recovery-experience .recovery-heading {
+  grid-area: heading;
+  min-width: 0;
+}
+.recovery-experience .recovery-eyebrow {
+  color: #006039;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+}
+.recovery-experience .recovery-heading h1 {
+  color: var(--recovery-ink);
+  font-size: clamp(36px, 3.4vw, 50px);
+  line-height: 1.12;
+  letter-spacing: -1.9px;
+  margin: 0 0 21px;
+  font-weight: 800;
+}
+.recovery-experience .recovery-heading h1 em {
+  display: inline;
+  color: #087040;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: -1.5px;
+}
+.recovery-experience .recovery-intro {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--recovery-muted);
+  max-width: 490px;
+  margin: 0;
+}
+.recovery-experience .recovery-support {
+  grid-area: support;
+}
+.recovery-experience .recovery-support ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 19px;
+}
+.recovery-experience .recovery-support li {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+.recovery-experience .recovery-support li > .recovery-icon {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border-radius: 13px;
+  background: #e8f1de;
+  color: #146d42;
+}
+.recovery-experience .recovery-support h2 {
+  font-size: 16px;
+  line-height: 1.4;
+  margin: 0 0 4px;
+  color: #194a34;
+}
+.recovery-experience .recovery-support p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--recovery-muted);
+  margin: 0;
+  max-width: 440px;
+}
+.recovery-experience .recovery-art {
+  grid-area: art;
+  margin: 0;
+  width: 100%;
+  max-width: 520px;
+}
+.recovery-experience .recovery-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 560/310;
+}
+.recovery-experience .recovery-art figcaption {
+  text-align: center;
+  color: #51654d;
+  font-size: 12px;
+  margin-top: 2px;
+}
+.recovery-experience .recovery-form-card {
+  grid-area: form;
+  min-width: 0;
+  background: white;
+  border: 1px solid #dce6df;
+  box-shadow: 0 12px 35px #163f2c0b;
+  border-radius: 26px;
+  padding: 35px;
+  margin-top: 30px;
+}
+.recovery-experience .recovery-form-kicker {
+  display: block;
+  color: #006039;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.recovery-experience .recovery-form-card h2 {
+  color: var(--recovery-ink);
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 0 0 13px;
+  letter-spacing: -1px;
+}
+.recovery-experience .recovery-form-description {
+  color: var(--recovery-muted);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 28px;
+}
+.recovery-experience .form-group {
+  margin-bottom: 21px;
+}
+.recovery-experience .form-group label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #163f2c;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 9px;
+}
+.recovery-experience .form-group label .recovery-icon {
+  width: 19px;
+  height: 19px;
+  color: #086b40;
+}
+.recovery-experience .form-group input {
+  border: 1px solid #c8d8cd;
+  border-radius: 13px;
+  color: #173d2c;
+  font-size: 16px;
+  min-height: 51px;
+  padding: 13px 15px;
+  line-height: 1.4;
+  transition:
+    border-color 220ms,
+    box-shadow 220ms;
+}
+.recovery-experience .form-group input:focus {
+  border-color: #448258;
+  box-shadow: 0 0 0 3px #a8cf882e;
+}
+.recovery-experience .form-group input[aria-invalid="true"] {
+  border-color: #aa4c30;
+}
+.recovery-experience .recovery-password {
+  position: relative;
+}
+.recovery-experience .recovery-password input {
+  padding-right: 56px;
+}
+.recovery-experience .recovery-password button {
+  position: absolute;
+  right: 4px;
+  top: 3px;
+  width: 45px;
+  height: 45px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #4c6d57;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background-color 220ms,
+    color 220ms;
+}
+.recovery-experience .recovery-password button:hover {
+  background: #edf4e8;
+  color: #00563a;
+}
+.recovery-experience .recovery-password button[aria-pressed="true"] {
+  color: #00563a;
+  background: #e8f1e0;
+}
+.recovery-experience .recovery-password-hint {
+  color: #4a614a;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: -7px 0 23px;
+}
+.recovery-experience .recovery-field-error {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #8a381f;
+  margin-top: 6px;
+}
+.recovery-experience .recovery-field-error:empty {
+  display: none;
+}
+.recovery-experience .full-btn {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 13px;
+  background: var(--recovery-green);
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid var(--recovery-green);
+  padding: 13px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px #184c2510;
+  transition:
+    background-color 220ms,
+    box-shadow 220ms,
+    transform 220ms;
+}
+.recovery-experience .full-btn:hover:enabled {
+  background: #06462f;
+  box-shadow: 0 6px 16px #16482b20;
+  transform: translateY(-2px);
+}
+.recovery-experience .full-btn:active:enabled {
+  transform: translateY(0);
+}
+.recovery-experience .full-btn:disabled {
+  cursor: default;
+  background: #496d57;
+  border-color: #496d57;
+  box-shadow: none;
+}
+.recovery-experience form[aria-busy="true"] .full-btn::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff70;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: recovery-spin 700ms linear infinite;
+}
+.recovery-experience .message-box {
+  font-size: 14px;
+  line-height: 1.65;
+  padding: 14px 16px;
+  border-radius: 13px;
+  border: 1px solid #dfbfae;
+  background: #fff4eb;
+  color: #78371f;
+  margin: 0 0 24px;
+  overflow-wrap: anywhere;
+  animation: recovery-message 200ms ease-out;
+}
+.recovery-experience .message-box.success {
+  border-color: #bed5b3;
+  background: #edf5e7;
+  color: #1e5132;
+}
+.recovery-experience .message-box::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  font-weight: 700;
+  border: 1px solid currentColor;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  margin-right: 8px;
+  font-size: 12px;
+}
+.recovery-experience .message-box.success::before {
+  content: "✓";
+}
+.recovery-experience .recovery-guidance {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 25px 0 18px;
+  padding: 17px;
+  border: 1px solid #dce8d4;
+  border-radius: 15px;
+  background: #f1f6eb;
+}
+.recovery-experience .recovery-guidance > .recovery-icon {
+  color: #277148;
+  width: 21px;
+  height: 21px;
+  margin-top: 1px;
+}
+.recovery-experience .recovery-guidance h3 {
+  font-size: 14px;
+  margin: 0 0 6px;
+  line-height: 1.5;
+  color: #194e32;
+}
+.recovery-experience .recovery-guidance p {
+  font-size: 13px;
+  line-height: 1.7;
+  margin: 0;
+  color: #435d46;
+}
+.recovery-experience .recovery-back {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  color: #00563a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+}
+.recovery-experience .recovery-back span {
+  transition: transform 220ms;
+}
+.recovery-experience .recovery-back:hover {
+  text-decoration: underline;
+}
+.recovery-experience .recovery-back:hover span {
+  transform: translateX(-3px);
+}
+.recovery-experience .recovery-footer {
+  position: relative;
+  background: #146a47;
+  color: white;
+  margin-top: 26px;
+}
+.recovery-experience .recovery-footer::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: -22px;
+  height: 35px;
+  width: 100%;
+  background: #cfe2c2;
+  border-radius: 50% 65% 0 0/100% 100% 0 0;
+}
+.recovery-experience .recovery-footer > div {
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 12px;
+}
+.recovery-experience .recovery-footer a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  color: white;
+  text-decoration: none;
+}
+.recovery-experience .recovery-footer a:hover {
+  text-decoration: underline;
+}
+.recovery-experience .recovery-enter {
+  animation: recovery-enter 420ms cubic-bezier(0.2, 0.65, 0.3, 1)
+    var(--recovery-delay, 0ms) both;
+}
+@keyframes recovery-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes recovery-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes recovery-message {
+  from {
+    opacity: 0.4;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 1150px) {
+  .recovery-experience .recovery-main {
+    column-gap: 35px;
+    padding-top: 45px;
+  }
+  .recovery-experience .recovery-heading h1 {
+    font-size: 39px;
+  }
+  .recovery-experience .recovery-form-card {
+    padding: 28px;
+    margin-top: 18px;
+  }
+}
+@media (max-width: 850px) {
+  .recovery-experience .recovery-container {
+    width: min(660px, calc(100% - 64px));
+  }
+  .recovery-experience .recovery-main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "heading" "form" "support" "art";
+    gap: 29px;
+    padding: 35px 0 45px;
+  }
+  .recovery-experience .recovery-heading {
+    text-align: center;
+  }
+  .recovery-experience .recovery-heading h1 {
+    font-size: 44px;
+  }
+  .recovery-experience .recovery-intro {
+    margin-inline: auto;
+  }
+  .recovery-experience .recovery-form-card {
+    margin-top: 0;
+    padding: 32px;
+  }
+  .recovery-experience .recovery-support {
+    padding: 7px 8px 0;
+  }
+  .recovery-experience .recovery-art {
+    margin-inline: auto;
+    max-width: 480px;
+  }
+  .recovery-experience .recovery-member > span {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .recovery-experience .recovery-container {
+    width: calc(100% - 32px);
+  }
+  .recovery-experience .recovery-header-inner {
+    gap: 12px;
+  }
+  .recovery-experience .recovery-brand {
+    font-size: 27px;
+  }
+  .recovery-experience .recovery-brand > span:first-child {
+    width: 33px;
+    height: 33px;
+    margin-right: 8px;
+  }
+  .recovery-experience .recovery-member a {
+    padding: 9px 15px;
+    gap: 12px;
+    font-size: 14px;
+  }
+  .recovery-experience .recovery-main {
+    padding-top: 29px;
+    gap: 25px;
+  }
+  .recovery-experience .recovery-eyebrow {
+    font-size: 11px;
+    margin-bottom: 13px;
+  }
+  .recovery-experience .recovery-heading h1 {
+    font-size: 35px;
+    letter-spacing: -1.3px;
+    line-height: 1.13;
+    margin-bottom: 16px;
+  }
+  .recovery-experience .recovery-heading h1 em {
+    letter-spacing: -0.9px;
+  }
+  .recovery-experience .recovery-intro {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .recovery-experience .recovery-form-card {
+    padding: 25px 21px;
+    border-radius: 23px;
+  }
+  .recovery-experience .recovery-form-card h2 {
+    font-size: 29px;
+  }
+  .recovery-experience .recovery-form-kicker {
+    font-size: 11px;
+  }
+  .recovery-experience .recovery-form-description {
+    font-size: 14px;
+    margin-bottom: 23px;
+  }
+  .recovery-experience .recovery-support h2 {
+    font-size: 16px;
+  }
+  .recovery-experience .recovery-support p {
+    font-size: 14px;
+  }
+  .recovery-experience .recovery-support li {
+    gap: 12px;
+  }
+  .recovery-experience .recovery-guidance {
+    padding: 14px;
+    gap: 10px;
+  }
+  .recovery-experience .recovery-footer > div {
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    padding-top: 17px;
+    padding-bottom: 10px;
+    text-align: center;
+  }
+}
+@media (max-width: 350px) {
+  .recovery-experience .recovery-heading h1 {
+    font-size: 31px;
+  }
+  .recovery-experience .recovery-form-card {
+    padding: 24px 18px;
+  }
+  .recovery-experience .recovery-form-card h2 {
+    font-size: 26px;
+  }
+  .recovery-experience .recovery-guidance {
+    gap: 8px;
+    padding: 13px 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .recovery-experience *,
+  .recovery-experience *::before {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .recovery-experience :is(a, button):hover,
+  .recovery-experience a:hover .recovery-icon,
+  .recovery-experience .recovery-back:hover span {
+    transform: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .recovery-experience :is(.recovery-form-card, .recovery-guidance, .full-btn) {
+    border: 1px solid ButtonText;
+  }
+}
