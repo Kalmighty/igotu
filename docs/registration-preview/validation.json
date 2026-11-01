@@ -1,0 +1,91 @@
+{
+  "date_utc": "2026-11-01",
+  "branch": "feat/registration-experience",
+  "reviewed_base": "4f972492c8950a503542287d754aac0c75ecdf35",
+  "scope": "Registration-only UI; synthetic local browser fixtures; external requests blocked",
+  "reference_image_comparison": "PENDING: registration reference image not attached/accessibly supplied; written request and reviewed homepage/login styles used",
+  "checks": {
+    "registration_preview": {
+      "status": "PASS",
+      "assertions": 142,
+      "viewport_widths": [
+        1536,
+        1440,
+        1366,
+        1024,
+        768,
+        390,
+        320
+      ],
+      "axe_wcag_a_aa_scans": 7,
+      "axe_violations": 0,
+      "external_requests": 0,
+      "page_errors": 0
+    },
+    "auth_smoke": {
+      "status": "PASS",
+      "role_match_outcomes": 9,
+      "widths": [
+        1440,
+        768,
+        390,
+        320
+      ],
+      "includes": "Role selection, native sync, validation, signup restrictions, cleanup, account state, Admin rejection, no-JS"
+    },
+    "mandatory_verification": {
+      "status": "PASS",
+      "direct_routes_gated": 16,
+      "includes": "Verification states, email confirmation, approval-first routing, onboarding and inactive users"
+    },
+    "ui_layout": {
+      "status": "PASS",
+      "page_viewport_combinations": 84,
+      "includes": "Mobile navigation, keyboard focus, search, empty/error states"
+    },
+    "functional": {
+      "status": "PASS",
+      "passed": 94,
+      "failed": 0
+    },
+    "static": {
+      "status": "PASS",
+      "checks": [
+        "JavaScript syntax",
+        "Git whitespace",
+        "unique HTML IDs and single original form",
+        "SVG XML parsing",
+        "original form types/required/autocomplete/role values preserved",
+        "all previously tracked files except register.html byte-identical to base"
+      ]
+    }
+  },
+  "artwork": "Original project-local vector; existing logo/background reused; no live records or new external dependencies",
+  "unchanged_security": [
+    "Auth API and signup handler",
+    "session management",
+    "Client/Provider allowlist",
+    "six-character minimum",
+    "email confirmation behavior",
+    "mandatory identity verification and approval",
+    "workspace guards",
+    "Supabase configuration",
+    "SQL/RLS/Storage",
+    "matching and service workflow"
+  ],
+  "not_tested": [
+    "Live Supabase signup and database authorization",
+    "Real email delivery or sessions",
+    "Full manual screen-reader audit",
+    "Safari/Firefox",
+    "Physical devices",
+    "Exact unavailable registration reference image comparison"
+  ],
+  "no_actions": [
+    "No Supabase project access",
+    "No real signup/accounts/data",
+    "No SQL execution",
+    "No deployment",
+    "No merge"
+  ]
+}
