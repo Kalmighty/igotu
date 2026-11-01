@@ -10,6 +10,20 @@
     <meta name="theme-color" content="#0c4b36" />
     <title>IGotU — Need a service? We got you.</title>
     <link rel="icon" href="assets/igotu-mark.svg" type="image/svg+xml" />
+    <script>
+      // Set the mobile disclosure state before first paint. A missing/failed
+      // homepage script restores the in-flow navigation instead of hiding it.
+      (() => {
+        const recoverNavigation = () => {
+          if (!document.querySelector(".site-header.nav-ready")) {
+            document.documentElement.classList.remove("nav-pending");
+          }
+        };
+        window.addEventListener("load", recoverNavigation, { once: true });
+        window.setTimeout(recoverNavigation, 2500);
+        document.documentElement.classList.add("nav-pending");
+      })();
+    </script>
     <link rel="stylesheet" href="css/home.css" />
     <script src="js/home.js" defer></script>
   </head>

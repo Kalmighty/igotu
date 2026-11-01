@@ -1,5 +1,5 @@
 {
-  "scope": "OFFLINE_PUBLIC_HOMEPAGE_REVIEW_ONLY",
+  "scope": "OFFLINE_PUBLIC_HOMEPAGE_SPACING_AND_MOTION_REVIEW",
   "baseBranch": "igotu-homepage-service-explorer-20261028",
   "baseCommit": "1f1ebd6dec054c4046e700f2c208c91ae72bc9f6",
   "branch": "feat/homepage-reference-redesign",
@@ -18,7 +18,13 @@
     "homepageReferenceContract": "PASS",
     "functional": {
       "passed": 94,
-      "failed": 0
+      "failed": 0,
+      "initialAttempt": {
+        "passed": 93,
+        "failed": 1,
+        "case": "client messaging uses participant-scoped threads and escapes message text",
+        "observation": "Assertion observed Loading messages; targeted rerun passed, full rerun passed; no messaging code or functional test was changed"
+      }
     },
     "workspaceLayouts": {
       "passed": 84,
@@ -36,7 +42,16 @@
     "reducedMotion": "PASS",
     "nodeSyntax": "PASS",
     "gitDiffWhitespace": "PASS",
-    "unchangedExistingFiles": 279
+    "unchangedExistingFiles": 279,
+    "homepageMotion": "PASS at all six widths, including delayed-script startup, pointer/touch, preference changes and graceful fallbacks",
+    "layoutShift": {
+      "method": "Chromium Layout Instability API, scripted browsing, excludes recent input per CLS definition",
+      "allSixWidths": 0,
+      "delayedHomeScriptMs": 500
+    },
+    "unchangedApplicationFilesFromPreviousPR12": 108,
+    "video": "Actual Chromium CDP screencast encoded with local ffmpeg; see homepage-motion.mp4",
+    "credentialPatternAndScopeCheck": "PASS"
   },
   "assets": [
     {
@@ -72,26 +87,45 @@
   ],
   "assetBytesTotal": 181482,
   "notPerformed": [
-    "Live Supabase/Auth/RLS integration",
-    "Real accounts or data writes",
+    "Live Supabase/Auth/RLS integration or data writes",
     "Full manual screen-reader audit",
     "Safari/Firefox or physical-device testing",
+    "Physical lower-powered-device performance profiling",
     "Deployment or merge"
   ],
   "visualComparison": {
-    "primaryReference": "User-attached 1536x1024 homepage image",
-    "actualDesktopCapture": "1536x1143 full page; 1536x1024 viewport also included",
-    "method": "Manual side-by-side inspection of actual Chromium screenshots and user reference; no pixel-perfect score claimed",
-    "intentionalDifferences": [
-      "Original generated campus/service imagery rather than copying reference photographs",
-      "Illustrative Provider avatars and descriptive labels; no fabricated names, ratings, verification, distances or availability",
-      "Truthful registration guidance and expandable preserved category/matching controls add vertical space",
-      "Accurate confirmation/decline and offline-payment workflow text",
-      "Compact role-choice footer preserved"
+    "request": "Preserve existing design while increasing breathing room and adding restrained motion; no minimum page-height target",
+    "beforeCommit": "f7069cd84eba49b6fa0a931f660171c184e54b1f",
+    "before": "before/homepage-1536.png and before/homepage-390.png",
+    "after": "screenshots/homepage-1536.png and screenshots/homepage-390.png",
+    "measurements": "spacing-comparison.json",
+    "desktopFullPage": "1536x3538",
+    "changes": [
+      "1328px content maximum width; approximately 100px between major desktop sections",
+      "66px hero heading, approximately 40px section headings, 16px service descriptions",
+      "172px service photos, 24px card gaps and larger interactive targets",
+      "124px category tiles; larger avatars, recommendation and process cards",
+      "Full-width recommendation/process grids; stacked mobile cards",
+      "Original six images, green/white identity, labels and workflow retained"
     ]
   },
   "liveBackendTested": false,
   "databaseOrStorageAccessed": false,
   "deploymentPerformed": false,
-  "existingPullRequestsModified": false
+  "existingPullRequestsModified": false,
+  "refinementBaseCommit": "f7069cd84eba49b6fa0a931f660171c184e54b1f",
+  "motion": {
+    "hoverMs": 220,
+    "entranceMs": 450,
+    "staggerMs": 70,
+    "maxDelayMs": 210,
+    "entranceTranslationPx": 14,
+    "serviceHoverLiftPx": 5,
+    "imageHoverScale": 1.035,
+    "continuousAnimations": false,
+    "externalDependencies": false,
+    "reducedMotion": "CSS disables animation/transition and smooth scrolling; JS disconnects reveal observer; focus clears reveal effects",
+    "failureHandling": "Offscreen content is never hidden; finite effects end visibly; no-JS/blocked-script/missing-observer fallbacks tested",
+    "mobileNavigation": "Overlay with immediate inert closure; pre-paint disclosure setup; script failure recovers fallback navigation on load or after 2.5 seconds"
+  }
 }

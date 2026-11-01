@@ -1,0 +1,2 @@
+PASS client messaging uses participant-scoped threads and escapes message text
+{"passed":1,"failed":0}

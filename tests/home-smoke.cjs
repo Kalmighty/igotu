@@ -34,6 +34,15 @@ const screenshots = process.env.UI_SCREENSHOTS;
     for (const width of [1536, 1440, 1024, 768, 390, 320]) {
       await page.setViewportSize({ width, height: width > 650 ? 1000 : 844 });
       await page.goto(`${base}/index.html`);
+      // The spacious mobile feed extends below Chromium's lazy-load threshold.
+      await page.locator(".idea-card").last().scrollIntoViewIfNeeded();
+      await page.waitForFunction(() =>
+        [...document.images].every(
+          (img) => img.complete && img.naturalWidth > 0,
+        ),
+      );
+      await page.evaluate(() => scrollTo(0, 0));
+      await page.waitForTimeout(50);
       assert.equal(await page.title(), "IGotU — Need a service? We got you.");
       assert.equal(await page.locator("h1").count(), 1);
       assert.equal(

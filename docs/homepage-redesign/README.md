@@ -1,70 +1,102 @@
-# IGotU reference homepage review
+# IGotU homepage: spacing and motion review (draft PR #12)
 
-The public homepage follows the supplied green-and-white reference: centered navigation, curved campus-photo hero with floating service ideas, five photographic “Helpful Right Now” cards, seven compact category tiles, illustrative recommendations beside a four-step guide, a benefits row and a curved dark-green call to action.
+The same green-and-white design now has larger content and comfortable spacing. The curved student photo, five service ideas, seven categories, illustrative recommendations, four-step guide, benefits and green closing banner are retained. The page is deliberately scrollable rather than compressed into one screen.
 
-## Branch and review boundary
+## Review the actual browser output
 
-- Feature branch: `feat/homepage-reference-redesign`.
-- Base: `igotu-homepage-service-explorer-20261028` at `1f1ebd6dec054c4046e700f2c208c91ae72bc9f6` (draft PR #8).
-- Reviewed PR #2's homepage, authentication and workspace UI history; PR #8's category explorer; PR #9's caller-scoped calendar; and PR #10's dashboard polish. All four PRs remain unchanged and unmerged.
-- This stacked PR targets the homepage branch to keep its diff limited to the redesign. It does not import the separate dashboard, calendar, assignment-layout or private-image candidates. Integrating those branches remains a separate review decision.
-- Existing category explorer and interactive matching explanation are retained as native keyboard-accessible disclosures. The mobile menu, skip link, no-JavaScript navigation, Login/Register actions and role-selection pages remain available.
-- Only `igotu_v2/index.html`, `igotu_v2/css/home.css` and `igotu_v2/js/home.js` change in existing application code. No shared dashboard styles, Auth, verification guards, backend contracts, configuration, matching, SQL or Storage code changed. See [byte-for-byte comparison](protected-files.json).
+- **[Updated full desktop](screenshots/homepage-1536.png)** · **[Updated full mobile](screenshots/homepage-390.png)**
+- [Desktop viewport](screenshots/desktop-viewport.png) · [Mobile viewport](screenshots/mobile-viewport.png)
+- [1440px](screenshots/homepage-1440.png) · [1024px](screenshots/homepage-1024.png) · [768px](screenshots/homepage-768.png) · [320px](screenshots/homepage-320.png)
+- [Hero](screenshots/hero.png) · [Mobile hero](screenshots/hero-mobile.png) · [Helpful Right Now](screenshots/helpful-right-now.png) · [Categories](screenshots/categories.png) · [Recommendations](screenshots/recommendations.png) · [How It Works](screenshots/how-it-works.png)
+- **[Short browser-recorded animation preview (MP4)](homepage-motion.mp4)**. Actual Chromium screencast frames, encoded locally with ffmpeg; not simulated animation artwork. It shows the hero entrance, service/card hover, scrolling, categories, process, benefits and CTA. Open or download the file in GitHub.
 
-## Request-first discovery
+All screenshots are actual local Chromium renders with reduced motion for reproducibility. No real users, private records or Supabase data appear. The video uses normal motion and only local static content.
 
-All five inspiration cards, seven category tiles and registration CTAs use the existing `register.html`. The page explains that users should register as a **Client**, with a Login link for existing members. The existing role selector remains the user's choice; Become a Provider goes to that same role-selection page. No query parameter grants a role, no automatic account redirect is added and no service idea is silently carried into a private form. After normal registration/login and mandatory onboarding/verification, Clients use the unchanged request-creation and recommendation workflow and choose their category there.
+## Before and after
 
-The seven labels were checked against the existing Client request form: Cleaning, Delivery, Repair, Moving Help, Errands, Tutoring, Other. The explorer only focuses these static tiles. Neither the feed nor the example cards read Supabase, list private requests or provide a Provider directory.
+The previous PR #12 screenshots and validation record are preserved unchanged from `f7069cd84eba49b6fa0a931f660171c184e54b1f`.
 
-The Provider examples are descriptive avatars rather than real identities. They have no fabricated ratings, distances, availability or verification badges. Hero cards are labelled service ideas with illustrative imagery. The workflow describes Provider confirmation/decline, offline payment recording and reviews accurately.
+| View | Before | After |
+| --- | --- | --- |
+| Full desktop | [Previous 1536px capture](before/homepage-1536.png) | [Updated 1536px capture](screenshots/homepage-1536.png) |
+| Full mobile | [Previous 390px capture](before/homepage-390.png) | [Updated 390px capture](screenshots/homepage-390.png) |
+| Hero | [Previous](before/hero.png) | [Updated](screenshots/hero.png) |
+| Service feed | [Previous](before/helpful-right-now.png) | [Updated](screenshots/helpful-right-now.png) |
 
-## Actual rendered screenshots
+Measured at 1536px in local Chromium:
 
-All images are actual local Chromium renders, without live accounts or backend data. Click an image in GitHub to view/download it.
+| Element | Before | After |
+| --- | ---: | ---: |
+| Main content width | 1432px | 1328px |
+| Hero height | 282px | 540px |
+| Main heading | 44px | 66px |
+| Section heading | 23px | about 40px |
+| Service photo height | 72px | 172px |
+| Service description | 12px | 16px |
+| Service-card gap | 14px | 24px |
+| Category tile height | 63px | 124px |
+| Illustrative avatar | 43px | 66px |
+| Hero button height | 37px | 52px |
+| Gap before category section | 18px | about 100px |
 
-- [Full desktop, 1536px](screenshots/homepage-1536.png) and [1536 × 1024 viewport](screenshots/desktop-viewport.png)
-- [1440px](screenshots/homepage-1440.png), [1024px](screenshots/homepage-1024.png), [768px](screenshots/homepage-768.png)
-- [Mobile, 390px](screenshots/homepage-390.png), [narrow mobile, 320px](screenshots/homepage-320.png)
-- [Hero](screenshots/hero.png), [Helpful Right Now](screenshots/helpful-right-now.png), [categories](screenshots/categories.png), [illustrative recommendations](screenshots/recommendations.png), [How It Works](screenshots/how-it-works.png)
+[Computed measurements at all six widths](spacing-comparison.json). Full desktop height is now 3538px rather than 1143px; this is an intentional consequence of the approved spacing refinement. Mobile service cards form one readable column; categories wrap, recommendations stack and process steps reflow. Wide recommendation and process grids now occupy separate rows so their larger text and padding have adequate room.
 
-Compared visually with the user reference: section order, header alignment, green palette, curved photo treatment, card proportions, category row, parallel recommendations/process layout and closing laptop banner are retained. The student photo crop was adjusted specifically for mobile to avoid covering the face with floating cards. At smaller widths the layout reflows; it does not scale down a fixed desktop canvas.
+## Motion and interaction
 
-This is not a pixel-identical reproduction. Original imagery, silhouette avatars, the longer truthful example heading/disclaimer, registration guidance and retained expandable controls are deliberate differences. The full desktop page is 1143px tall at 1536px wide; a separate 1024px-tall viewport capture shows exactly what fits in the reference-sized window. There is no pixel-similarity score or fabricated visual acceptance result.
+- Finite hero entrances for heading, description, staggered buttons, service examples and photograph.
+- One-time scroll entrances for section headings, feed/category/recommendation cards, process steps, benefits and CTA. IntersectionObserver adds effects only as elements enter view; offscreen elements never depend on JS to become readable.
+- 450ms entrances with a 14px translation; 70ms stagger, capped at 210ms. No looping floating effects, autoplay carousel, flashing or continuous motion.
+- 220ms hover transitions: service cards lift 5px, photos scale to 1.035, arrows move slightly; categories and sample cards receive restrained emphasis. Hover effects are limited to fine pointers. Keyboard focus receives equivalent clear feedback.
+- Button feedback, navigation underline transitions and a short mobile-menu fade. Enhanced mobile navigation overlays the page instead of moving its content; closing links immediately become inert. Without JS the original in-flow navigation remains available.
+- A small head bootstrap establishes the collapsed mobile state before first paint. If the deferred script fails, fallback navigation is restored on load or after 2.5 seconds. The motion test deliberately delays the script by 500ms to reproduce the startup race.
+- Reduced-motion CSS disables animation, transitions and smooth scrolling. JS also disconnects the reveal observer. Focus cancels a pending entrance immediately, so navigation is never blocked while an effect runs. A finite animation still ends visibly if later JS fails.
 
-## Image provenance and performance
+No new application libraries, fonts, image downloads or network dependencies. The six original WebP assets are unchanged and still total **181,482 bytes**. They are original generated illustrations, not real Provider portraits, service availability or booking evidence. The original IGotU mark and local SVG/CSS artwork remain.
 
-Six optimized WebP assets total **181,482 bytes**. They were created for this implementation with image generation: an original photorealistic Malaysian-campus student scene and five original service illustrations. They are not scraped stock photos, real Provider portraits or evidence of IGotU bookings. No third-party photograph has been copied from the reference. The unoptimized generated contact sheet is retained locally outside this branch; only web-ready crops are committed. All image metadata was stripped during WebP export. See [asset hashes](validation.json).
+## Functionality and security boundary
 
-The existing IGotU mark is retained. Icons use local inline SVG; the small closing laptop illustration uses local CSS/SVG. There are no external fonts, asset hosts, additional application dependencies, autoplay media or API requests. Hero imagery has high fetch priority; feed images are lazy-loaded. Reduced-motion preferences disable transitions and smooth scrolling.
+Branch: `feat/homepage-reference-redesign`. This remains the same stacked draft PR based on `igotu-homepage-service-explorer-20261028` (PR #8). Existing PRs #2/#8/#9/#10 and the separate security candidates are untouched.
 
-## Reproduce offline checks
+Only existing homepage application files change: `index.html`, `css/home.css`, `js/home.js`. No Auth, identity-verification guard, configuration, matching, dashboard, SQL or Storage code changes. [Refinement scope proof](refinement-scope.json) compares application and SQL files with the previous PR #12 commit. The [original protected-file comparison](protected-files.json) against the homepage base is retained too.
 
-Use the locked existing test dependencies (`npm ci --prefix tests`). This installs test tooling only. Start a loopback static server from the repository root:
+All five service ideas, seven category tiles and registration CTAs retain the same existing `register.html` destination, Client guidance and Login path. The existing role selector remains the user's choice. No request/category state is injected into private forms, no role is granted by a link and no private data is fetched. Clients still complete the normal registration/login and mandatory verification before the unchanged request/matching workflow. The category explorer still only focuses supported static tiles.
+
+The illustrative-only disclaimer, descriptive avatars and truthful confirmation/decline, offline-payment and review text remain unchanged. No ratings, availability, distances, live matching claims or public Provider directory were added.
+
+## Executed checks
+
+[Validation JSON](validation.json) · [test logs](evidence/) · [motion observations](evidence/motion-observations.json)
+
+- Homepage smoke and reference suites: **1536/1440/1024/768/390/320px**; no horizontal overflow, clipping, failed images, console errors or external homepage requests.
+- Automated axe WCAG A/AA and best-practice checks, closed and expanded disclosures; skip link, focus, mobile menu/Escape, resize focus, all navigation, all seven category shortcuts and all 16 idea/category/CTA registration links.
+- Motion suite: all six widths, pointer hover, phone touch navigation, readable targets/text, keyboard interruption, preference changes, finite effects, and no-JS/blocked-script/missing-observer fallback. **Measured CLS = 0** at all six widths, including delayed-script startup. This is a local scripted result, not a physical-device performance guarantee.
+- Existing synthetic regressions: **94 functional scenarios**, **84 workspace layouts**, Auth UI suite and mandatory identity-verification suite including **16 direct route gates**.
+- Syntax, whitespace, scope/credential-pattern scan and protected-file byte comparisons.
+
+One initial functional run finished 93/94: a Client messaging assertion ran while the fixture still showed “Loading messages…”. The exact case passed on targeted rerun, then the full suite passed 94/94. No messaging code or functional test was changed. Both initial and final logs are retained.
+
+During motion development, an initial fixed-time assertion could observe a newly started finite effect; the suite now waits for actual completion. A slower rerun exposed a real mobile startup layout shift. The pre-paint navigation state and overlay menu fix it; a delayed-script regression check now covers that case. The larger feed also needed screenshot tests to wait for lazy-loaded images and settled navigation rather than a fixed delay.
+
+No live backend integration, physical-device profiling, full manual screen-reader audit or Safari/Firefox testing was performed. No Supabase access, SQL execution, application data/users/files, deployment or merge occurred.
+
+## Reproduce locally
+
+Use the existing locked test tools (`npm ci --prefix tests`) and Chromium (`CHROMIUM_PATH` may select its executable). From the repository root:
 
 ```sh
 python -m http.server 4178 --bind 127.0.0.1 --directory igotu_v2
 ```
 
-In another terminal, using Chromium at `/usr/bin/chromium` or setting `CHROMIUM_PATH`:
+In another terminal:
 
 ```sh
 UI_BASE_URL=http://127.0.0.1:4178 node tests/home-smoke.cjs
 UI_BASE_URL=http://127.0.0.1:4178 UI_SCREENSHOTS=work/homepage-reference node tests/home-reference.cjs
+UI_BASE_URL=http://127.0.0.1:4178 node tests/home-motion.cjs
 UI_BASE_URL=http://127.0.0.1:4178 node tests/auth-smoke.cjs
 UI_BASE_URL=http://127.0.0.1:4178 node tests/mandatory-verification.cjs
 UI_BASE_URL=http://127.0.0.1:4178 node tests/system-functional.cjs
 UI_BASE_URL=http://127.0.0.1:4178 node tests/ui-smoke.cjs
 ```
 
-The reference test requires a loopback origin and blocks external requests. It verifies all category shortcuts, all navigation items, expanded-disclosure clipping and axe checks, all 16 registration links, unchanged role choices, real image loading and screenshots. The existing smoke suite retains matching-criterion, no-JS, reduced-motion, menu/Escape, resize focus and skip-link checks. Old illustration-specific overlap assertions were replaced because those cards were superseded by the reference photo hero; no security assertions were removed.
-
-[Validation report](validation.json) · [raw test logs](evidence/) · [per-viewport observations](screenshots/observations.json)
-
-## Results and limits
-
-All six requested homepage widths pass overflow and automated axe WCAG A/AA/best-practice checks, both with disclosures closed and expanded. Keyboard navigation, 16 registration destinations and no-JavaScript fallback pass. Existing regressions pass: **94 functional scenarios**, **84 workspace layouts**, authentication UI and mandatory verification including **16 direct route gates**. All remote application requests are intercepted/blocked by synthetic test fixtures. No live backend integration is claimed.
-
-During development, the old clipped-content test counted layout boxes inside closed disclosures; it now checks actual visibility, and the new suite separately checks expanded content. The new directory assertion initially counted SVG `use` references; it now specifically checks links. Both final suites pass. Visual inspection also found and corrected the initial mobile photo crop and compact-page active-navigation behavior.
-
-No Supabase project was contacted, no SQL was executed, no application data/users/files were changed, and no deployment or merge was performed. Manual screen-reader testing, Safari/Firefox and physical-device testing remain outside this validation. Review the screenshots and the stacked PR before any integration or deployment decision.
+To also capture a new browser preview, set `UI_MOTION_PREVIEW=work/homepage-motion.mp4` for the motion suite; it requires `/usr/bin/ffmpeg`. It writes captured frames/video locally and never contacts Supabase. The reference and motion suites require loopback origins and block remote requests. Screenshots use reduced motion; the preview enables normal motion. All other application test requests use synthetic fixtures.

@@ -1,0 +1,97 @@
+{
+  "scope": "OFFLINE_PUBLIC_HOMEPAGE_REVIEW_ONLY",
+  "baseBranch": "igotu-homepage-service-explorer-20261028",
+  "baseCommit": "1f1ebd6dec054c4046e700f2c208c91ae72bc9f6",
+  "branch": "feat/homepage-reference-redesign",
+  "reviewDate": "2026-11-01",
+  "timezone": "Asia/Kuala_Lumpur",
+  "viewports": [
+    1536,
+    1440,
+    1024,
+    768,
+    390,
+    320
+  ],
+  "results": {
+    "homepageSmoke": "PASS",
+    "homepageReferenceContract": "PASS",
+    "functional": {
+      "passed": 94,
+      "failed": 0
+    },
+    "workspaceLayouts": {
+      "passed": 84,
+      "failed": 0
+    },
+    "authenticationUi": "PASS synthetic fixture suite",
+    "mandatoryIdentityVerification": "PASS synthetic suite including 16 guarded routes",
+    "axe": "PASS WCAG A/AA and best-practice checks at all six homepage widths, collapsed and expanded disclosures",
+    "keyboard": "PASS skip link, menu/Escape, resize focus, disclosures, matching criteria, all category shortcuts, all navigation links",
+    "registrationLinks": "PASS all 16 idea/category/CTA links; unchanged role selection UI",
+    "horizontalOverflow": "NONE at all six widths",
+    "consoleErrors": 0,
+    "externalHomepageRequests": 0,
+    "noJavaScriptFallback": "PASS",
+    "reducedMotion": "PASS",
+    "nodeSyntax": "PASS",
+    "gitDiffWhitespace": "PASS",
+    "unchangedExistingFiles": 279
+  },
+  "assets": [
+    {
+      "file": "igotu_v2/assets/home/campus-student.webp",
+      "bytes": 91566,
+      "sha256": "01b3916887d8262cfb0c653dbaa9d0a0d3db4387b28b4890fe0f07596ceade58"
+    },
+    {
+      "file": "igotu_v2/assets/home/cleaning.webp",
+      "bytes": 16004,
+      "sha256": "b6b04760a2774a43e21a55ee6281a8836c1639f1450f9b9ee8bae50f4eeed586"
+    },
+    {
+      "file": "igotu_v2/assets/home/errands.webp",
+      "bytes": 25216,
+      "sha256": "0c471771ec7bb41b1fbb1256ece1ef6d05a56f18684cffaf3a146a88af373030"
+    },
+    {
+      "file": "igotu_v2/assets/home/moving.webp",
+      "bytes": 12630,
+      "sha256": "76c3670a16f984b6de3a2ef33c0d28247f0c0f425d45b9e6c323c950ad9f66d1"
+    },
+    {
+      "file": "igotu_v2/assets/home/repair.webp",
+      "bytes": 20948,
+      "sha256": "0fb8473a4c21a52f6e26cbfee16474b0fe017fc5ec52891e809defa88c6e0691"
+    },
+    {
+      "file": "igotu_v2/assets/home/tutoring.webp",
+      "bytes": 15118,
+      "sha256": "a2473afea091db44d3ab8763c3a79c225e7552ae054f7c45944c0d99966419a6"
+    }
+  ],
+  "assetBytesTotal": 181482,
+  "notPerformed": [
+    "Live Supabase/Auth/RLS integration",
+    "Real accounts or data writes",
+    "Full manual screen-reader audit",
+    "Safari/Firefox or physical-device testing",
+    "Deployment or merge"
+  ],
+  "visualComparison": {
+    "primaryReference": "User-attached 1536x1024 homepage image",
+    "actualDesktopCapture": "1536x1143 full page; 1536x1024 viewport also included",
+    "method": "Manual side-by-side inspection of actual Chromium screenshots and user reference; no pixel-perfect score claimed",
+    "intentionalDifferences": [
+      "Original generated campus/service imagery rather than copying reference photographs",
+      "Illustrative Provider avatars and descriptive labels; no fabricated names, ratings, verification, distances or availability",
+      "Truthful registration guidance and expandable preserved category/matching controls add vertical space",
+      "Accurate confirmation/decline and offline-payment workflow text",
+      "Compact role-choice footer preserved"
+    ]
+  },
+  "liveBackendTested": false,
+  "databaseOrStorageAccessed": false,
+  "deploymentPerformed": false,
+  "existingPullRequestsModified": false
+}

@@ -45,8 +45,19 @@ const axePath = require.resolve("axe-core/axe.min.js");
       await p.setViewportSize({ width, height: width > 850 ? 1024 : 844 });
       await p.goto(new URL("/index.html", base).href);
       await p.locator(".idea-card").last().scrollIntoViewIfNeeded();
+      await p.waitForFunction(() =>
+        [...document.images].every(
+          (img) => img.complete && img.naturalWidth > 0,
+        ),
+      );
       await p.evaluate(() => scrollTo(0, 0));
-      await p.waitForTimeout(100);
+      await p.waitForFunction(
+        () =>
+          scrollY === 0 &&
+          document
+            .querySelector(".nav-links [aria-current]")
+            ?.getAttribute("href") === "#home",
+      );
       assert.equal(
         await p.locator(".nav-links [aria-current]").getAttribute("href"),
         "#home",
@@ -182,12 +193,29 @@ const axePath = require.resolve("axe-core/axe.min.js");
       }
       await p.goto(new URL("/index.html", base).href);
       await p.locator(".idea-card").last().scrollIntoViewIfNeeded();
+      await p.waitForFunction(() =>
+        [...document.images].every(
+          (img) => img.complete && img.naturalWidth > 0,
+        ),
+      );
       await p.evaluate(() => scrollTo(0, 0));
-      await p.waitForTimeout(100);
+      await p.waitForFunction(
+        () =>
+          scrollY === 0 &&
+          document
+            .querySelector(".nav-links [aria-current]")
+            ?.getAttribute("href") === "#home",
+      );
       await p.screenshot({
         path: path.join(output, `homepage-${width}.png`),
         fullPage: true,
       });
+      if (width === 390) {
+        await p.screenshot({ path: path.join(output, "mobile-viewport.png") });
+        await p
+          .locator(".hero")
+          .screenshot({ path: path.join(output, "hero-mobile.png") });
+      }
       if (width === 1536) {
         await p.screenshot({ path: path.join(output, "desktop-viewport.png") });
         for (const [name, selector] of [
