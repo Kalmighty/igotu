@@ -1,0 +1,58 @@
+{
+  "scope": "SYNTHETIC_BROWSER_UI_ONLY",
+  "viewports": [
+    {
+      "width": 1536,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    },
+    {
+      "width": 1440,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    },
+    {
+      "width": 1366,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    },
+    {
+      "width": 1024,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    },
+    {
+      "width": 768,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    },
+    {
+      "width": 390,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    },
+    {
+      "width": 320,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    }
+  ],
+  "lifecycle": "simulated document visibility event; actual offscreen IntersectionObserver",
+  "browserErrors": [],
+  "externalRequests": [],
+  "liveAuthenticationTested": false
+}

@@ -1,0 +1,7 @@
+PASS 1536x864: form 567.1→477.6px (15.8% earlier); button bottom 986.7→853.8; scroll needed 0px
+PASS 1440x900: form 563.3→476.1px (15.5% earlier); button bottom 982.8→852.3; scroll needed 0px
+PASS 1366x768: form 558.8→472.9px (15.4% earlier); button bottom 978.4→849; scroll needed 82px
+PASS 1024x900: form 538.8→483.5px (10.3% earlier); button bottom 958.4→879.7; scroll needed 0px
+PASS 768x1024: form 384.5→345.8px (10.1% earlier); button bottom 808→746; scroll needed 0px
+PASS 390x844: form 437.3→413.3px (5.5% earlier); button bottom 876.3→827.5; scroll needed 0px
+PASS 320x844: form 426.2→402.2px (5.6% earlier); button bottom 852.1→816.3; scroll needed 0px
