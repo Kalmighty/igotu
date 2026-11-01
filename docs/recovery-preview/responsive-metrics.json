@@ -1,0 +1,604 @@
+[
+  {
+    "page": "forgot-password",
+    "width": 1536,
+    "height": 1000,
+    "pageWidth": 1536,
+    "pageHeight": 1141,
+    "heading": {
+      "x": 148,
+      "y": 129,
+      "width": 616,
+      "height": 224.78125
+    },
+    "form": {
+      "x": 828,
+      "y": 159,
+      "width": 560,
+      "height": 578.078125
+    },
+    "support": {
+      "x": 148,
+      "y": 381.78125,
+      "width": 616,
+      "height": 261.171875
+    },
+    "art": {
+      "x": 148,
+      "y": 670.953125,
+      "width": 520,
+      "height": 303.84375
+    },
+    "firstField": {
+      "x": 864,
+      "y": 382.890625,
+      "width": 488,
+      "height": 51
+    },
+    "button": {
+      "x": 864,
+      "y": 454.890625,
+      "width": 488,
+      "height": 52
+    }
+  },
+  {
+    "page": "reset-password",
+    "width": 1536,
+    "height": 1000,
+    "pageWidth": 1536,
+    "pageHeight": 1088,
+    "heading": {
+      "x": 148,
+      "y": 129,
+      "width": 616,
+      "height": 195.890625
+    },
+    "form": {
+      "x": 828,
+      "y": 159,
+      "width": 560,
+      "height": 692.875
+    },
+    "support": {
+      "x": 148,
+      "y": 352.890625,
+      "width": 616,
+      "height": 237.171875
+    },
+    "art": {
+      "x": 148,
+      "y": 618.0625,
+      "width": 520,
+      "height": 303.84375
+    },
+    "firstField": {
+      "x": 864,
+      "y": 357.390625,
+      "width": 488,
+      "height": 51
+    },
+    "button": {
+      "x": 864,
+      "y": 569.6875,
+      "width": 488,
+      "height": 52
+    }
+  },
+  {
+    "page": "forgot-password",
+    "width": 1440,
+    "height": 1000,
+    "pageWidth": 1440,
+    "pageHeight": 1139,
+    "heading": {
+      "x": 100,
+      "y": 129,
+      "width": 616,
+      "height": 223.40625
+    },
+    "form": {
+      "x": 780,
+      "y": 159,
+      "width": 560,
+      "height": 578.078125
+    },
+    "support": {
+      "x": 100,
+      "y": 380.40625,
+      "width": 616,
+      "height": 261.171875
+    },
+    "art": {
+      "x": 100,
+      "y": 669.578125,
+      "width": 520,
+      "height": 303.84375
+    },
+    "firstField": {
+      "x": 816,
+      "y": 382.890625,
+      "width": 488,
+      "height": 51
+    },
+    "button": {
+      "x": 816,
+      "y": 454.890625,
+      "width": 488,
+      "height": 52
+    }
+  },
+  {
+    "page": "reset-password",
+    "width": 1440,
+    "height": 1000,
+    "pageWidth": 1440,
+    "pageHeight": 1087,
+    "heading": {
+      "x": 100,
+      "y": 129,
+      "width": 616,
+      "height": 194.515625
+    },
+    "form": {
+      "x": 780,
+      "y": 159,
+      "width": 560,
+      "height": 692.875
+    },
+    "support": {
+      "x": 100,
+      "y": 351.515625,
+      "width": 616,
+      "height": 237.171875
+    },
+    "art": {
+      "x": 100,
+      "y": 616.6875,
+      "width": 520,
+      "height": 303.84375
+    },
+    "firstField": {
+      "x": 816,
+      "y": 357.390625,
+      "width": 488,
+      "height": 51
+    },
+    "button": {
+      "x": 816,
+      "y": 569.6875,
+      "width": 488,
+      "height": 52
+    }
+  },
+  {
+    "page": "forgot-password",
+    "width": 1366,
+    "height": 768,
+    "pageWidth": 1366,
+    "pageHeight": 1134,
+    "heading": {
+      "x": 63,
+      "y": 129,
+      "width": 616,
+      "height": 217.78125
+    },
+    "form": {
+      "x": 743,
+      "y": 159,
+      "width": 560,
+      "height": 578.078125
+    },
+    "support": {
+      "x": 63,
+      "y": 374.78125,
+      "width": 616,
+      "height": 261.171875
+    },
+    "art": {
+      "x": 63,
+      "y": 663.953125,
+      "width": 520,
+      "height": 303.84375
+    },
+    "firstField": {
+      "x": 779,
+      "y": 382.890625,
+      "width": 488,
+      "height": 51
+    },
+    "button": {
+      "x": 779,
+      "y": 454.890625,
+      "width": 488,
+      "height": 52
+    }
+  },
+  {
+    "page": "reset-password",
+    "width": 1366,
+    "height": 768,
+    "pageWidth": 1366,
+    "pageHeight": 1081,
+    "heading": {
+      "x": 63,
+      "y": 129,
+      "width": 616,
+      "height": 188.890625
+    },
+    "form": {
+      "x": 743,
+      "y": 159,
+      "width": 560,
+      "height": 692.875
+    },
+    "support": {
+      "x": 63,
+      "y": 345.890625,
+      "width": 616,
+      "height": 237.171875
+    },
+    "art": {
+      "x": 63,
+      "y": 611.0625,
+      "width": 520,
+      "height": 303.84375
+    },
+    "firstField": {
+      "x": 779,
+      "y": 357.390625,
+      "width": 488,
+      "height": 51
+    },
+    "button": {
+      "x": 779,
+      "y": 569.6875,
+      "width": 488,
+      "height": 52
+    }
+  },
+  {
+    "page": "forgot-password",
+    "width": 1024,
+    "height": 1000,
+    "pageWidth": 1024,
+    "pageHeight": 1072,
+    "heading": {
+      "x": 48,
+      "y": 114,
+      "width": 467.75,
+      "height": 200.125
+    },
+    "form": {
+      "x": 550.75,
+      "y": 132,
+      "width": 425.25,
+      "height": 586.171875
+    },
+    "support": {
+      "x": 48,
+      "y": 342.125,
+      "width": 467.75,
+      "height": 261.171875
+    },
+    "art": {
+      "x": 48,
+      "y": 631.296875,
+      "width": 467.75,
+      "height": 274.921875
+    },
+    "firstField": {
+      "x": 579.75,
+      "y": 348.890625,
+      "width": 367.25,
+      "height": 51
+    },
+    "button": {
+      "x": 579.75,
+      "y": 420.890625,
+      "width": 367.25,
+      "height": 52
+    }
+  },
+  {
+    "page": "reset-password",
+    "width": 1024,
+    "height": 1000,
+    "pageWidth": 1024,
+    "pageHeight": 1045,
+    "heading": {
+      "x": 48,
+      "y": 114,
+      "width": 467.75,
+      "height": 171.234375
+    },
+    "form": {
+      "x": 550.75,
+      "y": 132,
+      "width": 425.25,
+      "height": 747.265625
+    },
+    "support": {
+      "x": 48,
+      "y": 313.875,
+      "width": 467.75,
+      "height": 261.171875
+    },
+    "art": {
+      "x": 48,
+      "y": 603.6875,
+      "width": 467.75,
+      "height": 274.921875
+    },
+    "firstField": {
+      "x": 579.75,
+      "y": 348.890625,
+      "width": 367.25,
+      "height": 51
+    },
+    "button": {
+      "x": 579.75,
+      "y": 581.984375,
+      "width": 367.25,
+      "height": 52
+    }
+  },
+  {
+    "page": "forgot-password",
+    "width": 768,
+    "height": 1000,
+    "pageWidth": 768,
+    "pageHeight": 1684,
+    "heading": {
+      "x": 54,
+      "y": 104,
+      "width": 660,
+      "height": 212.3125
+    },
+    "form": {
+      "x": 54,
+      "y": 345.3125,
+      "width": 660,
+      "height": 572.078125
+    },
+    "support": {
+      "x": 54,
+      "y": 946.390625,
+      "width": 660,
+      "height": 268.171875
+    },
+    "art": {
+      "x": 144,
+      "y": 1243.5625,
+      "width": 480,
+      "height": 281.703125
+    },
+    "firstField": {
+      "x": 87,
+      "y": 566.203125,
+      "width": 594,
+      "height": 51
+    },
+    "button": {
+      "x": 87,
+      "y": 638.203125,
+      "width": 594,
+      "height": 52
+    }
+  },
+  {
+    "page": "reset-password",
+    "width": 768,
+    "height": 1000,
+    "pageWidth": 768,
+    "pageHeight": 1746,
+    "heading": {
+      "x": 54,
+      "y": 104,
+      "width": 660,
+      "height": 183.421875
+    },
+    "form": {
+      "x": 54,
+      "y": 316.421875,
+      "width": 660,
+      "height": 686.875
+    },
+    "support": {
+      "x": 54,
+      "y": 1032.296875,
+      "width": 660,
+      "height": 244.171875
+    },
+    "art": {
+      "x": 144,
+      "y": 1305.46875,
+      "width": 480,
+      "height": 281.703125
+    },
+    "firstField": {
+      "x": 87,
+      "y": 511.8125,
+      "width": 594,
+      "height": 51
+    },
+    "button": {
+      "x": 87,
+      "y": 724.109375,
+      "width": 594,
+      "height": 52
+    }
+  },
+  {
+    "page": "forgot-password",
+    "width": 390,
+    "height": 1000,
+    "pageWidth": 390,
+    "pageHeight": 1542,
+    "heading": {
+      "x": 16,
+      "y": 98,
+      "width": 358,
+      "height": 175.09375
+    },
+    "form": {
+      "x": 16,
+      "y": 298.09375,
+      "width": 358,
+      "height": 560.171875
+    },
+    "support": {
+      "x": 16,
+      "y": 883.265625,
+      "width": 358,
+      "height": 258.515625
+    },
+    "art": {
+      "x": 16,
+      "y": 1166.78125,
+      "width": 358,
+      "height": 214.171875
+    },
+    "firstField": {
+      "x": 38,
+      "y": 497.984375,
+      "width": 314,
+      "height": 51
+    },
+    "button": {
+      "x": 38,
+      "y": 569.984375,
+      "width": 314,
+      "height": 52
+    }
+  },
+  {
+    "page": "reset-password",
+    "width": 390,
+    "height": 1000,
+    "pageWidth": 390,
+    "pageHeight": 1741,
+    "heading": {
+      "x": 16,
+      "y": 98,
+      "width": 358,
+      "height": 190.890625
+    },
+    "form": {
+      "x": 16,
+      "y": 313.890625,
+      "width": 358,
+      "height": 721.265625
+    },
+    "support": {
+      "x": 16,
+      "y": 1060.15625,
+      "width": 358,
+      "height": 280.90625
+    },
+    "art": {
+      "x": 16,
+      "y": 1366.0625,
+      "width": 358,
+      "height": 214.171875
+    },
+    "firstField": {
+      "x": 38,
+      "y": 513.78125,
+      "width": 314,
+      "height": 51
+    },
+    "button": {
+      "x": 38,
+      "y": 746.875,
+      "width": 314,
+      "height": 52
+    }
+  },
+  {
+    "page": "forgot-password",
+    "width": 320,
+    "height": 1000,
+    "pageWidth": 320,
+    "pageHeight": 1634,
+    "heading": {
+      "x": 16,
+      "y": 98,
+      "width": 288,
+      "height": 200.046875
+    },
+    "form": {
+      "x": 16,
+      "y": 323.046875,
+      "width": 288,
+      "height": 598.453125
+    },
+    "support": {
+      "x": 16,
+      "y": 946.5,
+      "width": 288,
+      "height": 325.6875
+    },
+    "art": {
+      "x": 16,
+      "y": 1297.1875,
+      "width": 288,
+      "height": 175.421875
+    },
+    "firstField": {
+      "x": 35,
+      "y": 542.125,
+      "width": 250,
+      "height": 51
+    },
+    "button": {
+      "x": 35,
+      "y": 614.125,
+      "width": 250,
+      "height": 52
+    }
+  },
+  {
+    "page": "reset-password",
+    "width": 320,
+    "height": 1000,
+    "pageWidth": 320,
+    "pageHeight": 1802,
+    "heading": {
+      "x": 16,
+      "y": 98,
+      "width": 288,
+      "height": 200.046875
+    },
+    "form": {
+      "x": 16,
+      "y": 323.046875,
+      "width": 288,
+      "height": 766.9375
+    },
+    "support": {
+      "x": 16,
+      "y": 1114.984375,
+      "width": 288,
+      "height": 325.6875
+    },
+    "art": {
+      "x": 16,
+      "y": 1465.671875,
+      "width": 288,
+      "height": 175.421875
+    },
+    "firstField": {
+      "x": 35,
+      "y": 549.515625,
+      "width": 250,
+      "height": 51
+    },
+    "button": {
+      "x": 35,
+      "y": 782.609375,
+      "width": 250,
+      "height": 52
+    }
+  }
+]
