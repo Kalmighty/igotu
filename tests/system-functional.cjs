@@ -1290,7 +1290,7 @@ for (const role of ["client","provider","admin"]) test(`${role} missing backend 
   await page.goto(`${base}/${role}/dashboard.html`);
   await page.waitForFunction(()=>document.body.dataset.accessState==='blocked');
   assert.equal(state.calls.filter(o=>o.kind==='query' && o.table!=='users').length,0);
-  assert.match(await page.locator('body').textContent(),/could not be checked/);
+  assert.match(await page.locator('#workspaceAccessMessage').textContent(),/cannot confirm that the current server supports this version/);
 });
 test("Recommendation RPC supplies cards without broad cross-user reads",async({page,state})=>{
  state.tables.service_requests=state.tables.service_requests.filter(x=>x.request_id==='REQ-PENDING');

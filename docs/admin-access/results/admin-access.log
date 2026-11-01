@@ -1,0 +1,21 @@
+PASS missing RPC
+PASS database missing function
+PASS version mismatch
+PASS notification mismatch
+PASS RPC permission
+PASS RPC authentication
+PASS network failure
+PASS unknown API failure
+PASS profile query error
+PASS missing profile
+PASS expired session
+PASS session connection failure
+PASS client rejected with cleanup
+PASS provider rejected with cleanup
+PASS inactive-admin rejected with cleanup
+PASS missing session
+PASS cleanup failure remains locked
+PASS temporary error retry
+PASS valid Admin and pending initialization order
+PASS original defect reproduced
+PASS 20 Admin access scenarios; 119 assertions; zero external requests/page errors

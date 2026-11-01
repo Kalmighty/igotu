@@ -3,19 +3,40 @@ import { supabase } from "./supabaseClient.js";
 // Deployment compatibility only. Database policies/RPCs independently authorize
 // every request; this version string is never an authorization credential.
 export const BACKEND_CONTRACT = "20261026.1";
+// Fixed diagnostic codes contain no server payload, identity or credentials.
+export class BackendContractError extends Error {
+  constructor(code) {
+    super(
+      "IGotU cannot confirm that the current server supports this version of the application. Please try again later or contact the system administrator.",
+    );
+    this.name = "BackendContractError";
+    this.code = code;
+  }
+}
 let contractCheck;
 export function requireBackendContract() {
   return (contractCheck ||= (async () => {
-    const { data, error } = await supabase.rpc("igotu_backend_contract");
-    if (
-      error ||
-      data?.version !== BACKEND_CONTRACT ||
-      data?.notifications !== "database"
-    ) {
-      throw new Error(
-        "Account access is temporarily unavailable. Please contact an administrator or try again.",
-      );
+    let result;
+    try {
+      result = await supabase.rpc("igotu_backend_contract");
+    } catch {
+      throw new BackendContractError("BACKEND_CONNECTION");
     }
+    const { data, error } = result || {};
+    if (error) {
+      const code = ["PGRST202", "42883"].includes(error.code)
+        ? "BACKEND_RPC_UNAVAILABLE"
+        : error.code === "42501"
+          ? "BACKEND_PERMISSION"
+          : ["PGRST301", "PGRST302", "PGRST303"].includes(error.code)
+            ? "BACKEND_AUTH"
+            : "BACKEND_UNAVAILABLE";
+      throw new BackendContractError(code);
+    }
+    if (data?.version !== BACKEND_CONTRACT)
+      throw new BackendContractError("BACKEND_VERSION");
+    if (data?.notifications !== "database")
+      throw new BackendContractError("BACKEND_NOTIFICATIONS");
   })());
 }
 function arrayResult(result) {
