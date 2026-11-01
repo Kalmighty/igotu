@@ -1,0 +1,99 @@
+{
+  "status": "LOCAL_SOURCE_INVENTORY_NOT_LIVE_DATABASE_PROOF",
+  "files": [
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153952_01_foundation_draft.sql",
+      "sha256": "753d79083a3dac4fd928c6fee5ff23ff379f88624ae7d487a88c6a84dafed60d",
+      "public_functions": [],
+      "private_functions": [
+        "is_admin",
+        "approval_history_matches",
+        "identity_approved",
+        "approved_account",
+        "workspace",
+        "require_workspace",
+        "applicant",
+        "require_read_committed",
+        "provider_lock",
+        "participant",
+        "coarse_area",
+        "valid_specialization",
+        "eligible_provider"
+      ]
+    },
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153954_02_private_readers_draft.sql",
+      "sha256": "0a3bbe701b2a0e79fdb2197fe40130dd92e286c0b130a264a541316b2d03b1c5",
+      "public_functions": [
+        "provider_service_requests",
+        "service_participants",
+        "recommended_provider_candidates",
+        "payment_proof_reference",
+        "verification_reconciliation_queue"
+      ],
+      "private_functions": [
+        "provider_service_requests",
+        "service_participants",
+        "recommended_provider_candidates",
+        "decode_path",
+        "receipt_path",
+        "payment_proof_reference",
+        "can_read_receipt",
+        "verification_reconciliation_queue"
+      ]
+    },
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153956_03_integrity_draft.sql",
+      "sha256": "e1bfd24182dc7f4fe3faf405b102cf87030a3adc53edeb01260b99dc936c11e6",
+      "public_functions": [
+        "create_service_request",
+        "save_provider_profile",
+        "client_select_provider",
+        "provider_confirm_request",
+        "provider_decline_request",
+        "provider_start_request",
+        "client_complete_request",
+        "client_cancel_request",
+        "complete_basic_profile",
+        "client_update_request",
+        "client_save_request_image",
+        "submit_service_report",
+        "admin_update_user_status",
+        "admin_review_verification",
+        "admin_review_service_report"
+      ],
+      "private_functions": [
+        "require_writer",
+        "require_approved_writer",
+        "validate_request",
+        "create_service_request",
+        "save_provider_profile",
+        "transition",
+        "client_select_provider",
+        "provider_confirm_request",
+        "provider_decline_request",
+        "provider_start_request",
+        "client_complete_request",
+        "client_cancel_request"
+      ]
+    },
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153958_04_cutover_draft.sql",
+      "sha256": "22549d69e655a5a84f47e3d36cc6956e0cb4e571da06d9282859203c5dad1ee7",
+      "public_functions": [
+        "igotu_backend_contract"
+      ],
+      "private_functions": [
+        "protect_user",
+        "sync_badge",
+        "verification_write",
+        "validate_workspace_write",
+        "emit",
+        "notify",
+        "orphan_identity",
+        "orphan_report_evidence",
+        "contract"
+      ]
+    }
+  ]
+}
