@@ -1,0 +1,23 @@
+{
+  "base": "4f972492c8950a503542287d754aac0c75ecdf35",
+  "modified_existing_files": [
+    "igotu_v2/register.html"
+  ],
+  "native_registration_attributes_unchanged": true,
+  "role_values_unchanged": [
+    "",
+    "client",
+    "provider"
+  ],
+  "protected_sha256": {
+    "igotu_v2/js/auth.js": "df5ecbd40f1171b598b2141a2c3c56afd63974a4fb0d2d4b3b38a2f45b2bae14",
+    "igotu_v2/js/auth-roles.js": "74d485241487d55d089080741c6d4036f1849d429e199ae1b6ff52f0c0b93d75",
+    "igotu_v2/js/identity-access.js": "bbb6c284f989d4be607bd62d3981656f576a1d82be3eb6463ca902f6e711d5e9",
+    "igotu_v2/js/profile-guard.js": "16e1ce25fedcc541d38af4931595544d7336963749eb22e184d3734ef49a34a2",
+    "igotu_v2/js/supabaseClient.js": "e15a537d3579323d3ce7232300e8f54e121504006f5ef2b4470e4b5e19351724",
+    "igotu_v2/login.html": "c67042050ac8d4ead51d8efccf89460d506537d57246f426f226eac51e92e7be",
+    "igotu_v2/index.html": "ae849c22d19a97983b7f276ef6ac1ca14282f494efa1d16015c023df69e415f2",
+    "igotu_v2/css/style.css": "b9d8c81cd4adbd72091be37ac4a51e7b54b03e464b8013b6c66f89e85b51ab4c",
+    "igotu_v2/css/auth-roles.css": "95b736ca049f56c40c978d8f6a908599a719822143ab2c45272b51a63c3c927f"
+  }
+}

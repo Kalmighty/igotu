@@ -1,0 +1,1225 @@
+/* Registration-only presentation. Auth, shared styles, login and homepage are unchanged. */
+.register-experience {
+  --auth-forest: #00563a;
+  --auth-ink: #092b23;
+  --auth-muted: #46594f;
+  --auth-line: #dce6d9;
+  --register-ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--auth-ink);
+  background: #fcfcfa url("../assets/login/login-leaves.svg") center 68px/100%
+    650px no-repeat;
+  min-height: 100vh;
+}
+.register-experience [hidden] {
+  display: none !important;
+}
+.register-experience
+  :is(a, button, input, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid #287e4b;
+  outline-offset: 4px;
+}
+.register-experience .auth-container {
+  width: min(1328px, calc(100% - 96px));
+}
+.register-experience .auth-register-workspace {
+  max-width: none;
+}
+.register-experience .auth-header {
+  background: #fffffff0;
+}
+.register-experience .auth-header-inner {
+  min-height: 68px;
+  max-width: 1280px;
+}
+.register-experience .auth-brand {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1.3px;
+}
+.register-experience .auth-brand > span:first-child {
+  border-radius: 9px;
+  background: #00563a;
+  color: #fff;
+}
+.register-experience .auth-header-link {
+  font-size: 14px;
+  gap: 20px;
+}
+.register-experience .auth-header-link a {
+  border: 1px solid #1c7048;
+  border-radius: 24px;
+  padding: 9px 20px;
+  min-height: 44px;
+  font-size: 15px;
+  gap: 15px;
+  transition:
+    background-color 220ms,
+    box-shadow 220ms;
+}
+.register-experience .auth-header-link a:hover {
+  background: #edf5e6;
+  box-shadow: 0 3px 12px #0b513312;
+}
+.register-experience .auth-header-link .auth-icon {
+  width: 20px;
+  height: 20px;
+  transition: translate 220ms;
+}
+.register-experience .auth-header-link a:hover .auth-icon {
+  translate: 3px 0;
+}
+/* The form is next after the main role cards in DOM and on mobile. */
+.register-experience .auth-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  grid-template-areas: "welcome welcome" "roles roles" "admin admin" "info form";
+  gap: 23px 30px;
+  align-items: start;
+  padding-top: 24px;
+  padding-bottom: 45px;
+}
+.register-experience .auth-page-heading {
+  grid-area: welcome;
+  text-align: center;
+  margin: 0 0 1px;
+}
+.register-experience .auth-eyebrow {
+  font-size: 12px !important;
+  letter-spacing: 1.2px;
+  color: #006139 !important;
+  font-weight: 800;
+  line-height: 1.4;
+}
+.register-experience .auth-page-heading h1 {
+  font-size: clamp(44px, 4vw, 58px);
+  font-weight: 760;
+  letter-spacing: -2px;
+  line-height: 1.15;
+  color: #092c22;
+  margin-top: 10px;
+}
+.register-experience .auth-page-heading h1 em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  color: #08663d;
+  position: relative;
+  white-space: nowrap;
+}
+.register-experience .auth-page-heading h1 em:after {
+  content: "";
+  height: 4px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  border-radius: 50%;
+  background: #d0e7be;
+  transform: rotate(-1deg);
+}
+.register-experience .auth-page-heading > p:last-child {
+  font-size: 18px;
+  line-height: 1.5;
+  color: #465957;
+  margin-top: 17px;
+}
+.register-experience .register-roles {
+  grid-area: roles;
+  display: grid;
+  visibility: hidden;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+}
+.register-experience.auth-roles-ready .register-roles {
+  visibility: visible;
+}
+.register-experience .role-card {
+  position: relative;
+  min-height: 224px;
+  border: 1px solid transparent;
+  border-radius: 23px;
+  padding: 18px 24px;
+  background: linear-gradient(120deg, #f2f8e9, #edf5e3);
+  color: #0b3324;
+  box-shadow: 0 5px 22px #17492b06;
+  transition:
+    transform 220ms var(--register-ease),
+    box-shadow 220ms,
+    border-color 220ms;
+}
+.register-experience .role-provider {
+  background: linear-gradient(120deg, #fcf7ed, #f8f0e1);
+}
+.register-experience .role-card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.register-experience .role-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: #ffffffb0;
+  border-color: #c5dcb2;
+  color: #0a633a;
+}
+.register-experience .role-icon .auth-icon {
+  width: 25px;
+  height: 25px;
+}
+.register-experience .role-name {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+.register-experience .role-selected-mark {
+  display: grid;
+  place-items: center;
+  margin-left: auto;
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  background: #00663e;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 220ms;
+}
+.register-experience .role-selected-mark .auth-icon {
+  width: 18px;
+  height: 18px;
+}
+.register-experience .role-card-title {
+  font-size: 28px;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  margin: 0 0 6px;
+}
+.register-experience .role-description {
+  display: block;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #3c554a;
+  max-width: 80%;
+  margin: 0 0 10px;
+  min-height: 47px;
+}
+.register-experience .role-mobile-summary {
+  display: none;
+}
+.register-experience .role-card-action {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 24px;
+  margin-top: auto;
+  min-height: 44px;
+  border-radius: 13px;
+  padding: 9px 18px;
+  border: 1px solid #00623b;
+  background: #00623b;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+.register-experience .role-provider .role-card-action {
+  background: #fffdf6;
+  border-color: #abc98a;
+  color: #12583b;
+}
+.register-experience .role-card-action .auth-icon {
+  width: 20px;
+  height: 20px;
+  transition: translate 220ms;
+}
+.register-experience .role-card[aria-pressed="true"] {
+  border-color: #167447;
+  box-shadow:
+    inset 0 0 0 0.5px #167447,
+    0 7px 22px #184e2910;
+}
+.register-experience .role-card[aria-pressed="true"] .role-selected-mark {
+  opacity: 1;
+}
+.register-experience .role-card:disabled {
+  opacity: 0.6;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+.register-experience .role-mini-art {
+  position: absolute;
+  right: 22px;
+  bottom: 22px;
+  pointer-events: none;
+  width: 78px;
+  height: 95px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #d7e8c7;
+  transform: rotate(9deg);
+}
+.register-experience .art-provider {
+  background: #edddbf;
+  transform: rotate(-8deg);
+}
+.register-experience .mini-art-screen {
+  display: grid;
+  place-items: center;
+  width: 49px;
+  height: 76px;
+  padding: 8px;
+  background: #fffef6;
+  border: 3px solid #1c6a48;
+  border-radius: 10px;
+  box-shadow: 0 5px 8px #0f412b15;
+}
+.register-experience .mini-art-screen .auth-icon {
+  width: 25px;
+  height: 25px;
+  color: #1c6a48;
+}
+.register-experience .mini-art-screen i {
+  display: block;
+  height: 2px;
+  background: #adc695;
+  width: 23px;
+}
+.register-experience .mini-art-spark {
+  position: absolute;
+  right: -4px;
+  top: -5px;
+  color: #76a554;
+  font-size: 23px;
+}
+.register-experience .admin-access-note {
+  grid-area: admin;
+  margin: 0;
+  padding: 16px 22px;
+  border: 1px solid #dce6d8;
+  border-radius: 15px;
+  background: #f0f5eb;
+  gap: 15px;
+  align-self: start;
+}
+.register-experience .admin-access-icon {
+  width: 37px;
+  height: 37px;
+  border-radius: 11px;
+  background: #e1efd4;
+}
+.register-experience .admin-access-note h2 {
+  font-size: 16px;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+.register-experience .admin-access-note p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 5px;
+  color: #4f6157;
+}
+.register-experience .admin-access-note a {
+  font-size: 14px;
+  min-height: 44px;
+  gap: 11px;
+  color: #0a613a;
+}
+.register-experience .admin-access-note a .auth-icon {
+  width: 19px;
+  height: 19px;
+}
+/* Native #role remains visible and canonical; quick choices are optional views. */
+.register-experience .registration-panel {
+  grid-area: form;
+  padding: 28px;
+  border: 1px solid #dce5df;
+  border-radius: 25px;
+  background: #fff;
+  box-shadow: 0 8px 28px #123c2810;
+  min-width: 0;
+}
+.register-experience .auth-form-heading {
+  margin-bottom: 22px;
+}
+.register-experience .auth-form-kicker {
+  font-size: 12px;
+  color: #0b673e;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+.register-experience .auth-form-heading h2 {
+  font-size: 32px;
+  font-weight: 750;
+  letter-spacing: -1px;
+  margin-top: 6px;
+  line-height: 1.2;
+  color: #0a3323;
+}
+.register-experience .auth-form-heading > p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 9px;
+  min-height: 24px;
+  color: #4a6053;
+}
+.register-experience .register-form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 20px;
+}
+.register-experience .form-group {
+  margin-bottom: 19px;
+  min-width: 0;
+}
+.register-experience .form-group label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #173b29;
+}
+.register-experience label .auth-icon {
+  width: 19px;
+  height: 19px;
+  color: #0a6a40;
+}
+.register-experience .form-group input,
+.register-experience .form-group select {
+  min-height: 48px;
+  border: 1px solid #cad8ce;
+  background: #fff;
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 16px;
+  color: #17382a;
+  transition:
+    border-color 220ms,
+    box-shadow 220ms;
+  min-width: 0;
+}
+.register-experience .form-group input:focus,
+.register-experience .form-group select:focus {
+  border-color: #41865b;
+  box-shadow: 0 0 0 3px #e1efd5;
+}
+.register-experience .form-group small {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #52634f;
+  margin-top: 8px;
+}
+.register-experience .register-role-field {
+  grid-column: 1/-1;
+}
+.register-experience .quick-role-tiles {
+  display: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 11px;
+}
+.register-experience.register-enhanced .quick-role-tiles {
+  display: grid;
+}
+.register-experience .quick-role-tiles button {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 10px;
+  padding: 13px 12px;
+  border: 1px solid #d5e2cb;
+  border-radius: 12px;
+  background: #fbfcf8;
+  color: #204c34;
+  min-height: 88px;
+  cursor: pointer;
+  min-width: 0;
+  transition:
+    background-color 220ms,
+    border-color 220ms,
+    box-shadow 220ms;
+}
+.register-experience .quick-role-tiles button > .auth-icon {
+  width: 24px;
+  height: 24px;
+}
+.register-experience .quick-role-tiles strong {
+  font-size: 16px;
+  display: block;
+}
+.register-experience .quick-role-tiles small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 400;
+  margin-top: 4px;
+}
+.register-experience .choice-dot {
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid #9bb38c;
+  border-radius: 50%;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.register-experience .quick-role-tiles button[aria-pressed="true"] {
+  background: #edf5e4;
+  border-color: #2c7b4d;
+  box-shadow: inset 0 0 0 0.5px #2c7b4d;
+}
+.register-experience .quick-role-tiles button[aria-pressed="true"] .choice-dot {
+  border: 5px solid #1f7045;
+  background: #fff;
+}
+.register-experience .quick-role-tiles button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.register-experience .register-password-field {
+  position: relative;
+}
+.register-experience .register-password-field input {
+  padding-right: 48px;
+}
+.register-experience .register-password-toggle {
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  color: #536c5c;
+  cursor: pointer;
+}
+.register-experience .register-password-toggle .auth-icon {
+  width: 22px;
+  height: 22px;
+  transition:
+    transform 200ms,
+    color 200ms;
+}
+.register-experience .register-password-toggle:hover {
+  background: #eff5e9;
+}
+.register-experience .register-password-toggle[aria-pressed="true"] .auth-icon {
+  color: #05633a;
+  transform: scale(1.07);
+}
+.register-experience .registration-panel .full-btn {
+  width: 100%;
+  min-height: 51px;
+  font-size: 17px;
+  border-radius: 12px;
+  border: 0;
+  background: #005d38;
+  color: #fff;
+  transition:
+    transform 220ms,
+    box-shadow 220ms,
+    background-color 220ms;
+}
+.register-experience .registration-panel .full-btn:hover {
+  background: #00492d;
+  box-shadow: 0 5px 15px #095a3524;
+}
+.register-experience .registration-panel .full-btn:active {
+  transform: translateY(1px);
+}
+.register-experience .registration-panel .full-btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+.register-experience #registerForm[aria-busy="true"] #registerBtn:before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  border: 2px solid #ffffff70;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: register-spin 700ms linear infinite;
+}
+.register-experience .auth-form-footer {
+  text-align: center !important;
+  font-size: 14px;
+  margin-top: 19px !important;
+  color: #4b5f51;
+}
+.register-experience .auth-form-footer a {
+  font-weight: 700;
+  color: #006039;
+}
+.register-experience .field-error:empty {
+  display: none;
+}
+.register-experience .form-group .field-error {
+  color: #9c302a;
+  font-size: 13px;
+}
+.register-experience [aria-invalid="true"] {
+  border-color: #ac5045 !important;
+}
+.register-experience .message-box {
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  animation: register-message 200ms ease;
+}
+.register-experience .message-box.hidden {
+  animation: none;
+}
+.register-experience .signup-nextsteps {
+  border: 1px solid #c5ddba;
+  border-radius: 12px;
+  background: #f0f7e9;
+  padding: 15px;
+  margin-top: 17px;
+  font-size: 14px;
+  color: #245436;
+}
+.register-experience .signup-nextsteps p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: #456149;
+  margin-top: 7px;
+}
+/* Static, project-owned request-first illustration; no live records or claims. */
+.register-experience .registration-info {
+  grid-area: info;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(135deg, #eff6e5, #e3f0d7);
+  border: 1px solid #e0ebd7;
+  border-radius: 25px;
+  padding: 31px 32px;
+  min-width: 0;
+}
+.register-experience .registration-info:before {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  top: -145px;
+  right: -125px;
+  background: #d7eac7;
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+}
+.register-experience .registration-info h2 {
+  font-size: 39px;
+  line-height: 1.15;
+  letter-spacing: -1.25px;
+  color: #123e2a;
+  margin-top: 16px;
+}
+.register-experience .registration-info h2 em {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  color: #08633b;
+  white-space: nowrap;
+}
+.register-experience .registration-info-intro {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #4b6253;
+  max-width: 480px;
+  margin-top: 20px;
+}
+.register-experience .registration-info figure {
+  margin: 20px -7px 23px;
+}
+.register-experience .registration-info img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 560/310;
+  object-fit: contain;
+}
+.register-experience .registration-info figcaption {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #587050;
+  text-align: center;
+  margin-top: 5px;
+}
+.register-experience .registration-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 22px;
+}
+.register-experience .registration-benefits li {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.register-experience .registration-benefits li > .auth-icon {
+  width: 41px;
+  height: 41px;
+  padding: 9px;
+  background: #fffdf4;
+  border: 1px solid #d0e2c3;
+  border-radius: 12px;
+  color: #0a653c;
+  flex-shrink: 0;
+}
+.register-experience .registration-benefits h3 {
+  font-size: 18px;
+  line-height: 1.3;
+  color: #1b4c30;
+  margin: 0 0 7px;
+  letter-spacing: -0.3px;
+}
+.register-experience .registration-benefits p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #4d6552;
+}
+.register-experience .auth-page-footer {
+  width: 100%;
+  max-width: none;
+  border: 0;
+  border-radius: 45% 40% 0 0/30px 35px 0 0;
+  background: linear-gradient(
+    to bottom,
+    #d2e7c4 0 14px,
+    #45936a 15px 29px,
+    #146d46 30px 100%
+  );
+  min-height: 91px;
+  padding: 42px max(32px, calc((100vw - 1328px) / 2)) 18px;
+  color: white;
+  font-size: 12px;
+  align-items: flex-end;
+}
+.register-experience .auth-page-footer a {
+  color: white;
+}
+.register-experience .auth-page-footer .auth-icon {
+  width: 18px;
+  height: 18px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .register-experience .role-card:not(:disabled):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px #124c3b15;
+    border-color: #98b981;
+  }
+  .register-experience
+    .role-card:not(:disabled):hover
+    .role-card-action
+    .auth-icon {
+    translate: 3px 0;
+  }
+  .register-experience .quick-role-tiles button:not(:disabled):hover {
+    background: #f0f6e8;
+    border-color: #80a86b;
+  }
+}
+@keyframes register-enter {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes register-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes register-message {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.register-experience .register-enter {
+  animation: register-enter 420ms var(--register-ease)
+    var(--register-delay, 0ms) both;
+}
+.register-experience .register-enter:focus-within,
+.register-experience .register-enter:focus {
+  animation: none;
+}
+@media (max-width: 1250px) {
+  .register-experience .auth-container {
+    width: calc(100% - 64px);
+  }
+  .register-experience .auth-workspace {
+    gap: 22px 25px;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .register-experience .role-card {
+    padding: 18px 22px;
+  }
+  .register-experience .role-description {
+    max-width: 81%;
+    font-size: 15px;
+  }
+  .register-experience .role-card-title {
+    font-size: 26px;
+  }
+  .register-experience .role-mini-art {
+    width: 65px;
+    height: 82px;
+    right: 18px;
+    bottom: 19px;
+  }
+  .register-experience .mini-art-screen {
+    width: 43px;
+    height: 65px;
+  }
+  .register-experience .registration-info {
+    padding: 28px 25px;
+  }
+  .register-experience .registration-info h2 {
+    font-size: 32px;
+  }
+  .register-experience .registration-info h2 em {
+    white-space: normal;
+  }
+  .register-experience .registration-info-intro {
+    font-size: 16px;
+  }
+  .register-experience .registration-panel {
+    padding: 26px;
+  }
+  .register-experience .quick-role-tiles {
+    gap: 10px;
+  }
+  .register-experience .quick-role-tiles button {
+    padding: 12px 9px;
+    gap: 8px;
+  }
+  .register-experience .quick-role-tiles button > .auth-icon {
+    display: none;
+  }
+  .register-experience .quick-role-tiles small {
+    font-size: 12px;
+  }
+  .register-experience .register-form-grid {
+    gap: 0 16px;
+  }
+}
+@media (max-width: 850px) {
+  .register-experience .auth-container {
+    width: calc(100% - 48px);
+  }
+  .register-experience .auth-workspace {
+    grid-template-columns: 1fr;
+    grid-template-areas: "welcome" "roles" "form" "admin" "info";
+    max-width: 708px;
+    gap: 25px;
+    padding-bottom: 38px;
+  }
+  .register-experience .auth-page-heading h1 {
+    font-size: 46px;
+  }
+  .register-experience .auth-page-heading > p:last-child {
+    font-size: 17px;
+  }
+  .register-experience .role-card {
+    min-height: 218px;
+    padding: 18px;
+  }
+  .register-experience .role-card-title {
+    font-size: 24px;
+  }
+  .register-experience .role-description {
+    max-width: none;
+    font-size: 14px;
+    min-height: 0;
+  }
+  .register-experience .role-mini-art {
+    display: none;
+  }
+  .register-experience .role-card-action {
+    font-size: 14px;
+    padding: 10px 14px;
+    gap: 13px;
+  }
+  .register-experience .registration-panel {
+    padding: 29px;
+  }
+  .register-experience .registration-info {
+    padding: 30px;
+  }
+  .register-experience .registration-info h2 {
+    font-size: 38px;
+  }
+  .register-experience .registration-info h2 em {
+    white-space: nowrap;
+  }
+  .register-experience .registration-info figure {
+    max-width: 560px;
+    margin: 19px auto 25px;
+  }
+  .register-experience .registration-info-intro {
+    max-width: 590px;
+  }
+  .register-experience .registration-benefits {
+    gap: 23px;
+  }
+  .register-experience .registration-benefits p {
+    font-size: 16px;
+  }
+  .register-experience .quick-role-tiles button > .auth-icon {
+    display: block;
+  }
+  .register-experience .admin-access-note {
+    padding: 18px 20px;
+  }
+  .register-experience .admin-access-note a {
+    font-size: 14px;
+  }
+  .register-experience .auth-page-footer {
+    padding-inline: 24px;
+  }
+}
+@media (max-width: 600px) {
+  .register-experience .auth-container {
+    width: calc(100% - 32px);
+  }
+  .register-experience .auth-header-inner {
+    min-height: 68px;
+    gap: 15px;
+  }
+  .register-experience .auth-brand {
+    font-size: 26px;
+  }
+  .register-experience .auth-brand > span:first-child {
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
+  .register-experience .auth-header-link > span {
+    display: none;
+  }
+  .register-experience .auth-header-link a {
+    font-size: 14px;
+    padding: 9px 15px;
+    gap: 12px;
+  }
+  .register-experience .auth-workspace {
+    padding-top: 25px;
+    gap: 23px;
+  }
+  .register-experience .auth-eyebrow {
+    font-size: 10px !important;
+    letter-spacing: 1px;
+  }
+  .register-experience .auth-page-heading h1 {
+    font-size: 39px;
+    line-height: 1.15;
+    letter-spacing: -1.3px;
+    margin-top: 13px;
+  }
+  .register-experience .auth-page-heading h1 em {
+    display: block;
+    margin-top: 4px;
+  }
+  .register-experience .auth-page-heading > p:last-child {
+    font-size: 15px;
+    line-height: 1.65;
+    margin-top: 20px;
+  }
+  .register-experience .register-roles {
+    gap: 12px;
+  }
+  .register-experience .role-card {
+    min-height: 188px;
+    padding: 15px 13px;
+    border-radius: 18px;
+  }
+  .register-experience .role-card-top {
+    position: relative;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .register-experience .role-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+  .register-experience .role-icon .auth-icon {
+    width: 21px;
+    height: 21px;
+  }
+  .register-experience .role-name {
+    font-size: 10px;
+    letter-spacing: 0.7px;
+  }
+  .register-experience .role-selected-mark {
+    position: absolute;
+    right: -6px;
+    top: -7px;
+    width: 20px;
+    height: 20px;
+  }
+  .register-experience .role-selected-mark .auth-icon {
+    width: 13px;
+    height: 13px;
+  }
+  .register-experience .role-card-title {
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .register-experience .role-description {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    margin: 0;
+  }
+  .register-experience .role-mobile-summary {
+    display: block;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #496048;
+    margin-bottom: 13px;
+  }
+  .register-experience .role-card-action {
+    font-size: 12px;
+    min-height: 44px;
+    padding: 9px 9px;
+    gap: 6px;
+    line-height: 1.3;
+  }
+  .register-experience .role-card-action .auth-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .register-experience .registration-panel {
+    padding: 24px 21px;
+    border-radius: 22px;
+  }
+  .register-experience .auth-form-heading h2 {
+    font-size: 29px;
+  }
+  .register-experience .auth-form-heading > p {
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 45px;
+  }
+  .register-experience .auth-form-kicker {
+    font-size: 11px;
+  }
+  .register-experience .register-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .register-experience .form-group {
+    margin-bottom: 20px;
+  }
+  .register-experience .form-group label {
+    font-size: 14px;
+  }
+  .register-experience .form-group input,
+  .register-experience .form-group select {
+    font-size: 16px;
+    min-height: 49px;
+  }
+  .register-experience .quick-role-tiles {
+    gap: 10px;
+  }
+  .register-experience .quick-role-tiles button {
+    padding: 12px 10px;
+    gap: 7px;
+    align-items: flex-start;
+  }
+  .register-experience .quick-role-tiles button > .auth-icon {
+    display: none;
+  }
+  .register-experience .quick-role-tiles strong {
+    font-size: 15px;
+  }
+  .register-experience .quick-role-tiles small {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .register-experience .choice-dot {
+    width: 15px;
+    height: 15px;
+    margin-top: 4px;
+  }
+  .register-experience .admin-access-note {
+    display: grid;
+    grid-template-columns: 37px minmax(0, 1fr);
+    padding: 18px;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .register-experience .admin-access-note div {
+    min-width: 0;
+  }
+  .register-experience .admin-access-note h2 {
+    font-size: 15px;
+  }
+  .register-experience .admin-access-note p {
+    font-size: 14px;
+  }
+  .register-experience .admin-access-note a {
+    grid-column: 2;
+    margin-left: 0;
+    font-size: 14px;
+    min-height: 44px;
+  }
+  .register-experience .registration-info {
+    padding: 26px 22px;
+    border-radius: 22px;
+  }
+  .register-experience .registration-info h2 {
+    font-size: 33px;
+    letter-spacing: -1px;
+  }
+  .register-experience .registration-info h2 em {
+    white-space: normal;
+  }
+  .register-experience .registration-info-intro {
+    font-size: 16px;
+    margin-top: 17px;
+  }
+  .register-experience .registration-info figure {
+    margin: 19px -8px 23px;
+  }
+  .register-experience .registration-benefits li {
+    gap: 12px;
+  }
+  .register-experience .registration-benefits li > .auth-icon {
+    width: 36px;
+    height: 36px;
+    padding: 7px;
+    border-radius: 10px;
+  }
+  .register-experience .registration-benefits h3 {
+    font-size: 17px;
+  }
+  .register-experience .registration-benefits p {
+    font-size: 15px;
+  }
+  .register-experience .registration-info figcaption {
+    font-size: 12px;
+  }
+  .register-experience .auth-page-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    text-align: center;
+    min-height: 110px;
+    padding-top: 43px;
+  }
+}
+@media (max-width: 350px) {
+  .register-experience .auth-container {
+    width: calc(100% - 28px);
+  }
+  .register-experience .auth-page-heading h1 {
+    font-size: 34px;
+  }
+  .register-experience .role-card {
+    padding: 14px 11px;
+    min-height: 194px;
+  }
+  .register-experience .role-icon {
+    width: 27px;
+    height: 27px;
+  }
+  .register-experience .role-name {
+    font-size: 9px;
+  }
+  .register-experience .role-card-top {
+    gap: 6px;
+  }
+  .register-experience .role-card-title {
+    font-size: 18px;
+  }
+  .register-experience .role-card-action {
+    padding: 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+  .register-experience .role-mobile-summary {
+    font-size: 12px;
+  }
+  .register-experience .registration-panel {
+    padding: 23px 17px;
+  }
+  .register-experience .auth-form-heading h2 {
+    font-size: 27px;
+  }
+  .register-experience .quick-role-tiles button {
+    padding: 11px 8px;
+  }
+  .register-experience .quick-role-tiles small {
+    font-size: 11px;
+  }
+  .register-experience .choice-dot {
+    width: 13px;
+    height: 13px;
+  }
+  .register-experience .registration-info {
+    padding: 24px 20px;
+  }
+  .register-experience .registration-info h2 {
+    font-size: 30px;
+  }
+  .register-experience .admin-access-note a {
+    margin-left: 0;
+  }
+
+  .register-experience .registration-benefits li > .auth-icon {
+    width: 33px;
+    height: 33px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .register-experience *,
+  .register-experience *:before,
+  .register-experience *:after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .register-experience .role-card:not(:disabled):hover {
+    transform: none;
+  }
+  .register-experience .role-card-action .auth-icon,
+  .register-experience .auth-header-link .auth-icon {
+    translate: none !important;
+  }
+}
+@media (forced-colors: active) {
+  .register-experience .role-card,
+  .register-experience .role-card-action,
+  .register-experience .quick-role-tiles button,
+  .register-experience .registration-panel {
+    border: 1px solid CanvasText;
+  }
+  .register-experience .role-selected-mark {
+    forced-color-adjust: none;
+  }
+  .register-experience .role-mini-art {
+    display: none;
+  }
+}
