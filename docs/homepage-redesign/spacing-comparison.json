@@ -1,0 +1,204 @@
+{
+  "baseCommit": "f7069cd84eba49b6fa0a931f660171c184e54b1f",
+  "method": "Measured computed styles and layout in local Chromium, reduced motion, unchanged source imagery; no backend requests",
+  "viewports": [
+    {
+      "width": 1536,
+      "before": {
+        "pageHeight": 1143,
+        "contentWidth": 1432,
+        "heroHeight": 282.4,
+        "headingFont": 44,
+        "sectionHeadingFont": 23,
+        "serviceImageHeight": 72,
+        "serviceDescriptionFont": 12,
+        "serviceGap": 14,
+        "servicePadding": 17,
+        "categoryTileHeight": 63.4,
+        "avatarSize": 43,
+        "buttonHeight": 37,
+        "categorySectionGap": 18
+      },
+      "after": {
+        "pageHeight": 3538,
+        "contentWidth": 1328,
+        "heroHeight": 540,
+        "headingFont": 66,
+        "sectionHeadingFont": 39.936,
+        "serviceImageHeight": 172,
+        "serviceDescriptionFont": 16,
+        "serviceGap": 24,
+        "servicePadding": 22,
+        "categoryTileHeight": 124,
+        "avatarSize": 66,
+        "buttonHeight": 52,
+        "categorySectionGap": 99.8
+      }
+    },
+    {
+      "width": 1440,
+      "before": {
+        "pageHeight": 1171,
+        "contentWidth": 1336,
+        "heroHeight": 282.4,
+        "headingFont": 44,
+        "sectionHeadingFont": 23,
+        "serviceImageHeight": 72,
+        "serviceDescriptionFont": 12,
+        "serviceGap": 14,
+        "servicePadding": 17,
+        "categoryTileHeight": 63.4,
+        "avatarSize": 43,
+        "buttonHeight": 37,
+        "categorySectionGap": 18
+      },
+      "after": {
+        "pageHeight": 3486,
+        "contentWidth": 1328,
+        "heroHeight": 540,
+        "headingFont": 61.92,
+        "sectionHeadingFont": 37.44,
+        "serviceImageHeight": 172,
+        "serviceDescriptionFont": 16,
+        "serviceGap": 24,
+        "servicePadding": 22,
+        "categoryTileHeight": 124,
+        "avatarSize": 66,
+        "buttonHeight": 52,
+        "categorySectionGap": 93.6
+      }
+    },
+    {
+      "width": 1024,
+      "before": {
+        "pageHeight": 1571,
+        "contentWidth": 960,
+        "heroHeight": 296.6,
+        "headingFont": 43,
+        "sectionHeadingFont": 23,
+        "serviceImageHeight": 78,
+        "serviceDescriptionFont": 11,
+        "serviceGap": 11,
+        "servicePadding": 12,
+        "categoryTileHeight": 66,
+        "avatarSize": 43,
+        "buttonHeight": 37,
+        "categorySectionGap": 22
+      },
+      "after": {
+        "pageHeight": 4706,
+        "contentWidth": 952,
+        "heroHeight": 864.5,
+        "headingFont": 64,
+        "sectionHeadingFont": 28,
+        "serviceImageHeight": 190,
+        "serviceDescriptionFont": 16,
+        "serviceGap": 24,
+        "servicePadding": 22,
+        "categoryTileHeight": 124,
+        "avatarSize": 57,
+        "buttonHeight": 52,
+        "categorySectionGap": 66.5
+      }
+    },
+    {
+      "width": 768,
+      "before": {
+        "pageHeight": 2037,
+        "contentWidth": 728,
+        "heroHeight": 320,
+        "headingFont": 39,
+        "sectionHeadingFont": 23,
+        "serviceImageHeight": 105,
+        "serviceDescriptionFont": 12,
+        "serviceGap": 13,
+        "servicePadding": 13,
+        "categoryTileHeight": 72,
+        "avatarSize": 35,
+        "buttonHeight": 38,
+        "categorySectionGap": 23
+      },
+      "after": {
+        "pageHeight": 5178,
+        "contentWidth": 720,
+        "heroHeight": 845.9,
+        "headingFont": 58,
+        "sectionHeadingFont": 28,
+        "serviceImageHeight": 190,
+        "serviceDescriptionFont": 16,
+        "serviceGap": 22,
+        "servicePadding": 24,
+        "categoryTileHeight": 118,
+        "avatarSize": 66,
+        "buttonHeight": 52,
+        "categorySectionGap": 52
+      }
+    },
+    {
+      "width": 390,
+      "before": {
+        "pageHeight": 3647,
+        "contentWidth": 358,
+        "heroHeight": 597.2,
+        "headingFont": 43,
+        "sectionHeadingFont": 23,
+        "serviceImageHeight": 94,
+        "serviceDescriptionFont": 12,
+        "serviceGap": 12,
+        "servicePadding": 11,
+        "categoryTileHeight": 75,
+        "avatarSize": 47,
+        "buttonHeight": 43,
+        "categorySectionGap": 28
+      },
+      "after": {
+        "pageHeight": 7184,
+        "contentWidth": 354,
+        "heroHeight": 749.2,
+        "headingFont": 46,
+        "sectionHeadingFont": 30,
+        "serviceImageHeight": 210,
+        "serviceDescriptionFont": 16,
+        "serviceGap": 24,
+        "servicePadding": 24,
+        "categoryTileHeight": 110,
+        "avatarSize": 56,
+        "buttonHeight": 50,
+        "categorySectionGap": 56
+      }
+    },
+    {
+      "width": 320,
+      "before": {
+        "pageHeight": 3726,
+        "contentWidth": 288,
+        "heroHeight": 579.9,
+        "headingFont": 38,
+        "sectionHeadingFont": 23,
+        "serviceImageHeight": 82,
+        "serviceDescriptionFont": 11,
+        "serviceGap": 12,
+        "servicePadding": 11,
+        "categoryTileHeight": 75,
+        "avatarSize": 47,
+        "buttonHeight": 43,
+        "categorySectionGap": 28
+      },
+      "after": {
+        "pageHeight": 7661,
+        "contentWidth": 288,
+        "heroHeight": 760.9,
+        "headingFont": 40,
+        "sectionHeadingFont": 28,
+        "serviceImageHeight": 210,
+        "serviceDescriptionFont": 16,
+        "serviceGap": 24,
+        "servicePadding": 24,
+        "categoryTileHeight": 110,
+        "avatarSize": 48,
+        "buttonHeight": 50,
+        "categorySectionGap": 56
+      }
+    }
+  ]
+}

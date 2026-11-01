@@ -1,0 +1,10 @@
+PASS motion, pointer, focus, sizes, reduced motion, layout stability: 1536px; CLS=0
+PASS motion, pointer, focus, sizes, reduced motion, layout stability: 1440px; CLS=0
+PASS motion, pointer, focus, sizes, reduced motion, layout stability: 1024px; CLS=0
+PASS motion, pointer, focus, sizes, reduced motion, layout stability: 768px; CLS=0
+PASS motion, touch, focus, sizes, reduced motion, layout stability: 390px; CLS=0
+PASS motion, touch, focus, sizes, reduced motion, layout stability: 320px; CLS=0
+PASS visible content fallback: no-js
+PASS visible content fallback: missing-observer
+PASS visible content fallback: blocked-home-js
+PASS actual Chromium screencast encoded: 264 frames; /workspace/work/igotu-homepage-redesign/docs/homepage-redesign/homepage-motion.mp4

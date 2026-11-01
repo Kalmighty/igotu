@@ -1,0 +1,50 @@
+{
+  "scope": "OFFLINE_PUBLIC_UI_ONLY",
+  "viewports": [
+    {
+      "width": 1536,
+      "overflow": false,
+      "expandedDisclosures": "PASS",
+      "categories": 7,
+      "axeViolations": 0
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "expandedDisclosures": "PASS",
+      "categories": 7,
+      "axeViolations": 0
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "expandedDisclosures": "PASS",
+      "categories": 7,
+      "axeViolations": 0
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "expandedDisclosures": "PASS",
+      "categories": 7,
+      "axeViolations": 0
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "expandedDisclosures": "PASS",
+      "categories": 7,
+      "axeViolations": 0
+    },
+    {
+      "width": 320,
+      "overflow": false,
+      "expandedDisclosures": "PASS",
+      "categories": 7,
+      "axeViolations": 0
+    }
+  ],
+  "consoleErrors": [],
+  "externalRequests": [],
+  "liveBackendTested": false
+}

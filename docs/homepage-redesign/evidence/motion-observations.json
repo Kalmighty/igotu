@@ -1,0 +1,60 @@
+{
+  "scope": "OFFLINE_UI_ONLY",
+  "results": [
+    {
+      "width": 1536,
+      "touch": false,
+      "motion": "PASS",
+      "reducedMotion": "PASS",
+      "cls": 0,
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "touch": false,
+      "motion": "PASS",
+      "reducedMotion": "PASS",
+      "cls": 0,
+      "overflow": false
+    },
+    {
+      "width": 1024,
+      "touch": false,
+      "motion": "PASS",
+      "reducedMotion": "PASS",
+      "cls": 0,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "touch": false,
+      "motion": "PASS",
+      "reducedMotion": "PASS",
+      "cls": 0,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "touch": true,
+      "motion": "PASS",
+      "reducedMotion": "PASS",
+      "cls": 0,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "touch": true,
+      "motion": "PASS",
+      "reducedMotion": "PASS",
+      "cls": 0,
+      "overflow": false
+    }
+  ],
+  "fallbacks": [
+    "no-js",
+    "missing-observer",
+    "blocked-home-js"
+  ],
+  "externalRequests": [],
+  "browserErrors": []
+}
