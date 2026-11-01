@@ -93,7 +93,7 @@ const fixture = fs.readFileSync(
   }
   try {
     fs.mkdirSync(output, { recursive: true });
-    for (const width of [1536, 1440, 1024, 768, 390, 320]) {
+    for (const width of [1536, 1440, 1366, 1024, 768, 390, 320]) {
       const { p, c } = await open(width);
       await p.waitForFunction(
         () =>

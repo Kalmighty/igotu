@@ -1,5 +1,6 @@
 PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 1536px
 PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 1440px
+PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 1366px
 PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 1024px
 PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 768px
 PASS responsive/keyboard/roles/input retention/password controls/six static scenes/axe: 390px
@@ -11,3 +12,4 @@ PASS independent login and static workflow fallback: blockPreview
 PASS independent login and static workflow fallback: badImage
 PASS independent login and static workflow fallback: noJS
 PASS fixed illustration dimensions before and after delayed image loading
+PASS actual browser recording of HTML/CSS animation: 217 frames; /workspace/work/igotu-login-preview/docs/login-preview/workflow-demo.mp4

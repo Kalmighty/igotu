@@ -1,0 +1,2 @@
+PASS Matching fails closed when service_requests eligibility lookup fails
+{"passed":1,"failed":0}

@@ -1643,3 +1643,293 @@
     display: none;
   }
 }
+/* Final usability refinement: retain the design, give sign-in greater emphasis. */
+.login-redesign .auth-header-inner {
+  min-height: 68px;
+}
+.login-redesign .auth-workspace {
+  padding-top: 18px;
+}
+.login-redesign .auth-page-heading {
+  margin-bottom: 18px;
+}
+.login-redesign .auth-page-heading h1 {
+  font-size: clamp(44px, 4vw, 58px);
+  margin-top: 8px;
+}
+.login-redesign .auth-page-heading > p:last-child {
+  font-size: 18px;
+  margin-top: 12px;
+}
+.login-redesign .login-roles {
+  margin-bottom: 20px;
+}
+.login-redesign .role-card {
+  min-height: 216px;
+  padding: 18px 24px;
+}
+.login-redesign .role-card-top {
+  margin-bottom: 8px;
+}
+.login-redesign .role-icon {
+  width: 40px;
+  height: 40px;
+}
+.login-redesign .role-icon .auth-icon {
+  width: 26px;
+  height: 26px;
+}
+.login-redesign .role-card-title {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.login-redesign .role-description {
+  font-size: 15px;
+  line-height: 1.5;
+  min-height: 45px;
+  margin-bottom: 12px;
+}
+.login-redesign .auth-login-layout {
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+}
+.login-redesign .auth-form-panel {
+  padding: 22px 24px;
+}
+.login-redesign .auth-form-heading {
+  margin-bottom: 14px;
+}
+.login-redesign .auth-form-kicker {
+  font-size: 13px;
+}
+.login-redesign .auth-form-heading h2 {
+  margin-top: 4px;
+}
+.login-redesign .auth-form-heading > p {
+  font-size: 14px;
+  line-height: 1.55;
+  min-height: 24px;
+  margin-top: 6px;
+}
+.login-redesign .form-group {
+  margin-bottom: 14px;
+}
+.login-redesign .form-group label {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.login-redesign .form-group input {
+  min-height: 48px;
+}
+.login-redesign .password-label-row {
+  align-items: center;
+}
+.login-redesign .forgot-password-link {
+  font-size: 14px;
+  min-height: 32px;
+}
+.login-redesign .password-toggle {
+  width: 44px;
+  height: 44px;
+}
+.login-redesign .auth-form-footer {
+  font-size: 15px;
+  margin-top: 14px !important;
+}
+.login-redesign .auth-form-note {
+  font-size: 13px;
+  margin-top: 16px !important;
+  padding-top: 12px;
+}
+.login-redesign .auth-welcome-note {
+  grid-template-columns: minmax(0, 0.73fr) minmax(0, 1.27fr);
+  gap: 20px;
+  padding-top: 18px;
+}
+.login-redesign .preview-intro h2 {
+  font-size: 34px;
+}
+.login-redesign .preview-intro h2 em {
+  font-size: 32px;
+}
+.login-redesign .preview-intro > p:last-child {
+  font-size: 16px;
+}
+.login-redesign .preview-canvas {
+  aspect-ratio: 1.28;
+}
+.login-redesign .service-preview figcaption {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.login-redesign .preview-controls button {
+  font-size: 13px;
+  min-height: 44px;
+  padding: 8px 12px;
+}
+.login-redesign #previewState {
+  font-size: 13px;
+}
+.login-redesign .preview-transcript summary {
+  font-size: 14px;
+  min-height: 44px;
+}
+.login-redesign .preview-transcript ol {
+  font-size: 14px;
+}
+.login-redesign .auth-note-points,
+.login-redesign .auth-note-points > span {
+  font-size: 13px;
+}
+@media (max-width: 1250px) {
+  .login-redesign .auth-login-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .login-redesign .auth-welcome-note {
+    grid-template-columns: 1fr;
+    padding-top: 0;
+  }
+  .login-redesign .auth-form-heading > p {
+    min-height: 44px;
+  }
+  .login-redesign .role-card {
+    padding: 18px;
+  }
+  .login-redesign .role-card-title {
+    font-size: 23px;
+  }
+}
+@media (max-width: 850px) {
+  .login-redesign .auth-login-layout {
+    grid-template-columns: 1fr;
+  }
+  .login-redesign .auth-page-heading h1 {
+    font-size: 46px;
+  }
+  .login-redesign .role-card {
+    min-height: 104px;
+    padding: 14px 17px;
+  }
+  .login-redesign .role-description {
+    min-height: 0;
+    margin: 0;
+  }
+  .login-redesign .role-card-top {
+    margin: 0;
+  }
+  .login-redesign .auth-form-panel {
+    padding: 26px;
+  }
+  .login-redesign .preview-intro h2,
+  .login-redesign .preview-intro h2 em {
+    font-size: 34px;
+  }
+  .login-redesign .preview-canvas {
+    aspect-ratio: 1.6;
+  }
+  .login-redesign .auth-form-heading > p {
+    min-height: 44px;
+  }
+  .login-redesign .auth-note-points {
+    gap: 20px;
+  }
+}
+@media (max-width: 600px) {
+  .login-redesign .auth-header-inner {
+    min-height: 68px;
+  }
+  .login-redesign .auth-workspace {
+    padding-top: 22px;
+  }
+  .login-redesign .auth-page-heading {
+    margin-bottom: 20px;
+  }
+  .login-redesign .auth-page-heading h1 {
+    font-size: 39px;
+    margin-top: 12px;
+  }
+  .login-redesign .auth-page-heading > p:last-child {
+    font-size: 15px;
+    margin-top: 16px;
+  }
+  .login-redesign .role-card {
+    min-height: 100px;
+    padding: 14px 9px;
+  }
+  .login-redesign .role-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .login-redesign .role-icon .auth-icon {
+    width: 23px;
+    height: 23px;
+  }
+  .login-redesign .role-name {
+    font-size: 13px;
+  }
+  .login-redesign .auth-form-panel {
+    padding: 22px 20px;
+  }
+  .login-redesign .auth-form-heading > p {
+    font-size: 14px;
+    min-height: 66px;
+  }
+  .login-redesign .form-group label {
+    font-size: 14px;
+  }
+  .login-redesign .forgot-password-link {
+    font-size: 13px;
+  }
+  .login-redesign .auth-form-footer {
+    font-size: 14px;
+  }
+  .login-redesign .auth-form-note {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .login-redesign .preview-intro h2 {
+    font-size: 32px;
+  }
+  .login-redesign .preview-intro h2 em {
+    font-size: 30px;
+  }
+  .login-redesign .preview-canvas {
+    aspect-ratio: 1.35;
+  }
+  .login-redesign .auth-note-points {
+    gap: 16px;
+  }
+}
+@media (max-width: 350px) {
+  .login-redesign .auth-page-heading h1 {
+    font-size: 34px;
+  }
+  .login-redesign .role-name {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  .login-redesign .auth-form-panel {
+    padding: 22px 17px;
+  }
+  .login-redesign .forgot-password-link {
+    font-size: 12px;
+  }
+  .login-redesign .preview-intro h2 {
+    font-size: 30px;
+  }
+  .login-redesign .preview-intro h2 em {
+    font-size: 28px;
+  }
+  .login-redesign .preview-canvas {
+    aspect-ratio: 1.15;
+  }
+}
+
+/* Reserve the real selector layout until the unchanged role script is ready.
+   Visibility keeps uninitialized controls out of focus and accessibility trees. */
+.login-redesign .login-roles {
+  display: grid;
+  visibility: hidden;
+}
+.login-redesign.auth-roles-ready .login-roles {
+  visibility: visible;
+}

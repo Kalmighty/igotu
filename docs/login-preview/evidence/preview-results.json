@@ -16,6 +16,13 @@
       "inputRetention": "PASS"
     },
     {
+      "width": 1366,
+      "responsive": "PASS",
+      "a11y": "PASS",
+      "sixScenes": "PASS",
+      "inputRetention": "PASS"
+    },
+    {
       "width": 1024,
       "responsive": "PASS",
       "a11y": "PASS",

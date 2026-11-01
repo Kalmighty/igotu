@@ -1,90 +1,536 @@
 {
-  "scope": "OFFLINE_LOGIN_PRESENTATION_REVIEW_ONLY",
+  "scope": "OFFLINE_LOGIN_UI_REFINEMENT_ONLY",
   "branch": "feat/login-service-preview",
-  "baseBranch": "feat/homepage-reference-redesign",
-  "baseCommit": "00ab4ccc330dc7e192d75e20155f0e99d4b6b461",
+  "baselineCommit": "17ec4d7826724c56d7ca3642eef58f941d9f78b7",
   "date": "2026-11-01",
   "timezone": "Asia/Kuala_Lumpur",
+  "viewports": [
+    1536,
+    1440,
+    1366,
+    1024,
+    768,
+    390,
+    320
+  ],
   "results": {
-    "responsive": [
-      1536,
-      1440,
-      1024,
-      768,
-      390,
-      320
-    ],
-    "previewSuite": "PASS; all six scenes at all six widths, reduced motion, native playback, input retention, password controls, busy/error states, fallback, reserved image dimensions",
-    "axe": "PASS WCAG A/AA and best-practice checks at all six widths; existing auth suite includes registration too",
-    "roleLoginMatrix": "PASS existing suite: 3 matching accepts and all 6 mismatches rejected; account roles fetched by unchanged Auth module",
-    "existingAuthSmoke": "PASS",
+    "comparisonSuite": "PASS seven requested widths, including 1366x768 and 1536x864",
+    "previewSuite": "PASS seven widths, all six scenes, controls, image/script failure, native form busy/error and password controls",
+    "axe": "PASS WCAG A/AA and best-practice checks at seven widths",
+    "keyboard": "PASS role selection, input retention, password and playback controls, native links",
+    "authRoleMatrix": "PASS 3 accepts and 6 mismatches rejected, plus cleanup/onboarding/inactive/error cases",
+    "identityVerification": "PASS existing suite including 16 guarded routes",
+    "layouts": 84,
     "functional": {
-      "passed": 94,
-      "failed": 0
+      "final": {
+        "passed": 94,
+        "failed": 0
+      },
+      "priorFullRuns": [
+        {
+          "passed": 93,
+          "failed": 1,
+          "observation": "Recommendation error text not yet displayed"
+        },
+        {
+          "passed": 93,
+          "failed": 1,
+          "observation": "Leaflet popup color-contrast result"
+        }
+      ],
+      "isolatedCases": "Both passed",
+      "functionalRunnerModified": false
     },
-    "workspaceLayouts": 84,
-    "mandatoryVerification": "PASS including 16 direct guarded workspace routes",
-    "realSdkCleanup": "PASS local/failed/thrown signout; all HTTP responses synthetic",
-    "realSdkLifecycle": "PASS cross-tab signout and invalid-refresh lock; all HTTP responses synthetic",
+    "horizontalOverflow": false,
+    "initialLayoutShift": [
+      {
+        "width": 1536,
+        "value": 0
+      },
+      {
+        "width": 1440,
+        "value": 0
+      },
+      {
+        "width": 1366,
+        "value": 0
+      },
+      {
+        "width": 1024,
+        "value": 0
+      },
+      {
+        "width": 768,
+        "value": 0
+      },
+      {
+        "width": 390,
+        "value": 0
+      },
+      {
+        "width": 320,
+        "value": 0
+      }
+    ],
     "browserErrors": 0,
     "externalPreviewRequests": 0,
-    "protectedExistingFiles": 326,
-    "controlAttributes": "Unchanged email/password/form/submit/status and all role-button attributes",
+    "formAttributeComparison": "PASS unchanged original form/role attributes",
+    "protectedFiles": 329,
     "syntax": "PASS",
     "whitespace": "PASS",
-    "scopeAndCredentialPatternScan": "PASS",
-    "publicLinks": "PASS actual header/form registration links, password-recovery link and homepage logo",
-    "recordedAnimation": "PASS actual Chromium screencast, 214 frames, approximately 13 seconds, video-only/no audio"
+    "credentialPatternAndScopeScan": "PASS"
   },
-  "animation": {
-    "implementation": "Working HTML/CSS/SVG scenes over original generated WebP illustration; not an embedded video or GIF",
-    "loopSeconds": 10.8,
-    "scenes": 6,
-    "pausePlay": true,
-    "manualNextStep": true,
-    "offscreen": "Actual IntersectionObserver verified",
-    "backgroundTab": "Standard document.hidden handler tested with simulated visibility events; not physical OS background profiling",
-    "reducedMotion": "Static preview; explicit manual steps; restoring preference never forces autoplay",
-    "fallback": "Form and transcript work when optional preview script/image fails; no-JS illustration is static, authentication still requires existing JS",
-    "recording": "workflow-demo.mp4: actual local Chromium CDP screencast; no audio; review artifact only"
-  },
-  "assets": [
+  "measurements": [
     {
-      "file": "igotu_v2/assets/login/login-leaves.svg",
-      "bytes": 695,
-      "sha256": "ac33743c7e75fa5890ec00bd01db92c687e9e43b599084089e7efb8a6475ec2a"
+      "width": 1536,
+      "height": 864,
+      "before": {
+        "viewport": {
+          "width": 1536,
+          "height": 864
+        },
+        "formTop": 567.1,
+        "formWidth": 493.3,
+        "formHeight": 541.5,
+        "formColumnPercent": 37,
+        "emailTop": 764.5,
+        "passwordTop": 866.1,
+        "loginButton": {
+          "top": 935.5,
+          "bottom": 986.7,
+          "height": 51.2,
+          "fullyVisible": false,
+          "scrollNeededPx": 123
+        },
+        "roleCardHeights": [
+          271,
+          271,
+          271
+        ],
+        "pageHeight": 1233,
+        "overflow": false,
+        "layoutShift": 0.13787268194151514
+      },
+      "after": {
+        "viewport": {
+          "width": 1536,
+          "height": 864
+        },
+        "formTop": 477.6,
+        "formWidth": 599.4,
+        "formHeight": 486.3,
+        "formColumnPercent": 45,
+        "emailTop": 642.6,
+        "passwordTop": 736.6,
+        "loginButton": {
+          "top": 802.6,
+          "bottom": 853.8,
+          "height": 51.2,
+          "fullyVisible": true,
+          "scrollNeededPx": 0
+        },
+        "roleCardHeights": [
+          222.6,
+          222.6,
+          222.6
+        ],
+        "pageHeight": 1159,
+        "overflow": false,
+        "layoutShift": 0
+      },
+      "formTopReductionPx": 89.5,
+      "formTopReductionPercent": 15.8
     },
     {
-      "file": "igotu_v2/assets/login/student-preview.webp",
-      "bytes": 67740,
-      "sha256": "8bbaef97fa2e3d0c7dbef40415fe63e2bfdf62f1f919666fbdddfae0b795dc63"
+      "width": 1440,
+      "height": 900,
+      "before": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "formTop": 563.3,
+        "formWidth": 487.4,
+        "formHeight": 541.5,
+        "formColumnPercent": 37,
+        "emailTop": 760.6,
+        "passwordTop": 862.2,
+        "loginButton": {
+          "top": 931.6,
+          "bottom": 982.8,
+          "height": 51.2,
+          "fullyVisible": false,
+          "scrollNeededPx": 83
+        },
+        "roleCardHeights": [
+          271,
+          271,
+          271
+        ],
+        "pageHeight": 1229,
+        "overflow": false,
+        "layoutShift": 0.15834316942086762
+      },
+      "after": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "formTop": 476.1,
+        "formWidth": 592.2,
+        "formHeight": 486.3,
+        "formColumnPercent": 45,
+        "emailTop": 641.1,
+        "passwordTop": 735.1,
+        "loginButton": {
+          "top": 801.1,
+          "bottom": 852.3,
+          "height": 51.2,
+          "fullyVisible": true,
+          "scrollNeededPx": 0
+        },
+        "roleCardHeights": [
+          222.6,
+          222.6,
+          222.6
+        ],
+        "pageHeight": 1153,
+        "overflow": false,
+        "layoutShift": 0
+      },
+      "formTopReductionPx": 87.2,
+      "formTopReductionPercent": 15.5
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "before": {
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "formTop": 558.8,
+        "formWidth": 460,
+        "formHeight": 541.5,
+        "formColumnPercent": 37,
+        "emailTop": 756.2,
+        "passwordTop": 857.8,
+        "loginButton": {
+          "top": 927.2,
+          "bottom": 978.4,
+          "height": 51.2,
+          "fullyVisible": false,
+          "scrollNeededPx": 211
+        },
+        "roleCardHeights": [
+          271,
+          271,
+          271
+        ],
+        "pageHeight": 1224,
+        "overflow": false,
+        "layoutShift": 0.15742508746134604
+      },
+      "after": {
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "formTop": 472.9,
+        "formWidth": 558.9,
+        "formHeight": 486.3,
+        "formColumnPercent": 45,
+        "emailTop": 637.9,
+        "passwordTop": 731.9,
+        "loginButton": {
+          "top": 797.9,
+          "bottom": 849,
+          "height": 51.2,
+          "fullyVisible": false,
+          "scrollNeededPx": 82
+        },
+        "roleCardHeights": [
+          222.6,
+          222.6,
+          222.6
+        ],
+        "pageHeight": 1130,
+        "overflow": false,
+        "layoutShift": 0
+      },
+      "formTopReductionPx": 85.9,
+      "formTopReductionPercent": 15.4
+    },
+    {
+      "width": 1024,
+      "height": 900,
+      "before": {
+        "viewport": {
+          "width": 1024,
+          "height": 900
+        },
+        "formTop": 538.8,
+        "formWidth": 443.8,
+        "formHeight": 541.5,
+        "formColumnPercent": 47.6,
+        "emailTop": 736.2,
+        "passwordTop": 837.8,
+        "loginButton": {
+          "top": 907.2,
+          "bottom": 958.4,
+          "height": 51.2,
+          "fullyVisible": false,
+          "scrollNeededPx": 59
+        },
+        "roleCardHeights": [
+          264.8,
+          264.8,
+          264.8
+        ],
+        "pageHeight": 1357,
+        "overflow": false,
+        "layoutShift": 0.22917088783449596
+      },
+      "after": {
+        "viewport": {
+          "width": 1024,
+          "height": 900
+        },
+        "formTop": 483.5,
+        "formWidth": 466,
+        "formHeight": 506.3,
+        "formColumnPercent": 50,
+        "emailTop": 668.5,
+        "passwordTop": 762.5,
+        "loginButton": {
+          "top": 828.5,
+          "bottom": 879.7,
+          "height": 51.2,
+          "fullyVisible": true,
+          "scrollNeededPx": 0
+        },
+        "roleCardHeights": [
+          243.9,
+          243.9,
+          243.9
+        ],
+        "pageHeight": 1367,
+        "overflow": false,
+        "layoutShift": 0
+      },
+      "formTopReductionPx": 55.3,
+      "formTopReductionPercent": 10.3
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "before": {
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "formTop": 384.5,
+        "formWidth": 660,
+        "formHeight": 549.5,
+        "formColumnPercent": 50,
+        "emailTop": 585.9,
+        "passwordTop": 687.4,
+        "loginButton": {
+          "top": 756.8,
+          "bottom": 808,
+          "height": 51.2,
+          "fullyVisible": true,
+          "scrollNeededPx": 0
+        },
+        "roleCardHeights": [
+          112,
+          112,
+          112
+        ],
+        "pageHeight": 1908,
+        "overflow": false,
+        "layoutShift": 0.10284781455993652
+      },
+      "after": {
+        "viewport": {
+          "width": 768,
+          "height": 1024
+        },
+        "formTop": 345.8,
+        "formWidth": 660,
+        "formHeight": 514.3,
+        "formColumnPercent": 50,
+        "emailTop": 534.8,
+        "passwordTop": 628.8,
+        "loginButton": {
+          "top": 694.8,
+          "bottom": 746,
+          "height": 51.2,
+          "fullyVisible": true,
+          "scrollNeededPx": 0
+        },
+        "roleCardHeights": [
+          104,
+          104,
+          104
+        ],
+        "pageHeight": 1831,
+        "overflow": false,
+        "layoutShift": 0
+      },
+      "formTopReductionPx": 38.7,
+      "formTopReductionPercent": 10.1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "before": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "formTop": 437.3,
+        "formWidth": 358,
+        "formHeight": 558.2,
+        "formColumnPercent": 50,
+        "emailTop": 649.7,
+        "passwordTop": 754.1,
+        "loginButton": {
+          "top": 825.1,
+          "bottom": 876.3,
+          "height": 51.2,
+          "fullyVisible": false,
+          "scrollNeededPx": 33
+        },
+        "roleCardHeights": [
+          100,
+          100,
+          100
+        ],
+        "pageHeight": 1917,
+        "overflow": false,
+        "layoutShift": 0.09773196918308215
+      },
+      "after": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "formTop": 413.3,
+        "formWidth": 358,
+        "formHeight": 545.6,
+        "formColumnPercent": 50,
+        "emailTop": 616.3,
+        "passwordTop": 710.3,
+        "loginButton": {
+          "top": 776.3,
+          "bottom": 827.5,
+          "height": 51.2,
+          "fullyVisible": true,
+          "scrollNeededPx": 0
+        },
+        "roleCardHeights": [
+          100,
+          100,
+          100
+        ],
+        "pageHeight": 1878,
+        "overflow": false,
+        "layoutShift": 0
+      },
+      "formTopReductionPx": 24,
+      "formTopReductionPercent": 5.5
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "before": {
+        "viewport": {
+          "width": 320,
+          "height": 844
+        },
+        "formTop": 426.2,
+        "formWidth": 292,
+        "formHeight": 562.3,
+        "formColumnPercent": 50,
+        "emailTop": 632.9,
+        "passwordTop": 729.9,
+        "loginButton": {
+          "top": 800.9,
+          "bottom": 852.1,
+          "height": 51.2,
+          "fullyVisible": false,
+          "scrollNeededPx": 9
+        },
+        "roleCardHeights": [
+          100,
+          100,
+          100
+        ],
+        "pageHeight": 1946,
+        "overflow": false,
+        "layoutShift": 0.09963135374317737
+      },
+      "after": {
+        "viewport": {
+          "width": 320,
+          "height": 844
+        },
+        "formTop": 402.2,
+        "formWidth": 292,
+        "formHeight": 545.6,
+        "formColumnPercent": 50,
+        "emailTop": 605.1,
+        "passwordTop": 699.1,
+        "loginButton": {
+          "top": 765.1,
+          "bottom": 816.3,
+          "height": 51.2,
+          "fullyVisible": true,
+          "scrollNeededPx": 0
+        },
+        "roleCardHeights": [
+          100,
+          100,
+          100
+        ],
+        "pageHeight": 1928,
+        "overflow": false,
+        "layoutShift": 0
+      },
+      "formTopReductionPx": 24,
+      "formTopReductionPercent": 5.6
     }
   ],
-  "comparison": {
-    "reference": "User supplied 1536x1024 login illustration",
-    "method": "Visual review of actual browser screenshots; no pixel-perfect similarity score claimed",
-    "matched": [
-      "Logo/header and account CTA",
-      "Centered italic welcome heading",
-      "Green Client, cream Provider, forest-green Admin role cards",
-      "Illustrated student/storyboard on left, white login panel on right",
-      "Mobile compact selectors then form before preview",
-      "Green background curves and original brand identity"
-    ],
-    "differences": [
-      "Original generated student art rather than copying reference imagery",
-      "HTML/CSS workflow animation with truthful illustration labels, controls and transcript instead of GIF badge",
-      "Full desktop page about 1233px tall; accessibility controls and reserved role description space add height",
-      "Phone view stacks the form before decorative content"
-    ]
+  "animation": {
+    "durationSeconds": 10.8,
+    "scenes": 6,
+    "javascriptUnchanged": true,
+    "javascriptSha256": "846eabcb6f968e8c114dc0b73ebecaa4b890cd5ae9936c91c8576c7f4455ad63",
+    "controlsAndFallbacks": "PASS",
+    "video": "Refreshed actual browser recording; CSS animation remains the application implementation",
+    "backgroundVisibilityTest": "Simulated document visibility events; actual offscreen IntersectionObserver"
   },
+  "applicationChanges": [
+    "igotu_v2/login.html",
+    "igotu_v2/css/login.css"
+  ],
+  "unchanged": [
+    "Authentication and role-selection JavaScript",
+    "Mandatory identity/account-status/session guards",
+    "Password recovery logic",
+    "Preview JavaScript and source artwork",
+    "Homepage and other workspaces",
+    "SQL, RLS, Storage and configuration"
+  ],
   "notPerformed": [
-    "Live Supabase authentication, sessions, database, Storage, RLS or account tests",
-    "Real account/data creation",
-    "Physical-device and native background-tab performance profiling",
-    "Manual screen-reader audit",
-    "Safari/Firefox testing",
+    "Live Supabase/backend tests or real account/data operations",
+    "Physical-device and native OS background profiling",
+    "Manual screen-reader and Safari/Firefox audit",
+    "SDK lifecycle/cleanup suite rerun; original initial-PR evidence is retained separately",
     "Deployment or merge"
   ],
-  "existingHomepagePr12Changed": false
+  "pr12Modified": false,
+  "deploymentPerformed": false,
+  "supabaseProjectAccessed": false
 }

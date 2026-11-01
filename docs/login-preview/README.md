@@ -1,5 +1,7 @@
 # Login interface and animated service preview
 
+**Latest refinement:** [before/after comparison, measured form access and laptop assessment](refinement/README.md). The approved design is retained; the form now receives 45% of the desktop width, starts about 15–16% higher, and functional/guidance text is larger. The six-scene animation and all authentication JavaScript remain unchanged.
+
 This review candidate recreates the supplied login reference in IGotU's existing green-and-white identity. The familiar Client, Provider and Admin controls remain native buttons wired to the original role-selection and authentication modules.
 
 **Branch:** `feat/login-service-preview`
@@ -9,7 +11,7 @@ This review candidate recreates the supplied login reference in IGotU's existing
 ## Actual visual review
 
 - [Full desktop, 1536px](screenshots/login-1536.png) · [Desktop viewport](screenshots/desktop-viewport.png)
-- [1440px](screenshots/login-1440.png) · [1024px](screenshots/login-1024.png) · [768px](screenshots/login-768.png)
+- [1440px](screenshots/login-1440.png) · [1366px](screenshots/login-1366.png) · [1024px](screenshots/login-1024.png) · [768px](screenshots/login-768.png)
 - [Full mobile, 390px](screenshots/login-390.png) · [Narrow mobile, 320px](screenshots/login-320.png)
 - [Login-card close-up](screenshots/login-closeup.png) · [Mobile login close-up](screenshots/login-mobile-closeup.png)
 - [Static workflow preview](screenshots/workflow-static.png) · [Synthetic error state](screenshots/synthetic-error.png)
@@ -19,7 +21,7 @@ The screenshots are rendered Chromium output with reduced motion for reproducibi
 
 Compared with the reference, the page retains the logo/header, outlined account action, centered italic welcome heading, three mint/cream/forest role cards, illustrated student and floating service panel, white login card, green decoration and responsive hierarchy. The form is on the right at desktop widths. On phones it follows the compact role selectors and precedes the decorative preview in both DOM and visual order.
 
-Deliberate differences: the student image is original generated artwork; the panel uses functional HTML/CSS scenes rather than a GIF badge; illustration disclosure, playback controls and a readable transcript are included. The complete desktop page is about 1233px tall, allowing more room for controls and the stable role-specific form description. This is a qualitative visual comparison, not a claim of pixel-identical reproduction. Common laptop users can see the form without first scrolling through the promotional panel.
+Deliberate differences: the student image is original generated artwork; the panel uses functional HTML/CSS scenes rather than a GIF badge; illustration disclosure, playback controls and a readable transcript are included. The complete desktop page is about 1159px tall, allowing more room for controls and the stable role-specific form description. This is a qualitative visual comparison, not a claim of pixel-identical reproduction. Common laptop users can see the form without first scrolling through the promotional panel.
 
 ## Working animation
 
@@ -50,19 +52,19 @@ The image has a fixed, reserved aspect ratio. An automated delayed-image test ve
 
 No changes to `auth.js`, `auth-roles.js`, `supabaseClient.js`, shared CSS, registration, password recovery, session handling, role validation, identity verification, onboarding, matching, dashboards, SQL, Storage or configuration. The real account's fetched role still controls routing. Selecting a card grants nothing. All nine role/account combinations still pass their original synthetic tests: three matches accepted and six mismatches rejected with cleanup.
 
-[Protected-file hashes and control comparison](protected-files.json) verify **326 other existing files** against the base. The only existing application file changed is `igotu_v2/login.html`. New application files are `css/login.css`, `js/login-preview.js`, `assets/login/student-preview.webp` and `assets/login/login-leaves.svg`. All new styling is loaded by and scoped to the login page; registration and the homepage retain their existing assets.
+[Protected-file hashes and control comparison](protected-files.json) verify **326 other existing files** against the base. Relative to PR #12, the only pre-existing application file changed is `igotu_v2/login.html`. The final refinement relative to the initial PR #13 commit changes `login.html` and `login.css` only; [its separate scope proof](refinement/protected-files.json) covers all unchanged authentication and animation code. New application files are `css/login.css`, `js/login-preview.js`, `assets/login/student-preview.webp` and `assets/login/login-leaves.svg`. All new styling is loaded by and scoped to the login page; registration and the homepage retain their existing assets.
 
 ## Executed validation
 
 [Validation JSON](validation.json) · [test logs](evidence/) · [preview results](evidence/preview-results.json)
 
-- New preview suite at **1536, 1440, 1024, 768, 390 and 320px**: no horizontal overflow/clipping; correct form/preview order; keyboard role selection and stable form height; input retention; password controls; all six manual scenes; reduced motion; axe WCAG A/AA and best-practice checks.
+- New preview suite at **1536, 1440, 1366, 1024, 768, 390 and 320px**: no horizontal overflow/clipping; correct form/preview order; keyboard role selection and stable form height; input retention; password controls; all six manual scenes; reduced motion; axe WCAG A/AA and best-practice checks.
 - Genuine time-based scene playback; user pause/resume; actual offscreen IntersectionObserver behavior; simulated document-visibility events; preference changes; preserved deliberate pause; script/image failure and no-JS static fallback.
 - Busy spinner, frozen roles, submit re-masking and error recovery exercised through the unchanged Auth module with synthetic credentials/responses.
 - Real navigation to both registration links, password recovery and the homepage. No signup, recovery email or real account operation was performed.
 - Existing Login/Register suite: all nine role combinations, validation, sign-out failures, fail-closed retries, missing/suspended profiles, onboarding, registration roles/Admin rejection and no-JS fallback.
 - Existing **94 functional scenarios**, **84 workspace layouts**, mandatory identity-verification suite including **16 guarded routes**.
-- Real pinned Supabase SDK with all responses intercepted: normal/failed/thrown sign-out cleanup; cross-tab sign-out and invalid-refresh locking. Host-shaped fixture URLs are fulfilled in the browser and never reach a Supabase project.
+- Historical SDK checks from the initial PR #13 commit (not rerun for this CSS/HTML refinement), with all responses intercepted: normal/failed/thrown sign-out cleanup; cross-tab sign-out and invalid-refresh locking. Host-shaped fixture URLs are fulfilled in the browser and never reach a Supabase project.
 - JavaScript syntax, whitespace, exact file-scope/credential-pattern scan and protected-file comparisons.
 
 During development, the initial decorative pseudo-element caused overflow and the shared mobile Admin layout conflicted with compact selectors. Both were corrected locally without changing shared styles. Scene fitting tests also caught cramped storyboard layouts at 768/320px. A reduced-motion assertion now waits for the browser's media-change event rather than assuming synchronous delivery. The optional SDK check initially needed the installed dependencies exposed at the worktree's test path; its final runs pass. No Auth logic or backend repair was needed.
