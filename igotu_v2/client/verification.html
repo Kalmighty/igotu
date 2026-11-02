@@ -3,40 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Identity Verification - IGotU</title>
+    <title>Client Identity Verification - IGotU</title>
     <link rel="icon" href="../assets/igotu-mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="../css/ui.css" />
     <link rel="stylesheet" href="../css/workspace-gate.css" />
     <link rel="stylesheet" href="../css/verification-access.css" />
   </head>
-  <body data-access-state="checking" class="verification-access">
+  <body
+    data-access-state="checking"
+    class="verification-access verification-onboarding"
+  >
     <div id="workspaceAccessMessage" role="status">
       Checking account access…
     </div>
     <a class="skip-link" href="#mainContent">Skip to verification</a>
-    <header class="verification-header">
-      <a class="verification-brand" href="../index.html">IGotU<span>.</span></a
-      ><span>Account verification</span
-      ><button type="button" id="verificationLogoutBtn" class="btn btn-outline">
-        Log out
-      </button>
-    </header>
+    <div class="verification-header-band">
+      <header class="verification-header">
+        <a
+          class="verification-brand"
+          href="../index.html"
+          aria-label="IGotU home"
+          ><img
+            src="../assets/igotu-mark.svg"
+            alt=""
+            width="30"
+            height="30"
+          />IGotU<span>.</span></a
+        ><span>Account verification</span
+        ><button
+          type="button"
+          id="verificationLogoutBtn"
+          class="btn btn-outline"
+        >
+          Log out
+        </button>
+      </header>
+    </div>
     <main class="verification-access-main" id="mainContent" tabindex="-1">
       <div class="verification-intro">
-        <span class="verification-eyebrow"
-          >A trusted start to your service journey</span
-        >
-        <h1>Let’s verify <em>it’s you.</em></h1>
-        <p>
-          Identity approval comes first. Once approved, complete your profile
-          and enter your Client workspace.
-        </p>
+        <div>
+          <p class="verification-eyebrow">
+            A TRUSTED START TO YOUR SERVICE JOURNEY
+          </p>
+          <h1>Let’s verify <em>it’s you.</em></h1>
+          <p>
+            Identity approval comes first. Once approved, complete your profile
+            and enter your Client workspace.
+          </p>
+        </div>
+        <img
+          class="verification-hero-art"
+          src="../assets/identity-verification/identity-shield.svg"
+          alt=""
+          width="320"
+          height="210"
+        />
       </div>
       <ol class="verification-progress" aria-label="Account setup progress">
-        <li id="progressIdentity">01 <span>Submit identity</span></li>
-        <li id="progressReview">02 <span>Admin review</span></li>
-        <li id="progressProfile">03 <span>Complete profile</span></li>
+        <li id="progressIdentity">
+          <span class="verification-step-number" aria-hidden="true">01</span
+          ><span class="verification-step-copy"
+            >Submit Identity<small class="verification-step-status"
+              >Not completed</small
+            ></span
+          >
+        </li>
+        <li id="progressReview">
+          <span class="verification-step-number" aria-hidden="true">02</span
+          ><span class="verification-step-copy"
+            >Admin Review<small class="verification-step-status"
+              >Not completed</small
+            ></span
+          >
+        </li>
+        <li id="progressProfile">
+          <span class="verification-step-number" aria-hidden="true">03</span
+          ><span class="verification-step-copy"
+            >Complete Profile<small class="verification-step-status"
+              >Not completed</small
+            ></span
+          >
+        </li>
       </ol>
       <div class="verification-refresh-row">
         <span id="verificationAccountLabel">Client account</span
@@ -45,83 +93,153 @@
           id="refreshVerificationBtn"
           class="btn btn-outline"
         >
-          Refresh status
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            aria-hidden="true"
+          >
+            <path
+              d="M20 7v5h-5M4 17v-5h5M5 8a8 8 0 0 1 13-3l2 3M4 16l2 3a8 8 0 0 0 13-3"
+            /></svg
+          ><span>Refresh Status</span>
         </button>
       </div>
+      <p
+        id="verificationRefreshStatus"
+        class="verification-refresh-status"
+        role="status"
+        aria-live="polite"
+      ></p>
       <div id="messageBox" role="status" class="message-box hidden"></div>
       <div class="verification-layout">
-        <aside class="verification-status-panel">
-          <section class="panel verification-status-card">
-            <div class="verification-shield" aria-hidden="true">
+        <section
+          class="panel verification-status-card"
+          id="verificationStatusCard"
+          aria-labelledby="verificationStatusTitle"
+          aria-describedby="verificationStatusText"
+        >
+          <div class="verification-shield" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              aria-hidden="true"
+            >
+              <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+            </svg>
+          </div>
+          <span
+            id="verificationStatusBadge"
+            class="verification-status-badge verification-not-submitted"
+            >Checking</span
+          >
+          <h2 id="verificationStatusTitle">Checking Verification Status</h2>
+          <p id="verificationStatusText">
+            We’re checking your current identity status before enabling the next
+            step.
+          </p>
+          <p
+            id="verificationStaleNotice"
+            class="verification-stale-notice"
+            hidden
+          >
+            Last confirmed status. The latest check failed; refresh before
+            submitting or continuing.
+          </p>
+          <div class="verification-timeline">
+            <div>
+              <span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  aria-hidden="true"
+                >
+                  <path d="M4 6h16v15H4ZM4 10h16M8 3v6m8-6v6" /></svg
+                >Submitted</span
+              ><strong id="verificationSubmittedAt">Unavailable</strong>
+            </div>
+            <div>
+              <span
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="m8 12 3 3 5-6" /></svg
+                >Reviewed</span
+              ><strong id="verificationReviewedAt">Unavailable</strong>
+            </div>
+          </div>
+          <div
+            id="verificationAdminNoteWrap"
+            class="verification-admin-note hidden"
+          >
+            <strong>Administrator note</strong>
+            <p id="verificationAdminNote"></p>
+          </div>
+          <a
+            id="continueVerificationBtn"
+            class="btn verification-continue hidden"
+            href="complete-profile.html"
+            >Continue to complete your profile
+            <span aria-hidden="true">→</span></a
+          ><a
+            id="verificationSubmitLink"
+            class="btn verification-continue hidden"
+            href="#verificationFormPanel"
+            >Go to submission form <span aria-hidden="true">↓</span></a
+          >
+        </section>
+        <section
+          class="panel verification-account-card"
+          aria-labelledby="verificationAccountHeading"
+        >
+          <div class="panel-header">
+            <h2 id="verificationAccountHeading">
               <svg
                 viewBox="0 0 24 24"
-                width="30"
-                height="30"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="1.4"
+                stroke-width="1.7"
+                aria-hidden="true"
               >
-                <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
-              </svg>
+                <circle cx="12" cy="7" r="4" />
+                <path d="M4 22v-4q0-5 8-5t8 5v4Z" /></svg
+              >Account information
+            </h2>
+          </div>
+          <dl class="verification-account-grid">
+            <div>
+              <dt>Email Address</dt>
+              <dd id="verificationEmail">Unavailable</dd>
             </div>
-            <span
-              id="verificationStatusBadge"
-              class="verification-status-badge verification-not-submitted"
-              >Not Verified</span
-            >
-            <h2 id="verificationStatusTitle">Verify Your Identity</h2>
-            <p id="verificationStatusText">
-              Submit an identity document so other IGotU users can trust your
-              account.
-            </p>
-            <div class="verification-timeline">
-              <div>
-                <span>Submitted</span
-                ><strong id="verificationSubmittedAt">-</strong>
-              </div>
-              <div>
-                <span>Reviewed</span
-                ><strong id="verificationReviewedAt">-</strong>
-              </div>
+            <div>
+              <dt>Phone Number</dt>
+              <dd id="verificationPhone">Unavailable</dd>
             </div>
-            <div
-              id="verificationAdminNoteWrap"
-              class="verification-admin-note hidden"
-            >
-              <strong>Administrator note</strong>
-              <p id="verificationAdminNote"></p>
+            <div>
+              <dt>Account Role</dt>
+              <dd id="verificationRole">Client</dd>
             </div>
-            <a
-              id="continueVerificationBtn"
-              class="btn verification-continue hidden"
-              href="complete-profile.html"
-              >Continue to profile setup</a
-            >
-          </section>
-
-          <section class="panel verification-account-card">
-            <div class="panel-header"><h2>Account</h2></div>
-            <div class="panel-body account-info-list">
-              <div class="account-info-item">
-                <span>Email</span><strong id="verificationEmail">-</strong>
-              </div>
-              <div class="account-info-item">
-                <span>Phone</span><strong id="verificationPhone">-</strong>
-              </div>
-              <div class="account-info-item">
-                <span>Role</span><strong id="verificationRole">Client</strong>
-              </div>
-            </div>
-          </section>
-        </aside>
-
+          </dl>
+        </section>
         <section
           class="panel verification-form-panel"
           id="verificationFormPanel"
+          tabindex="-1"
+          aria-labelledby="verificationFormHeading"
         >
           <div class="panel-header">
             <div>
-              <h2>Submit your identity</h2>
+              <h2 id="verificationFormHeading">Submit your identity</h2>
               <p class="muted-text">
                 Your identity document is stored privately and is not shown on
                 your public profile.
@@ -137,6 +255,7 @@
                   id="legalName"
                   autocomplete="name"
                   required
+                  disabled
                 />
                 <small class="form-hint"
                   >Enter your name exactly as shown on your identification
@@ -147,7 +266,7 @@
               <div class="verification-two-column">
                 <div class="form-group">
                   <label for="idType">Identification Type</label>
-                  <select id="idType" required>
+                  <select id="idType" required disabled>
                     <option value="">Select identification type</option>
                     <option value="mykad">MyKad</option>
                     <option value="passport">Passport</option>
@@ -161,6 +280,7 @@
                     autocomplete="off"
                     required
                     placeholder="Enter MyKad or passport number"
+                    disabled
                   />
                   <small class="form-hint"
                     >For privacy, IGotU stores only the last 4 characters after
@@ -182,6 +302,7 @@
                     class="verification-file-input"
                     accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"
                     required
+                    disabled
                   />
 
                   <label
@@ -193,8 +314,16 @@
                       id="identityDocumentEmpty"
                       class="verification-upload-empty"
                     >
-                      <span class="verification-upload-plus">+</span>
-                      <strong>Upload MyKad / Passport</strong>
+                      <span class="verification-upload-plus" aria-hidden="true"
+                        ><svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                        >
+                          <path d="M12 16V3m-5 5 5-5 5 5M4 14v6h16v-6" /></svg
+                      ></span>
+                      <strong>Choose identity document</strong>
                       <span>JPG, PNG, or PDF · Max 5 MB</span>
                     </div>
 
@@ -271,21 +400,39 @@
               </div>
 
               <label class="verification-check-row"
-                ><input type="checkbox" id="ageConfirm" required /><span
+                ><input
+                  type="checkbox"
+                  id="ageConfirm"
+                  required
+                  disabled
+                /><span
                   >I confirm that I am at least 18 years old and the information
                   provided is accurate.</span
                 ></label
               >
               <label class="verification-check-row"
-                ><input type="checkbox" id="privacyConsent" required /><span
+                ><input
+                  type="checkbox"
+                  id="privacyConsent"
+                  required
+                  disabled
+                /><span
                   >I consent to IGotU using this information and document solely
                   for identity verification and platform safety.</span
                 ></label
               >
 
+              <p
+                id="verificationSubmissionPhase"
+                class="verification-submission-phase"
+                role="status"
+              >
+                Ready to submit after your current status is checked.
+              </p>
               <button
                 type="submit"
                 id="submitVerificationBtn"
+                disabled
                 class="btn full-btn"
               >
                 Submit for Verification
@@ -296,7 +443,15 @@
       </div>
     </main>
     <footer class="verification-access-footer">
-      IGotU · Your identity documents stay private.
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
+        aria-hidden="true"
+      >
+        <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" /></svg
+      ><span>IGotU · Your identity documents stay private.</span>
     </footer>
     <script type="module" src="../js/profile-guard.js"></script>
     <script type="module" src="../js/verification.js"></script>

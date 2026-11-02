@@ -1,0 +1,19 @@
+{
+  "base": "4a3630d8dedb6b93dc9e322fc0a71a3fe0cd36c4",
+  "protectedFiles": 216,
+  "stableNormalizedHelpers": [
+    "validateFile",
+    "extensionFor",
+    "uploadPrivateFile",
+    "humanFileSize",
+    "resetFilePreview",
+    "renderFilePreview"
+  ],
+  "originalCssPrefixSha256": "2efce0c9c058b72b3f068691754cca67f5a40c4106426e6b1af1ddcabc1d7927",
+  "ownedQueries": true,
+  "insertPayload": true,
+  "providerOptionalPayload": true,
+  "fieldsTypesRequiredAcceptPrivacy": true,
+  "noNewBackendApi": true,
+  "sqlExecuted": false
+}

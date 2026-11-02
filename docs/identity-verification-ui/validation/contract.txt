@@ -1,0 +1,1 @@
+PASS 216 protected application/test/SQL files; 6 unchanged upload/validation/preview helpers; original owned queries, insert/provider payloads, form fields and bilingual privacy; existing CSS/Admin prefix unchanged; JS/CSS syntax.
