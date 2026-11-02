@@ -1,0 +1,9 @@
+PASS responsive/axe 1920x1080
+PASS responsive/axe 1536x864
+PASS responsive/axe 1440x900
+PASS responsive/axe 1366x768
+PASS responsive/axe 1024x900
+PASS responsive/axe 768x1000
+PASS responsive/axe 390x844
+PASS responsive/axe 320x800
+PASS 190 Client dashboard assertions; 8 viewport axe scans and dialog/menu/error/empty checks; zero external requests/page errors

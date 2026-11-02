@@ -1,164 +1,735 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Client Dashboard - IGotU</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/ui.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/ui.css" />
+    <link rel="stylesheet" href="../css/client-dashboard.css" />
+    <link rel="icon" href="../assets/igotu-mark.svg" type="image/svg+xml" />
     <script src="../js/app-shell.js" defer></script>
-<link rel="stylesheet" href="../css/workspace-gate.css">
-</head>
+    <link rel="stylesheet" href="../css/workspace-gate.css" />
+  </head>
 
-<body data-access-state="checking"><div id="workspaceAccessMessage" role="status">Checking account access…</div>
+  <body class="client-dashboard" data-access-state="checking">
+    <div id="workspaceAccessMessage" role="status">
+      Checking account access…
+    </div>
+    <svg
+      class="dashboard-icon-library"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <symbol id="dashboard-brand" viewBox="0 0 24 24">
+          <path d="M5 5v8a7 7 0 0 0 14 0V5M10 5v8a2 2 0 0 0 4 0V5" />
+        </symbol>
+        <symbol id="dashboard-home" viewBox="0 0 24 24">
+          <path d="m3 10 9-7 9 7v11H3V10Zm6 11v-8h6v8" />
+        </symbol>
+        <symbol id="dashboard-plus" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="4" />
+          <path d="M12 7v10M7 12h10" />
+        </symbol>
+        <symbol id="dashboard-list" viewBox="0 0 24 24">
+          <rect x="5" y="4" width="14" height="18" rx="2" />
+          <path d="M9 4V2h6v2M9 9h6m-6 4h6m-6 4h3" />
+        </symbol>
+        <symbol id="dashboard-message" viewBox="0 0 24 24">
+          <path d="M21 11a9 9 0 0 1-9 9H4l-3 2 2-7a9 9 0 1 1 18-4Z" />
+          <path d="M7 11h.01M12 11h.01M17 11h.01" />
+        </symbol>
+        <symbol id="dashboard-profile" viewBox="0 0 24 24">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4 21v-2a8 8 0 0 1 16 0v2" />
+        </symbol>
+        <symbol id="dashboard-users" viewBox="0 0 24 24">
+          <circle cx="9" cy="8" r="4" />
+          <path
+            d="M2 21v-3a7 7 0 0 1 14 0v3m1-17a4 4 0 0 1 0 8m2 2a7 7 0 0 1 3 5v2"
+          />
+        </symbol>
+        <symbol id="dashboard-bell" viewBox="0 0 24 24">
+          <path
+            d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9m-9 12a3 3 0 0 0 6 0"
+          />
+        </symbol>
+        <symbol id="dashboard-hourglass" viewBox="0 0 24 24">
+          <path d="M5 3h14M5 21h14M7 3v4l5 5-5 5v4M17 3v4l-5 5 5 5v4" />
+        </symbol>
+        <symbol id="dashboard-progress" viewBox="0 0 24 24">
+          <path d="M21 12a9 9 0 1 1-3-6M21 3v6h-6" />
+          <path d="M12 7v5l3 2" />
+        </symbol>
+        <symbol id="dashboard-check" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m7 12 3 3 7-7" />
+        </symbol>
+        <symbol id="dashboard-clock" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 6v6l4 2" />
+        </symbol>
+        <symbol id="dashboard-bolt" viewBox="0 0 24 24">
+          <path d="m13 2-9 12h7l-1 8 10-13h-7l1-7Z" />
+        </symbol>
+        <symbol id="dashboard-arrow" viewBox="0 0 24 24">
+          <path d="M5 12h14m-6-6 6 6-6 6" />
+        </symbol>
+        <symbol id="dashboard-info" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 11v6m0-10v.01" />
+        </symbol>
+        <symbol id="dashboard-pin" viewBox="0 0 24 24">
+          <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
+          <circle cx="12" cy="10" r="3" />
+        </symbol>
+        <symbol id="dashboard-calendar" viewBox="0 0 24 24">
+          <rect x="3" y="5" width="18" height="16" rx="3" />
+          <path d="M7 2v6M17 2v6M3 11h18M7 15h3m4 0h3m-10 3h3" />
+        </symbol>
+        <symbol id="dashboard-money" viewBox="0 0 24 24">
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <circle cx="12" cy="12" r="3" />
+          <path d="M5 8h1m12 8h1" />
+        </symbol>
+        <symbol id="dashboard-service" viewBox="0 0 24 24">
+          <path
+            d="m14 3 4 4-7 7-4-4 7-7Zm-7 7-4 9 9-4M5 17l2 2M18 14l3 3m-4 1 2 2"
+          />
+        </symbol>
+        <symbol id="dashboard-close" viewBox="0 0 24 24">
+          <path d="m6 6 12 12M18 6 6 18" />
+        </symbol>
+      </defs>
+    </svg>
     <a class="skip-link" href="#mainContent">Skip to main content</a>
     <div class="app-layout">
-        <aside class="sidebar">
-            <div>
-                <div class="sidebar-brand">
-                  <a class="logo-text" href="dashboard.html" aria-label="IGotU Client dashboard">IGotU<span>Client workspace</span></a>
-                  <button class="navigation-toggle" type="button" aria-expanded="false" aria-controls="workspaceNavigation">
-                    Menu <span aria-hidden="true">☰</span>
+      <aside class="sidebar">
+        <div>
+          <div class="sidebar-brand">
+            <a
+              class="logo-text"
+              href="dashboard.html"
+              aria-label="IGotU Client dashboard"
+              ><span class="dashboard-wordmark"
+                ><img
+                  src="../assets/igotu-mark.svg"
+                  width="38"
+                  height="38"
+                  alt=""
+                />IGotU<span class="wordmark-dot">.</span></span
+              ><span class="dashboard-brand-description"
+                >Smart Service Matching<br />Platform</span
+              ></a
+            >
+            <button
+              class="navigation-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="workspaceNavigation"
+            >
+              Menu <span aria-hidden="true">☰</span>
+            </button>
+          </div>
+
+          <nav
+            class="side-menu"
+            id="workspaceNavigation"
+            aria-label="Client navigation"
+          >
+            <a href="dashboard.html" class="active" aria-current="page"
+              ><svg
+                class="dashboard-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#dashboard-home" /></svg
+              ><span>Dashboard</span></a
+            >
+            <a href="create-request.html"
+              ><svg
+                class="dashboard-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#dashboard-plus" /></svg
+              ><span>Create Request</span></a
+            >
+            <a href="my-requests.html"
+              ><svg
+                class="dashboard-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#dashboard-list" /></svg
+              ><span>My Requests</span></a
+            >
+            <a href="messages.html"
+              ><svg
+                class="dashboard-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#dashboard-message" /></svg
+              ><span>Messages</span></a
+            >
+            <a class="dashboard-edit-link" href="edit-profile.html"
+              ><svg
+                class="dashboard-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#dashboard-profile" /></svg
+              ><span>Edit Profile</span></a
+            >
+          </nav>
+        </div>
+      </aside>
+
+      <main class="main-area" id="mainContent" tabindex="-1">
+        <header class="topbar">
+          <div class="dashboard-workspace-label">
+            <svg
+              class="dashboard-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <use href="#dashboard-users" /></svg
+            ><span>Client Workspace</span>
+          </div>
+          <div class="topbar-actions">
+            <div class="notification-menu-wrap">
+              <button
+                type="button"
+                class="topbar-notification-btn"
+                id="notificationMenuTrigger"
+                aria-label="Notifications"
+                aria-expanded="false"
+                aria-controls="notificationDropdown"
+                title="Notifications"
+              >
+                <span class="topbar-notification-icon" aria-hidden="true"
+                  ><svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-bell" /></svg
+                ></span>
+                <span class="notification-badge hidden">0</span>
+              </button>
+
+              <div
+                id="notificationDropdown"
+                class="notification-dropdown hidden"
+              >
+                <div class="notification-dropdown-header">
+                  <div>
+                    <strong>Notifications</strong>
+                    <span id="notificationDropdownCount">0 unread</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    id="notificationMarkAllBtn"
+                    class="notification-mark-all-btn"
+                  >
+                    Mark all as read
                   </button>
                 </div>
 
-                <nav class="side-menu" id="workspaceNavigation" aria-label="Client navigation">
-                    <a href="dashboard.html" class="active" aria-current="page">▦ Dashboard</a>
-                    <a href="create-request.html">＋ Create Request</a>
-                    <a href="my-requests.html">▣ My Requests</a>
-                    <a href="messages.html">✉ Messages</a>
-</nav>
-            </div>
-        </aside>
-
-        <main class="main-area" id="mainContent" tabindex="-1">
-            <header class="topbar">
-                <div></div>
-                <div class="topbar-actions">
-          <div class="notification-menu-wrap">
-            <button
-              type="button"
-              class="topbar-notification-btn"
-              id="notificationMenuTrigger"
-              aria-label="Notifications"
-              aria-expanded="false"
-              aria-controls="notificationDropdown"
-              title="Notifications"
-            >
-              <span class="topbar-notification-icon" aria-hidden="true">🔔</span>
-              <span class="notification-badge hidden">0</span>
-            </button>
-
-            <div id="notificationDropdown" class="notification-dropdown hidden">
-              <div class="notification-dropdown-header">
-                <div>
-                  <strong>Notifications</strong>
-                  <span id="notificationDropdownCount">0 unread</span>
-                </div>
-
-                <button
-                  type="button"
-                  id="notificationMarkAllBtn"
-                  class="notification-mark-all-btn"
+                <div
+                  id="notificationDropdownList"
+                  class="notification-dropdown-list"
                 >
-                  Mark all as read
-                </button>
-              </div>
-
-              <div id="notificationDropdownList" class="notification-dropdown-list">
-                <div class="notification-dropdown-empty">
-                  <span>🔔</span>
-                  <strong>No notifications yet</strong>
-                  <small>New updates will appear here.</small>
+                  <div class="notification-dropdown-empty">
+                    <span>🔔</span>
+                    <strong>No notifications yet</strong>
+                    <small>New updates will appear here.</small>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-                    <div class="profile-menu-wrap">
-            <button
-              type="button"
-              class="user-mini profile-menu-trigger"
-              id="profileMenuTrigger"
-              aria-expanded="false"
-              aria-controls="profileDropdown"
-            >
-              <div class="avatar" id="avatar">C</div>
-              <div class="profile-menu-user-text">
-                <strong id="userName">Client</strong>
-                <small id="userRole">Client</small>
-              </div>
-              <span class="profile-menu-chevron" aria-hidden="true">⌄</span>
-            </button>
-
-            <div id="profileDropdown" class="profile-dropdown hidden">
-              <a href="edit-profile.html" class="profile-dropdown-item">
-                <span class="profile-dropdown-icon">✎</span>
-                <span>Edit Profile</span>
-              </a>
+            <div class="profile-menu-wrap">
               <button
                 type="button"
-                id="profileLogoutBtn"
-                class="profile-dropdown-item profile-dropdown-logout"
+                class="user-mini profile-menu-trigger"
+                id="profileMenuTrigger"
+                aria-expanded="false"
+                aria-controls="profileDropdown"
               >
-                <span class="profile-dropdown-icon">↪</span>
-                <span>Log out</span>
+                <div class="avatar" id="avatar">C</div>
+                <div class="profile-menu-user-text">
+                  <strong id="userName">Client</strong>
+                  <small id="userRole">Client</small>
+                </div>
+                <span class="profile-menu-chevron" aria-hidden="true">⌄</span>
               </button>
+
+              <div id="profileDropdown" class="profile-dropdown hidden">
+                <a href="edit-profile.html" class="profile-dropdown-item">
+                  <span class="profile-dropdown-icon">✎</span>
+                  <span>Edit Profile</span>
+                </a>
+                <button
+                  type="button"
+                  id="profileLogoutBtn"
+                  class="profile-dropdown-item profile-dropdown-logout"
+                >
+                  <span class="profile-dropdown-icon">↪</span>
+                  <span>Log out</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-            <section class="content-area">
-                <div class="page-heading">
-                    <div>
-                        <span class="page-eyebrow">Your workspace</span>
-                        <h1>Client Dashboard</h1>
-                        <p id="welcomeText">Welcome back to IGotU.</p>
-                    </div>
-
-                    <a href="create-request.html" class="btn">+ Create Request</a>
+        <section
+          class="content-area dashboard-content"
+          aria-label="Client dashboard"
+        >
+          <section class="dashboard-hero" aria-labelledby="welcomeText">
+            <div class="dashboard-hero-copy">
+              <span class="dashboard-eyebrow"
+                >A little help. More possibilities.</span
+              >
+              <h1 id="welcomeText">Welcome to your workspace.</h1>
+              <p>
+                Manage your service requests, track progress and find suitable
+                Providers through IGotU’s smart matching system.
+              </p>
+              <div class="dashboard-hero-actions">
+                <a href="create-request.html" class="btn dashboard-create"
+                  ><svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-plus" /></svg
+                  >Create Service Request</a
+                ><button
+                  type="button"
+                  class="btn btn-outline"
+                  id="workflowHelpBtn"
+                  aria-haspopup="dialog"
+                  aria-controls="workflowHelpDialog"
+                  hidden
+                >
+                  <svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-info" /></svg
+                  >How It Works
+                </button>
+              </div>
+            </div>
+            <img
+              class="dashboard-hero-art"
+              src="../assets/client-dashboard/welcome.svg"
+              width="500"
+              height="300"
+              alt=""
+            />
+          </section>
+          <section
+            class="dashboard-stats"
+            aria-label="Your service request statistics"
+          >
+            <div class="stats-grid">
+              <div class="stat-card stat-total">
+                <div class="stat-icon">
+                  <svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-list" />
+                  </svg>
                 </div>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">📌</div>
-                        <span>Total Requests</span>
-                        <strong id="totalRequests">—</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">⏳</div>
-                        <span>Pending</span>
-                        <strong id="pendingRequests">—</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">🛠️</div>
-                        <span>Ongoing</span>
-                        <strong id="ongoingRequests">—</strong>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <span>Completed</span>
-                        <strong id="completedRequests">—</strong>
-                    </div>
+                <div class="stat-copy">
+                  <span>Total Requests</span
+                  ><strong id="totalRequests">—</strong>
                 </div>
-
-                <section class="panel">
-                    <div class="panel-header">
-                        <h2>Recent Requests</h2>
-                        <a href="my-requests.html">View all</a>
-                    </div>
-
-                    <div id="recentRequests" aria-live="polite" class="list-box">
-                        <p class="muted-text">Loading recent requests...</p>
-                    </div>
-                </section>
+              </div>
+              <div class="stat-card stat-pending">
+                <div class="stat-icon">
+                  <svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-hourglass" />
+                  </svg>
+                </div>
+                <div class="stat-copy">
+                  <span>Pending</span><strong id="pendingRequests">—</strong>
+                </div>
+              </div>
+              <div class="stat-card stat-ongoing">
+                <div class="stat-icon">
+                  <svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-progress" />
+                  </svg>
+                </div>
+                <div class="stat-copy">
+                  <span>Ongoing</span><strong id="ongoingRequests">—</strong>
+                </div>
+              </div>
+              <div class="stat-card stat-completed">
+                <div class="stat-icon">
+                  <svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-check" />
+                  </svg>
+                </div>
+                <div class="stat-copy">
+                  <span>Completed</span
+                  ><strong id="completedRequests">—</strong>
+                </div>
+              </div>
+            </div>
+            <p
+              class="dashboard-data-status"
+              id="dashboardDataStatus"
+              role="status"
+              aria-live="polite"
+            >
+              Loading your requests…
+            </p>
+          </section>
+          <div class="dashboard-panels">
+            <section
+              class="panel dashboard-recent"
+              aria-labelledby="recentRequestsTitle"
+            >
+              <div class="panel-header">
+                <h2 id="recentRequestsTitle">
+                  <svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-clock" /></svg
+                  >Recent Requests
+                </h2>
+                <div class="dashboard-panel-actions">
+                  <button
+                    type="button"
+                    id="refreshRequestsBtn"
+                    class="dashboard-refresh"
+                    aria-label="Refresh requests"
+                    hidden
+                  >
+                    ↻</button
+                  ><a href="my-requests.html"
+                    >View All
+                    <svg
+                      class="dashboard-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#dashboard-arrow" /></svg
+                  ></a>
+                </div>
+              </div>
+              <div id="recentRequests" aria-live="polite" class="list-box">
+                <p class="muted-text">Loading recent requests...</p>
+              </div>
             </section>
-        </main>
+            <aside
+              class="panel dashboard-quick"
+              aria-labelledby="quickActionsTitle"
+            >
+              <div class="panel-header">
+                <h2 id="quickActionsTitle">
+                  <svg
+                    class="dashboard-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-bolt" /></svg
+                  >Quick Actions
+                </h2>
+              </div>
+              <div class="dashboard-quick-list">
+                <a class="dashboard-quick-link" href="create-request.html"
+                  ><span class="dashboard-quick-icon"
+                    ><svg
+                      class="dashboard-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#dashboard-plus" /></svg></span
+                  ><span class="dashboard-quick-copy"
+                    ><strong>Create a Service Request</strong
+                    ><small>Describe the help you need.</small></span
+                  ><svg
+                    class="dashboard-icon quick-arrow"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-arrow" /></svg></a
+                ><a class="dashboard-quick-link" href="my-requests.html"
+                  ><span class="dashboard-quick-icon"
+                    ><svg
+                      class="dashboard-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#dashboard-list" /></svg></span
+                  ><span class="dashboard-quick-copy"
+                    ><strong>View My Requests</strong
+                    ><small>Track and manage your requests.</small></span
+                  ><svg
+                    class="dashboard-icon quick-arrow"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-arrow" /></svg></a
+                ><a class="dashboard-quick-link" href="messages.html"
+                  ><span class="dashboard-quick-icon"
+                    ><svg
+                      class="dashboard-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#dashboard-message" /></svg></span
+                  ><span class="dashboard-quick-copy"
+                    ><strong>Open Messages</strong
+                    ><small>Chat with your selected Providers.</small></span
+                  ><svg
+                    class="dashboard-icon quick-arrow"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-arrow" /></svg></a
+                ><a class="dashboard-quick-link" href="edit-profile.html"
+                  ><span class="dashboard-quick-icon"
+                    ><svg
+                      class="dashboard-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#dashboard-profile" /></svg></span
+                  ><span class="dashboard-quick-copy"
+                    ><strong>Edit Profile</strong
+                    ><small>Update your personal information.</small></span
+                  ><svg
+                    class="dashboard-icon quick-arrow"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#dashboard-arrow" /></svg
+                ></a>
+              </div>
+              <div class="dashboard-note">
+                Your request comes first.<br />Choose the Provider that fits
+                your needs.
+              </div>
+            </aside>
+          </div>
+        </section>
+        <dialog
+          id="workflowHelpDialog"
+          class="dashboard-workflow"
+          aria-labelledby="workflowHelpTitle"
+        >
+          <div class="dashboard-workflow-heading">
+            <h2 id="workflowHelpTitle">A little help, step by step.</h2>
+            <button
+              type="button"
+              id="workflowHelpClose"
+              aria-label="Close How It Works"
+            >
+              <svg
+                class="dashboard-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#dashboard-close" />
+              </svg>
+            </button>
+          </div>
+          <p>Your request starts the matching process.</p>
+          <ol>
+            <li>
+              <strong>Create a service request.</strong
+              ><span
+                >Describe the help you need and your preferred date and
+                time.</span
+              >
+            </li>
+            <li>
+              <strong>Review eligible recommendations.</strong
+              ><span
+                >Compare the Provider information available for your
+                request.</span
+              >
+            </li>
+            <li>
+              <strong>Select a Provider.</strong
+              ><span
+                >Choose who fits your needs; selection is not
+                confirmation.</span
+              >
+            </li>
+            <li>
+              <strong>Wait for confirmation.</strong
+              ><span
+                >The selected Provider can confirm or decline the
+                assignment.</span
+              >
+            </li>
+            <li>
+              <strong>Track and finish the service.</strong
+              ><span
+                >Follow its status, record offline payment and leave a review
+                after completion.</span
+              >
+            </li>
+          </ol>
+          <p class="dashboard-workflow-footer">
+            IGotU records offline payments; it does not collect payment through
+            this dashboard.
+          </p>
+        </dialog>
+      </main>
     </div>
     <script type="module" src="../js/profile-guard.js"></script>
     <script type="module" src="../js/notification-badge.js"></script>
@@ -166,6 +737,5 @@
     <script type="module" src="../js/profile-menu.js"></script>
 
     <script type="module" src="../js/client.js"></script>
-</body>
-
+  </body>
 </html>
