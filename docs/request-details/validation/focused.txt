@@ -1,0 +1,9 @@
+PASS layout/axe 1920
+PASS layout/axe 1536
+PASS layout/axe 1440
+PASS layout/axe 1366
+PASS layout/axe 1024
+PASS layout/axe 768
+PASS layout/axe 390
+PASS layout/axe 320
+PASS 306 Request Details assertions; 13 axe scans; fixtures only

@@ -1,0 +1,274 @@
+[
+  {
+    "width": 1920,
+    "pageWidth": 1920,
+    "pageHeight": 1566,
+    "summary": {
+      "x": 284,
+      "y": 299.5,
+      "width": 1070.3125,
+      "height": 287.484375
+    },
+    "provider": {
+      "x": 1374.3125,
+      "y": 299.5,
+      "width": 509.671875,
+      "height": 239.875
+    },
+    "map": {
+      "x": 306,
+      "y": 1212.578125,
+      "width": 482.15625,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "service",
+      "location",
+      "image",
+      "information",
+      "provider",
+      "actions",
+      "payment",
+      "review"
+    ]
+  },
+  {
+    "width": 1536,
+    "pageWidth": 1536,
+    "pageHeight": 1566,
+    "summary": {
+      "x": 278,
+      "y": 299.5,
+      "width": 818.3125,
+      "height": 287.484375
+    },
+    "provider": {
+      "x": 1116.3125,
+      "y": 299.5,
+      "width": 389.6875,
+      "height": 239.875
+    },
+    "map": {
+      "x": 300,
+      "y": 1212.578125,
+      "width": 356.15625,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "service",
+      "location",
+      "image",
+      "information",
+      "provider",
+      "actions",
+      "payment",
+      "review"
+    ]
+  },
+  {
+    "width": 1440,
+    "pageWidth": 1440,
+    "pageHeight": 2281,
+    "summary": {
+      "x": 278,
+      "y": 299.5,
+      "width": 753.28125,
+      "height": 287.484375
+    },
+    "provider": {
+      "x": 1051.28125,
+      "y": 299.5,
+      "width": 358.703125,
+      "height": 239.875
+    },
+    "map": {
+      "x": 300,
+      "y": 1190.484375,
+      "width": 709.28125,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "service",
+      "location",
+      "image",
+      "information",
+      "provider",
+      "actions",
+      "payment",
+      "review"
+    ]
+  },
+  {
+    "width": 1366,
+    "pageWidth": 1366,
+    "pageHeight": 2296,
+    "summary": {
+      "x": 278,
+      "y": 299.5,
+      "width": 703.15625,
+      "height": 302.484375
+    },
+    "provider": {
+      "x": 1001.15625,
+      "y": 299.5,
+      "width": 334.828125,
+      "height": 239.875
+    },
+    "map": {
+      "x": 300,
+      "y": 1205.484375,
+      "width": 659.15625,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "service",
+      "location",
+      "image",
+      "information",
+      "provider",
+      "actions",
+      "payment",
+      "review"
+    ]
+  },
+  {
+    "width": 1024,
+    "pageWidth": 1024,
+    "pageHeight": 3332,
+    "summary": {
+      "x": 251,
+      "y": 299.5,
+      "width": 750,
+      "height": 287.484375
+    },
+    "provider": {
+      "x": 251,
+      "y": 831.078125,
+      "width": 750,
+      "height": 239.875
+    },
+    "map": {
+      "x": 273,
+      "y": 1672.453125,
+      "width": 706,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "actions",
+      "provider",
+      "service",
+      "location",
+      "image",
+      "payment",
+      "review",
+      "information"
+    ]
+  },
+  {
+    "width": 768,
+    "pageWidth": 768,
+    "pageHeight": 3406,
+    "summary": {
+      "x": 23,
+      "y": 373.5,
+      "width": 722,
+      "height": 287.484375
+    },
+    "provider": {
+      "x": 23,
+      "y": 905.078125,
+      "width": 722,
+      "height": 239.875
+    },
+    "map": {
+      "x": 45,
+      "y": 1746.453125,
+      "width": 678,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "actions",
+      "provider",
+      "service",
+      "location",
+      "image",
+      "payment",
+      "review",
+      "information"
+    ]
+  },
+  {
+    "width": 390,
+    "pageWidth": 390,
+    "pageHeight": 3775,
+    "summary": {
+      "x": 16,
+      "y": 326.09375,
+      "width": 358,
+      "height": 551.296875
+    },
+    "provider": {
+      "x": 16,
+      "y": 1135.578125,
+      "width": 358,
+      "height": 231.875
+    },
+    "map": {
+      "x": 34,
+      "y": 2192.765625,
+      "width": 322,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "actions",
+      "provider",
+      "service",
+      "location",
+      "image",
+      "payment",
+      "review",
+      "information"
+    ]
+  },
+  {
+    "width": 320,
+    "pageWidth": 320,
+    "pageHeight": 3881,
+    "summary": {
+      "x": 16,
+      "y": 326.09375,
+      "width": 288,
+      "height": 579.296875
+    },
+    "provider": {
+      "x": 16,
+      "y": 1163.578125,
+      "width": 288,
+      "height": 231.875
+    },
+    "map": {
+      "x": 34,
+      "y": 2242.859375,
+      "width": 252,
+      "height": 260
+    },
+    "order": [
+      "summary",
+      "actions",
+      "provider",
+      "service",
+      "location",
+      "image",
+      "payment",
+      "review",
+      "information"
+    ]
+  }
+]
