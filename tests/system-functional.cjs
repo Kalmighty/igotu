@@ -530,6 +530,7 @@ test("Connected registration, approval, onboarding and complete service workflow
   state.role = "client";
   await ready(page, `client/request-details.html?request_id=${r.request_id}`);
   await page.locator("#completeRequestBtn").click();
+  await page.locator("#confirmCompleteBtn").click();
   await page.locator("#paymentForm").waitFor();
   assert.equal(r.status, "completed");
   await page.locator("#paymentAmount").fill("100");
@@ -701,6 +702,7 @@ test("Payment proof required for transfers, optional for cash and validated befo
   await ready(page, "client/request-details.html?request_id=REQ-DONE");
   assert.equal(await page.locator("#paymentProof").isVisible(), true);
   assert.equal(await page.locator('label[for="paymentProof"]').count(), 1);
+  await page.locator("#paymentAmount").fill("100");
   await page.locator("#paymentMethod").selectOption("Bank Transfer");
   assert.equal(
     await page.locator("#paymentProof").getAttribute("required"),

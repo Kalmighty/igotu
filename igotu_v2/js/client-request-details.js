@@ -17,68 +17,315 @@ let existingPayment = null;
 let existingReview = null;
 let settlementLoaded = false;
 let requestMap = null;
+let mapResizeObserver = null;
+let requestLoading = false;
+let mutationBusy = false;
+let providerUnavailable = false;
 
 function showMessage(message, type = "error") {
-    const messageBox = document.getElementById("messageBox");
-    if (!messageBox) return;
+  const messageBox = document.getElementById("messageBox");
+  if (!messageBox) return;
 
-    messageBox.textContent = message;
-    messageBox.className = `message-box ${type}`;
+  messageBox.textContent = message;
+  messageBox.className = `message-box ${type}`;
 }
 
 function clearMessage() {
-    const messageBox = document.getElementById("messageBox");
-    if (!messageBox) return;
+  const messageBox = document.getElementById("messageBox");
+  if (!messageBox) return;
 
-    messageBox.textContent = "";
-    messageBox.className = "message-box hidden";
+  messageBox.textContent = "";
+  messageBox.className = "message-box hidden";
+}
+
+const statusLabels = {
+  pending: "Pending",
+  provider_selected: "Provider Selected",
+  confirmed: "Confirmed",
+  in_progress: "In Progress",
+  completed: "Completed",
+  cancelled: "Cancelled",
+};
+const detailsMedia = matchMedia("(min-width: 1251px)");
+const cardOrder = [
+  "summary",
+  "actions",
+  "provider",
+  "service",
+  "location",
+  "image",
+  "payment",
+  "review",
+  "information",
+];
+function detailsIcon(name) {
+  return `<svg class="dashboard-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#dashboard-${name}"/></svg>`;
+}
+function detailCard(name, title, content) {
+  const icons = {
+    actions: "bolt",
+    provider: "users",
+    service: "list",
+    location: "pin",
+    image: "image",
+    information: "info",
+    payment: "money",
+    review: "star",
+  };
+  return `<section class="panel details-card details-${name}" data-details-card="${name}" aria-labelledby="${name}Heading"><h2 id="${name}Heading">${detailsIcon(icons[name] || "info")}${title}</h2>${content}</section>`;
+}
+function detailRow(label, value) {
+  return `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`;
+}
+function serviceDate(value) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value))
+    return "Date not specified";
+  const date = new Date(value + "T00:00:00Z");
+  if (
+    !Number.isFinite(date.getTime()) ||
+    date.toISOString().slice(0, 10) !== value
+  )
+    return "Date not specified";
+  return new Intl.DateTimeFormat("en-MY", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+function serviceTime(value) {
+  const m =
+    typeof value === "string" &&
+    /^(\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?$/.exec(value);
+  if (!m || +m[1] > 23 || +m[2] > 59) return "Time not specified";
+  return `${+m[1] % 12 || 12}:${m[2]} ${+m[1] < 12 ? "AM" : "PM"}`;
+}
+function timestamp(value) {
+  if (
+    typeof value !== "string" ||
+    !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(
+      value,
+    )
+  )
+    return "";
+  const day = new Date(value.slice(0, 10) + "T00:00:00Z");
+  if (
+    !Number.isFinite(day.getTime()) ||
+    day.toISOString().slice(0, 10) !== value.slice(0, 10)
+  )
+    return "";
+  const time = Date.parse(value);
+  if (!Number.isFinite(time)) return "";
+  return (
+    new Intl.DateTimeFormat("en-MY", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "Asia/Kuala_Lumpur",
+    }).format(new Date(time)) + " MYT"
+  );
+}
+function timelineHtml(request) {
+  const created = timestamp(request.created_at);
+  if (request.status === "cancelled")
+    return `<section class="details-progress" aria-label="Service progress"><ol class="details-timeline details-timeline-cancelled"><li class="done"><span aria-hidden="true">✓</span><strong>Request Created</strong>${created ? `<small>${escapeHtml(created)}</small>` : ""}</li><li class="cancelled" aria-current="step"><span aria-hidden="true">×</span><strong>Cancelled</strong><small>No further progress is implied.</small></li></ol></section>`;
+  const states = [
+      "pending",
+      "provider_selected",
+      "confirmed",
+      "in_progress",
+      "completed",
+    ],
+    labels = [
+      "Request Created",
+      "Provider Selected",
+      "Confirmed",
+      "In Progress",
+      "Completed",
+    ],
+    index = states.indexOf(request.status);
+  if (index < 0)
+    return '<p class="details-notice">Progress is unavailable for this request status.</p>';
+  return `<section class="details-progress" aria-label="Service progress"><ol class="details-timeline">${states.map((state, i) => `<li class="${i <= index ? "done" : "future"} ${i === index ? "current" : ""}" ${i === index ? 'aria-current="step"' : ""}><span aria-hidden="true">${i <= index ? "✓" : i + 1}</span><strong>${labels[i]}</strong><small class="details-stage-state">${i === index ? "Current stage" : i < index ? "Reached" : "Not reached"}</small>${i === 0 && created ? `<small>${escapeHtml(created)}</small>` : ""}</li>`).join("")}</ol></section>`;
+}
+function disposeMap() {
+  mapResizeObserver?.disconnect();
+  mapResizeObserver = null;
+  if (requestMap) {
+    requestMap.remove();
+    requestMap = null;
+  }
+}
+function layoutDetailsCards() {
+  const area = document.getElementById("requestDetailsArea");
+  if (!area) return;
+  const cards = new Map(
+    [...area.querySelectorAll("[data-details-card]")].map((card) => [
+      card.dataset.detailsCard,
+      card,
+    ]),
+  );
+  if (!cards.size) return;
+  const active = area.contains(document.activeElement)
+    ? document.activeElement
+    : null;
+  if (detailsMedia.matches) {
+    let main = area.querySelector(":scope > .details-main"),
+      side = area.querySelector(":scope > .details-side");
+    if (!main) {
+      main = document.createElement("div");
+      main.className = "details-main";
+      side = document.createElement("div");
+      side.className = "details-side";
+      area.append(main, side);
+    }
+    ["summary", "service", "location", "image", "information"].forEach(
+      (name) => {
+        if (cards.has(name)) main.append(cards.get(name));
+      },
+    );
+    ["provider", "actions", "payment", "review"].forEach((name) => {
+      if (cards.has(name)) side.append(cards.get(name));
+    });
+  } else {
+    cardOrder.forEach((name) => {
+      if (cards.has(name)) area.append(cards.get(name));
+    });
+    area
+      .querySelectorAll(":scope > .details-main,:scope > .details-side")
+      .forEach((node) => node.remove());
+  }
+  active?.focus({ preventScroll: true });
+  requestMap?.invalidateSize({ pan: false });
+}
+detailsMedia.addEventListener("change", layoutDetailsCards);
+function renderLoadError(message, retry = true) {
+  disposeMap();
+  currentRequest = null;
+  document.getElementById("requestDetailsArea").innerHTML =
+    `<section class="panel details-state"><h2 id="requestTitle">Request details unavailable</h2><span id="requestStatus" class="status-pill">Unavailable</span><p>${escapeHtml(message)}</p>${retry ? '<button type="button" class="btn btn-outline" id="retryRequestBtn">Try Again</button>' : '<a class="btn btn-outline" href="my-requests.html">Back to My Requests</a>'}</section>`;
+  showMessage(message);
+  document.getElementById("retryRequestBtn")?.addEventListener("click", () => {
+    if (!mutationBusy) {
+      clearMessage();
+      void loadRequest();
+    }
+  });
+}
+function confirmCompletion() {
+  return new Promise((resolve) => {
+    const dialog = document.getElementById("completeRequestDialog"),
+      keep = document.getElementById("keepRequestOpenBtn"),
+      confirm = document.getElementById("confirmCompleteBtn"),
+      opener = document.activeElement;
+    let result = false;
+    const finish = () => {
+      dialog.removeEventListener("close", finish);
+      keep.removeEventListener("click", onKeep);
+      confirm.removeEventListener("click", onConfirm);
+      dialog.removeEventListener("keydown", onKey);
+      opener?.focus({ preventScroll: true });
+      resolve(result);
+    };
+    const onKeep = () => dialog.close();
+    const onConfirm = () => {
+      result = true;
+      dialog.close();
+    };
+    const onKey = (event) => {
+      if (event.key !== "Tab") return;
+      if (event.shiftKey && document.activeElement === keep) {
+        event.preventDefault();
+        confirm.focus();
+      } else if (!event.shiftKey && document.activeElement === confirm) {
+        event.preventDefault();
+        keep.focus();
+      }
+    };
+    dialog.addEventListener("close", finish);
+    keep.addEventListener("click", onKeep);
+    confirm.addEventListener("click", onConfirm);
+    dialog.addEventListener("keydown", onKey);
+    dialog.showModal();
+    keep.focus();
+  });
+}
+async function guardSettlement(event, kind, save) {
+  event.preventDefault();
+  const button = document.getElementById(
+    kind === "payment" ? "savePaymentBtn" : "saveReviewBtn",
+  );
+  if (
+    mutationBusy ||
+    !button ||
+    button.disabled ||
+    !settlementLoaded ||
+    !selectedProvider ||
+    currentRequest?.status !== "completed" ||
+    (kind === "payment" ? existingPayment : existingReview)
+  )
+    return;
+  mutationBusy = true;
+  try {
+    await save(event);
+  } catch {
+    button.disabled = true;
+    showMessage(
+      `${kind === "payment" ? "Payment" : "Review"} save could not be confirmed. Refresh to check existing records before submitting again.`,
+    );
+  } finally {
+    mutationBusy = false;
+  }
 }
 
 function formatStatus(status) {
-    return status ? status.replace("_", " ") : "unknown";
+  return Object.hasOwn(statusLabels, status)
+    ? statusLabels[status]
+    : typeof status === "string" && status
+      ? status.replaceAll("_", " ")
+      : "Status unavailable";
 }
 
 function formatBudget(budget) {
-    if (budget === null || budget === undefined || budget === "") {
-        return "Open";
-    }
-
-    return `RM ${Number(budget).toFixed(2)}`;
+  if (budget === null || budget === undefined || budget === "")
+    return "Open budget";
+  return Number.isFinite(Number(budget)) && Number(budget) >= 0
+    ? `RM ${Number(budget).toFixed(2)}`
+    : "Budget unavailable";
 }
 
 function getRequestImageUrl(request) {
-    if (!request) return null;
+  if (!request) return null;
 
-    return request.request_image_url || null;
+  return request.request_image_url || null;
 }
 
 function buildRequestImagePreview(request) {
-    const imageUrl = getRequestImageUrl(request);
-
-    if (!imageUrl) return "";
-
-    return `
-        <div class="description-box">
-            <h3>Submitted Image</h3>
-            <div class="request-image-box flat-request-image-box">
-                <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer">
-                    <img src="${escapeHtml(safeUrl(imageUrl))}" alt="Submitted request image" class="request-submitted-image">
-                </a>
-                <a href="${escapeHtml(safeUrl(imageUrl))}" target="_blank" rel="noopener noreferrer" class="proof-open-link">Open image</a>
-            </div>
-        </div>
-    `;
+  const url = safeUrl(getRequestImageUrl(request));
+  if (!url)
+    return '<div class="details-empty"><p>No service image uploaded</p></div>';
+  return `<div class="details-image-preview"><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" aria-label="Open submitted service image"><img id="serviceRequestImage" src="${escapeHtml(url)}" alt="Submitted service request image"></a><p id="serviceImageError" hidden role="status">The service image could not load. You can try opening the original image.</p><a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline" aria-label="Open Image in a new tab">Open Image ${detailsIcon("arrow")}</a></div>`;
 }
 
 function hasValidCoordinates(request) {
-    return (
-        request.client_lat !== null &&
-        request.client_lng !== null &&
-        request.client_lat !== undefined &&
-        request.client_lng !== undefined &&
-        !Number.isNaN(Number(request.client_lat)) &&
-        !Number.isNaN(Number(request.client_lng))
-    );
+  const lat = request?.client_lat,
+    lng = request?.client_lng;
+  return (
+    ["number", "string"].includes(typeof lat) &&
+    ["number", "string"].includes(typeof lng) &&
+    lat != null &&
+    lng != null &&
+    String(lat).trim() !== "" &&
+    String(lng).trim() !== "" &&
+    Number.isFinite(Number(lat)) &&
+    Number.isFinite(Number(lng)) &&
+    Number(lat) >= -90 &&
+    Number(lat) <= 90 &&
+    Number(lng) >= -180 &&
+    Number(lng) <= 180
+  );
 }
 
 function getStarRatingHtml() {
@@ -128,7 +375,7 @@ function getFileExtension(fileName) {
 }
 
 function isImageProof(url) {
-    return /\.(jpg|jpeg|png|webp)$/i.test(url || "");
+  return /\.(jpg|jpeg|png|webp)$/i.test(url || "");
 }
 
 function getPaymentProofHtml(payment) { return receiptHtml(payment); }
@@ -194,8 +441,7 @@ async function uploadPaymentProof(file) {
         });
 
     if (uploadError) {
-        console.error("Payment proof upload error:", uploadError);
-        throw new Error(uploadError.message || "Failed to upload proof payment.");
+        throw new Error("Payment proof could not be uploaded. Please try again.");
     }
 
     return { proofPath: filePath };
@@ -253,10 +499,18 @@ async function handleLogout() {
 }
 
 async function getProvider(providerId) {
-    if (!providerId) return null;
+  providerUnavailable = false;
+  if (!providerId) return null;
+  try {
     const { data, error } = await serviceParticipants([requestId]);
-    if (error) return null;
-    return data.find(person => person.id === providerId) || null;
+    if (error || !Array.isArray(data)) throw new Error();
+    const provider = data.find((person) => person.id === providerId) || null;
+    providerUnavailable = !provider;
+    return provider;
+  } catch {
+    providerUnavailable = true;
+    return null;
+  }
 }
 
 async function getPayment(requestIdValue) {
@@ -289,333 +543,299 @@ async function getClientReview(requestIdValue) {
 }
 
 async function loadRequest() {
+  if (requestLoading) return;
+  requestLoading = true;
+  document
+    .getElementById("requestDetailsArea")
+    .setAttribute("aria-busy", "true");
+  try {
     if (!requestId) {
-        showMessage("Missing request ID.");
-        return;
+      renderLoadError("Missing request ID.", false);
+      return;
     }
-
     const { data, error } = await supabase
-        .from("service_requests")
-        .select("*")
-        .eq("request_id", requestId)
-        .eq("client_id", currentUser.id)
-        .single();
-
-    if (error || !data) {
-        console.error("Request fetch error:", error);
-        showMessage("Request not found or access denied.");
-        return;
+      .from("service_requests")
+      .select("*")
+      .eq("request_id", requestId)
+      .eq("client_id", currentUser.id)
+      .single();
+    if (error || !data || data.client_id !== currentUser.id) {
+      renderLoadError("Request not found or access denied.");
+      return;
     }
-
     currentRequest = data;
     selectedProvider = await getProvider(data.selected_provider_id);
     settlementLoaded = false;
+    existingPayment = null;
+    existingReview = null;
     try {
-        existingPayment = await getPayment(data.request_id);
-        existingReview = await getClientReview(data.request_id);
-        settlementLoaded = true;
+      existingPayment = await getPayment(data.request_id);
+      existingReview = await getClientReview(data.request_id);
+      settlementLoaded = true;
     } catch {
-        showMessage("Payment or review status could not be checked. Refresh before recording another payment or review.");
+      showMessage(
+        "Payment or review status could not be checked. Refresh before recording another payment or review.",
+      );
     }
     renderRequest(data, selectedProvider);
+  } catch {
+    renderLoadError(
+      "Unable to load request details. Your request has not been changed.",
+    );
+  } finally {
+    requestLoading = false;
+    document
+      .getElementById("requestDetailsArea")
+      .setAttribute("aria-busy", "false");
+    document.body.dataset.detailsReady = "true";
+  }
 }
 
+function refreshPaymentProofUI() {
+  updatePaymentProofRequirement();
+  const method = document.getElementById("paymentMethod"),
+    note = document.getElementById("paymentProofNote");
+  if (method && note && method.value === "Other")
+    note.textContent =
+      "Proof is optional for this payment method. Record only a payment already made outside IGotU.";
+  else if (method && note && !method.value)
+    note.textContent =
+      "Choose a payment method to see whether proof is required.";
+}
 function renderRequest(request, provider) {
-    document.getElementById("requestTitle").textContent = `${request.request_id} · ${request.title}`;
-    document.getElementById("requestStatus").textContent = formatStatus(request.status);
-
-    const providerHtml = provider
-        ? `
-            <div class="detail-card">
-                <span>Selected Provider</span>
-                <strong>${escapeHtml(provider.full_name)}</strong>
-                <p>${escapeHtml(provider.user_code)} · Contact through Messages</p>
-            </div>
-        `
-        : `
-            <div class="detail-card">
-                <span>Selected Provider</span>
-                <strong>No provider selected yet</strong>
-                <p>You can select a provider from the recommendation page.</p>
-            </div>
-        `;
-
-    let actionHtml = "";
-
-    if (request.status === "pending") {
-        actionHtml = `
-            <a href="recommended-providers.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn">
-                View Recommended Providers
-            </a>
-            <a href="create-request.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn btn-outline">
-                Edit Request
-            </a>
-            <button class="danger-btn" id="cancelRequestBtn">
-                Cancel Request
-            </button>
-        `;
-    }
-
-    if (["provider_selected", "confirmed"].includes(request.status)) {
-        actionHtml = `
-            <button class="danger-btn" id="cancelRequestBtn">
-                Cancel Request
-            </button>
-        `;
-    }
-
-    if (request.status === "in_progress") {
-        actionHtml = `
-            <button class="btn" id="completeRequestBtn">
-                Mark as Completed
-            </button>
-        `;
-    }
-
-    let completedHtml = "";
-
-    if (request.status === "completed") {
-        completedHtml = buildCompletedSection(request, provider);
-    }
-
-    const messageActionHtml = provider && request.status !== "cancelled"
-        ? `
-            <a href="messages.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="btn btn-outline">
-                Message Provider
-            </a>
-        `
-        : "";
-
-    const reportActionHtml = provider && request.status !== "pending"
-        ? `
-            <a href="report.html?request_id=${escapeHtml(encodeURIComponent(request.request_id))}" class="danger-btn btn-outline-danger">
-                Report Issue
-            </a>
-        `
-        : "";
-
-    const mapHtml = hasValidCoordinates(request)
-        ? `
-            <div class="description-box">
-                <h3>Service Location Map</h3>
-                <div id="requestLocationMap"></div>
-                <p class="map-status">
-                    Latitude: ${escapeHtml(Number(request.client_lat).toFixed(7))} · Longitude: ${escapeHtml(Number(request.client_lng).toFixed(7))}
-                </p>
-            </div>
-        `
-        : `
-            <div class="description-box">
-                <h3>Service Location Map</h3>
-                <p class="muted-text">No GPS coordinate saved for this request.</p>
-            </div>
-        `;
-
-    document.getElementById("requestDetailsArea").innerHTML = `
-        <div class="details-grid big-details">
-            <div class="detail-card">
-                <span>Category</span>
-                <strong>${escapeHtml(request.category)}</strong>
-            </div>
-
-            <div class="detail-card">
-                <span>Service Type</span>
-                <strong>${escapeHtml(request.service_type || "Not specified")}</strong>
-            </div>
-
-            <div class="detail-card">
-                <span>Priority</span>
-                <strong>${escapeHtml(request.priority)}</strong>
-            </div>
-
-            <div class="detail-card">
-                <span>Preferred Date</span>
-                <strong>${escapeHtml(request.preferred_date)}</strong>
-            </div>
-
-            <div class="detail-card">
-                <span>Preferred Time</span>
-                <strong>${escapeHtml(request.preferred_time)}</strong>
-            </div>
-
-            <div class="detail-card">
-                <span>Budget</span>
-                <strong>${escapeHtml(formatBudget(request.budget))}</strong>
-            </div>
-
-            <div class="detail-card">
-                <span>Location</span>
-                <strong>${escapeHtml(request.location)}</strong>
-            </div>
-        </div>
-
-        ${request.status === "cancelled" && request.cancellation_reason ? `
-            <div class="cancellation-note">
-                <strong>Cancellation reason</strong>
-                <span>${escapeHtml(request.cancellation_reason)}</span>
-            </div>
-        ` : ""}
-
-        ${mapHtml}
-
-        <div class="description-box">
-            <h3>Description</h3>
-            <p>${escapeHtml(request.description)}</p>
-        </div>
-
-        ${buildRequestImagePreview(request)}
-
-        ${providerHtml}
-
-        <div class="action-row">
-            ${actionHtml}
-            ${messageActionHtml}
-            ${reportActionHtml}
-        </div>
-
-        ${completedHtml}
-    `;
-
-    const completeBtn = document.getElementById("completeRequestBtn");
-
-    if (completeBtn) {
-        completeBtn.addEventListener("click", completeRequest);
-    }
-
-    const cancelBtn = document.getElementById("cancelRequestBtn");
-
-    if (cancelBtn) {
-        cancelBtn.addEventListener("click", cancelRequest);
-    }
-
-    bindReceiptButtons(document.getElementById("requestDetailsArea"), existingPayment ? [existingPayment] : [], showMessage);
-    const paymentForm = document.getElementById("paymentForm");
-
-    if (paymentForm) {
-        paymentForm.addEventListener("submit", savePayment);
-    }
-
-    const paymentMethod = document.getElementById("paymentMethod");
-
-    if (paymentMethod) {
-        paymentMethod.addEventListener("change", updatePaymentProofRequirement);
-        updatePaymentProofRequirement();
-    }
-
-    const reviewForm = document.getElementById("reviewForm");
-
-    if (reviewForm) {
-        reviewForm.addEventListener("submit", saveReview);
-    }
-
-    setupStarRatings();
-
-    if (hasValidCoordinates(request)) {
-        setTimeout(function() {
-            initRequestLocationMap(request);
-        }, 150);
-    }
+  disposeMap();
+  const id = escapeHtml(encodeURIComponent(request.request_id));
+  const known = Object.hasOwn(statusLabels, request.status),
+    status = known ? request.status : "unknown";
+  let actions = "";
+  if (request.status === "pending")
+    actions = `<a class="btn" href="recommended-providers.html?request_id=${id}">View Recommended Providers</a><a class="btn btn-outline" href="create-request.html?request_id=${id}">Edit Request</a>`;
+  if (["pending", "provider_selected", "confirmed"].includes(request.status))
+    actions +=
+      '<button type="button" class="danger-btn" id="cancelRequestBtn">Cancel Request</button>';
+  if (request.status === "in_progress")
+    actions +=
+      '<button type="button" class="btn" id="completeRequestBtn">Mark as Completed</button>';
+  if (request.status === "completed")
+    actions = `<p class="details-notice">${!settlementLoaded ? "Service completed. Check payment and review status below before recording anything further." : existingPayment && existingReview ? "Service completed. Your payment record and review are available below." : "Service completed. You can record an offline payment and leave a review below where still outstanding."}</p>`;
+  if (request.status === "cancelled")
+    actions =
+      '<p class="details-notice">This request is cancelled and remains in your history.</p>';
+  if (!known)
+    actions =
+      '<p class="details-notice">Actions are unavailable for this request status. Refresh to check the latest information.</p>';
+  // Preserve the existing report eligibility, including cancelled requests with a known participant.
+  if (provider && request.status !== "pending")
+    actions += `<a href="report.html?request_id=${id}" class="btn btn-outline details-report">Report Issue</a>`;
+  const providerContent = provider
+    ? `<div class="details-provider-person"><span class="details-provider-avatar" aria-hidden="true">${escapeHtml(
+        String(provider.full_name || "P")
+          .charAt(0)
+          .toUpperCase(),
+      )}</span><div><h3>${escapeHtml(provider.full_name || "Selected Provider")}</h3><p>${escapeHtml(provider.user_code || "")}</p><p>Request status: ${escapeHtml(formatStatus(request.status))}</p></div></div>${request.status !== "cancelled" ? `<a class="btn btn-outline" href="messages.html?request_id=${id}">Message Provider</a>` : ""}`
+    : `<div class="details-empty"><h3>${providerUnavailable ? "Selected Provider information unavailable" : "No Provider selected yet"}</h3><p>${providerUnavailable ? "Refresh to try the authorised participant lookup again." : request.status === "pending" ? "Use View Recommended Providers in Request Actions to choose a suitable Provider." : "No selected Provider information is available for this request."}</p></div>`;
+  const summary = `<section class="panel details-card details-summary" data-details-card="summary"><div class="details-summary-heading"><span class="details-service-icon" aria-hidden="true">${detailsIcon("list")}</span><div><h2 id="requestTitle">${escapeHtml(request.title || "Service request")}</h2><p class="details-request-id">${escapeHtml(request.request_id)}</p><div class="details-tags"><span>${escapeHtml(request.category || "Category not specified")}</span><span>${escapeHtml(request.service_type || "Service type not specified")}</span></div></div><span id="requestStatus" class="status-pill status-${status}">${escapeHtml(formatStatus(request.status))}</span></div>${timelineHtml(request)}${request.status === "cancelled" && request.cancellation_reason ? `<div class="details-cancellation"><strong>Cancellation reason</strong><p>${escapeHtml(request.cancellation_reason)}</p></div>` : ""}</section>`;
+  const service = detailCard(
+    "service",
+    "Service Details",
+    `<dl class="details-fields">${detailRow("Service Title", request.title || "Service request")}${detailRow("Description", request.description || "No description provided.")}${detailRow("Category", request.category || "Not specified")}${detailRow("Service Type", request.service_type || "Not specified")}${detailRow("Priority", request.priority || "Not specified")}${detailRow("Budget", formatBudget(request.budget))}${detailRow("Preferred Date", serviceDate(request.preferred_date))}${detailRow("Preferred Time", serviceTime(request.preferred_time))}</dl>`,
+  );
+  const location = detailCard(
+    "location",
+    "Service Location",
+    `<p class="details-location-address">${detailsIcon("pin")}${escapeHtml(request.location || "Address not specified")}</p>${hasValidCoordinates(request) ? '<div id="requestLocationMap" role="region" aria-label="Service request location map"></div><p id="requestMapStatus" class="details-help" role="status">Loading the service location map…</p>' : '<p class="details-notice">Location coordinates are unavailable for this request.</p>'}`,
+  );
+  const information = detailCard(
+    "information",
+    "Request Information",
+    `<dl class="details-fields">${detailRow("Request ID", request.request_id)}${timestamp(request.created_at) ? detailRow("Created On", timestamp(request.created_at)) : ""}${timestamp(request.updated_at) ? detailRow("Last Updated", timestamp(request.updated_at)) : ""}</dl>`,
+  );
+  document.getElementById("requestDetailsArea").innerHTML =
+    summary +
+    detailCard("actions", "Request Actions", actions) +
+    detailCard("provider", "Selected Provider", providerContent) +
+    service +
+    location +
+    detailCard("image", "Service Image", buildRequestImagePreview(request)) +
+    information +
+    buildCompletedSection(request, provider);
+  layoutDetailsCards();
+  document
+    .getElementById("completeRequestBtn")
+    ?.addEventListener("click", completeRequest);
+  document
+    .getElementById("cancelRequestBtn")
+    ?.addEventListener("click", cancelRequest);
+  bindReceiptButtons(
+    document.getElementById("requestDetailsArea"),
+    existingPayment ? [existingPayment] : [],
+    showMessage,
+  );
+  document
+    .getElementById("paymentForm")
+    ?.addEventListener("submit", (event) =>
+      guardSettlement(event, "payment", savePayment),
+    );
+  document
+    .getElementById("paymentMethod")
+    ?.addEventListener("change", refreshPaymentProofUI);
+  refreshPaymentProofUI();
+  document
+    .getElementById("reviewForm")
+    ?.addEventListener("submit", (event) =>
+      guardSettlement(event, "review", saveReview),
+    );
+  setupStarRatings();
+  const image = document.getElementById("serviceRequestImage");
+  image?.addEventListener("error", () => {
+    image.hidden = true;
+    document.getElementById("serviceImageError").hidden = false;
+  });
+  if (hasValidCoordinates(request)) initRequestLocationMap(request);
 }
 
 async function cancelRequest() {
-    clearMessage();
-
-    if (!currentRequest || !["pending", "provider_selected", "confirmed"].includes(currentRequest.status)) {
-        showMessage("This request can no longer be cancelled.");
-        return;
-    }
-
-    const cancellationReason = await askCancellationReason();
-    if (!cancellationReason) return;
-
-    const cancelBtn = document.getElementById("cancelRequestBtn");
-    cancelBtn.disabled = true;
-    cancelBtn.textContent = "Cancelling...";
-
+  if (
+    mutationBusy ||
+    !currentRequest ||
+    !["pending", "provider_selected", "confirmed"].includes(
+      currentRequest.status,
+    )
+  )
+    return;
+  const button = document.getElementById("cancelRequestBtn");
+  if (!button || button.disabled) return;
+  mutationBusy = true;
+  clearMessage();
+  try {
+    const reason = await askCancellationReason();
+    if (!reason) return;
+    button.disabled = true;
+    button.textContent = "Cancelling…";
     const { error } = await supabase.rpc("client_cancel_request", {
-        p_request_id: currentRequest.request_id,
-        p_reason: cancellationReason
+      p_request_id: currentRequest.request_id,
+      p_reason: reason,
     });
-
     if (error) {
-        console.error("Cancel request error:", error);
-        showMessage(error.message || "Failed to cancel request.");
-        cancelBtn.disabled = false;
-        cancelBtn.textContent = "Cancel Request";
-        return;
+      showMessage(
+        "Unable to cancel this request. Refresh to check its latest status before trying again.",
+      );
+      button.disabled = false;
+      button.textContent = "Cancel Request";
+      return;
     }
-
-    if (currentRequest.selected_provider_id) {
-
-    }
-
-    showMessage("Request cancelled. It remains available in your request history.", "success");
-
-    setTimeout(function() {
-        loadRequest();
-    }, 700);
+    showMessage(
+      "Request cancelled. It remains available in your request history.",
+      "success",
+    );
+    await loadRequest();
+  } catch {
+    showMessage(
+      "Cancellation could not be confirmed. Refresh before trying again.",
+    );
+  } finally {
+    mutationBusy = false;
+  }
 }
 
 function initRequestLocationMap(request) {
-    if (!L) return;
-
-    const mapElement = document.getElementById("requestLocationMap");
-
-    if (!mapElement) return;
-
-    if (requestMap) {
-        requestMap.remove();
-        requestMap = null;
-    }
-
-    const lat = Number(request.client_lat);
-    const lng = Number(request.client_lng);
-
-    requestMap = L.map("requestLocationMap").setView([lat, lng], 16);
-
+  const node = document.getElementById("requestLocationMap"),
+    status = document.getElementById("requestMapStatus");
+  if (!node || !hasValidCoordinates(request)) return;
+  try {
+    if (!L) throw new Error();
+    requestMap = L.map(node).setView(
+      [Number(request.client_lat), Number(request.client_lng)],
+      16,
+    );
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(requestMap);
-
-    L.marker([lat, lng]).addTo(requestMap)
-        .bindPopup("Service request location")
-        .openPopup();
-
-    setTimeout(function() {
-        requestMap.invalidateSize();
-    }, 300);
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap contributors",
+    })
+      .on("tileerror", () => {
+        if (status.isConnected)
+          status.textContent =
+            "Map tiles could not load. The recorded address and location marker remain available. Use Refresh details to try again.";
+      })
+      .addTo(requestMap);
+    L.marker([Number(request.client_lat), Number(request.client_lng)])
+      .addTo(requestMap)
+      .bindPopup("Service request location");
+    const resize = () => requestMap?.invalidateSize({ pan: false });
+    if (typeof ResizeObserver === "function") {
+      mapResizeObserver = new ResizeObserver(resize);
+      mapResizeObserver.observe(node);
+    }
+    setTimeout(resize, 150);
+    status.textContent =
+      "Recorded service location. Use the map controls to explore.";
+  } catch {
+    disposeMap();
+    node.hidden = true;
+    status.textContent =
+      "The map could not load. The recorded service address is shown above.";
+  }
 }
 
 function buildCompletedSection(request, provider) {
-    if (!settlementLoaded) return '<div class="sub-panel" role="status"><h3>Payment and review unavailable</h3><p>Refresh to check existing records before submitting another payment or review.</p></div>';
-    if (!provider) {
-        return `
-            <div class="sub-panel">
-                <h3>Payment and Review</h3>
-                <p class="muted-text">Provider information is missing, so payment and review cannot be recorded.</p>
-            </div>
-        `;
-    }
-
-    const paymentHtml = existingPayment
-        ? `
+  if (request.status !== "completed")
+    return (
+      detailCard(
+        "payment",
+        "Payment (Offline)",
+        '<p class="details-notice">Offline payment recording is available after service completion.</p>',
+      ) +
+      detailCard(
+        "review",
+        "Your Review",
+        '<p class="details-notice">Review recording is available after service completion.</p>',
+      )
+    );
+  if (!settlementLoaded)
+    return (
+      detailCard(
+        "payment",
+        "Payment (Offline)",
+        '<p class="details-notice">Payment and review unavailable. Refresh to check existing records before submitting another payment or review.</p>',
+      ) +
+      detailCard(
+        "review",
+        "Your Review",
+        '<p class="details-notice">Review status could not be checked. Refresh before submitting another review.</p>',
+      )
+    );
+  if (!provider)
+    return (
+      detailCard(
+        "payment",
+        "Payment (Offline)",
+        '<p class="details-notice">Provider information is missing, so payment and review cannot be recorded.</p>',
+      ) +
+      detailCard(
+        "review",
+        "Your Review",
+        '<p class="details-notice">Refresh to check the selected Provider before recording a review.</p>',
+      )
+    );
+  const paymentHtml = existingPayment
+    ? `
             <div class="success-box">
                 <h3>Payment Recorded</h3>
                 <p><strong>Amount:</strong> RM ${escapeHtml(Number(existingPayment.amount).toFixed(2))}</p>
                 <p><strong>Method:</strong> ${escapeHtml(existingPayment.payment_method)}</p>
+                ${timestamp(existingPayment.created_at) ? `<p><strong>Recorded:</strong> ${escapeHtml(timestamp(existingPayment.created_at))}</p>` : ""}
                 ${getPaymentProofHtml(existingPayment)}
             </div>
         `
-        : `
+    : `
             <form id="paymentForm" class="mini-form">
                 <h3>Record Offline Payment</h3>
-                <p class="muted-text">Use this after you have paid the provider outside the system.</p>
+                <p class="muted-text">Record the actual amount paid outside IGotU. This form does not process or transfer money.</p>
 
                 <div class="two-column">
                     <div class="form-group">
                         <label for="paymentAmount">Amount Paid (RM)</label>
-                        <input type="number" id="paymentAmount" min="0" step="0.01" value="${escapeHtml(request.budget || "")}" required>
+                        <input type="number" id="paymentAmount" min="0" step="0.01" value="" required>
                     </div>
 
                     <div class="form-group">
@@ -648,15 +868,16 @@ function buildCompletedSection(request, provider) {
             </form>
         `;
 
-    const reviewHtml = existingReview
-        ? `
+  const reviewHtml = existingReview
+    ? `
             <div class="success-box">
                 <h3>Your Review Submitted</h3>
+                ${timestamp(existingReview.created_at) ? `<p><strong>Reviewed:</strong> ${escapeHtml(timestamp(existingReview.created_at))}</p>` : ""}
                 <p><strong>Rating:</strong> ${escapeHtml(existingReview.rating)} / 5</p>
                 <p><strong>Feedback:</strong> ${escapeHtml(existingReview.feedback || "No feedback provided.")}</p>
             </div>
         `
-        : `
+    : `
             <form id="reviewForm" class="mini-form">
                 <h3>Review Provider</h3>
                 <p class="muted-text">Share your feedback about ${escapeHtml(provider.full_name)}.</p>
@@ -675,47 +896,42 @@ function buildCompletedSection(request, provider) {
             </form>
         `;
 
-    return `
-        <div class="sub-panel">
-            <h2>Payment and Review</h2>
-            <div class="two-column">
-                ${paymentHtml}
-                ${reviewHtml}
-            </div>
-        </div>
-    `;
+  return (
+    detailCard("payment", "Payment (Offline)", paymentHtml) +
+    detailCard("review", "Your Review", reviewHtml)
+  );
 }
 
 async function completeRequest() {
-    clearMessage();
-
-    const confirmComplete = confirm("Mark this request as completed?");
-
-    if (!confirmComplete) return;
-
-    const completeBtn = document.getElementById("completeRequestBtn");
-    completeBtn.disabled = true;
-    completeBtn.textContent = "Completing...";
-
+  if (mutationBusy || currentRequest?.status !== "in_progress") return;
+  const button = document.getElementById("completeRequestBtn");
+  if (!button || button.disabled) return;
+  mutationBusy = true;
+  clearMessage();
+  try {
+    if (!(await confirmCompletion())) return;
+    button.disabled = true;
+    button.textContent = "Completing…";
     const { error } = await supabase.rpc("client_complete_request", {
-        p_request_id: currentRequest.request_id
+      p_request_id: currentRequest.request_id,
     });
-
     if (error) {
-        console.error("Complete error:", error);
-        showMessage(error.message || "Failed to complete request.");
-        completeBtn.disabled = false;
-        completeBtn.textContent = "Mark as Completed";
-        return;
+      showMessage(
+        "Unable to complete this request. Refresh to check its latest status before trying again.",
+      );
+      button.disabled = false;
+      button.textContent = "Mark as Completed";
+      return;
     }
-
-
-
     showMessage("Request marked as completed.", "success");
-
-    setTimeout(function() {
-        loadRequest();
-    }, 700);
+    await loadRequest();
+  } catch {
+    showMessage(
+      "Completion could not be confirmed. Refresh before trying again.",
+    );
+  } finally {
+    mutationBusy = false;
+  }
 }
 
 async function savePayment(event) {
@@ -776,8 +992,7 @@ async function savePayment(event) {
         });
 
     if (error) {
-        console.error("Payment insert error:", error);
-        showMessage(error.message || "Failed to save payment record.");
+        showMessage("Failed to save payment record. Refresh to check existing records before retrying.");
         saveBtn.disabled = false;
         saveBtn.textContent = "Save Payment Record";
         return;
@@ -824,8 +1039,7 @@ async function saveReview(event) {
         });
 
     if (error) {
-        console.error("Review insert error:", error);
-        showMessage(error.message || "Failed to submit review.");
+        showMessage("Failed to submit review. Refresh to check existing records before retrying.");
         saveBtn.disabled = false;
         saveBtn.textContent = "Submit Review";
         return;
@@ -840,15 +1054,21 @@ async function saveReview(event) {
     }, 700);
 }
 
-document.addEventListener("DOMContentLoaded", async function() {
-    if (!(await authorizeWorkspace()).allowed) return;
-    currentUser = await getSessionUser();
-    if (!currentUser) return;
+document.addEventListener("DOMContentLoaded", async function () {
+  if (!(await authorizeWorkspace()).allowed) return;
+  currentUser = await getSessionUser();
+  if (!currentUser) return;
 
-    const profile = await getProfile(currentUser.id);
-    if (!profile) return;
+  const profile = await getProfile(currentUser.id);
+  if (!profile) return;
 
-    displayUser(profile);
-    handleLogout();
-    loadRequest();
+  displayUser(profile);
+  document.getElementById("refreshRequestBtn").addEventListener("click", () => {
+    if (!mutationBusy && !requestLoading) {
+      clearMessage();
+      void loadRequest();
+    }
+  });
+  handleLogout();
+  loadRequest();
 });
