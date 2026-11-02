@@ -1,0 +1,173 @@
+{
+  "review_date": "2026-11-02",
+  "timezone": "Asia/Kuala_Lumpur",
+  "branch": "feat/client-dashboard-experience",
+  "reviewed_base": "0ab95b0a202bb790ba1495174d07a5eead115663",
+  "pr_base": "fix/admin-access-diagnostics",
+  "scope": "Client Dashboard only; existing owned read, workflow and all guards retained",
+  "reference": "User-supplied Client Dashboard image reviewed directly; existing official logo, truthful matching copy and authorized dynamic data take precedence over copying reference examples",
+  "checks": {
+    "focused_dashboard": {
+      "status": "PASS",
+      "assertions": 285,
+      "viewports": [
+        {
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "width": 1536,
+          "height": 864
+        },
+        {
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "width": 1024,
+          "height": 900
+        },
+        {
+          "width": 768,
+          "height": 1000
+        },
+        {
+          "width": 390,
+          "height": 844
+        },
+        {
+          "width": 320,
+          "height": 800
+        }
+      ],
+      "axe_scans": 18,
+      "axe_violations": 0,
+      "external_requests": 0,
+      "page_errors": 0,
+      "coverage": [
+        "Full authenticated name and actual data bindings",
+        "Client ownership filter with unrelated future-dated row excluded",
+        "Existing pending/ongoing/completed totals and five newest rows",
+        "Preferred dates/times/budgets and missing-field fallbacks",
+        "Escaping, unknown status allowlist and exact request ID encoding",
+        "Long names/unbroken text at 320px without overflow",
+        "All sidebar/quick-action routes and actual Create/details navigation",
+        "Modal explanation, focus containment, Escape and restoration",
+        "Notification badge/count, mark-one/mark-all and menu focus",
+        "Profile/verification menu and existing logout",
+        "Read error and thrown transport failure, explicit retry and stale-data preservation",
+        "Real loading placeholders and duplicate-read prevention",
+        "Empty requests and real Create action",
+        "Wrong roles/inactive/unverified/incomplete/backend incompatibility prevent business reads",
+        "Mobile navigation, optional shell/art failure fallbacks",
+        "Finite entrances and runtime reduced motion",
+        "One Edit Profile entry only in existing account dropdown",
+        "Four Quick Actions with practical Client Help FAQ",
+        "Seven native FAQs with existing routes, keyboard expansion, Close/Escape and focus restoration",
+        "Closed FAQ links excluded from backward/forward focus loop",
+        "Three accessible requests at <=480px and five above",
+        "Exact 480/481px transition with no extra query/duplicates",
+        "Resize moves focus safely from newly hidden card",
+        "Full statistics remain independent of visible card limit",
+        "Count caption in Recent Requests; no false loading/error count",
+        "Phone metadata computed size at least 13px"
+      ]
+    },
+    "auth_smoke": {
+      "status": "PASS",
+      "role_match_outcomes": 9,
+      "widths": [
+        1440,
+        768,
+        390,
+        320
+      ]
+    },
+    "mandatory_verification": {
+      "status": "PASS",
+      "direct_guarded_workspace_routes": 16
+    },
+    "workspace_layout": {
+      "status": "PASS",
+      "page_viewport_combinations": 84
+    },
+    "functional": {
+      "status": "PASS",
+      "passed": 94,
+      "failed": 0
+    },
+    "static": {
+      "status": "PASS",
+      "checks": [
+        "JS syntax",
+        "Unique HTML IDs",
+        "SVG XML",
+        "Git whitespace",
+        "Credential-pattern scan",
+        "Overall PR: two existing app files plus new scoped CSS/art; refinement limited to three dashboard files",
+        "Existing Client session/profile helper logic preserved apart from formatting",
+        "47 protected file hashes including all SQL/shared Auth/menus/config",
+        "Refinement: original owned query/Auth helpers byte-identical; all other application files including original artwork unchanged"
+      ]
+    }
+  },
+  "intentional_reference_differences": [
+    "Official existing U-mark/wordmark preserved",
+    "No nonfunctional or global search",
+    "No invented message-count badge",
+    "No verified/available Provider guarantee",
+    "No copied sample names/counts/requests",
+    "Only actual six request statuses, no invented declined enum value",
+    "Phone artwork hidden to prioritize Create Request"
+  ],
+  "motion": {
+    "entrance_ms": 420,
+    "stagger_ms": 70,
+    "stagger_cap_ms": 210,
+    "hover_ms": 220,
+    "stats_lift_px": 3,
+    "request_lift_px": 2,
+    "reduced_motion": true,
+    "looping_decoration": false
+  },
+  "fixture_capture_label": "Offline synthetic strip added only during screenshots; not application UI",
+  "not_verified": [
+    "Live Supabase integration and actual backend RLS/permissions",
+    "Production/staging account or data behavior",
+    "Safari/Firefox",
+    "Physical devices",
+    "Full manual screen-reader audit"
+  ],
+  "no_actions": [
+    "No live Supabase project access",
+    "No staging/production writes or real account operations",
+    "No SQL execution or schema/RLS/RPC/Auth changes",
+    "No changes to other Client/Provider/Admin pages",
+    "No deployment or merge"
+  ],
+  "latest_refinement": {
+    "base": "ea01e030bd4f9f060e9b9f71a095c540c2e925e2",
+    "same_branch_same_draft_pr": 17,
+    "application_scope": [
+      "client/dashboard.html",
+      "css/client-dashboard.css",
+      "js/client.js"
+    ],
+    "new_backend_queries_on_resize": 0,
+    "visible_requests": {
+      "max_width_480": 3,
+      "above_480": 5
+    },
+    "phone_metadata_px": 13,
+    "faq_questions": 7,
+    "profile_entry_point": "Existing authenticated account dropdown only",
+    "statistics": "Full authorized dataset; query/status rules unchanged",
+    "comparison": "refinement/comparison.json",
+    "scope_proof": "refinement/protected-files.json",
+    "reference_note": "Written refinement brief applied to approved design; no additional revised image available in the latest message"
+  }
+}
