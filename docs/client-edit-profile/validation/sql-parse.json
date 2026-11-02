@@ -1,0 +1,10 @@
+{
+  "outerStatements": 28,
+  "plpgsqlFunctions": [
+    "get_client_profile_media",
+    "save_client_profile_media"
+  ],
+  "sqlExecuted": false,
+  "liveBackend": false,
+  "parser": "pglast 7.22"
+}

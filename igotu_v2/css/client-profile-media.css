@@ -1,0 +1,33 @@
+/* Opt-in media presentation on the six Client pages only. */
+.profile-media-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.profile-media-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #ddebe2;
+  color: #17392a;
+}
+.profile-media-summary .profile-media-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #e2f3dc;
+  border-radius: 50%;
+  font-weight: 700;
+  color: #075c36;
+  overflow: hidden;
+}
+.profile-media-summary strong {
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
