@@ -1,0 +1,17 @@
+{
+  "type": "Offline synthetic fixture only",
+  "assertions": 227,
+  "axeScans": 19,
+  "axeViolations": 0,
+  "liveSupabase": false,
+  "viewports": [
+    1920,
+    1536,
+    1440,
+    1366,
+    1024,
+    768,
+    390,
+    320
+  ]
+}

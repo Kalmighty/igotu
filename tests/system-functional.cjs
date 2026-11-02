@@ -272,6 +272,7 @@ test("Cancellation dialog traps keyboard focus and restores its opener", async (
   page,
 }) => {
   await ready(page, "client/my-requests.html");
+  await page.locator(".requests-action-trigger").first().click();
   const open = page.locator(".cancel-btn").first();
   await open.click();
   await page.locator("#serviceReasonSelect").waitFor();
@@ -589,6 +590,7 @@ test("Decline excludes Provider, cancellation retains history and required reaso
   await ready(page, "client/recommended-providers.html?request_id=REQ-A");
   assert.equal(await page.locator(".select-provider-btn").count(), 0);
   await ready(page, "client/my-requests.html");
+  await page.locator('.requests-action-trigger[data-request-id="REQ-A"]').click();
   await page.locator('.cancel-btn[data-request-id="REQ-A"]').click();
   await page.locator("#serviceReasonSelect").selectOption("no_longer_needed");
   await page.locator(".service-reason-confirm").click();
