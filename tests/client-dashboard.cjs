@@ -150,15 +150,18 @@ function tables() {
     );
   }
   async function shot(p, name, dir = "screenshots", fullPage = true) {
-    await p.evaluate(() => {
+    await p.evaluate((fullPage) => {
       const label = document.createElement("aside");
       label.id = "syntheticReviewLabel";
       label.textContent =
         "OFFLINE REVIEW · SYNTHETIC FIXTURES · NO LIVE SUPABASE";
       label.style =
         "background:#fff4cd;color:#463b15;padding:7px 12px;text-align:center;font:700 11px/1.5 Arial";
-      document.body.prepend(label);
-    });
+      const modal = !fullPage && document.querySelector("dialog[open]");
+      (modal || document.body).prepend(label);
+      if (!fullPage && !modal) label.style.position = "fixed";
+      if (!fullPage && !modal) label.style.inset = "0 0 auto 0";
+    }, fullPage);
     await p.screenshot({ path: path.join(out, dir, name + ".png"), fullPage });
     await p.locator("#syntheticReviewLabel").evaluate((e) => e.remove());
   }
@@ -205,8 +208,52 @@ function tables() {
         );
       ok(
         (await p.locator("#recentRequests .dashboard-request").count()) === 5,
-        "five recent requests",
+        "five cards retained locally",
       );
+      const shown = width <= 480 ? 3 : 5;
+      ok(
+        (await p
+          .locator("#recentRequests .dashboard-request:visible")
+          .count()) === shown,
+        "responsive visible request count",
+      );
+      ok(
+        (await p.locator("#dashboardDataStatus").textContent()) ===
+          `Showing your ${shown} most recent requests.`,
+        "responsive count caption",
+      );
+      ok(
+        (await p.locator(".dashboard-recent #dashboardDataStatus").count()) ===
+          1,
+        "count inside Recent Requests",
+      );
+      ok(
+        (await p
+          .locator(
+            '.sidebar a[href="edit-profile.html"],.dashboard-quick a[href="edit-profile.html"]',
+          )
+          .count()) === 0,
+        "duplicate profile links removed",
+      );
+      ok(
+        (await p.locator(".dashboard-quick-link").count()) === 4,
+        "exactly four Quick Actions",
+      );
+      if (width <= 480) {
+        for (const selector of [
+          ".dashboard-request-id",
+          ".dashboard-meta-chip > span",
+          ".dashboard-request-location > span",
+          ".status-pill",
+        ])
+          ok(
+            await p
+              .locator(selector)
+              .first()
+              .evaluate((e) => parseFloat(getComputedStyle(e).fontSize) >= 13),
+            "readable phone metadata",
+          );
+      }
       ok(
         !(await p.locator("#recentRequests").textContent()).includes("FOREIGN"),
         "other Client row excluded",
@@ -335,17 +382,11 @@ function tables() {
             "create-request.html",
             "my-requests.html",
             "messages.html",
-            "edit-profile.html",
           ],
         ],
         [
-          ".dashboard-quick-link",
-          [
-            "create-request.html",
-            "my-requests.html",
-            "messages.html",
-            "edit-profile.html",
-          ],
+          "a.dashboard-quick-link",
+          ["create-request.html", "my-requests.html", "messages.html"],
         ],
       ])
         ok(
@@ -394,6 +435,110 @@ function tables() {
           .evaluate((e) => e === document.activeElement),
         "dialog restores opener",
       );
+      ok(
+        (await p.locator("#clientHelpBtn strong").textContent()) === "Get Help",
+        "fourth action is Get Help",
+      );
+      await p.locator("#clientHelpBtn").focus();
+      await p.keyboard.press("Enter");
+      ok(await p.locator("#clientHelpDialog").isVisible(), "Get Help opens");
+      ok(
+        (await p.locator("#clientHelpTitle").textContent()) ===
+          "How can we help?",
+        "help title",
+      );
+      ok(
+        (await p.locator("#clientHelpDialog summary").count()) === 7,
+        "seven practical FAQs",
+      );
+      const faqText = (
+        await p.locator("#clientHelpDialog").textContent()
+      ).replace(/\s+/g, " ");
+      ok(
+        faqText.includes("Selection is not confirmation") &&
+          faqText.includes("does not guarantee Provider availability") &&
+          faqText.includes("does not collect or process payments"),
+        "accurate FAQ guidance",
+      );
+      ok(
+        await p
+          .locator("#clientHelpClose")
+          .evaluate((e) => e === document.activeElement),
+        "help initial focus",
+      );
+      await p.keyboard.press("Shift+Tab");
+      ok(
+        await p
+          .locator("#clientHelpDialog summary")
+          .last()
+          .evaluate((e) => e === document.activeElement),
+        "backward loop skips collapsed FAQ links",
+      );
+      await p.keyboard.press("Tab");
+      ok(
+        await p
+          .locator("#clientHelpClose")
+          .evaluate((e) => e === document.activeElement),
+        "forward loop returns from last question",
+      );
+      ok(
+        await p
+          .locator("#clientHelpDialog")
+          .evaluate((e) => e.contains(document.activeElement)),
+        "help backward focus containment",
+      );
+      await p.locator("#clientHelpDialog summary").nth(1).focus();
+      await p.keyboard.press("Enter");
+      ok(
+        (await p
+          .locator("#clientHelpDialog details")
+          .nth(1)
+          .getAttribute("open")) !== null,
+        "FAQ keyboard expansion",
+      );
+      const faqRoutes = await p
+        .locator("#clientHelpDialog a")
+        .evaluateAll((es) => es.map((e) => e.getAttribute("href")));
+      ok(
+        faqRoutes.every((href) =>
+          [
+            "create-request.html",
+            "my-requests.html",
+            "messages.html",
+            "verification.html",
+          ].includes(href),
+        ),
+        "only existing help routes",
+      );
+      await axe(p, "Client Help desktop");
+      await p.locator("#clientHelpDialog summary").nth(1).press("Enter");
+      await p.locator("#clientHelpClose").focus();
+      await shot(p, "get-help-desktop", "screenshots", false);
+      for (const width of [390, 320]) {
+        await p.setViewportSize({ width, height: 844 });
+        ok(
+          await p
+            .locator("#clientHelpDialog")
+            .evaluate((e) => e.scrollWidth <= e.clientWidth),
+          "help no horizontal overflow",
+        );
+        await axe(p, `Client Help ${width}`);
+        await shot(p, `get-help-${width}`, "screenshots", false);
+      }
+      await p.keyboard.press("Escape");
+      ok(
+        await p
+          .locator("#clientHelpBtn")
+          .evaluate((e) => e === document.activeElement),
+        "help Escape restores opener",
+      );
+      await p.locator("#clientHelpBtn").click();
+      await p.locator("#clientHelpClose").click();
+      ok(
+        !(await p.locator("#clientHelpDialog").isVisible()),
+        "help Close button works",
+      );
+      await p.setViewportSize({ width: 1440, height: 900 });
       await p.locator(".dashboard-quick-link").first().click();
       await p.waitForURL("**/client/create-request.html");
       ok(true, "Create action navigates");
@@ -449,6 +594,27 @@ function tables() {
         "identity verification link preserved",
       );
       await axe(p, "profile dropdown");
+      ok(
+        (await p.locator('a[href="edit-profile.html"]').count()) === 1,
+        "one Edit Profile entry point",
+      );
+      ok(
+        await p
+          .locator('#profileDropdown a[href="edit-profile.html"]')
+          .isVisible(),
+        "profile link preserved",
+      );
+      await shot(p, "account-dropdown-desktop", "screenshots", false);
+      await p.setViewportSize({ width: 390, height: 844 });
+      ok(
+        await p
+          .locator('#profileDropdown a[href="edit-profile.html"]')
+          .isVisible(),
+        "phone profile dropdown works",
+      );
+      await axe(p, "phone profile dropdown");
+      await shot(p, "account-dropdown-390", "screenshots", false);
+
       await p.keyboard.press("Escape");
       ok(
         await p
@@ -478,6 +644,12 @@ function tables() {
       ok(
         (await p.locator("#totalRequests").textContent()) === "—",
         "read failure never fake zero",
+      );
+      ok(
+        !(await p.locator("#dashboardDataStatus").textContent()).includes(
+          "Showing your",
+        ),
+        "no count claimed after initial read failure",
       );
       ok(
         (await p.locator("#recentRequests").textContent()).includes(
@@ -541,6 +713,12 @@ function tables() {
       ok(
         (await p.locator("#totalRequests").textContent()) === "—",
         "loading placeholders",
+      );
+      ok(
+        !(await p.locator("#dashboardDataStatus").textContent()).includes(
+          "Showing your",
+        ),
+        "no count claimed while loading",
       );
       ok(
         await p.locator("#refreshRequestsBtn").isDisabled(),
@@ -661,6 +839,56 @@ function tables() {
       ok(
         new URL(p.url()).searchParams.get("request_id") === 'REQ/<img>&"?x',
         "request details parameter preserved",
+      );
+      await c.close();
+    }
+    {
+      const { p, c, s } = await open();
+      await ready(p);
+      await p.locator(".dashboard-request").nth(3).focus();
+      await p.setViewportSize({ width: 390, height: 844 });
+      await p.waitForFunction(() =>
+        document
+          .querySelector("#dashboardDataStatus")
+          .textContent.includes("3 most recent"),
+      );
+      ok(
+        await p
+          .locator('.dashboard-recent .panel-header a[href="my-requests.html"]')
+          .evaluate((e) => e === document.activeElement),
+        "resize moves focus from hidden card to View All",
+      );
+      for (const width of [480, 481, 320, 768, 1536]) {
+        await p.setViewportSize({ width, height: 900 });
+        const n = width <= 480 ? 3 : 5;
+        await p.waitForFunction(
+          (n) =>
+            document.querySelector("#dashboardDataStatus").textContent ===
+            `Showing your ${n} most recent requests.`,
+          n,
+        );
+        ok(
+          (await p.locator(".dashboard-request:visible").count()) === n,
+          "resize updates visible cards",
+        );
+        ok(
+          (await p.locator("#recentRequests").getByRole("link").count()) === n,
+          "screen-reader-visible cards match",
+        );
+        ok(
+          (await p.locator(".dashboard-request").count()) === 5,
+          "no duplicates or discarded cached cards",
+        );
+        ok(
+          (await p.locator("#totalRequests").textContent()) === "8",
+          "all owned requests still counted",
+        );
+      }
+      ok(
+        s.calls.filter(
+          (o) => o.kind === "query" && o.table === "service_requests",
+        ).length === 1,
+        "no resize queries",
       );
       await c.close();
     }

@@ -93,6 +93,25 @@ function preferredTime(value) {
     Number(match[2]),
   ).toLocaleTimeString("en-MY", { hour: "numeric", minute: "2-digit" });
 }
+// Presentation only: keep the same five cards/data; CSS removes narrow-phone
+// overflow cards from both display and the accessibility tree.
+const recentRequestLayout = matchMedia("(max-width: 480px)");
+function updateRecentCount() {
+  const status = document.getElementById("dashboardDataStatus");
+  if (
+    !status ||
+    !latestRequests ||
+    !["ready", "empty"].includes(document.body.dataset.requestsState)
+  )
+    return;
+  const shown = Math.min(
+    latestRequests.length,
+    recentRequestLayout.matches ? 3 : 5,
+  );
+  status.textContent = shown
+    ? `Showing your ${shown} most recent ${shown === 1 ? "request" : "requests"}.`
+    : "Your requests will appear here after you create one.";
+}
 function requestCards(requests) {
   const statuses = {
     pending: "Pending",
@@ -187,10 +206,7 @@ async function loadStats(userId) {
     latestRequests = requests;
     renderRequests(requests);
     document.body.dataset.requestsState = requests.length ? "ready" : "empty";
-    if (status)
-      status.textContent = requests.length
-        ? `Showing your ${Math.min(requests.length, 5)} most recent ${requests.length === 1 ? "request" : "requests"}.`
-        : "Your requests will appear here after you create one.";
+    updateRecentCount();
   } catch {
     document.body.dataset.requestsState = "error";
     if (latestRequests === null)
@@ -219,15 +235,10 @@ async function loadStats(userId) {
     stats?.setAttribute("aria-busy", "false");
   }
 }
-function setupDashboard(userId) {
-  const refresh = document.getElementById("refreshRequestsBtn");
-  if (refresh) {
-    refresh.hidden = false;
-    refresh.addEventListener("click", () => loadStats(userId));
-  }
-  const help = document.getElementById("workflowHelpBtn"),
-    dialog = document.getElementById("workflowHelpDialog"),
-    close = document.getElementById("workflowHelpClose");
+function setupDashboardDialog(triggerId, dialogId, closeId) {
+  const help = document.getElementById(triggerId),
+    dialog = document.getElementById(dialogId),
+    close = document.getElementById(closeId);
   if (help && dialog && close && typeof dialog.showModal === "function") {
     help.hidden = false;
     help.addEventListener("click", () => {
@@ -239,9 +250,15 @@ function setupDashboard(userId) {
       if (event.key !== "Tab") return;
       const controls = [
         ...dialog.querySelectorAll(
-          'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex="0"]',
+          'a[href],summary,button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex="0"]',
         ),
-      ].filter((element) => element.getClientRects().length);
+      ].filter((element) => {
+        const collapsed = element.closest("details:not([open])");
+        return (
+          element.getClientRects().length &&
+          (!collapsed || collapsed.querySelector("summary") === element)
+        );
+      });
       const first = controls[0],
         last = controls[controls.length - 1];
       if (!first) return;
@@ -257,6 +274,38 @@ function setupDashboard(userId) {
       if (document.body.dataset.accessState === "allowed") help.focus();
     });
   }
+}
+function setupDashboard(userId) {
+  const refresh = document.getElementById("refreshRequestsBtn");
+  if (refresh) {
+    refresh.hidden = false;
+    refresh.addEventListener("click", () => loadStats(userId));
+  }
+  setupDashboardDialog(
+    "workflowHelpBtn",
+    "workflowHelpDialog",
+    "workflowHelpClose",
+  );
+  setupDashboardDialog("clientHelpBtn", "clientHelpDialog", "clientHelpClose");
+  let focusedRequest = null;
+  document.addEventListener("focusin", (event) => {
+    focusedRequest = event.target.closest?.(".dashboard-request") || null;
+  });
+  recentRequestLayout.addEventListener("change", () => {
+    updateRecentCount();
+    if (
+      recentRequestLayout.matches &&
+      focusedRequest?.isConnected &&
+      !focusedRequest.getClientRects().length &&
+      (document.activeElement === document.body ||
+        focusedRequest.contains(document.activeElement))
+    )
+      document
+        .querySelector(
+          '.dashboard-recent .panel-header a[href="my-requests.html"]',
+        )
+        ?.focus();
+  });
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const entrances = [
     ...document.querySelectorAll(

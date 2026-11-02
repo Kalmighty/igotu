@@ -145,10 +145,7 @@
   background: #c6e9b6;
   box-shadow: none;
 }
-.client-dashboard .side-menu .dashboard-edit-link {
-  border: 1px solid #81aa8a;
-  margin-top: auto;
-}
+
 .client-dashboard .main-area {
   min-width: 0;
 }
@@ -462,9 +459,9 @@
   line-height: 1.1;
 }
 .client-dashboard .dashboard-data-status {
-  margin: 12px 2px 17px;
-  min-height: 19px;
-  font-size: 12px;
+  margin: 6px 0 0;
+  min-height: 21px;
+  font-size: 13px;
   line-height: 1.6;
   color: #526759;
 }
@@ -713,6 +710,10 @@
   padding: 0 18px 18px;
 }
 .client-dashboard .dashboard-quick-link {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -962,10 +963,7 @@
   .client-dashboard .sidebar.navigation-ready:not(.is-open) .side-menu {
     display: none;
   }
-  .client-dashboard .side-menu .dashboard-edit-link {
-    margin-top: 6px;
-    grid-column: 1/-1;
-  }
+
   .client-dashboard .topbar {
     min-height: 74px;
   }
@@ -1102,8 +1100,8 @@
     margin-top: 7px;
   }
   .client-dashboard .dashboard-data-status {
-    font-size: 11px;
-    margin-bottom: 16px;
+    font-size: 13px;
+    margin: 6px 0 0;
   }
   .client-dashboard .panel {
     border-radius: 19px;
@@ -1159,18 +1157,18 @@
     font-size: 15px;
   }
   .client-dashboard .dashboard-request-id {
-    font-size: 11px;
+    font-size: 13px;
   }
   .client-dashboard .status-pill {
     max-width: 100%;
-    font-size: 11px;
+    font-size: 13px;
     margin-bottom: 3px;
   }
   .client-dashboard .dashboard-request-location > span {
-    font-size: 12px;
+    font-size: 13px;
   }
   .client-dashboard .dashboard-meta-chip > span {
-    font-size: 11px;
+    font-size: 13px;
   }
   .client-dashboard .dashboard-quick-list {
     grid-template-columns: minmax(0, 1fr);
@@ -1222,4 +1220,41 @@
     ) {
     border: 1px solid CanvasText;
   }
+}
+
+.client-dashboard .dashboard-recent-heading {
+  flex: 1;
+  min-width: 150px;
+}
+.client-dashboard .dashboard-faq details {
+  border-top: 1px solid #dce8dd;
+  padding: 2px 0;
+}
+.client-dashboard .dashboard-faq summary {
+  min-height: 48px;
+  padding: 13px 6px;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #194d34;
+  cursor: pointer;
+}
+.client-dashboard .dashboard-faq details > div {
+  padding: 2px 6px 12px;
+}
+.client-dashboard .dashboard-faq details p {
+  margin: 0;
+}
+.client-dashboard .dashboard-faq a {
+  color: #075c36;
+  text-decoration: underline;
+}
+@media (max-width: 480px) {
+  .client-dashboard #recentRequests > .dashboard-request:nth-of-type(n + 4) {
+    display: none;
+  }
+}
+
+.client-dashboard .dashboard-stats {
+  margin-bottom: 24px;
 }

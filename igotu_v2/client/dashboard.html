@@ -194,20 +194,6 @@
                 <use href="#dashboard-message" /></svg
               ><span>Messages</span></a
             >
-            <a class="dashboard-edit-link" href="edit-profile.html"
-              ><svg
-                class="dashboard-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <use href="#dashboard-profile" /></svg
-              ><span>Edit Profile</span></a
-            >
           </nav>
         </div>
       </aside>
@@ -464,14 +450,6 @@
                 </div>
               </div>
             </div>
-            <p
-              class="dashboard-data-status"
-              id="dashboardDataStatus"
-              role="status"
-              aria-live="polite"
-            >
-              Loading your requests…
-            </p>
           </section>
           <div class="dashboard-panels">
             <section
@@ -479,20 +457,30 @@
               aria-labelledby="recentRequestsTitle"
             >
               <div class="panel-header">
-                <h2 id="recentRequestsTitle">
-                  <svg
-                    class="dashboard-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
+                <div class="dashboard-recent-heading">
+                  <h2 id="recentRequestsTitle">
+                    <svg
+                      class="dashboard-icon"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.8"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <use href="#dashboard-clock" /></svg
+                    >Recent Requests
+                  </h2>
+                  <p
+                    class="dashboard-data-status"
+                    id="dashboardDataStatus"
+                    role="status"
+                    aria-live="polite"
                   >
-                    <use href="#dashboard-clock" /></svg
-                  >Recent Requests
-                </h2>
+                    Loading your requests…
+                  </p>
+                </div>
                 <div class="dashboard-panel-actions">
                   <button
                     type="button"
@@ -624,8 +612,15 @@
                     aria-hidden="true"
                   >
                     <use href="#dashboard-arrow" /></svg></a
-                ><a class="dashboard-quick-link" href="edit-profile.html"
-                  ><span class="dashboard-quick-icon"
+                ><button
+                  type="button"
+                  class="dashboard-quick-link"
+                  id="clientHelpBtn"
+                  aria-haspopup="dialog"
+                  aria-controls="clientHelpDialog"
+                  hidden
+                >
+                  <span class="dashboard-quick-icon"
                     ><svg
                       class="dashboard-icon"
                       viewBox="0 0 24 24"
@@ -636,10 +631,10 @@
                       stroke-linejoin="round"
                       aria-hidden="true"
                     >
-                      <use href="#dashboard-profile" /></svg></span
+                      <use href="#dashboard-info" /></svg></span
                   ><span class="dashboard-quick-copy"
-                    ><strong>Edit Profile</strong
-                    ><small>Update your personal information.</small></span
+                    ><strong>Get Help</strong
+                    ><small>Find answers about using IGotU.</small></span
                   ><svg
                     class="dashboard-icon quick-arrow"
                     viewBox="0 0 24 24"
@@ -650,8 +645,9 @@
                     stroke-linejoin="round"
                     aria-hidden="true"
                   >
-                    <use href="#dashboard-arrow" /></svg
-                ></a>
+                    <use href="#dashboard-arrow" />
+                  </svg>
+                </button>
               </div>
               <div class="dashboard-note">
                 Your request comes first.<br />Choose the Provider that fits
@@ -728,6 +724,111 @@
             IGotU records offline payments; it does not collect payment through
             this dashboard.
           </p>
+        </dialog>
+        <dialog
+          id="clientHelpDialog"
+          class="dashboard-workflow dashboard-faq"
+          aria-labelledby="clientHelpTitle"
+        >
+          <div class="dashboard-workflow-heading">
+            <h2 id="clientHelpTitle">How can we help?</h2>
+            <button
+              type="button"
+              id="clientHelpClose"
+              aria-label="Close Client Help"
+            >
+              <svg
+                class="dashboard-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <use href="#dashboard-close" />
+              </svg>
+            </button>
+          </div>
+          <p>Practical answers for your Client workspace.</p>
+          <details open>
+            <summary>How do I create a service request?</summary>
+            <div>
+              <p>
+                Choose
+                <a href="create-request.html">Create a Service Request</a>,
+                describe the help you need and enter your preferred date, time
+                and other requested details.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>How does IGotU recommend suitable Providers?</summary>
+            <div>
+              <p>
+                IGotU uses your request to recommend eligible Providers. Open a
+                request from <a href="my-requests.html">My Requests</a> to
+                review the recommendations and compare the information shown. A
+                recommendation does not guarantee Provider availability.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>What happens after I select a Provider?</summary>
+            <div>
+              <p>
+                The selected Provider can confirm or decline the assignment.
+                Selection is not confirmation. Check your request’s current
+                status before making service arrangements.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>Where can I track my service request?</summary>
+            <div>
+              <p>
+                Open <a href="my-requests.html">My Requests</a> and choose the
+                request to see its details, selected Provider and current
+                service status. The dashboard shows only your most recent
+                requests.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>How do I contact my selected Provider?</summary>
+            <div>
+              <p>
+                Use <a href="messages.html">Messages</a> to open the
+                conversation for your selected Provider when it is available
+                through the existing service workflow.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>How are offline payments recorded?</summary>
+            <div>
+              <p>
+                Pay the Provider offline. Open the request’s details from
+                <a href="my-requests.html">My Requests</a> to record payment
+                information when the payment form is available, including any
+                proof the form requires. IGotU records payment information; it
+                does not collect or process payments here. Reviews remain
+                available according to the existing completed-service workflow.
+              </p>
+            </div>
+          </details>
+          <details>
+            <summary>How can I view my identity-verification status?</summary>
+            <div>
+              <p>
+                Choose Identity Verification in your account dropdown or
+                <a href="verification.html">open your verification page</a> to
+                view your current status. Mandatory identity approval and
+                profile-completion requirements remain unchanged.
+              </p>
+            </div>
+          </details>
         </dialog>
       </main>
     </div>
