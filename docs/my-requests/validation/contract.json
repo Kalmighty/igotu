@@ -1,0 +1,283 @@
+{
+  "base": "b22ec7de716a991bcdaf522846a1e1e53db3b87d",
+  "unchangedAuthHelpers": [
+    "getSessionUser",
+    "getProfile",
+    "displayUser",
+    "handleLogout"
+  ],
+  "ownedQueryUnchanged": true,
+  "cancellationRPCUnchanged": true,
+  "protectedFiles": [
+    {
+      "path": "igotu_v2/js/profile-guard.js",
+      "sha256": "7947923cc2bea628b0defa3c4cc3e99ee5478a32434a3f3d9fec4910e722b42d"
+    },
+    {
+      "path": "igotu_v2/js/identity-access.js",
+      "sha256": "bbb6c284f989d4be607bd62d3981656f576a1d82be3eb6463ca902f6e711d5e9"
+    },
+    {
+      "path": "igotu_v2/js/backend-access.js",
+      "sha256": "3d01708545031a229ee496abdac5aa9e4173ad9c948694b6dd13605751838b77"
+    },
+    {
+      "path": "igotu_v2/js/supabaseClient.js",
+      "sha256": "e15a537d3579323d3ce7232300e8f54e121504006f5ef2b4470e4b5e19351724"
+    },
+    {
+      "path": "igotu_v2/js/app-shell.js",
+      "sha256": "e78c20262cec336bb4ffdb93461fd15307936935d98d8816e0fc3d9ac90dbfda"
+    },
+    {
+      "path": "igotu_v2/js/service-action-dialogs.js",
+      "sha256": "8757d2c9fe2dcd11c2d1ef8f733fffd06e129b7192605cb6bf43be2e4f4ccb62"
+    },
+    {
+      "path": "igotu_v2/js/html-safety.js",
+      "sha256": "8eab887d807b27865abf47d551be84941c46881ea5d78bd3997d8936ba4611e7"
+    },
+    {
+      "path": "igotu_v2/js/profile-menu.js",
+      "sha256": "ba8c4e067755c23ce34e89ce92b20619f95e98081d2c9478b0fde8589ff65482"
+    },
+    {
+      "path": "igotu_v2/js/notification-menu.js",
+      "sha256": "58093d1daab75e4ea34f223a099c0f6f8a53189d86942399892b4cf8a4bf5474"
+    },
+    {
+      "path": "igotu_v2/js/notification-badge.js",
+      "sha256": "20d5ed23d26c304300252418f08b5b04c3f716c1db8161aa8361b1b444be7aca"
+    },
+    {
+      "path": "igotu_v2/js/client.js",
+      "sha256": "0ea1db351b93ed59dd24fe7cf6925b91792d48767a4fdead5be48ffb70ecddfb"
+    },
+    {
+      "path": "igotu_v2/client/dashboard.html",
+      "sha256": "06d8dfbbdd6f1f37f001d7a72ec28a756d17a939e6c2b582ec79df183c52a1f4"
+    },
+    {
+      "path": "igotu_v2/css/client-dashboard.css",
+      "sha256": "1b58f8ac2936d3a156b63f0135ce16c430fb4f05ea6755be6723c04f542fbf97"
+    },
+    {
+      "path": "igotu_v2/css/style.css",
+      "sha256": "b9d8c81cd4adbd72091be37ac4a51e7b54b03e464b8013b6c66f89e85b51ab4c"
+    },
+    {
+      "path": "igotu_v2/css/ui.css",
+      "sha256": "b49d3e57df9a1d06d7cde91be1fc530ac4bc948842d53c46229e15013801826b"
+    },
+    {
+      "path": "igotu_v2/client/create-request.html",
+      "sha256": "64a0373f0e0cfe3165b8757df9aee5efab72a215557bba275f6f2ed07d3ec19f"
+    },
+    {
+      "path": "igotu_v2/js/client-create-request.js",
+      "sha256": "8ee4b699ca058833d268546d1446a9c53f393844a2b851a84d60643043760a3d"
+    },
+    {
+      "path": "igotu_v2/js/client-create-request-ui.js",
+      "sha256": "f652308e2be0c197b99d2f8d8d70c754016b5ff06ae91c467c35ac7ac6878ed4"
+    },
+    {
+      "path": "igotu_v2/css/client-create-request.css",
+      "sha256": "1e48c2286ba280b90b4083ecaf684c93621056e8289aa3740897a13203951809"
+    },
+    {
+      "path": "igotu_v2/client/request-details.html",
+      "sha256": "a84f9775f22b291f2ada1e3a19cae3a0fd01d5b4770ade68ddae4ef41041fdd7"
+    },
+    {
+      "path": "igotu_v2/js/client-request-details.js",
+      "sha256": "4608a182f620612763a39fbe34f091feacddb2679bfd1fa9d25c61bb79717e39"
+    },
+    {
+      "path": "docs/backend-integration/catalog-review-query.sql",
+      "sha256": "98857bbba6eb977b897b24a6458ea46c01d2dcaa01a5a0e8dbe733f8b27307b5"
+    },
+    {
+      "path": "docs/backend-integration/reviewed-rpc-definitions.sql",
+      "sha256": "ef2532bc293542b5c6e0c7e4f629c06c20fc2cdc726309774774beb54b386c98"
+    },
+    {
+      "path": "igotu_v2/admin/dashboard.html",
+      "sha256": "5941e7cc48c0b188f92b616838fe9b6d79bc36608f6cd6e3350632befb3ac214"
+    },
+    {
+      "path": "igotu_v2/admin/manage-users.html",
+      "sha256": "d3fece219226fc11a13894365855dc62470060d53c151d4d286ce05ae7c68de5"
+    },
+    {
+      "path": "igotu_v2/admin/monitor-payments.html",
+      "sha256": "ce4e26aa74be7ab6e789f3b97c33faa9c60d8596ad5b95ca6df3f8c5c1f6673f"
+    },
+    {
+      "path": "igotu_v2/admin/monitor-requests.html",
+      "sha256": "573d5157e55ca3d897342729f42a81240cb8be4a12fc98b4a00710d4985f51b5"
+    },
+    {
+      "path": "igotu_v2/admin/monitor-reviews.html",
+      "sha256": "f5be9a5a899edf1ced45d2cd9db0d6f0e546f3428e32534dd125dbf71f36a724"
+    },
+    {
+      "path": "igotu_v2/admin/reports.html",
+      "sha256": "dc47ca62c581e9270855739b0ad2b965fef35296f0433f1bbba2c2080871aeff"
+    },
+    {
+      "path": "igotu_v2/admin/verifications.html",
+      "sha256": "47df02626b1e2fc335ecff1cf876f7f27cbccb4c39e8f6b7ff4ea7960a9167f8"
+    },
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153952_01_foundation_draft.sql",
+      "sha256": "753d79083a3dac4fd928c6fee5ff23ff379f88624ae7d487a88c6a84dafed60d"
+    },
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153954_02_private_readers_draft.sql",
+      "sha256": "0a3bbe701b2a0e79fdb2197fe40130dd92e286c0b130a264a541316b2d03b1c5"
+    },
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153956_03_integrity_draft.sql",
+      "sha256": "e1bfd24182dc7f4fe3faf405b102cf87030a3adc53edeb01260b99dc936c11e6"
+    },
+    {
+      "path": "igotu_v2/database/backend-integration/20261026153958_04_cutover_draft.sql",
+      "sha256": "22549d69e655a5a84f47e3d36cc6956e0cb4e571da06d9282859203c5dad1ee7"
+    },
+    {
+      "path": "igotu_v2/database/cancel-request-setup.sql",
+      "sha256": "31da933299a4362f4a5bfac4efdb689b0c03d8c6c8f7545af812db4f61133d30"
+    },
+    {
+      "path": "igotu_v2/database/identity-verification-setup.sql",
+      "sha256": "5128f16f7dc8985ddf1c5b1c7cad98ffeda02ab7455d746951b6fe50e15b9d2c"
+    },
+    {
+      "path": "igotu_v2/database/mandatory-identity-audit.sql",
+      "sha256": "7032f14d904c23a0392a248b8a68e18c3724b28b8fd4460ea8e45441852ff88a"
+    },
+    {
+      "path": "igotu_v2/database/mandatory-identity-verification-draft.sql",
+      "sha256": "310073abda6b0db49539f8c45abb87425fb4f6ace4b709bb9432f49e0931e185"
+    },
+    {
+      "path": "igotu_v2/database/notifications-setup.sql",
+      "sha256": "68fe9d20179243824152e0db70f04a607e6a8d29fefb0bef194da30b05e4dd58"
+    },
+    {
+      "path": "igotu_v2/database/payment-proof-setup.sql",
+      "sha256": "0be658ffef29f7d7756365605c30a24f2daef4f362e8fe75f9c2de5db629dce3"
+    },
+    {
+      "path": "igotu_v2/database/priority-features-setup.sql",
+      "sha256": "7f44b24871bcf9d69eba9a7d39f8cc881d9b97105075a675a44007f343918e13"
+    },
+    {
+      "path": "igotu_v2/database/profile-onboarding-setup.sql",
+      "sha256": "c1ad6919d142db85095f7317d1a759cf13d9f28d42d6320b37974c9e016dc45f"
+    },
+    {
+      "path": "igotu_v2/database/provider-weekly-availability-setup.sql",
+      "sha256": "043a754ad9c1e585b6fde4ee6f877415a5956776b654de0a18a3cbe84482cc16"
+    },
+    {
+      "path": "igotu_v2/database/remove-admin-notifications.sql",
+      "sha256": "664f222d2790653f5aadcb3d5bf38909320a166550690bb4cf3d80e174890eb9"
+    },
+    {
+      "path": "igotu_v2/database/request-cancellation-setup.sql",
+      "sha256": "c40e452e18f2bf09abf502550bd88d084b0644faaf192303c6e0965d32c55efe"
+    },
+    {
+      "path": "igotu_v2/database/request-editing-setup.sql",
+      "sha256": "f24f4b48215fd9f1b8ae8047d97bdeb5baa91b1fdb313d0e51b193397a244354"
+    },
+    {
+      "path": "igotu_v2/database/request-image-setup.sql",
+      "sha256": "fc32a97c673656494ede1214967b2919500d8eb6174524d70db9deaa9c37095a"
+    },
+    {
+      "path": "igotu_v2/database/security-hardening-review.sql",
+      "sha256": "f6ed3dde028337d57e8a820b460408227d51d7a9b5803359b6f6888ef51ebde6"
+    },
+    {
+      "path": "igotu_v2/database/security-hardening-stage-a-additive.sql",
+      "sha256": "612b59ce1654f6b19dbca1c64f5c288dd2efac98db7439e467b348728eea0e43"
+    },
+    {
+      "path": "igotu_v2/database/security-hardening-stage-c-lockdown.sql",
+      "sha256": "e2a29d4b96668ef489c59508f405ab167f8e51547cb2ecba80db3b85bd8c9d83"
+    },
+    {
+      "path": "igotu_v2/database/service-specialization-setup.sql",
+      "sha256": "913f9dc21f25af6ed177644bde867401b4dd7570b5c8d7ecc1ab62d76b45bc24"
+    },
+    {
+      "path": "igotu_v2/database/setup.sql",
+      "sha256": "d238b752e2deaefed53f4570568cede9040f7aafb21b411144e9ef1b1ef2eb24"
+    },
+    {
+      "path": "igotu_v2/database/staging-baseline/20261026165620_phase7_synthetic_baseline_draft.sql",
+      "sha256": "7485cc1fc3cb31a346cb59088ffb96337da4200b5dc4b9497049137526b7e01d"
+    },
+    {
+      "path": "igotu_v2/database/trust-safety-features-setup.sql",
+      "sha256": "4c8cc89ea24d81f9e3a3b8e99efe64bc278ac43de9a4fa12abdaad6c61e73474"
+    },
+    {
+      "path": "igotu_v2/provider/assignment-details.html",
+      "sha256": "72fa0e3f3a74df25d1202d5aeb131798541fc62aac8401695b9e722b642e79e3"
+    },
+    {
+      "path": "igotu_v2/provider/complete-profile.html",
+      "sha256": "8b194e784983ac6871d0c36b6d48999fa3852158b2272d905a5ccf318f51074b"
+    },
+    {
+      "path": "igotu_v2/provider/dashboard.html",
+      "sha256": "afd9c4f614cc52ab47b11e06dc2c8fe59ea8d9ef4c01cd08297d484f904a67c0"
+    },
+    {
+      "path": "igotu_v2/provider/edit-profile.html",
+      "sha256": "fbbca5c18bc06e34d936874a4a1f6b8b521141dd700d44929f78001c6fa38832"
+    },
+    {
+      "path": "igotu_v2/provider/incoming-requests.html",
+      "sha256": "67102574dc21293ead6394e3c6001dc046a12261d14c62e4fb5616a738f5aea3"
+    },
+    {
+      "path": "igotu_v2/provider/messages.html",
+      "sha256": "f50d1b1731bc774041c710e15ffc9579734f0f6d90b4b03b9dfdab84af839897"
+    },
+    {
+      "path": "igotu_v2/provider/report.html",
+      "sha256": "8a7e487df8e9366417a33b4e709438bbf4ad07c90e95219e971e1966518f1ca2"
+    },
+    {
+      "path": "igotu_v2/provider/verification.html",
+      "sha256": "35c9edf4b2dfd724f9fd555009b76277fee33d625082fe24980182eb90b0014f"
+    },
+    {
+      "path": "tests/staging/atomic-probe-install.sql",
+      "sha256": "7d04f9945ac3c2ede674b4ddd70f92decb353adfd5a8d0613db3862e47010df5"
+    },
+    {
+      "path": "tests/staging/atomic-probe-remove.sql",
+      "sha256": "1eb374bc290c55d9bb882d806b2d406c14ef4aadd1a74af752af80a0b1c9a9d9"
+    },
+    {
+      "path": "tests/staging/catalog-checks.sql",
+      "sha256": "c9b45ccf898097d8bfcd72de2059b6846e66f69f77dc7302d6ef09ad327e1a00"
+    },
+    {
+      "path": "tests/staging/concurrency-barrier.sql",
+      "sha256": "e01b82b4e6514ffd19d1c7c2d529abf25995cac1d4beb95098f2686d7013859f"
+    },
+    {
+      "path": "tests/staging/isolation-check.sql",
+      "sha256": "ebf822519f22b0e3adb8e58521eb437a080e0600f907aff4eb7e09beb7e9f58c"
+    }
+  ],
+  "syntax": "PASS",
+  "html": "PASS"
+}

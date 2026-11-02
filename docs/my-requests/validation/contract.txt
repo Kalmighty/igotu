@@ -1,0 +1,1 @@
+PASS source contract: 4 normalized Auth/profile helpers, original owned query and cancellation RPC; 67 unchanged shared/prior-page/Provider/Admin/SQL files; JS syntax, original IDs, labels and icons.
