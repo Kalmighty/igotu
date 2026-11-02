@@ -890,3 +890,32 @@
     flex-wrap: wrap;
   }
 }
+/* Compact phone pagination: keep both directions and the real current page. */
+@media (max-width: 480px) {
+  .client-my-requests .requests-pagination {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+  .client-my-requests .requests-pagination > span,
+  .client-my-requests
+    .requests-pagination
+    button[data-pagination-control="page"]:not([aria-current]),
+  .client-my-requests .requests-pagination button > span {
+    display: none;
+  }
+  .client-my-requests .requests-pagination button::after {
+    content: attr(data-compact-label);
+  }
+  .client-my-requests .requests-pagination button {
+    flex-shrink: 0;
+    font-size: 24px;
+    padding: 0;
+    width: 44px;
+  }
+  .client-my-requests .requests-pagination button[aria-current="page"] {
+    width: auto;
+    padding: 10px 12px;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}

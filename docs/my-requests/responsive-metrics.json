@@ -163,16 +163,16 @@
   {
     "width": 320,
     "pageWidth": 320,
-    "pageHeight": 4194,
+    "pageHeight": 4145,
     "list": {
       "x": 16,
       "y": 1233.65625,
       "width": 288,
-      "height": 2115.890625
+      "height": 2066.890625
     },
     "guidance": {
       "x": 16,
-      "y": 3369.546875,
+      "y": 3320.546875,
       "width": 288,
       "height": 798.4375
     },

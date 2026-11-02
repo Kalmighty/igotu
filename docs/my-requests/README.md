@@ -1,5 +1,7 @@
 # Client My Requests — design review
 
+[Final pagination refinement: narrow-phone before/after, updated captures and validation](pagination/README.md).
+
 Branch: `feat/client-my-requests-experience`. Stacked on reviewed PR #18 commit `b22ec7de716a991bcdaf522846a1e1e53db3b87d`, branch `feat/create-request-experience`. PRs #17 and #18 are unchanged. Only My Requests is redesigned.
 
 The request supplied a detailed written mockup specification; no separate My Requests reference image was available in this turn. This implementation follows that layout and the approved Dashboard/Create Request visual language. It does not claim a pixel comparison against an unseen image.

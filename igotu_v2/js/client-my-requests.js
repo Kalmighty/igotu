@@ -323,12 +323,26 @@ function renderRequests() {
     function add(label, target, disabled = false, current = false) {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = label;
+      const fullLabel = document.createElement("span");
+      fullLabel.textContent = label;
+      button.append(fullLabel);
+      button.dataset.paginationControl = /^\d+$/.test(label)
+        ? "page"
+        : label.toLowerCase();
+      button.dataset.compactLabel = current
+        ? `Page ${target} of ${pages}`
+        : label === "Previous"
+          ? "‹"
+          : "›";
       button.disabled = disabled;
       if (current) button.setAttribute("aria-current", "page");
       button.setAttribute(
         "aria-label",
-        /^\d+$/.test(label) ? `Page ${label}` : label + " page",
+        current
+          ? `Page ${target} of ${pages}`
+          : /^\d+$/.test(label)
+            ? `Page ${label}`
+            : label + " page",
       );
       button.addEventListener("click", () => {
         page = target;
