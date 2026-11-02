@@ -1,0 +1,26 @@
+{
+  "base": "5103c13c29ffd2989553c52cec3a10be11e05f04",
+  "branch": "feat/create-request-experience",
+  "focusedAssertions": 189,
+  "functional": {
+    "passed": 94,
+    "failed": 0
+  },
+  "workspaceLayouts": 84,
+  "viewports": [
+    1920,
+    1536,
+    1440,
+    1366,
+    1024,
+    768,
+    390,
+    320
+  ],
+  "focusedAxeScans": 10,
+  "focusedAxeViolations": 0,
+  "liveBackendTesting": false,
+  "productionAccess": false,
+  "databaseWrites": false,
+  "deployment": false
+}

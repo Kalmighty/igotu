@@ -48,11 +48,10 @@ async function requestForm(p) {
     .fill("Synthetic service request for testing only");
   await p.locator("#preferredDate").fill("2026-11-02");
   await p.locator("#preferredTime").fill("10:00");
-  await p.locator("#location").fill("Synthetic Likas, Sabah");
-  await p.evaluate(() => {
-    document.querySelector("#clientLat").value = "6.04";
-    document.querySelector("#clientLng").value = "116.12";
-  });
+  // Choose the point through the real form flow; do not seed stale/default hidden coordinates.
+  await p.locator("#mapSearch").fill("Synthetic Likas, Sabah");
+  await p.locator("#searchLocationBtn").click();
+  await p.waitForFunction(() => document.querySelector("#mapStatus").textContent.includes("found and selected"));
 }
 for (const table of ["service_request_declines", "service_requests"])
   test(`Matching fails closed when ${table} eligibility lookup fails`, async ({
