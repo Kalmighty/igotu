@@ -1,0 +1,9 @@
+PASS responsive/axe 1920
+PASS responsive/axe 1536
+PASS responsive/axe 1440
+PASS responsive/axe 1366
+PASS responsive/axe 1024
+PASS responsive/axe 768
+PASS responsive/axe 390
+PASS responsive/axe 320
+PASS 189 create/edit form assertions; eight viewport axe scans plus modal; no live Supabase/maps/GPS

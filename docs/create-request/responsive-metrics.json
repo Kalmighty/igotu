@@ -1,0 +1,242 @@
+[
+  {
+    "width": 1920,
+    "height": 1080,
+    "pageWidth": 1920,
+    "pageHeight": 2528,
+    "form": {
+      "x": 324,
+      "y": 298.5,
+      "width": 1029.875,
+      "height": 2187.25
+    },
+    "guidance": {
+      "x": 1375.875,
+      "y": 298.5,
+      "width": 468.125,
+      "height": 696.25
+    },
+    "map": {
+      "x": 349,
+      "y": 1541.671875,
+      "width": 979.875,
+      "height": 320
+    },
+    "submit": {
+      "x": 1087.5,
+      "y": 2412.75,
+      "width": 241.375,
+      "height": 49
+    }
+  },
+  {
+    "width": 1536,
+    "height": 864,
+    "pageWidth": 1536,
+    "pageHeight": 2528,
+    "form": {
+      "x": 278,
+      "y": 298.5,
+      "width": 829.125,
+      "height": 2187.25
+    },
+    "guidance": {
+      "x": 1129.125,
+      "y": 298.5,
+      "width": 376.875,
+      "height": 696.25
+    },
+    "map": {
+      "x": 303,
+      "y": 1541.671875,
+      "width": 779.125,
+      "height": 320
+    },
+    "submit": {
+      "x": 840.75,
+      "y": 2412.75,
+      "width": 241.375,
+      "height": 49
+    }
+  },
+  {
+    "width": 1440,
+    "height": 900,
+    "pageWidth": 1440,
+    "pageHeight": 2528,
+    "form": {
+      "x": 278,
+      "y": 298.5,
+      "width": 763.125,
+      "height": 2187.25
+    },
+    "guidance": {
+      "x": 1063.125,
+      "y": 298.5,
+      "width": 346.875,
+      "height": 696.25
+    },
+    "map": {
+      "x": 303,
+      "y": 1541.671875,
+      "width": 713.125,
+      "height": 320
+    },
+    "submit": {
+      "x": 774.75,
+      "y": 2412.75,
+      "width": 241.375,
+      "height": 49
+    }
+  },
+  {
+    "width": 1366,
+    "height": 768,
+    "pageWidth": 1366,
+    "pageHeight": 2528,
+    "form": {
+      "x": 278,
+      "y": 298.5,
+      "width": 712.25,
+      "height": 2187.25
+    },
+    "guidance": {
+      "x": 1012.25,
+      "y": 298.5,
+      "width": 323.75,
+      "height": 717.6875
+    },
+    "map": {
+      "x": 303,
+      "y": 1541.671875,
+      "width": 662.25,
+      "height": 320
+    },
+    "submit": {
+      "x": 723.875,
+      "y": 2412.75,
+      "width": 241.375,
+      "height": 49
+    }
+  },
+  {
+    "width": 1024,
+    "height": 900,
+    "pageWidth": 1024,
+    "pageHeight": 2909,
+    "form": {
+      "x": 251,
+      "y": 294.5,
+      "width": 750,
+      "height": 2187.25
+    },
+    "guidance": {
+      "x": 251,
+      "y": 2503.75,
+      "width": 750,
+      "height": 369.625
+    },
+    "map": {
+      "x": 276,
+      "y": 1537.671875,
+      "width": 700,
+      "height": 320
+    },
+    "submit": {
+      "x": 734.625,
+      "y": 2408.75,
+      "width": 241.375,
+      "height": 49
+    }
+  },
+  {
+    "width": 768,
+    "height": 1000,
+    "pageWidth": 768,
+    "pageHeight": 3226,
+    "form": {
+      "x": 23,
+      "y": 348.5,
+      "width": 722,
+      "height": 2187.25
+    },
+    "guidance": {
+      "x": 23,
+      "y": 2557.75,
+      "width": 722,
+      "height": 631.9375
+    },
+    "map": {
+      "x": 48,
+      "y": 1591.671875,
+      "width": 672,
+      "height": 320
+    },
+    "submit": {
+      "x": 478.625,
+      "y": 2462.75,
+      "width": 241.375,
+      "height": 49
+    }
+  },
+  {
+    "width": 390,
+    "height": 844,
+    "pageWidth": 390,
+    "pageHeight": 3728,
+    "form": {
+      "x": 16,
+      "y": 328.390625,
+      "width": 358,
+      "height": 2653.421875
+    },
+    "guidance": {
+      "x": 16,
+      "y": 3003.8125,
+      "width": 358,
+      "height": 692.25
+    },
+    "map": {
+      "x": 35,
+      "y": 1728.953125,
+      "width": 320,
+      "height": 300
+    },
+    "submit": {
+      "x": 35,
+      "y": 2848.8125,
+      "width": 320,
+      "height": 49
+    }
+  },
+  {
+    "width": 320,
+    "height": 800,
+    "pageWidth": 320,
+    "pageHeight": 4019,
+    "form": {
+      "x": 16,
+      "y": 363.1875,
+      "width": 288,
+      "height": 2735.5
+    },
+    "guidance": {
+      "x": 16,
+      "y": 3120.6875,
+      "width": 288,
+      "height": 866.3125
+    },
+    "map": {
+      "x": 35,
+      "y": 1783.546875,
+      "width": 250,
+      "height": 300
+    },
+    "submit": {
+      "x": 35,
+      "y": 2965.6875,
+      "width": 250,
+      "height": 49
+    }
+  }
+]

@@ -11,6 +11,15 @@ let map = null;
 let marker = null;
 let accuracyCircle = null;
 let editingRequest = null;
+let locationSelection = null;
+let locationVersion = 0;
+let locationPending = false;
+let localImagePreview = null;
+function releaseLocalImagePreview() {
+    if (localImagePreview) URL.revokeObjectURL(localImagePreview);
+    localImagePreview = null;
+}
+window.addEventListener("pagehide", releaseLocalImagePreview);
 function creationKey(userId) {
     const key = `igotu-create-request:${userId}`;
     let value = sessionStorage.getItem(key);
@@ -131,6 +140,7 @@ function getRequestImageUrl(request) {
 }
 
 function clearRequestImagePreview() {
+    releaseLocalImagePreview();
     const requestImageInput = document.getElementById("requestImage");
     const uploadBox = document.getElementById("requestImageUploadBox");
     const previewBox = document.getElementById("requestImagePreview");
@@ -147,6 +157,10 @@ function clearRequestImagePreview() {
     if (fileStatus) fileStatus.textContent = "Ready to upload";
     if (previewBox) previewBox.classList.add("hidden");
     if (uploadBox) uploadBox.classList.remove("hidden");
+    const remove = document.getElementById("removeRequestImageBtn");
+    if (remove) remove.hidden = true;
+    const existing = getRequestImageUrl(editingRequest);
+    if (existing) showExistingRequestImage(existing);
 }
 
 function showExistingRequestImage(imageUrl) {
@@ -163,9 +177,11 @@ function showExistingRequestImage(imageUrl) {
     previewImg.src = previewUrl;
     previewImg.classList.remove("hidden");
     fileName.textContent = "Request image uploaded";
-    if (fileStatus) fileStatus.textContent = "Current image for this service request";
+    if (fileStatus) fileStatus.textContent = "Stored image. Choose a new image above to replace it when saving.";
+    const remove = document.getElementById("removeRequestImageBtn");
+    if (remove) remove.hidden = true;
     previewBox.classList.remove("hidden");
-    if (uploadBox) uploadBox.classList.add("hidden");
+    if (uploadBox) uploadBox.classList.remove("hidden");
 }
 
 function updateRequestImagePreview() {
@@ -192,7 +208,11 @@ function updateRequestImagePreview() {
 
     if (!previewBox || !previewImg || !fileName) return;
 
-    previewImg.src = URL.createObjectURL(file);
+    releaseLocalImagePreview();
+    localImagePreview = URL.createObjectURL(file);
+    previewImg.src = localImagePreview;
+    const remove = document.getElementById("removeRequestImageBtn");
+    if (remove) remove.hidden = false;
     previewImg.classList.remove("hidden");
     fileName.textContent = file.name;
     if (fileStatus) fileStatus.textContent = "Ready to upload";
@@ -317,181 +337,131 @@ async function handleLogout() {
     });
 }
 
+function validCoordinates(lat, lng) {
+    return typeof lat === "number" && typeof lng === "number" && Number.isFinite(lat) && Number.isFinite(lng) && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+}
 function updateCoordinateFields(lat, lng) {
     document.getElementById("clientLat").value = Number(lat).toFixed(7);
     document.getElementById("clientLng").value = Number(lng).toFixed(7);
 }
-
-async function reverseGeocode(lat, lng) {
-    const locationInput = document.getElementById("location");
-
+function invalidateLocation(message) {
+    locationVersion++;
+    locationPending = false;
+    locationSelection = null;
+    document.getElementById("clientLat").value = "";
+    document.getElementById("clientLng").value = "";
+    if (map && marker && map.hasLayer(marker)) map.removeLayer(marker);
+    if (map && accuracyCircle) { map.removeLayer(accuracyCircle); accuracyCircle = null; }
+    setMapStatus(message);
+}
+function pointAddress(lat, lng) { return `${lat.toFixed(5)}, ${lng.toFixed(5)}`; }
+async function reverseGeocode(lat, lng, version, notice = "") {
     try {
-        setMapStatus("Finding address from selected location...");
-
+        setMapStatus(`Finding address for the selected point… ${notice}`.trim());
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
         const response = await fetch(url);
+        if (!response.ok) throw new Error("Address lookup unavailable");
         const data = await response.json();
-
-        if (data && data.display_name) {
-            locationInput.value = data.display_name;
-            setMapStatus("Location selected successfully.");
-        } else {
-            locationInput.value = `${Number(lat).toFixed(7)}, ${Number(lng).toFixed(7)}`;
-            setMapStatus("Location selected, but address name was not found.");
-        }
-    } catch (error) {
-        console.error("Reverse geocode error:", error);
-        locationInput.value = `${Number(lat).toFixed(7)}, ${Number(lng).toFixed(7)}`;
-        setMapStatus("Location selected. Address search failed, but coordinates are saved.");
+        if (version !== locationVersion || locationSelection?.version !== version) return;
+        const address = typeof data?.display_name === "string" ? data.display_name.trim() : "";
+        document.getElementById("location").value = address || pointAddress(lat, lng);
+        locationSelection.address = document.getElementById("location").value.trim();
+        document.getElementById("location").dispatchEvent(new Event("change", {bubbles: true}));
+        setMapStatus(`${address ? "Location selected. Check the address and pin before posting." : "Address name was not found. The selected point is shown as coordinates."} ${notice}`.trim());
+    } catch {
+        if (version !== locationVersion || locationSelection?.version !== version) return;
+        document.getElementById("location").value = pointAddress(lat, lng);
+        locationSelection.address = document.getElementById("location").value;
+        document.getElementById("location").dispatchEvent(new Event("change", {bubbles: true}));
+        setMapStatus(`Address lookup is unavailable. The selected point is shown as coordinates; check the pin before posting. ${notice}`.trim());
     }
 }
-
-function setMarkerLocation(lat, lng, shouldUpdateAddress = true) {
-    if (!marker || !map) return;
-
+function setMarkerLocation(lat, lng, shouldUpdateAddress = true, notice = "") {
+    if (!map || !marker || !validCoordinates(lat, lng)) {
+        setMapStatus("Choose a valid location on the map before saving.");
+        return false;
+    }
+    const version = ++locationVersion;
+    locationPending = false;
+    if (accuracyCircle) { map.removeLayer(accuracyCircle); accuracyCircle = null; }
     marker.setLatLng([lat, lng]);
+    if (!map.hasLayer(marker)) marker.addTo(map);
     map.setView([lat, lng], 16);
     updateCoordinateFields(lat, lng);
-
-    if (shouldUpdateAddress) {
-        reverseGeocode(lat, lng);
-    }
+    if (shouldUpdateAddress) document.getElementById("location").value = pointAddress(lat, lng);
+    locationSelection = {lat: Number(lat.toFixed(7)), lng: Number(lng.toFixed(7)), address: document.getElementById("location").value.trim(), version};
+    document.getElementById("location").dispatchEvent(new Event("change", {bubbles: true}));
+    if (shouldUpdateAddress) void reverseGeocode(lat, lng, version, notice);
+    return true;
 }
-
 function initMap() {
     if (!L) {
-        showMessage("Map library failed to load. Please check your internet connection.");
+        setMapStatus("The map could not load. Reload the page to choose your service location.");
+        showMessage("The map could not load. Your request has not been posted.");
         return;
     }
-
     map = L.map("requestMap").setView([defaultLat, defaultLng], 14);
-
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
-
-    marker = L.marker([defaultLat, defaultLng], {
-        draggable: true
-    }).addTo(map);
-
-    updateCoordinateFields(defaultLat, defaultLng);
-
-    map.on("click", function(event) {
-        setMarkerLocation(event.latlng.lat, event.latlng.lng, true);
-    });
-
-    marker.on("dragend", function() {
-        const position = marker.getLatLng();
-        setMarkerLocation(position.lat, position.lng, true);
-    });
-
-    setTimeout(function() {
-        map.invalidateSize();
-    }, 300);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(map);
+    // A default map view is not a selected service location. No pin or saved
+    // coordinates exist until Search, GPS, map click/drag, or valid owned edit data.
+    marker = L.marker([defaultLat, defaultLng], { draggable: true });
+    setMapStatus("Map ready near Kota Kinabalu. No service location selected. Search, use GPS or choose a point.");
+    map.on("click", event => setMarkerLocation(event.latlng.lat, event.latlng.lng, true));
+    marker.on("dragend", () => { const point = marker.getLatLng(); setMarkerLocation(point.lat, point.lng, true); });
+    let frame;
+    const resize = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(() => map?.invalidateSize({pan: false})); };
+    if (typeof ResizeObserver === "function") new ResizeObserver(resize).observe(document.getElementById("requestMap"));
+    else window.addEventListener("resize", resize);
+    setTimeout(resize, 300);
 }
-
 async function searchLocation() {
-    const searchInput = document.getElementById("mapSearch");
-    const query = searchInput.value.trim();
-
-    if (!query) {
-        alert("Please enter a location to search.");
-        return;
-    }
-
+    if (!map) { setMapStatus("Reload the page to load the map before selecting a location."); return; }
+    const query = document.getElementById("mapSearch").value.trim();
+    if (!query) { setMapStatus("Enter a place or address to search."); return; }
+    const version = ++locationVersion;
+    locationPending = true;
     try {
-        setMapStatus("Searching location...");
-
-        const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
-        const response = await fetch(url);
+        setMapStatus("Searching location…");
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`);
+        if (!response.ok) throw new Error("Search unavailable");
         const data = await response.json();
-
-        if (!data || data.length === 0) {
-            alert("Location not found. Try a more specific place name.");
-            setMapStatus("Location not found.");
-            return;
-        }
-
-        const lat = Number(data[0].lat);
-        const lng = Number(data[0].lon);
-
-        document.getElementById("location").value = data[0].display_name;
+        if (version !== locationVersion) return;
+        if (!Array.isArray(data) || !data.length) { setMapStatus("Location not found. Try a more specific place or choose a point on the map."); return; }
+        const lat = Number(data[0].lat), lng = Number(data[0].lon);
+        if (data[0].lat == null || data[0].lon == null || String(data[0].lat).trim() === "" || String(data[0].lon).trim() === "" || !validCoordinates(lat, lng)) throw new Error("Invalid location");
+        document.getElementById("location").value = typeof data[0].display_name === "string" && data[0].display_name.trim() ? data[0].display_name : pointAddress(lat, lng);
         setMarkerLocation(lat, lng, false);
-        setMapStatus("Location found and selected.");
-    } catch (error) {
-        console.error("Search location error:", error);
-        alert("Search failed. Please check your internet connection.");
-        setMapStatus("Location search failed.");
-    }
+        setMapStatus("Location found and selected. Check the address and pin before posting.");
+    } catch {
+        if (version === locationVersion) setMapStatus("Location search is unavailable. Try again, use GPS or choose a point on the map.");
+    } finally { if (version === locationVersion) locationPending = false; }
 }
-
 function useCurrentLocation() {
-    if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser.");
-        return;
-    }
-
-    setMapStatus("Detecting your current location. Please wait...");
-
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            const accuracy = position.coords.accuracy;
-
-            setMarkerLocation(lat, lng, true);
-
-            if (accuracyCircle !== null) {
-                map.removeLayer(accuracyCircle);
-            }
-
-            accuracyCircle = L.circle([lat, lng], {
-                radius: accuracy
-            }).addTo(map);
-
-            map.fitBounds(accuracyCircle.getBounds());
-
-            if (accuracy > 1000) {
-                alert(`Location detected, but accuracy is low: about ±${Math.round(accuracy)} meters. Please drag the pin manually if needed.`);
-            } else {
-                alert(`Current location detected. Accuracy: about ±${Math.round(accuracy)} meters.`);
-            }
-        },
-        function(error) {
-            if (error.code === error.PERMISSION_DENIED) {
-                alert("Location permission denied. Please allow location access in your browser.");
-            } else if (error.code === error.POSITION_UNAVAILABLE) {
-                alert("Current location is unavailable. Please search manually.");
-            } else if (error.code === error.TIMEOUT) {
-                alert("Location request timed out. Please try again.");
-            } else {
-                alert("Unable to get current location.");
-            }
-
-            setMapStatus("GPS failed. You can search or click the map manually.");
-        }, {
-            enableHighAccuracy: true,
-            timeout: 20000,
-            maximumAge: 0
-        }
-    );
+    if (!map) { setMapStatus("Reload the page to load the map before using GPS."); return; }
+    if (!navigator.geolocation) { setMapStatus("GPS is not supported. Search or choose a point on the map."); return; }
+    const version = ++locationVersion;
+    locationPending = true;
+    setMapStatus("Detecting your current location. Please wait…");
+    navigator.geolocation.getCurrentPosition(position => {
+        if (version !== locationVersion) return;
+        const {latitude: lat, longitude: lng, accuracy} = position.coords;
+        locationPending = false;
+        if (!validCoordinates(lat, lng)) { setMapStatus("GPS did not return a valid location. Search or choose a point on the map."); return; }
+        const notice = Number.isFinite(accuracy) && accuracy > 1000 ? `GPS accuracy is low (about ±${Math.round(accuracy)} metres). Check and adjust the pin if needed.` : "Check the detected point before posting.";
+        setMarkerLocation(lat, lng, true, notice);
+        if (Number.isFinite(accuracy) && accuracy >= 0) { accuracyCircle = L.circle([lat, lng], {radius: accuracy}).addTo(map); map.fitBounds(accuracyCircle.getBounds()); }
+    }, error => {
+        if (version !== locationVersion) return;
+        locationPending = false;
+        setMapStatus(error.code === 1 ? "GPS permission denied. Search or choose a point on the map instead." : error.code === 3 ? "GPS timed out. Try again, search or choose a point on the map." : "GPS is unavailable. Search or choose a point on the map instead.");
+    }, {enableHighAccuracy: true, timeout: 20000, maximumAge: 0});
 }
-
 function handleMapButtons() {
-    const searchLocationBtn = document.getElementById("searchLocationBtn");
-    const useGpsBtn = document.getElementById("useGpsBtn");
-    const mapSearch = document.getElementById("mapSearch");
-
-    searchLocationBtn.addEventListener("click", searchLocation);
-    useGpsBtn.addEventListener("click", useCurrentLocation);
-
-    mapSearch.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            searchLocation();
-        }
-    });
+    document.getElementById("searchLocationBtn").addEventListener("click", searchLocation);
+    document.getElementById("useGpsBtn").addEventListener("click", useCurrentLocation);
+    document.getElementById("mapSearch").addEventListener("keydown", event => { if (event.key === "Enter") { event.preventDefault(); void searchLocation(); } });
+    document.getElementById("location").addEventListener("input", () => invalidateLocation("Address changed. Search or select its matching point on the map again before saving."));
+    if (!map) { document.getElementById("searchLocationBtn").disabled = true; document.getElementById("useGpsBtn").disabled = true; }
 }
 
 function validateRequestForm(formData) {
@@ -524,9 +494,13 @@ function validateRequestForm(formData) {
         return "Invalid priority selected.";
     }
 
-    if (Number.isNaN(formData.client_lat) || Number.isNaN(formData.client_lng)) {
+    if (!validCoordinates(formData.client_lat, formData.client_lng)) {
         return "Invalid map coordinates. Please select your location again.";
     }
+
+    if (locationPending) return "Please wait for the location search or GPS result before saving.";
+    if (!locationSelection || formData.location !== locationSelection.address || formData.client_lat !== locationSelection.lat || formData.client_lng !== locationSelection.lng)
+        return "Select the matching service location on the map again before saving.";
 
     if (formData.budget !== null && formData.budget < 0) {
         return "Budget cannot be negative.";
@@ -542,6 +516,7 @@ function configureEditMode() {
         "Update your request details before selecting a provider.";
     document.getElementById("formTitle").textContent = "Edit Request Details";
     document.getElementById("createRequestBtn").textContent = "Save Changes";
+    document.getElementById("cancelRequestBtn").href = "my-requests.html";
 }
 
 function populateRequestForm(request) {
@@ -563,10 +538,10 @@ function populateRequestForm(request) {
     const lat = Number(request.client_lat);
     const lng = Number(request.client_lng);
 
-    if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+    if (request.client_lat != null && request.client_lng != null && String(request.client_lat).trim() !== "" && String(request.client_lng).trim() !== "" && validCoordinates(lat, lng)) {
         setMarkerLocation(lat, lng, false);
-        setMapStatus("Saved service location loaded. You can adjust it if needed.");
-    }
+        if (locationSelection) setMapStatus("Saved service location loaded. You can adjust it if needed.");
+    } else invalidateLocation("The saved location needs a valid map point. Search or choose its location before saving.");
 }
 
 async function loadRequestForEdit(userId) {
@@ -766,7 +741,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     setupServiceTypeSelector();
     setupRequestImageInput();
     const formReady = await loadRequestForEdit(user.id);
+    document.getElementById("createRequestForm").setAttribute("aria-busy", "false");
     if (!formReady) return;
 
     handleRequestForm(user.id);
+    document.getElementById("requestFields").disabled = false;
+    document.getElementById("createRequestForm").dataset.ready = "true";
+    document.dispatchEvent(new Event("igotu:request-ready"));
 });

@@ -1,0 +1,85 @@
+{
+  "base": "5103c13c29ffd2989553c52cec3a10be11e05f04",
+  "unchangedFunctions": [
+    {
+      "function": "creationKey",
+      "sha256": "ce406f08a8daf2a820b312f2707fd46e4a3ce8bcd5a26c9a7103f9f7d22382b1",
+      "unchanged": true
+    },
+    {
+      "function": "updateServiceTypeOptions",
+      "sha256": "ee8c3184dab857ccce743e356b6eb9bf628f8e2b2938775c564e9b5b155aed74",
+      "unchanged": true
+    },
+    {
+      "function": "setupServiceTypeSelector",
+      "sha256": "e4e15d0bd5c0bff8b349e5da2463feef8aab461e8cc608d44fbaefdfbe2cfeeb",
+      "unchanged": true
+    },
+    {
+      "function": "validateRequestImageFile",
+      "sha256": "0722634177b75075c3ad3e06ef3866a7e0d56d780bb0b464183b7fc69a804d23",
+      "unchanged": true
+    },
+    {
+      "function": "getSelectedRequestImageFile",
+      "sha256": "e6090c51d66d7530ac80cbb70c05f3642d8a302f78f22375f3eb1b37963e872c",
+      "unchanged": true
+    },
+    {
+      "function": "uploadRequestImage",
+      "sha256": "de1eabbe13d4510787d1372c68af2a256cee6d609c102570ee08d4a8659d5ca5",
+      "unchanged": true
+    },
+    {
+      "function": "saveRequestImage",
+      "sha256": "094a3120a7ee6307188788d3a5c4feae96c260da8c9c3e448e0344a99679d69e",
+      "unchanged": true
+    },
+    {
+      "function": "getSessionUser",
+      "sha256": "8b0763770b2b4b4c6119f3c9821f9b4b81095b1bd2bfdc0ff96778f9cca3b3ef",
+      "unchanged": true
+    },
+    {
+      "function": "getProfile",
+      "sha256": "a179f474744f4e07bb74964b51959342c9d96b329dc1b17b59a682b53b07411e",
+      "unchanged": true
+    },
+    {
+      "function": "loadRequestForEdit",
+      "sha256": "f2b07dd7e9453bd9608e98dd9e1e22ff6ea884a595be791cf761b96d4bf54873",
+      "unchanged": true
+    },
+    {
+      "function": "updateRequest",
+      "sha256": "bccba390b95141dc6bc86fc714f2475c5835f6ca786877bb4008622fbbadf055",
+      "unchanged": true
+    },
+    {
+      "function": "createRequest",
+      "sha256": "d6afca3108c5ddff5f3aee01a2500082c35332ded11b8c0be4833a9db41b4988",
+      "unchanged": true
+    },
+    {
+      "function": "handleRequestForm",
+      "sha256": "088e01de18cd1a1509a3147dfc5ca376e611a2c4c0d081e726fe0c29f0d31d60",
+      "unchanged": true
+    }
+  ],
+  "unchangedServiceTypes": true,
+  "unchangedSharedFiles": [
+    "igotu_v2/js/profile-guard.js",
+    "igotu_v2/js/app-shell.js",
+    "igotu_v2/js/supabaseClient.js",
+    "igotu_v2/js/html-safety.js",
+    "igotu_v2/js/profile-menu.js",
+    "igotu_v2/js/notification-menu.js",
+    "igotu_v2/js/notification-badge.js",
+    "igotu_v2/client/dashboard.html",
+    "igotu_v2/css/client-dashboard.css",
+    "igotu_v2/css/style.css",
+    "igotu_v2/css/ui.css"
+  ],
+  "syntax": "PASS"
+}
