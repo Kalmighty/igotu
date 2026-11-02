@@ -144,6 +144,79 @@ fs.writeFileSync(
     2,
   ) + "\n",
 );
+// Refinement boundary: only the reviewed page stylesheet and counter call sites
+// may change in application code. Shared/other-page files remain byte-identical.
+const reviewedRefinement = "8b361180eac2b991f0966775d1d47c30c797a681";
+const reviewedSource = execFileSync(
+  "git",
+  ["show", reviewedRefinement + ":" + file],
+  { encoding: "utf8" },
+);
+const counterCallSites = new Set([
+  "selectConversation",
+  "updateComposerState",
+  "reconcileRetry",
+  "keepFailedDraft",
+  "sendMessage",
+  "setupMessagingUI",
+]);
+const stableFunctions = [
+  ...reviewedSource.matchAll(/^(?:async )?function (\w+)\(/gm),
+]
+  .map((m) => m[1])
+  .filter((name) => !counterCallSites.has(name));
+for (const name of stableFunctions)
+  assert.equal(
+    normalize(definition(current, name)),
+    normalize(definition(reviewedSource, name)),
+    "Refinement changed " + name,
+  );
+assert.equal(
+  (current.match(/\$\("messageInput"\)\.value = value;/g) || []).length,
+  1,
+  "one programmatic value setter",
+);
+assert(
+  !/input\.value =|\$\("messageInput"\)\.value = (?!value;)/.test(current),
+  "textarea changes must use synchronised setter",
+);
+const refinementPaths = execFileSync(
+  "git",
+  ["ls-tree", "-r", "--name-only", reviewedRefinement],
+  { encoding: "utf8" },
+)
+  .trim()
+  .split("\n")
+  .filter(
+    (p) =>
+      (p.startsWith("igotu_v2/") &&
+        ![file, "igotu_v2/css/client-messages.css"].includes(p)) ||
+      p.endsWith(".sql"),
+  );
+for (const p of refinementPaths)
+  assert.equal(
+    hash(fs.readFileSync(p)),
+    hash(execFileSync("git", ["show", reviewedRefinement + ":" + p])),
+    "Refinement protected file changed " + p,
+  );
+fs.mkdirSync("docs/client-messages/refinement", { recursive: true });
+fs.writeFileSync(
+  "docs/client-messages/refinement/source-contract.json",
+  JSON.stringify(
+    {
+      reviewed: reviewedRefinement,
+      stableFunctions,
+      protectedFiles: refinementPaths.length,
+      synchronisedSetter: true,
+      originalBackendContracts: true,
+    },
+    null,
+    2,
+  ) + "\n",
+);
+console.log(
+  `PASS refinement: ${stableFunctions.length} unchanged functions; ${refinementPaths.length} protected application/SQL files; one synchronised textarea setter.`,
+);
 console.log(
   `PASS six normalized identity/Auth/profile helpers; original eligibility/pair/read-update/insert contracts; ${protectedFiles.length} protected application/SQL files; syntax/IDs/labels/icons/limit.`,
 );

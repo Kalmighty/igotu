@@ -6,4 +6,4 @@ PASS layout/axe 1024
 PASS layout/axe 768
 PASS layout/axe 390
 PASS layout/axe 320
-PASS 300 Client Messages assertions; 11 axe scans; synthetic backend only
+PASS 418 Client Messages assertions; 21 axe scans; synthetic backend only

@@ -1,5 +1,7 @@
 # Client Messages review
 
+[PR #21 final refinement: before/after, viewport measurements and counter validation](refinement/README.md).
+
 Branch: `feat/client-messages-experience`. Stacked on PR #20, `feat/client-request-details-experience`, reviewed commit `ad96900331668a33d775f36b1822f275c89788e0`. This change ends at Client Messages; Edit Profile is outside scope.
 
 ## Result and reference
@@ -12,7 +14,7 @@ Desktop/tablet show two independently scrollable panels. At 600px and below, lis
 
 ## Browser evidence
 
-Every screenshot is labelled **offline review / synthetic conversations / no live Supabase**. These are actual Chromium renders of the application modules with intercepted fixtures, not production or staging evidence. Screenshots use full-page capture; shorter desktops may scroll the outer page to reach the composer. Chat history also scrolls independently.
+Every screenshot is labelled **offline review / synthetic conversations / no live Supabase**. These are actual Chromium renders of the application modules with intercepted fixtures, not production or staging evidence. The original review captures use full-page screenshots. The final refinement report uses viewport-sized before/after screenshots and verifies the composer fits common desktop/tablet viewports. Chat history also scrolls independently.
 
 | View           | Before                               | After                                                                                |
 | -------------- | ------------------------------------ | ------------------------------------------------------------------------------------ |

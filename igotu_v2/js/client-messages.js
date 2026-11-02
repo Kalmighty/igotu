@@ -421,7 +421,7 @@ function selectConversation(requestId, options = {}) {
   currentMessages = [];
   historyLoaded = false;
   lastMessageView = "";
-  $("messageInput").value = drafts.get(request.request_id) || "";
+  setMessageInput(drafts.get(request.request_id) || "");
   document.body.dataset.messageView = "chat";
   if (options.history !== false) setConversationUrl(requestId);
   renderConversationList();
@@ -485,6 +485,14 @@ function renderChatHeader() {
   if (note) showMessage(note.message, note.type);
   updateComposerState();
 }
+function updateMessageCharacterCount() {
+  $("messageCharacterCount").textContent =
+    `${$("messageInput").value.length} / 1,000`;
+}
+function setMessageInput(value) {
+  $("messageInput").value = value;
+  updateMessageCharacterCount();
+}
 function updateComposerState() {
   const ready =
     selectedRequest && selectedProvider && historyLoaded && chatVisible();
@@ -495,8 +503,7 @@ function updateComposerState() {
   $("sendMessageBtn").innerHTML = sendingMessage
     ? "<span>Sending…</span>"
     : '<span>Send</span><svg class="message-send-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m3 3 19 9-19 9 4-9-4-9Zm4 9h15"/></svg>';
-  $("messageCharacterCount").textContent =
-    `${$("messageInput").value.length} / 1,000`;
+  updateMessageCharacterCount();
 }
 function nearBottom(list) {
   return list.scrollHeight - list.scrollTop - list.clientHeight < 70;
@@ -637,7 +644,7 @@ function reconcileRetry(requestIdValue, rows) {
       selectedRequest?.request_id === requestIdValue &&
       $("messageInput").value === attempt.draftText
     )
-      $("messageInput").value = "";
+      setMessageInput("");
   }
   threadNotice(
     requestIdValue,
@@ -718,7 +725,7 @@ function keepFailedDraft(request, attempt, uncertain) {
     drafts.set(request.request_id, attempt.draftText);
     attempt.restoredRevision = draftRevisions.get(request.request_id);
     if (selectedRequest?.request_id === request.request_id)
-      $("messageInput").value = attempt.draftText;
+      setMessageInput(attempt.draftText);
   }
   if (selectedRequest?.request_id === request.request_id)
     renderMessages(currentMessages);
@@ -814,7 +821,7 @@ async function sendMessage(event) {
     pendingMessages.set(request.request_id, message);
     drafts.delete(request.request_id);
     if (selectedRequest?.request_id === request.request_id) {
-      input.value = "";
+      setMessageInput("");
       renderMessages(currentMessages, true);
     }
     const { error } = await supabase.from("internal_messages").insert(message);
@@ -849,6 +856,7 @@ async function sendMessage(event) {
   }
 }
 function setupMessagingUI() {
+  updateMessageCharacterCount();
   $("conversationSearch").addEventListener("input", renderConversationList);
   document.querySelectorAll("[data-conversation-filter]").forEach((button) =>
     button.addEventListener("click", () => {
@@ -865,8 +873,7 @@ function setupMessagingUI() {
         (draftRevisions.get(selectedRequest.request_id) || 0) + 1,
       );
     }
-    $("messageCharacterCount").textContent =
-      `${$("messageInput").value.length} / 1,000`;
+    updateMessageCharacterCount();
   });
   $("backToConversationsBtn").addEventListener("click", () =>
     showConversationList(),

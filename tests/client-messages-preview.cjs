@@ -12,7 +12,13 @@ assert(
 );
 const reviewed = "ad96900331668a33d775f36b1822f275c89788e0",
   out = "docs/client-messages";
-for (const dir of ["screenshots", "before", "validation"])
+for (const dir of [
+  "screenshots",
+  "before",
+  "validation",
+  "refinement/before",
+  "refinement/after",
+])
   fs.mkdirSync(out + "/" + dir, { recursive: true });
 const extra = [
   "00000000-0000-4000-8000-000000000022",
@@ -208,16 +214,29 @@ function data() {
         return r.abort();
       }
       if (
-        opt.before &&
-        ["/client/messages.html", "/js/client-messages.js"].includes(u.pathname)
+        (opt.before &&
+          ["/client/messages.html", "/js/client-messages.js"].includes(
+            u.pathname,
+          )) ||
+        (opt.reviewed &&
+          [
+            "/client/messages.html",
+            "/js/client-messages.js",
+            "/css/client-messages.css",
+          ].includes(u.pathname))
       )
         return r.fulfill({
           contentType: u.pathname.endsWith(".js")
             ? "text/javascript"
-            : "text/html",
+            : u.pathname.endsWith(".css")
+              ? "text/css"
+              : "text/html",
           body: execFileSync(
             "git",
-            ["show", `${reviewed}:igotu_v2${u.pathname}`],
+            [
+              "show",
+              `${opt.reviewed ? "8b361180eac2b991f0966775d1d47c30c797a681" : reviewed}:igotu_v2${u.pathname}`,
+            ],
             { encoding: "utf8" },
           ),
         });
@@ -279,6 +298,29 @@ function data() {
     });
     await p.locator("#offlineMessagesLabel").evaluate((e) => e.remove());
   }
+  async function assertCounter(p, label) {
+    const value = await p.locator("#messageInput").inputValue();
+    ok(
+      (await p.locator("#messageCharacterCount").textContent()) ===
+        `${value.length} / 1,000`,
+      label,
+    );
+  }
+  async function refinementShot(p, name) {
+    await p.evaluate(() => {
+      const e = document.createElement("aside");
+      e.id = "refinementOfflineLabel";
+      e.textContent = "OFFLINE · SYNTHETIC · NO LIVE SUPABASE";
+      e.style =
+        "position:fixed;top:0;left:0;right:0;z-index:10000;text-align:center;font:700 10px/1.5 Arial;background:#fff4cd;color:#453b15;pointer-events:none";
+      document.body.append(e);
+    });
+    await p.screenshot({
+      path: `${out}/refinement/${name}.png`,
+      fullPage: false,
+    });
+    await p.locator("#refinementOfflineLabel").evaluate((e) => e.remove());
+  }
   async function axe(p, label) {
     await p.addScriptTag({ path: require.resolve("axe-core/axe.min.js") });
     const v = await p.evaluate(async () => {
@@ -300,13 +342,210 @@ function data() {
       text,
     );
   try {
+    const refinementMetrics = [];
     for (const [width, height] of [
       [1920, 1080],
       [1536, 864],
       [1440, 900],
       [1366, 768],
-      [1024, 900],
-      [768, 1000],
+      [1024, 768],
+      [768, 1024],
+      [390, 844],
+      [390, 430],
+      [320, 800],
+    ]) {
+      if ([1536, 1366, 768, 390, 320].includes(width) && height !== 430) {
+        const { p, c } = await open({
+          width,
+          height,
+          id: "REQ-A",
+          chat: true,
+          reviewed: true,
+        });
+        if (width <= 600) {
+          await p.locator("#messageInput").focus();
+          await p.evaluate(() =>
+            window.visualViewport?.dispatchEvent(new Event("resize")),
+          );
+          await p.clock.runFor(350);
+          await p.waitForTimeout(80);
+        }
+        await refinementShot(p, `before/chat-${width}-${height}`);
+        await c.close();
+      }
+      const { p, c, s } = await open({
+        width,
+        height,
+        id: "REQ-A",
+        chat: true,
+      });
+      await p.evaluate(() => scrollTo(0, 0));
+      const m = await p.evaluate(() => {
+        const rect = (selector) => {
+          const e = document.querySelector(selector),
+            r = e.getBoundingClientRect();
+          return {
+            top: r.top,
+            bottom: r.bottom,
+            width: r.width,
+            height: r.height,
+            clientHeight: e.clientHeight,
+            scrollHeight: e.scrollHeight,
+          };
+        };
+        return {
+          width: innerWidth,
+          height: innerHeight,
+          pageWidth: document.documentElement.scrollWidth,
+          pageHeight: document.documentElement.scrollHeight,
+          provider: rect(".chat-header"),
+          summary: rect(".chat-service-summary"),
+          history: rect("#messagesList"),
+          composer: rect("#messageForm"),
+          send: rect("#sendMessageBtn"),
+          list: rect("#conversationList"),
+        };
+      });
+      refinementMetrics.push(m);
+      ok(
+        m.pageWidth === width,
+        `refinement no horizontal overflow ${width}/${height}`,
+      );
+      ok(
+        m.composer.top >= m.history.bottom - 1,
+        "refinement composer does not overlap history",
+      );
+      if (width > 600) {
+        ok(
+          m.composer.bottom <= height && m.send.bottom <= height,
+          `composer in initial viewport ${width}/${height}: ${JSON.stringify(m)}`,
+        );
+        ok(
+          m.provider.top >= 0 && m.summary.bottom < m.history.bottom,
+          "provider and summary visible",
+        );
+        ok(m.history.height >= 150, "comfortable desktop/tablet history");
+        ok(
+          m.list.scrollHeight > m.list.clientHeight,
+          "conversation list scrolls independently",
+        );
+        const beforeScroll = await p.evaluate(() => scrollY);
+        await p
+          .locator("#conversationList")
+          .evaluate((e) => (e.scrollTop = 70));
+        ok(
+          await p.locator("#conversationList").evaluate((e) => e.scrollTop > 0),
+          "list scroll responds",
+        );
+        ok(
+          (await p.evaluate(() => scrollY)) === beforeScroll,
+          "list scroll does not move page",
+        );
+        await p.locator("#conversationList").evaluate((e) => (e.scrollTop = 0));
+      } else {
+        await p.locator("#messageInput").focus();
+        // Exercise the existing keyboard/visual-viewport resize handler.
+        await p.evaluate(() =>
+          window.visualViewport?.dispatchEvent(new Event("resize")),
+        );
+        await p.clock.runFor(350);
+        await p.waitForTimeout(80);
+        const input = await p.locator("#messageInput").boundingBox();
+        ok(
+          input.height >= 75 && m.send.width >= 44,
+          "phone input/send touch size",
+        );
+        m.focusedComposer = await p.locator("#messageForm").boundingBox();
+        const focusedSend = await p.locator("#sendMessageBtn").boundingBox();
+        ok(
+          input.y >= 0 && focusedSend.y + focusedSend.height <= height,
+          `phone visual-viewport handler brings input and Send into view ${width}/${height}: ${JSON.stringify({ input, focusedSend })}`,
+        );
+      }
+      await assertCounter(p, "initial empty counter");
+      await refinementShot(p, `after/chat-${width}-${height}`);
+      await axe(p, `refinement ${width}/${height}`);
+      ok(!sends(s).length, "layout performs no inserts");
+      await c.close();
+    }
+    // Draft values and counters must move together before any history request resolves.
+    for (const width of [1536, 390]) {
+      const { p, c } = await open({ width, id: "REQ-A", chat: true });
+      await p.locator("#messageInput").fill("A".repeat(75));
+      await assertCounter(p, "75-character A draft");
+      if (width <= 600) await p.locator("#backToConversationsBtn").click();
+      await select(p, "REQ-B");
+      await assertCounter(p, "empty B draft");
+      await p.locator("#messageInput").fill("B".repeat(130));
+      await assertCounter(p, "130-character B draft");
+      if (width <= 600) await p.locator("#backToConversationsBtn").click();
+      await select(p, "REQ-A");
+      ok(
+        (await p.locator("#messageInput").inputValue()) === "A".repeat(75),
+        "exact A draft retained",
+      );
+      await assertCounter(p, "restored A counter");
+      await p.locator("#messageInput").focus();
+      if (width <= 600)
+        await p.evaluate(() =>
+          window.visualViewport?.dispatchEvent(new Event("resize")),
+        );
+      await refinementShot(p, `after/restored-draft-${width}`);
+      if (width <= 600) await p.locator("#backToConversationsBtn").click();
+      await select(p, "REQ-B");
+      ok(
+        (await p.locator("#messageInput").inputValue()) === "B".repeat(130),
+        "exact B draft retained",
+      );
+      await assertCounter(p, "restored B counter");
+      await c.close();
+    }
+    // A real browser zoom reduces the CSS viewport. A 683px layout viewport
+    // approximates 200% zoom on 1366px; content remains readable via outer scroll.
+    {
+      const { p, c } = await open({
+        width: 683,
+        height: 384,
+        id: "REQ-A",
+        chat: true,
+      });
+      ok(
+        await p.evaluate(
+          () => document.documentElement.scrollWidth === innerWidth,
+        ),
+        "zoom-equivalent no horizontal overflow",
+      );
+      await p.locator("#messageInput").focus();
+      await p.locator("#sendMessageBtn").focus();
+      const send = await p.locator("#sendMessageBtn").boundingBox();
+      ok(
+        send.y >= 0 && send.y + send.height <= 384,
+        "zoom-equivalent Send reachable by keyboard",
+      );
+      await p.keyboard.press("Tab");
+      await p.keyboard.press("Shift+Tab");
+      ok(
+        await p
+          .locator("#sendMessageBtn")
+          .evaluate((e) => e === document.activeElement),
+        "no keyboard trap at composer",
+      );
+      await refinementShot(p, "after/zoom-equivalent-683-384");
+      await axe(p, "zoom equivalent");
+      await c.close();
+    }
+    fs.writeFileSync(
+      out + "/refinement/responsive-metrics.json",
+      JSON.stringify(refinementMetrics, null, 2) + "\n",
+    );
+
+    for (const [width, height] of [
+      [1920, 1080],
+      [1536, 864],
+      [1440, 900],
+      [1366, 768],
+      [1024, 768],
+      [768, 1024],
       [390, 844],
       [320, 800],
     ]) {
@@ -767,6 +1006,8 @@ function data() {
         !(await p.locator(".message-bubble.pending").count()),
         "confirmed not pending",
       );
+      await assertCounter(p, "successful send resets counter");
+      await refinementShot(p, "after/successful-send-counter");
       await shot(p, "sent-message");
       await c.close();
     }
@@ -795,6 +1036,10 @@ function data() {
         ),
         "no optimistic delivery",
       );
+      await assertCounter(
+        p,
+        "pending clear synchronises counter before acknowledgement",
+      );
       await shot(p, "sending");
       await p
         .locator("#messageForm")
@@ -815,6 +1060,7 @@ function data() {
           "New B draft while A sends",
         "old send preserves B input",
       );
+      await assertCounter(p, "old send retains B counter");
       ok(
         !(await p.locator("#messagesList").textContent()).includes(
           "Synthetic pending message",
@@ -863,6 +1109,8 @@ function data() {
         (await p.locator(".message-bubble.pending").count()) === 0,
         "failed optimistic removed",
       );
+      await assertCounter(p, "failed send counter " + mode);
+      await refinementShot(p, "after/failed-send-counter-" + mode);
       await shot(p, "failed-send-" + mode);
       const first = sends(s)[0].calls.find((c) => c[0] === "insert")[1];
       failed = false;
@@ -911,6 +1159,7 @@ function data() {
       fail = false;
       await p.locator("#sendMessageBtn").click();
       await notice(p, "earlier message is saved");
+      await assertCounter(p, "reconciled earlier attempt resets counter");
       ok(
         sends(s).length === 1,
         "lost-response retry reads existing UUID without another insert",
@@ -1047,6 +1296,7 @@ function data() {
           "A failed send draft",
         "A failure restored when returning",
       );
+      await assertCounter(p, "A late failure counter restored");
       await c.close();
     }
     {
@@ -1065,6 +1315,25 @@ function data() {
           }));
         },
       });
+      await p.setViewportSize({ width: 1366, height: 768 });
+      await p.locator("#messagesList").evaluate((e) => (e.scrollTop = 90));
+      await p.setViewportSize({ width: 1536, height: 864 });
+      ok(
+        Math.abs(
+          (await p.locator("#messagesList").evaluate((e) => e.scrollTop)) - 90,
+        ) < 2,
+        "resize retains older history position",
+      );
+      await p.evaluate(() => scrollTo(0, 0));
+      const pageScrollBeforePoll = await p.evaluate(() => scrollY);
+      await p.locator("#messagesList").focus();
+      await p.keyboard.press("PageDown");
+      await p.clock.runFor(350);
+      await p.waitForTimeout(200);
+      ok(
+        await p.locator("#messagesList").evaluate((e) => e.scrollTop > 90),
+        "keyboard scrolls message region",
+      );
       await p.locator("#messagesList").evaluate((e) => (e.scrollTop = 0));
       await p.evaluate(
         () =>
@@ -1107,6 +1376,34 @@ function data() {
         await p.locator("#showLatestMessagesBtn").isVisible(),
         "reader can choose latest",
       );
+      ok(
+        (await p.evaluate(() => scrollY)) === pageScrollBeforePoll,
+        "incoming poll never scrolls outer page",
+      );
+      await p.evaluate(() => {
+        Object.defineProperty(document, "hidden", {
+          configurable: true,
+          value: true,
+        });
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      const pausedReads = reads(s).length;
+      await p.clock.runFor(6100);
+      ok(reads(s).length === pausedReads, "hidden tab pauses polling");
+      await p.evaluate(() => {
+        Object.defineProperty(document, "hidden", {
+          configurable: true,
+          value: false,
+        });
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      await waitNode(() => reads(s).length > pausedReads);
+      await p.waitForTimeout(50);
+      ok(
+        await p.locator("#messagesList").evaluate((e) => e.scrollTop < 2),
+        "tab resume preserves older reading position",
+      );
+
       await p.locator("#showLatestMessagesBtn").click();
       ok(
         (await p
@@ -1123,6 +1420,8 @@ function data() {
           "Draft survives every poll",
         "poll never resets composer",
       );
+      await assertCounter(p, "poll retains counter");
+      await refinementShot(p, "after/long-history");
       await shot(p, "long-history");
       await c.close();
     }
