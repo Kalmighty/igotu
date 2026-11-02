@@ -159,8 +159,7 @@ function tables() {
         "background:#fff4cd;color:#463b15;padding:7px 12px;text-align:center;font:700 11px/1.5 Arial";
       const modal = !fullPage && document.querySelector("dialog[open]");
       (modal || document.body).prepend(label);
-      if (!fullPage && !modal) label.style.position = "fixed";
-      if (!fullPage && !modal) label.style.inset = "0 0 auto 0";
+      if (!fullPage && !modal) window.scrollTo(0, 0);
     }, fullPage);
     await p.screenshot({ path: path.join(out, dir, name + ".png"), fullPage });
     await p.locator("#syntheticReviewLabel").evaluate((e) => e.remove());

@@ -19,7 +19,7 @@ The official logo, illustration, hero, How It Works content, finite animations, 
 
 ## Actual before/after captures
 
-These are real Chromium captures with synthetic fixtures. Offline labels are inserted only by the screenshot test; application HTML/JS contains no such banner. Modal captures put the test-only label inside the captured dialog and use the viewport so offscreen fixed elements do not distort a full-page capture.
+These are real Chromium captures with synthetic fixtures. Offline labels are inserted only by the screenshot test; application HTML/JS contains no such banner. Modal captures put the test-only label inside the captured dialog and use the viewport so offscreen fixed elements do not distort a full-page capture. Account-menu and initial-viewport captures keep that label in normal document flow and scroll to the top, so it remains visible rather than being obscured behind the application.
 
 | View | Approved before | Refined after |
 | --- | --- | --- |
