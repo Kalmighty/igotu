@@ -1,0 +1,16 @@
+[
+  {
+    "viewport": "390-844",
+    "equalPixels": true,
+    "beforeSha256": "3a164957fea29d3d1541142ab88a847659d90f989439318b2fe9a01e75ab93de",
+    "afterSha256": "3a164957fea29d3d1541142ab88a847659d90f989439318b2fe9a01e75ab93de",
+    "syntheticOffline": true
+  },
+  {
+    "viewport": "320-800",
+    "equalPixels": true,
+    "beforeSha256": "d82625baa84c8c71514a58419d2fe4e1bd205e250a81bf5001810c0b17ff145c",
+    "afterSha256": "d82625baa84c8c71514a58419d2fe4e1bd205e250a81bf5001810c0b17ff145c",
+    "syntheticOffline": true
+  }
+]
