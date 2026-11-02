@@ -1,0 +1,11 @@
+{
+  "base": "60e3b56523265c75f981e380a50fa1209b190502",
+  "protectedFiles": 136,
+  "otherClientHtml": "only media stylesheet/module opt-in",
+  "personalRpc": "complete_basic_profile(p_full_name,p_phone)",
+  "originalValidation": true,
+  "localAvatars": 12,
+  "localBanners": 8,
+  "syntax": true,
+  "sql": "source checks only; never executed"
+}

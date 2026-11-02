@@ -270,6 +270,11 @@ async function install(
       const t = state.tables;
       const r = t.service_requests.find((r) => r.request_id === a.p_request_id);
       // Synthetic endpoint contracts, not a model/proof of PostgreSQL authorization.
+      if (name === "get_client_profile_media") {
+        const user=own();
+        if(state.role!=='client'||user?.status!=='active'||!user.profile_completed||!user.identity_verified) return {data:null,error:{code:'42501'}};
+        return {data:{user_id:user.id,avatar_mode:'initial',avatar_value:null,banner_mode:'default',banner_value:null,banner_design:null,version:0,last_operation_id:null},error:null};
+      }
       if (name === "igotu_backend_contract") return {data:{version:"20261026.1",notifications:"database"},error:null};
       if (name === "provider_service_requests") return {data:t.service_requests.filter(x=>x.selected_provider_id===ids[state.role] && (!a.p_statuses || a.p_statuses.includes(x.status)) && (!a.p_request_id || x.request_id===a.p_request_id)).map(x=>({...x,approximate_area:"Approximate area: Likas",...(!["confirmed","in_progress","completed"].includes(x.status)?{location:null,client_lat:null,client_lng:null}:{})})),error:null};
       if (name === "service_participants") return {data:t.service_requests.filter(x=>a.p_request_ids.includes(x.request_id) && x.selected_provider_id && [x.client_id,x.selected_provider_id].includes(ids[state.role])).map(x=> {
