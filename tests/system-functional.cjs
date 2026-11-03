@@ -497,6 +497,7 @@ test("Connected registration, approval, onboarding and complete service workflow
   state.role = "provider";
   await ready(page, "provider/incoming-requests.html");
   await page.locator(".confirm-btn").click();
+  await page.locator("#submitIncomingConfirm").click();
   await page.waitForFunction(() =>
     document.querySelector("#messageBox").textContent.includes("confirmed"),
   );

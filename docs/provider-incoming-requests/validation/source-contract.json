@@ -1,0 +1,10 @@
+{
+  "base": "6895c094d8a05e432512f930ef27d43ec2322906",
+  "protectedFiles": 308,
+  "authHelpers": 4,
+  "originalRpcSignatures": true,
+  "coarseOnly": true,
+  "scopedParticipants": true,
+  "noSqlChanges": true,
+  "original94AssertionsUnchanged": true
+}
