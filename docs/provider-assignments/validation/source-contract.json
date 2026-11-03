@@ -1,0 +1,11 @@
+{
+  "base": "e4157b3dbac68dd75de1d54a76e28674fc2f1fa3",
+  "protectedFiles": 383,
+  "authHelpers": 4,
+  "originalRpcAndReviewContracts": true,
+  "clientOnlyCompletion": true,
+  "scopedParticipantsAndPayments": true,
+  "privateReceiptModuleUnchanged": true,
+  "originalAssertionsUnchanged": true,
+  "noSqlChanges": true
+}
