@@ -1,0 +1,256 @@
+/* Provider dashboard only. Approved shared Client visual rules are opt-in. */
+.provider-dashboard .provider-hero {
+  min-height: 245px;
+}
+.provider-dashboard .provider-hero .dashboard-hero-art {
+  width: 100%;
+  height: 100%;
+  max-height: 280px;
+  object-fit: contain;
+}
+.provider-dashboard .dashboard-stat small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #526b59;
+  margin-top: 5px;
+}
+.provider-dashboard #averageRating {
+  font-size: 28px;
+  line-height: 1.4;
+}
+.provider-dashboard .provider-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(270px, 1fr);
+  gap: 20px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+.provider-dashboard .provider-data-status {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #536b59;
+  padding: 0 22px;
+  margin: 0 0 12px;
+}
+.provider-dashboard .provider-dashboard-grid .panel-header {
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.provider-dashboard .provider-dashboard-grid .panel-header h2 {
+  font-size: 22px;
+}
+.provider-dashboard .provider-request {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 18px;
+  border: 1px solid #e0e9dc;
+  border-radius: 15px;
+  min-width: 0;
+  background: #fff;
+}
+.provider-dashboard .provider-request .dashboard-request-icon {
+  flex-shrink: 0;
+}
+.provider-dashboard .provider-request-content {
+  min-width: 0;
+  flex: 1;
+}
+.provider-dashboard .provider-request-content > strong {
+  display: block;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1a452e;
+  overflow-wrap: anywhere;
+}
+.provider-dashboard .provider-request-content > span {
+  display: block;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #536b59;
+  overflow-wrap: anywhere;
+}
+.provider-dashboard .provider-request-meta {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.provider-dashboard .provider-request-meta > span {
+  font-size: 11px;
+  line-height: 1.7;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: #f0f6ec;
+  color: #42624a;
+}
+.provider-dashboard .provider-request .provider-status {
+  display: inline-block;
+  font: 700 11px/1.6 Arial;
+  color: #43624a;
+  background: #eaf1e6;
+  border-radius: 20px;
+  padding: 5px 9px;
+}
+.provider-dashboard .provider-status-provider_selected {
+  background: #fff1cf !important;
+  color: #78501a !important;
+}
+.provider-dashboard .provider-status-confirmed {
+  background: #e3eff5 !important;
+  color: #275d70 !important;
+}
+.provider-dashboard .provider-status-in_progress {
+  background: #dff1dd !important;
+  color: #25653c !important;
+}
+.provider-dashboard .provider-status-cancelled {
+  background: #f6e9e5 !important;
+  color: #86473b !important;
+}
+.provider-dashboard .provider-request a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #096638;
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 700;
+  text-decoration: none;
+}
+.provider-dashboard .provider-request a:hover {
+  text-decoration: underline;
+}
+.provider-dashboard .provider-workflow-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 10px 22px 20px;
+}
+.provider-dashboard .provider-workflow-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #096638;
+  text-decoration: none;
+}
+.provider-dashboard .provider-quick-actions .panel-body {
+  padding: 0 18px 18px;
+}
+.provider-dashboard .provider-quick-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #dde7d8;
+  padding: 12px;
+  border-radius: 13px;
+  color: #1d4d30;
+  text-decoration: none;
+  margin-bottom: 10px;
+  background: #fcfef9;
+}
+.provider-dashboard .provider-quick-link > .dashboard-icon {
+  width: 35px;
+  height: 35px;
+  padding: 6px;
+  background: #e4f3da;
+  border-radius: 9px;
+  color: #08783e;
+}
+.provider-dashboard .provider-quick-link > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.provider-dashboard .provider-quick-link strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.provider-dashboard .provider-quick-link small {
+  display: block;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #536b59;
+  margin-top: 4px;
+}
+.provider-dashboard .provider-quick-link:hover {
+  background: #edf8e7;
+}
+.provider-dashboard .provider-boundary-note {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #536b59;
+  margin: 16px 2px 0;
+}
+.provider-dashboard :is(button, a):focus-visible {
+  outline: 3px solid #247e4d;
+  outline-offset: 4px;
+}
+@media (max-width: 1100px) {
+  .provider-dashboard .provider-dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .provider-dashboard .provider-quick-actions .panel-body {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .provider-dashboard .provider-quick-link {
+    margin: 0;
+  }
+  .provider-dashboard .provider-boundary-note {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 600px) {
+  .provider-dashboard .provider-quick-actions .panel-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .provider-dashboard .provider-request {
+    padding: 14px;
+    gap: 10px;
+  }
+  .provider-dashboard .provider-request-content > strong {
+    font-size: 15px;
+  }
+  .provider-dashboard .provider-request-content > span,
+  .provider-dashboard .provider-request-meta > span {
+    font-size: 12px;
+  }
+  .provider-dashboard .provider-hero .dashboard-hero-copy {
+    padding-bottom: 30px;
+  }
+  .provider-dashboard .provider-hero .dashboard-hero-art {
+    max-height: 200px;
+  }
+  .provider-dashboard .provider-data-status {
+    padding-inline: 18px;
+  }
+  .provider-dashboard #averageRating {
+    font-size: 22px;
+  }
+  .provider-dashboard .provider-quick-link strong {
+    font-size: 14px;
+  }
+  .provider-dashboard .provider-quick-link small {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .provider-dashboard .provider-quick-link {
+    transition:
+      background-color 200ms,
+      border-color 200ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .provider-dashboard * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

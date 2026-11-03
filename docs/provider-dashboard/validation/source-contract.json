@@ -1,0 +1,11 @@
+{
+  "base": "7d128948a8da9f2d977cbeb5ca53696e6bc11571",
+  "protectedFiles": 220,
+  "authHelpers": 3,
+  "providerRpc": true,
+  "reviewQuery": true,
+  "coarseAreaOnly": true,
+  "readOnlyCalendar": true,
+  "noSqlChanges": true,
+  "syntax": true
+}
