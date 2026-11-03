@@ -1,0 +1,8 @@
+{
+  "cases": 13,
+  "postgrestVersion": "2.118.0",
+  "actualProductionWriteCode": true,
+  "noAutomaticWriteRetries": true,
+  "manualRetryPreservesPayload": true,
+  "liveBackend": false
+}

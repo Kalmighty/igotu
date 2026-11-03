@@ -1,0 +1,1 @@
+PASS 13 actual production/pinned-SDK transport cases; no automatic write retry; explicit retry retains message identifiers.

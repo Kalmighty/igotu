@@ -1,0 +1,12 @@
+{
+  "base": "207e71577c27ec62e796fd734c251bf3ea30e64d",
+  "protectedFiles": 534,
+  "originalAuthAndIdentifierHelpers": 6,
+  "assignedProviderOnly": true,
+  "scopedMetadataAndHistory": true,
+  "scopedReadAcknowledgements": true,
+  "textOnly1000": true,
+  "clientImplementationAndEvidenceUnchanged": true,
+  "originalAssertionsUnchanged": true,
+  "noSqlChanges": true
+}

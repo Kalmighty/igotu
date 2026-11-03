@@ -112,7 +112,7 @@ for (const role of ["client", "provider"])
     await page.locator("#messageInput").fill("Preserve this synthetic draft");
     await page.locator("#sendMessageBtn").click();
     await page.waitForFunction(
-      () => !document.querySelector("#sendMessageBtn").disabled,
+      () => document.body.classList.contains("provider-messages") ? document.body.dataset.messageSending === "false" : !document.querySelector("#sendMessageBtn").disabled,
     );
     assert.equal(
       await page.locator("#messageInput").inputValue(),
@@ -506,7 +506,7 @@ test("Connected registration, approval, onboarding and complete service workflow
   await page.locator("#messageInput").fill("Synthetic provider message");
   await page.locator("#sendMessageBtn").click();
   await page.waitForFunction(
-    () => !document.querySelector("#sendMessageBtn").disabled,
+    () => document.body.classList.contains("provider-messages") ? document.body.dataset.messageSending === "false" : !document.querySelector("#sendMessageBtn").disabled,
   );
   assert.equal(state.tables.internal_messages[0].receiver_id, ids.client);
   state.role = "client";
@@ -515,7 +515,7 @@ test("Connected registration, approval, onboarding and complete service workflow
   await page.locator("#messageInput").fill("Synthetic client reply");
   await page.locator("#sendMessageBtn").click();
   await page.waitForFunction(
-    () => !document.querySelector("#sendMessageBtn").disabled,
+    () => document.body.classList.contains("provider-messages") ? document.body.dataset.messageSending === "false" : !document.querySelector("#sendMessageBtn").disabled,
   );
   assert.equal(state.tables.internal_messages[1].receiver_id, ids.provider);
   state.role = "provider";
@@ -1014,7 +1014,7 @@ for (const role of ["client", "provider"])
     await page.locator('[data-request-id="REQ-B"]').click();
     release();
     await page.waitForFunction(
-      () => !document.querySelector("#sendMessageBtn").disabled,
+      () => document.body.classList.contains("provider-messages") ? document.body.dataset.messageSending === "false" : !document.querySelector("#sendMessageBtn").disabled,
     );
     assert.equal(state.tables.internal_messages[0].request_id, "REQ-A");
     const note = state.tables.notifications.find(
