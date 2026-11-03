@@ -1,0 +1,1 @@
+PASS: 16 direct workspace routes gated; verification states at desktop/mobile; approval-first routing, registration/email confirmation, private file payload/validation, resubmission, pending lock, approval/onboarding, inactive accounts, signed Admin previews and approve/reject UI. These are fixture tests, not database authorization tests.
