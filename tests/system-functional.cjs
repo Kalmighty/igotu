@@ -522,6 +522,7 @@ test("Connected registration, approval, onboarding and complete service workflow
   page.on("dialog", (d) => d.accept());
   await ready(page, "provider/assignment-details.html");
   await page.locator(".start-btn").click();
+  await page.locator("#confirmStartService").click();
   await page.waitForFunction(() =>
     document
       .querySelector("#messageBox")

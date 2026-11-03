@@ -1,0 +1,7 @@
+{
+  "cases": 12,
+  "postgrestVersion": "2.118.0",
+  "actualProductionFunctions": true,
+  "oneFetchPerMutation": true,
+  "liveBackend": false
+}
