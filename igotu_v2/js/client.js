@@ -1,5 +1,6 @@
 import { authorizeWorkspace } from "./profile-guard.js";
 import { escapeHtml } from "./html-safety.js";
+import { createServiceCalendar } from "./service-calendar.js";
 import { supabase } from "./supabaseClient.js";
 
 async function getSessionUser() {
@@ -156,6 +157,21 @@ function requestCards(requests) {
     })
     .join("");
 }
+let serviceCalendar;
+function calendarRequests(requests, userId) {
+  return requests
+    .filter((r) => r && r.client_id === userId)
+    .map((r) => ({
+      id: r.request_id,
+      title: r.title,
+      category: r.category,
+      date: r.preferred_date,
+      time: r.preferred_time,
+      status: r.status,
+      href: `request-details.html?request_id=${encodeURIComponent(r.request_id)}`,
+      actionLabel: "View Request Details",
+    }));
+}
 let latestRequests = null,
   requestsLoading = false;
 function renderRequests(requests) {
@@ -167,6 +183,7 @@ function renderRequests(requests) {
 async function loadStats(userId) {
   if (requestsLoading) return;
   requestsLoading = true;
+  serviceCalendar?.setLoading();
   const status = document.getElementById("dashboardDataStatus"),
     refresh = document.getElementById("refreshRequestsBtn"),
     box = document.getElementById("recentRequests"),
@@ -205,9 +222,11 @@ async function loadStats(userId) {
     ).length;
     latestRequests = requests;
     renderRequests(requests);
+    serviceCalendar?.setRequests(calendarRequests(requests, userId));
     document.body.dataset.requestsState = requests.length ? "ready" : "empty";
     updateRecentCount();
   } catch {
+    serviceCalendar?.setError();
     document.body.dataset.requestsState = "error";
     if (latestRequests === null)
       [
@@ -344,5 +363,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (!profile) return;
   displayUser(profile);
   setupDashboard(user.id);
-  await loadStats(user.id);
+  const initialRead = loadStats(user.id);
+  serviceCalendar = createServiceCalendar(
+    document.getElementById("clientServiceCalendar"),
+    { role: "client", onRefresh: () => loadStats(user.id) },
+  );
+  window.addEventListener("pagehide", () => serviceCalendar?.destroy(), {
+    once: true,
+  });
+  await initialRead;
 });
