@@ -1,0 +1,1 @@
+PASS 12 real pinned-SDK mutation transport cases; one local fetch each; no live requests.

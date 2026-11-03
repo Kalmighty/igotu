@@ -1,0 +1,7 @@
+{
+  "cases": 12,
+  "postgrestVersion": "2.118.0",
+  "actualPageCallBlock": true,
+  "singleFetchPerMutation": true,
+  "liveBackend": false
+}
